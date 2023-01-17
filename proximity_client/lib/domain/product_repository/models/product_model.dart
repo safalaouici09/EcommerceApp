@@ -36,7 +36,7 @@ class Product {
         description = parsedJson['description'],
         price = parsedJson['price'].toDouble(),
         categoryId = parsedJson['categoryId'],
-        images = parsedJson['images'],
+        images = parsedJson['images'].map(el => BASE_IMG_URL+'/'+el),
         tags = parsedJson['tags'],
         variants =
             ProductVariant.productVariantsFromJsonList(parsedJson['variants']),

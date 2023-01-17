@@ -31,7 +31,7 @@ class ProductVariant {
       List<dynamic> parsedJson) {
     List<ProductVariant> _list = [];
     for (int i = 0; i < parsedJson.length; i++) {
-      _list.add(ProductVariant.fromJson(parsedJson[i]));
+        _list.add(ProductVariant.fromJson(parsedJson[i]));
     }
     return _list;
   }

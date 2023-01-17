@@ -70,6 +70,7 @@ class ProductService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
+      print(BASE_API_URL + '/product/store/$idStore') ;
       var res = await dio.get(BASE_API_URL + '/product/store/$idStore');
       _loading = false;
       notifyListeners();

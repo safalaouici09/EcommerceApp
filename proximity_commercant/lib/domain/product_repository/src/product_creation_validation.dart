@@ -197,9 +197,11 @@ class ProductCreationValidation with ChangeNotifier {
       }
       _formData += '], "price": ${v.price}, "quantity": ${v.quantity}},';
     }
-    _car = _formData.characters.toList();
-    _car.removeLast();
-    _formData = _car.join("");
+    if(_formData.endsWith(',')) {
+      _car = _formData.characters.toList();
+      _car.removeLast();
+      _formData = _car.join("");
+    }
     _formData += "]";
     print('XXXX${_formData}');
     return _formData;
@@ -216,6 +218,7 @@ class ProductCreationValidation with ChangeNotifier {
       "variantes": _variantsFormData(),
       "storeId": _storeId,
     });
+    
     if (_images.isNotEmpty) {
       for (var v in _images) {
       if (v is File) {
