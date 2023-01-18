@@ -58,7 +58,8 @@ class _ProductModalState extends State<ProductModal> {
                             child: RichText(
                                 text: TextSpan(children: [
                           TextSpan(
-                              text: '€ ${_selectedVariant!.getPrice(_product.discount)} ',
+                              text: (productModalController.productVariantId == null)
+                                  ? '€--' : '€ ${_selectedVariant!.getPrice(_product.discount)} ',
                               style: Theme.of(context).textTheme.headline4),
                           TextSpan(
                               text: '/ Piece',
@@ -72,7 +73,7 @@ class _ProductModalState extends State<ProductModal> {
               (productModalController.productVariantId == null)
                   ? const SizedBox()
                   : ProductVariantCharacteristics(
-                      characteristics: _selectedVariant.characteristics!),
+                      characteristics: _selectedVariant!.characteristics!),
               const SizedBox(height: small_100),
               GridView(
                   physics: const NeverScrollableScrollPhysics(),
@@ -96,10 +97,11 @@ class _ProductModalState extends State<ProductModal> {
               SectionDivider(
                   leadIcon: ProximityIcons.quantity,
                   title: 'Quantity.',
-                  color: Theme.of(context).primaryColor),
-              QuantitySelector(
+                  color: Theme.of(context).primaryColor),                
+              if (productModalController.productVariantId != null)
+                QuantitySelector(
                   quantity: productModalController.quantity,
-                  maxQuantity: _selectedVariant.quantity,
+                  maxQuantity: _selectedVariant!.quantity,
                   increaseQuantity: productModalController.increaseQuantity,
                   decreaseQuantity: productModalController.decreaseQuantity),
 
@@ -183,7 +185,7 @@ class _ProductModalState extends State<ProductModal> {
                               ? () => cartService.addToCart(
                                   context,
                                   _product,
-                                  _selectedVariant,
+                                  _selectedVariant!,
                                   storeService.store!,
                                   productModalController.quantity)
                               : null,
@@ -200,7 +202,7 @@ class _ProductModalState extends State<ProductModal> {
                   image: NetworkImage(
                       (productModalController.productVariantId == null)
                           ? _product.images!.first
-                          : _selectedVariant.image!)),
+                          : _selectedVariant!.image!)),
               border: Border.all(
                   color: Theme.of(context).dividerColor, width: tiny_50),
               borderRadius: const BorderRadius.all(smallRadius)))
