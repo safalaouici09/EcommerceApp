@@ -1,4 +1,5 @@
 import 'product_variant_model.dart';
+import 'package:proximity/config/backend.dart';
 
 class Product {
   String? id;
@@ -36,7 +37,7 @@ class Product {
         description = parsedJson['description'],
         price = parsedJson['price'].toDouble(),
         categoryId = parsedJson['categoryId'],
-        images = parsedJson['images'].map(el => BASE_IMG_URL+'/'+el),
+        images = parsedJson['images'].map((el) => BASE_IMG_URL + '/' + el).toList() ,
         tags = parsedJson['tags'],
         variants =
             ProductVariant.productVariantsFromJsonList(parsedJson['variants']),
