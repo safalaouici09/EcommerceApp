@@ -5,7 +5,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity_commercant/domain/authentication/authentication.dart';
+<<<<<<< HEAD
 import 'package:proximity_commercant/domain/authentication/src/reset_password_validation.dart';
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
@@ -14,7 +17,11 @@ import 'package:proximity_commercant/domain/user_repository/user_repository.dart
 import 'proximity_commercant_app.dart';
 
 void main() async {
+<<<<<<< HEAD
   //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+=======
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
@@ -31,6 +38,7 @@ void main() async {
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => LoginValidation()),
+<<<<<<< HEAD
     ChangeNotifierProvider(create: (_) => ResetPasswordValidation()),
     ChangeNotifierProvider(create: (_) => SignupValidation()),
     ChangeNotifierProvider(create: (_) => OTPValidation()),
@@ -41,6 +49,11 @@ void main() async {
     ChangeNotifierProxyProvider<OTPValidation, UserService>(
         create: (_) => UserService(),
         update: (_, __, UserService) => UserService!..getUserData()),
+=======
+    ChangeNotifierProvider(create: (_) => SignupValidation()),
+    ChangeNotifierProvider(create: (_) => OTPValidation()),
+    ChangeNotifierProvider(create: (_) => UserService()),
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     ChangeNotifierProvider(create: (_) => StoreService()),
     ChangeNotifierProvider(create: (_) => ProductProxy()),
     ChangeNotifierProxyProvider<ProductProxy, ProductService>(

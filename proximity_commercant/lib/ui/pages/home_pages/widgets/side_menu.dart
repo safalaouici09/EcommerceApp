@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
@@ -6,6 +7,11 @@ import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/onBoard.dart';
+=======
+import 'package:provider/provider.dart';
+import 'package:proximity/proximity.dart';
+import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 import 'package:proximity_commercant/ui/pages/user_pages/user_pages.dart';
 
 class SideMenu extends StatelessWidget {
@@ -14,7 +20,10 @@ class SideMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width - normal_200;
+<<<<<<< HEAD
     final loginValidation = Provider.of<LoginValidation>(context);
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     return SafeArea(
         child: Card(
             margin: EdgeInsets.zero,
@@ -60,7 +69,11 @@ class SideMenu extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
+<<<<<<< HEAD
                                           const EditProfileScreen()));
+=======
+                                      const EditProfileScreen()));
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                             });
                       }),
                   ListButton(
@@ -116,6 +129,7 @@ class SideMenu extends StatelessWidget {
                       leadIcon: ProximityIcons.support,
                       onPressed: () {}),
                   const Divider(height: normal_200),
+<<<<<<< HEAD
                   ListButton(
                       title: 'Log out.',
                       leadIcon: Icons.logout_rounded,
@@ -127,6 +141,12 @@ class SideMenu extends StatelessWidget {
                             (Route<dynamic> route) => false);
                         Navigator.pushNamedAndRemoveUntil(
                             context, "/", (r) => false);
+=======
+                  ListButton(title: 'Log out.',
+                      leadIcon: Icons.logout_rounded,
+                      onPressed: () {
+                        Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                       }),
                   const SizedBox(height: huge_200)
                 ]))));

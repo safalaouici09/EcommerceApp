@@ -9,8 +9,8 @@ import 'package:showcaseview/showcaseview.dart';
 /// A widget to display the Shops part of the [HomeScreen]
 ///
 class StoresSection extends StatefulWidget {
-  final GlobalKey globalKey ; 
-  const StoresSection({Key? key , required this.globalKey}) : super(key: key);
+  final GlobalKey globalKey;
+  const StoresSection({Key? key, required this.globalKey}) : super(key: key);
 
   @override
   _StoresSectionState createState() => _StoresSectionState();
@@ -64,13 +64,13 @@ class _StoresSectionState extends State<StoresSection> {
                       itemBuilder: (context, i) => Opacity(
                           opacity: _selectedShop == i ? 1.0 : 0.6,
                           child: i == storeService.stores!.length
-                              ? 
-                              Showcase(
-                                key: widget.globalKey,
-                                title: 'Create Store',
-                                description: 'Click here to create your First Store',
-                                child: StoreCreationButton(),
-                              ) 
+                              ? Showcase(
+                                  key: widget.globalKey,
+                                  title: 'Create Store',
+                                  description:
+                                      'Click here to create your First Store',
+                                  child: StoreCreationButton(),
+                                )
                               : storeService.stores![i].isActive!
                                   ? StoreCard(store: storeService.stores![i])
                                   : StoreInVerificationCard(

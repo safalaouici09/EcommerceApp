@@ -29,7 +29,11 @@ class ImagePickerWidget extends StatefulWidget {
 
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   // Active image file
+<<<<<<< HEAD
   final List<dynamic> _images = [];
+=======
+  List<dynamic> _images = [];
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   // Select an image from either the gallery or the camera
   Future<void> _pickImage(ImageSource source) async {

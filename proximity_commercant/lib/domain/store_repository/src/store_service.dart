@@ -1,11 +1,17 @@
+<<<<<<< HEAD
 import 'dart:math';
 import 'dart:developer';
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
+<<<<<<< HEAD
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
 class StoreService with ChangeNotifier {
   List<Store>? _stores;
@@ -38,9 +44,13 @@ class StoreService with ChangeNotifier {
     var credentialsBox = Boxes.getCredentials();
     // String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
+<<<<<<< HEAD
 
     String _id = credentialsBox.get('id');
     print("_token : " + _token);
+=======
+    String _id = credentialsBox.get('id');
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
     /// dataForm is already a parameter
 
@@ -48,9 +58,14 @@ class StoreService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
+<<<<<<< HEAD
       var res = await dio.get(BASE_API_URL + '/store/seller/' + _id);
       _loading = false;
       print("stores" + res.toString());
+=======
+      var res = await dio.get(BASE_API_URL + '/store/seller/'+_id);
+      _loading = false;
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       notifyListeners();
       if (res.statusCode == 200) {
         _stores = [];
@@ -142,6 +157,7 @@ class StoreService with ChangeNotifier {
 
     /// post the dataForm via dio call
     try {
+<<<<<<< HEAD
       debugPrint("store form");
 
       Dio dio = Dio();
@@ -167,6 +183,21 @@ class StoreService with ChangeNotifier {
         });
 
         // Navigator.pop(context);
+=======
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      formData.fields.add(MapEntry("sellerId", _id));
+      var res = await dio.post(BASE_API_URL + '/store/createStore', data: formData);
+      if (res.statusCode == 200) {
+        /// Save new Store Data
+        stores!.add(Store.fromJson(res.data));
+        notifyListeners();
+
+        /// Display Results Message
+        ToastSnackbar().init(context).showToast(
+            message: "${res.statusMessage}", type: ToastSnackbarType.success);
+        Navigator.pop(context);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       }
     } on DioError catch (e) {
       if (e.response != null) {
@@ -185,8 +216,13 @@ class StoreService with ChangeNotifier {
     notifyListeners();
   }
 
+<<<<<<< HEAD
   Future editStore(BuildContext context, int index, FormData formData,
       List<String> deletedImages) async {
+=======
+  Future editStore(
+      BuildContext context, int index,  FormData formData, List<String> deletedImages) async {
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     _formsLoading = true;
     notifyListeners();
 
@@ -200,8 +236,12 @@ class StoreService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
+<<<<<<< HEAD
       var res = await dio.put(BASE_API_URL + '/store/${stores![index].id}',
           data: formData);
+=======
+      var res = await dio.put(BASE_API_URL + '/store/${stores![index].id}', data: formData);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       if (res.statusCode == 200) {
         /// Save new Store Data
         stores![index] = Store.fromJson(res.data);
@@ -240,8 +280,14 @@ class StoreService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
+<<<<<<< HEAD
       var res = await dio.put(BASE_API_URL + '/store/${stores![index].id}',
           data: {"isActive": !stores![index].isActive!});
+=======
+      var res = await dio.put(BASE_API_URL + '/store/${stores![index].id}', data: {
+        "isActive": !stores![index].isActive!
+      });
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       if (res.statusCode == 200) {
         /// Save new Store Data
         stores![index].isActive = res.data['isActive'];
@@ -286,7 +332,10 @@ class StoreService with ChangeNotifier {
     String _token = credentialsBox.get('token');
 
     /// post the dataForm via dio call
+<<<<<<< HEAD
     ///
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";

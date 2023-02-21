@@ -209,7 +209,11 @@ class _DropDownSelectorState<T> extends State<DropDownSelector<T>>
                   return const EdgeInsets.all(tiny_50)
                       .copyWith(left: 0, bottom: 0);
                 case BorderType.middle:
+<<<<<<< HEAD
                   return const EdgeInsets.all(tiny_50);
+=======
+                  return const EdgeInsets.symmetric(horizontal: tiny_50);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                 case BorderType.bottom:
                   return const EdgeInsets.all(tiny_50).copyWith(top: 0);
                 default:
@@ -229,7 +233,11 @@ class _DropDownSelectorState<T> extends State<DropDownSelector<T>>
                   case BorderType.topRight:
                     return const BorderRadius.only(topRight: smallRadius);
                   case BorderType.middle:
+<<<<<<< HEAD
                     return const BorderRadius.all(smallRadius);
+=======
+                    return null;
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                   case BorderType.bottom:
                     return const BorderRadius.vertical(bottom: smallRadius);
                   default:

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_commercant/domain/user_repository/models/models.dart';
+<<<<<<< HEAD
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
 
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
 class UserService extends ChangeNotifier {
   User? _user;
@@ -24,7 +27,11 @@ class UserService extends ChangeNotifier {
 
   bool get valid => (_user != null);
 
+<<<<<<< HEAD
   bool? get isVerified => (_user == null) ? null : (_user!.isVerified!);
+=======
+  bool? get isVerified => (_user == null)? null : (_user!.isVerified!);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   UserService() {
     getUserData();
@@ -34,7 +41,10 @@ class UserService extends ChangeNotifier {
   Future updateUser(BuildContext context, Map<String, dynamic> data) async {
     _loading = true;
     notifyListeners();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
@@ -62,8 +72,14 @@ class UserService extends ChangeNotifier {
     } on DioError catch (e) {
       if (e.response != null) {
         /// Display Error Response
+<<<<<<< HEAD
         ToastSnackbar().init(context).showToast(
             message: "${e.response!.data}", type: ToastSnackbarType.error);
+=======
+        ToastSnackbar()
+            .init(context)
+            .showToast(message: "${e.response!.data["message"]}", type: ToastSnackbarType.error);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       } else {
         /// Display Error Message
         ToastSnackbar()
@@ -105,6 +121,7 @@ class UserService extends ChangeNotifier {
     }
     notifyListeners();
   }
+<<<<<<< HEAD
 
   /// GET methods
   Future welcomeValidate(BuildContext context) async {
@@ -143,3 +160,7 @@ class UserService extends ChangeNotifier {
     notifyListeners();
   }
 }
+=======
+}
+
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705

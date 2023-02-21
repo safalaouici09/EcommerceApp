@@ -30,6 +30,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: large_100),
 
                 /// Login Forms
+<<<<<<< HEAD
                 EditText(
                     hintText: "Email, Phone Number or User Name.",
                     prefixIcon: ProximityIcons.user,
@@ -52,6 +53,35 @@ class LoginScreen extends StatelessWidget {
                     onChanged: (value) => loginValidation.changePassword(value),
                     enabled: !loginValidation.loading,
                     borderType: BorderType.bottom),
+=======
+                RichEditText(
+                  errorText: loginValidation.email.error,
+                  children: [
+                    EditText(
+                        hintText: "Email or Phone Number.",
+                        prefixIcon: ProximityIcons.user,
+                        errorText: loginValidation.email.error,
+                        onChanged: (value) =>
+                            loginValidation.changeEmail(value),
+                        enabled: !loginValidation.loading,
+                        borderType: BorderType.top),
+                    EditText(
+                        hintText: "Password.",
+                        prefixIcon: ProximityIcons.password,
+                        suffixIcon: loginValidation.visibility
+                            ? ProximityIcons.eye_off
+                            : ProximityIcons.eye_on,
+                        suffixOnPressed: () =>
+                            loginValidation.changeVisibility(),
+                        obscureText: !loginValidation.visibility,
+                        errorText: loginValidation.password.error,
+                        onChanged: (value) =>
+                            loginValidation.changePassword(value),
+                        enabled: !loginValidation.loading,
+                        borderType: BorderType.bottom),
+                  ],
+                ),
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
                 /// Error Messages
                 const SizedBox(height: small_100),
@@ -67,11 +97,15 @@ class LoginScreen extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     const PasswordRecoveryScreen())),
+<<<<<<< HEAD
                         child: Text('Password Recovery',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2!
                                 .copyWith(fontSize: normal_100),
+=======
+                        child: const Text('Password Recovery',
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                             textAlign: TextAlign.end))),
 
                 /// Login Button
@@ -104,11 +138,15 @@ class LoginScreen extends StatelessWidget {
                                           begin: Alignment.centerLeft,
                                           end: Alignment.centerRight)))),
                           const SizedBox(width: normal_100),
+<<<<<<< HEAD
                           Text("Or Connect With",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText2!
                                   .copyWith(fontSize: normal_100),
+=======
+                          const Text("Or Connect With",
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                               textAlign: TextAlign.center),
                           const SizedBox(width: normal_100),
                           Expanded(
@@ -172,6 +210,7 @@ class LoginScreen extends StatelessWidget {
                             text: TextSpan(children: [
                               TextSpan(
                                   text: "Don't have an account?  ",
+<<<<<<< HEAD
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText2!
@@ -182,6 +221,12 @@ class LoginScreen extends StatelessWidget {
                                       .textTheme
                                       .bodyText1!
                                       .copyWith(fontSize: normal_100)),
+=======
+                                  style: Theme.of(context).textTheme.bodyText2),
+                              TextSpan(
+                                  text: 'Sign Up.',
+                                  style: Theme.of(context).textTheme.bodyText1)
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                             ]))))
               ]),
         ));

@@ -4,7 +4,10 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+<<<<<<< HEAD
     
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         {
             "name": "proximity-master",
             "request": "launch",

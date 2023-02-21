@@ -40,7 +40,11 @@ class UserSettings with ChangeNotifier {
 
   _loadSettings() async {
     var settingsBox = Boxes.getSettingsBox();
+<<<<<<< HEAD
     String theme = settingsBox.get('theme') ?? "";
+=======
+    String theme = settingsBox.get('theme')?? "";
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     Locale? locale = (settingsBox.get('locale_language') != null &&
             settingsBox.get('locale_country') != null)
         ? Locale(settingsBox.get('locale_language'),

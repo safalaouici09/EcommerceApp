@@ -3,7 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
+<<<<<<< HEAD
 import 'package:proximity_commercant/ui/pages/authentication_pages/authentication_pages.dart';
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
 
 class LoginValidation with ChangeNotifier {
@@ -11,9 +14,12 @@ class LoginValidation with ChangeNotifier {
   ValidationItem _email = ValidationItem(null, null);
   ValidationItem _password = ValidationItem(null, null);
 
+<<<<<<< HEAD
   bool _isLogged = false;
   bool _isVerified = false;
 
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   // essential values for the UI
   // loading to render circular progress bar when waiting for server response
   bool _loading = false;
@@ -29,8 +35,11 @@ class LoginValidation with ChangeNotifier {
   bool get visibility => _visibility;
 
   bool get loading => _loading;
+<<<<<<< HEAD
   bool get isLogged => _isLogged;
   bool get isVerified => _isVerified;
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   bool get isValid {
     if (_email.value != null && _password.value != null) {
@@ -40,22 +49,31 @@ class LoginValidation with ChangeNotifier {
     }
   }
 
+<<<<<<< HEAD
   LoginValidation() {
     checkLoginStatus();
   }
 
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   // Setters
   void changeEmail(String value) {
     if (value == '') {
       _email = ValidationItem(null, null);
       notifyListeners();
     } else if (value.length > 3) {
+<<<<<<< HEAD
       bool _emailValid =
           RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                   .hasMatch(value) ||
               RegExp(r"^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$")
                   .hasMatch(value) ||
               RegExp(r"^[a-zA-Z0-9]+$").hasMatch(value);
+=======
+      bool _emailValid = RegExp(
+              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          .hasMatch(value);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       if (_emailValid) {
         _email = ValidationItem(value, null);
         notifyListeners();
@@ -103,13 +121,18 @@ class LoginValidation with ChangeNotifier {
     /// prepare the dataForm
     final Map<String, dynamic> data = {
       "email": _email.value,
+<<<<<<< HEAD
       "password": _password.value,
       "role": "seller"
+=======
+      "password": _password.value
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     };
 
     /// post the dataForm via dio call
     try {
       var res = await Dio().post(AUTH_API_URL + '/login', data: data);
+<<<<<<< HEAD
       print(res.data["success"]);
       print(res.data["message"]);
       if (res.statusCode == 200) {
@@ -196,6 +219,24 @@ class LoginValidation with ChangeNotifier {
               (Route<dynamic> route) => false);
         }*/
 
+=======
+
+      if (res.statusCode == 200) {
+        /// Save Credentials
+        credentialsBox.put('token', res.data['token']);
+        credentialsBox.put('id', res.data['user']['id']);
+        credentialsBox.put('email', res.data['user']['email']);
+
+        /// Display Results Message
+        ToastSnackbar().init(context).showToast(
+            message: "${res.statusMessage}", type: ToastSnackbarType.success);
+
+        /// Go to [HomeScreen]
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (Route<dynamic> route) => false);
+      }
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     } on DioError catch (e) {
       if (e.response != null) {
         /// Display Error Response
@@ -214,6 +255,7 @@ class LoginValidation with ChangeNotifier {
     notifyListeners();
   }
 
+<<<<<<< HEAD
   void logout() async {
     var credentialsBox = Boxes.getCredentials();
     // Delete an item
@@ -233,6 +275,8 @@ class LoginValidation with ChangeNotifier {
     }
   }
 
+=======
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   void googleLogin(BuildContext context) async {}
 
   void facebookLogin(BuildContext context) async {}

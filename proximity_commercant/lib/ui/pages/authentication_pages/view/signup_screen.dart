@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
+<<<<<<< HEAD
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 
 import 'package:proximity/widgets/forms/phone_textfield.dart';
+=======
+import 'package:flutter/gestures.dart';
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/authentication_pages.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
@@ -22,6 +26,7 @@ class SignupScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+<<<<<<< HEAD
               const SizedBox(height: normal_100),
               Padding(
                   padding:
@@ -111,6 +116,46 @@ class SignupScreen extends StatelessWidget {
               ErrorMessage(errors: [
                 //signupValidation.email.error,
                 // signupValidation.password.error
+=======
+                  Padding(
+                      padding: const EdgeInsets.all(normal_100)
+                          .copyWith(top: normal_200),
+                      child: Text('Sign Up.',
+                          style: Theme.of(context).textTheme.subtitle1,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis)),
+              const SizedBox(height: large_100),
+
+              /// Signup Forms
+              RichEditText(children: [
+                EditText(
+                    hintText: "Email or Phone Number.",
+                    prefixIcon: ProximityIcons.user,
+                    errorText: signupValidation.email.error,
+                    onChanged: (value) => signupValidation.changeEmail(value),
+                    enabled: !signupValidation.loading,
+                    borderType: BorderType.top),
+                EditText(
+                    hintText: "Password.",
+                    prefixIcon: ProximityIcons.password,
+                    suffixIcon: signupValidation.visibility
+                        ? ProximityIcons.eye_off
+                        : ProximityIcons.eye_on,
+                    suffixOnPressed: () => signupValidation.changeVisibility(),
+                    obscureText: !signupValidation.visibility,
+                    errorText: signupValidation.password.error,
+                    onChanged: (value) =>
+                        signupValidation.changePassword(value),
+                    enabled: !signupValidation.loading,
+                    borderType: BorderType.bottom)
+              ]),
+
+              /// Error Messages
+              const SizedBox(height: small_100),
+              ErrorMessage(errors: [
+                signupValidation.email.error,
+                signupValidation.password.error
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
               ]),
               TermsAndConditions(
                   value: signupValidation.termsAgreement,
@@ -206,6 +251,7 @@ class SignupScreen extends StatelessWidget {
                           text: TextSpan(children: [
                             TextSpan(
                                 text: 'Already have an account?  ',
+<<<<<<< HEAD
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText2!
@@ -216,6 +262,12 @@ class SignupScreen extends StatelessWidget {
                                     .textTheme
                                     .bodyText1!
                                     .copyWith(fontSize: normal_100))
+=======
+                                style: Theme.of(context).textTheme.bodyText2),
+                            TextSpan(
+                                text: 'Log In.',
+                                style: Theme.of(context).textTheme.bodyText1)
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                           ]))))
             ])));
   }

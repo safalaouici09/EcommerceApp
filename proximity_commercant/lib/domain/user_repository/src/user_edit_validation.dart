@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/config/backend.dart';
@@ -10,17 +11,34 @@ import 'package:proximity_commercant/domain/user_repository/models/models.dart';
 class UserEditValidation with ChangeNotifier {
   late ValidationItem _userName;
 
+=======
+import 'package:flutter/material.dart';
+import 'package:proximity/config/values.dart';
+import 'package:proximity/domain_repository/domain_repository.dart';
+import 'package:proximity_commercant/domain/user_repository/models/models.dart';
+
+class UserEditValidation with ChangeNotifier {
+  late ValidationItem _firstName;
+  late ValidationItem _lastName;
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   late ValidationItem _emailAddress;
   late ValidationItem _password;
   late ValidationItem _phone;
   late DateTime _birthdate;
   late List<dynamic> _profileImage;
   late Address _address;
+<<<<<<< HEAD
   bool _imageUpdated = false;
 
   UserEditValidation.setUser(User user) {
     _userName = ValidationItem(user.userName, null);
 
+=======
+
+  UserEditValidation.setUser(User user) {
+    _firstName = ValidationItem(user.firstName, null);
+    _lastName = ValidationItem(user.lastName, null);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     _emailAddress = ValidationItem(user.email, null);
     _password = ValidationItem(null, null);
     _phone = ValidationItem(user.phone, null);
@@ -31,7 +49,13 @@ class UserEditValidation with ChangeNotifier {
   }
 
   // Getters
+<<<<<<< HEAD
   ValidationItem get userName => _userName;
+=======
+  ValidationItem get firstName => _firstName;
+
+  ValidationItem get lastName => _lastName;
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   ValidationItem get emailAddress => _emailAddress;
 
@@ -47,11 +71,20 @@ class UserEditValidation with ChangeNotifier {
 
   // checks if forms is valid and verified
   bool get isValid {
+<<<<<<< HEAD
     if (_userName.value != null && _emailAddress.value != null //&&
         // _phone.value != null &&
         // birthdate.value != null &&
         //  _address.isAddressValid
         ) {
+=======
+    if (_firstName.value != null &&
+        _lastName.value != null &&
+        _emailAddress.value != null &&
+        _phone.value != null &&
+        // birthdate.value != null &&
+        _address.isAddressValid) {
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       return true;
     } else {
       return false;
@@ -59,8 +92,18 @@ class UserEditValidation with ChangeNotifier {
   }
 
   // Setters
+<<<<<<< HEAD
   void changeUserName(String value) {
     _userName = ValidationItem(value, null);
+=======
+  void changeFirstName(String value) {
+    _firstName = ValidationItem(value, null);
+    notifyListeners();
+  }
+
+  void changeLastName(String value) {
+    _lastName = ValidationItem(value, null);
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     notifyListeners();
   }
 
@@ -117,6 +160,7 @@ class UserEditValidation with ChangeNotifier {
   }
 
   /// image Picker
+<<<<<<< HEAD
   void editProfileImage(List<dynamic> imageList) async {
     _profileImage.addAll(imageList);
     notifyListeners();
@@ -164,6 +208,11 @@ class UserEditValidation with ChangeNotifier {
             .showToast(message: e.message, type: ToastSnackbarType.error);*/
       }
     }
+=======
+  void editProfileImage(List<dynamic> imageList) {
+    _profileImage.addAll(imageList);
+    notifyListeners();
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   }
 
   void removeProfileImage(int index) {
@@ -173,6 +222,7 @@ class UserEditValidation with ChangeNotifier {
 
   /// A method to convert the form into a User Object
   Map<String, dynamic> toDataForm() {
+<<<<<<< HEAD
     if (phone.value != null && emailAddress.value != null) {
       return {
         "email": emailAddress.value,
@@ -266,5 +316,36 @@ class UserEditValidation with ChangeNotifier {
         };
       }
     }
+=======
+    return {
+      "email": emailAddress.value,
+      // "password": password.value,
+      "firstName": firstName.value,
+      "lastName": lastName.value,
+      "phone": phone.value,
+      "adresse": {
+        "latitude": address.lat,
+        "longitude": address.lng,
+        "fullAdress": address.fullAddress ?? "",
+        "streetName": address.fullAddress ?? "",
+        "apartmentNumber": address.streetName ?? "",
+        "city": address.city ?? "",
+        "country": address.countryName ?? "",
+        "countryCode": address.countryCode ?? "",
+        "region": address.region ?? "",
+        "postalCode": address.postalCode ?? ""
+      },
+      "shippingAdress": {
+        "fullAdress": address.fullAddress ?? "",
+        "streetName": address.streetName ?? "",
+        "apartmentNumber": address.streetName ?? "",
+        "city": address.city ?? "",
+        "countryCode": address.countryCode ?? "",
+        "country": address.countryName ?? "",
+        "region": address.region ?? "",
+        "postalCode": address.postalCode
+      }
+    };
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   }
 }

@@ -48,7 +48,12 @@ class _StoreScreenState extends State<StoreScreen> {
       Store store =
           storeService.stores!.firstWhere((element) => element.id == widget.id);
       int index =
+<<<<<<< HEAD
           storeService.stores!.indexWhere((element) => element.id == widget.id);
+=======
+      storeService.stores!.indexWhere((element) => element.id == widget.id);
+      
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
       /// Do a getShop if necessary
       didFetch = store.allFetched();
@@ -57,11 +62,18 @@ class _StoreScreenState extends State<StoreScreen> {
         store = storeService.stores!
             .firstWhere((element) => element.id == widget.id);
       }
+<<<<<<< HEAD
       log('data store: ' + store.image.toString());
       return Scaffold(
           body: ListView(children: [
         StoreMap(address: store.address!),
 
+=======
+      log('data: $store');
+      return Scaffold(
+          body: ListView(children: [
+        StoreMap(address: store.address!),
+>>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         StoreDetails(
             name: store.name!,
             rating: store.rating!,
