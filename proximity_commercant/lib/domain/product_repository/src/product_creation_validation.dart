@@ -18,11 +18,8 @@ class ProductCreationValidation with ChangeNotifier {
   List<ProductVariant> _variants = [];
   List<dynamic> _images = [];
 
-<<<<<<< HEAD
   bool _showImagePicker = false;
   bool get showImagePicker => _showImagePicker;
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   ProductCreationValidation();
 
   ProductCreationValidation.setProduct(Product product) {
@@ -31,11 +28,7 @@ class ProductCreationValidation with ChangeNotifier {
     _name = ValidationItem(product.name, null);
     _description = ValidationItem(product.description, null);
     _category = ValidationItem(product.categoryId, null);
-<<<<<<< HEAD
     _price = product.price ?? 0.00;
-=======
-    _price = product.price ?? 0.0;
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     _quantity = product.quantity ?? 0;
 
     /// Setting up Characteristics
@@ -78,11 +71,7 @@ class ProductCreationValidation with ChangeNotifier {
 
   String get characteristicsTitle {
     if (_characteristics.isEmpty) {
-<<<<<<< HEAD
       return "Add options.";
-=======
-      return "Edit Characteristics.";
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     } else {
       return "${_characteristics.entries.map((e) => "${e.key}(${e.value.length})").toList()}"
           .replaceAll("[", "")
@@ -90,7 +79,6 @@ class ProductCreationValidation with ChangeNotifier {
     }
   }
 
-<<<<<<< HEAD
   List get characteristicsList {
     if (_characteristics.isEmpty) {
       return [];
@@ -103,8 +91,6 @@ class ProductCreationValidation with ChangeNotifier {
     }
   }
 
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   List<ProductVariant> get variants => _variants;
 
   int get variantsMaxSize {
@@ -207,7 +193,6 @@ class ProductCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
-<<<<<<< HEAD
   void setShowImagePicker() {
     if (_showImagePicker == true) {
       _showImagePicker = false;
@@ -218,14 +203,11 @@ class ProductCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   String _variantsFormData() {
     String _formData = "[";
     List<String> _car = [];
     for (var v in _variants) {
       _formData += '{"characterstics": [';
-<<<<<<< HEAD
 
       for (var c in v.characteristics!) {
         if (c is MapEntry<String, dynamic>) {
@@ -239,13 +221,6 @@ class ProductCreationValidation with ChangeNotifier {
           "value": "${c["value"]}"
         },''';
         }
-=======
-      for (var c in v.characteristics!) {
-        _formData += '''{
-          "name": "${c.key}",
-          "value": "${c.value}"
-        },''';
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       }
       if (_formData.endsWith(',')) {
         _car = _formData.characters.toList();
@@ -254,21 +229,12 @@ class ProductCreationValidation with ChangeNotifier {
       }
       _formData += '], "price": ${v.price}, "quantity": ${v.quantity}},';
     }
-<<<<<<< HEAD
     if (_formData.endsWith(',')) {
-=======
-    if(_formData.endsWith(',')) {
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       _car = _formData.characters.toList();
       _car.removeLast();
       _formData = _car.join("");
     }
     _formData += "]";
-<<<<<<< HEAD
-
-=======
-    print('XXXX${_formData}');
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     return _formData;
   }
 
@@ -283,7 +249,6 @@ class ProductCreationValidation with ChangeNotifier {
       "variantes": _variantsFormData(),
       "storeId": _storeId,
     });
-<<<<<<< HEAD
 
     if (_images.isNotEmpty) {
       for (var v in _images) {
@@ -294,23 +259,11 @@ class ProductCreationValidation with ChangeNotifier {
               .add(MapEntry('images', MultipartFile.fromFileSync(v.path)));
         }
       }
-=======
-    
-    if (_images.isNotEmpty) {
-      for (var v in _images) {
-      if (v is File) {
-        _formData.files.add(MapEntry(
-            'images', MultipartFile.fromFileSync(v.path)));
-      }}
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     }
     if (_variants.isNotEmpty) {
       for (ProductVariant v in _variants) {
         if (v.image is File) {
-<<<<<<< HEAD
           print("pt ; " + v.image.path);
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
           _formData.files.add(MapEntry(
               'varientsImages', MultipartFile.fromFileSync(v.image.path)));
         }

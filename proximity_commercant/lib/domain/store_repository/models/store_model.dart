@@ -1,9 +1,6 @@
 import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
-<<<<<<< HEAD
 import 'package:proximity/config/backend.dart';
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
 class Store {
   String? id;
@@ -17,16 +14,12 @@ class Store {
   Policy? policy;
   List<Category>? categories;
   bool? isActive;
-<<<<<<< HEAD
   // bool? isVerified;
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   // List<Offer>? offers;
   // List<Flashdeal>? flashdeals;
   List<dynamic>? followers;
 
-<<<<<<< HEAD
   Store({
     this.id,
     this.name,
@@ -42,38 +35,16 @@ class Store {
     this.isActive,
     //  this.isVerified
   });
-=======
-  Store(
-      {this.id,
-      this.name,
-      this.description,
-      this.rating,
-      this.phoneNumber,
-      this.ownerPhoneNumber,
-      this.image,
-      this.address,
-      this.policy,
-      this.categories,
-      this.followers,
-      this.isActive});
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   Store.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
         name = parsedJson['name'],
         description = parsedJson['description'],
-<<<<<<< HEAD
         rating = 1,
         phoneNumber = '0745431397',
         ownerPhoneNumber = '0745431397',
         image = BASE_IMG_URL + '/' + parsedJson['image'],
         //isVerified = parsedJson[' isVerified'],
-=======
-        rating = 4.7,
-        phoneNumber = '0745431397',
-        ownerPhoneNumber = '0745431397',
-        image = parsedJson['imageUrl'],
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         followers = parsedJson['followers'],
         isActive = parsedJson['isActive'],
         policy = Policy(
@@ -85,11 +56,7 @@ class Store {
               else if (parsedJson['policies']['selfPickUp'] == "partial")
                 ShippingMethod.selfPickupPartial
               else if (parsedJson['policies']['selfPickUp'] == "free")
-<<<<<<< HEAD
                 ShippingMethod.selfPickupFree
-=======
-                  ShippingMethod.selfPickupFree
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
             ],
             tax: (parsedJson['policies']['tax'] ?? 0.0).toDouble(),
             selfPickUpPrice: (parsedJson['policies']['selfPickUp'] == "free")

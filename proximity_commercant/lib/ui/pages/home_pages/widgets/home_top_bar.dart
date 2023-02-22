@@ -67,11 +67,7 @@ class HomeTopBar extends StatelessWidget {
                             text: 'Welcome\n',
                             style: Theme.of(context).textTheme.subtitle2),
                         TextSpan(
-<<<<<<< HEAD
                             text: '${userService.user!.userName}.',
-=======
-                            text: '${userService.user!.firstName}.',
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                             style: Theme.of(context).textTheme.subtitle1)
                       ])),
             ),

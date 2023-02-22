@@ -63,6 +63,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               var credentialsBox = Boxes.getCredentials();
                               credentialsBox.put(
                                   'address', AddressItem.fromAdress(_result));
+                              credentialsBox.put('first_time', false);
 
                               // storeCreationValidation.changeAddress(_result);
                             },

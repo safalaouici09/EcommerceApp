@@ -14,10 +14,7 @@ class OTPValidation with ChangeNotifier {
 
   // Getters
   ValidationItem get verificationCode => _verificationCode;
-<<<<<<< HEAD
   var credentialsBox = Boxes.getCredentials();
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   bool get loading => _loading;
 
@@ -35,11 +32,7 @@ class OTPValidation with ChangeNotifier {
       notifyListeners();
     }
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   /// POST method
   void verify(BuildContext context) async {
     /// set loading to true
@@ -47,10 +40,6 @@ class OTPValidation with ChangeNotifier {
     notifyListeners();
 
     /// open hive box
-<<<<<<< HEAD
-=======
-    var credentialsBox = Boxes.getCredentials();
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
     /// prepare the dataForm
     final Map<String, dynamic> data = {
@@ -65,10 +54,9 @@ class OTPValidation with ChangeNotifier {
       if (res.statusCode == 200) {
         _loading = false;
         notifyListeners();
-<<<<<<< HEAD
-        print("dataaaaaaaaaaaaaaaaaaa") ;
-        print(res.data) ;
-        
+        print("dataaaaaaaaaaaaaaaaaaa");
+        print(res.data);
+
         credentialsBox.put('token', res.data["data"]['token']);
         credentialsBox.put('id', res.data["data"]['user']['id']);
         credentialsBox.put('email', res.data["data"]['user']['email']);
@@ -77,11 +65,6 @@ class OTPValidation with ChangeNotifier {
 
         /// Save Credentials
         // credentialsBox.put('firstTime', false);
-=======
-
-        /// Save Credentials
-        credentialsBox.put('firstTime', false);
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         // credentialsBox.put('token', res.data['token']);
 
         /// Display Results Message
@@ -89,23 +72,17 @@ class OTPValidation with ChangeNotifier {
             message: "${res.statusMessage}", type: ToastSnackbarType.success);
 
         /// Go to [HomeScreen]
-<<<<<<< HEAD
         final welcome = credentialsBox.get('welcome');
-        
-        if(welcome == null ) {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-                (Route<dynamic> route) => false);
-        }else {
+
+        if (welcome == null) {
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-            (Route<dynamic> route) => false);
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+              (Route<dynamic> route) => false);
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              (Route<dynamic> route) => false);
         }
-=======
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-                (Route<dynamic> route) => false);
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       }
     } on DioError catch (e) {
       if (e.response != null) {

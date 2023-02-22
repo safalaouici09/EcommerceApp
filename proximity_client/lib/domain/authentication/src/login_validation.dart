@@ -9,10 +9,7 @@ class LoginValidation with ChangeNotifier {
   // form fields
   ValidationItem _email = ValidationItem(null, null);
   ValidationItem _password = ValidationItem(null, null);
-<<<<<<< HEAD
   bool _isLogged = false;
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   // essential values for the UI
   // loading to render circular progress bar when waiting for server response
@@ -29,13 +26,10 @@ class LoginValidation with ChangeNotifier {
   bool get visibility => _visibility;
 
   bool get loading => _loading;
-<<<<<<< HEAD
   bool get isLogged => _isLogged;
   LoginValidation() {
     checkLoginStatus();
   }
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   bool get isValid {
     if (_email.value != null && _password.value != null) {
@@ -141,7 +135,6 @@ class LoginValidation with ChangeNotifier {
     notifyListeners();
   }
 
-<<<<<<< HEAD
   void checkLoginStatus() {
     var credentialsBox = Boxes.getCredentials();
     final token = credentialsBox.get('token');
@@ -152,8 +145,6 @@ class LoginValidation with ChangeNotifier {
     }
   }
 
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   void googleLogin(BuildContext context) async {}
 
   void facebookLogin(BuildContext context) async {}

@@ -70,7 +70,6 @@ class ProductService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-<<<<<<< HEAD
       print(BASE_API_URL + '/product/store/$idStore');
       var res = await dio.get(BASE_API_URL + '/product/store/$idStore');
       _loading = false;
@@ -79,13 +78,6 @@ class ProductService with ChangeNotifier {
       notifyListeners();
       if (res.statusCode == 200) {
         // print("res data : " + res.data);
-=======
-      print(BASE_API_URL + '/product/store/$idStore') ;
-      var res = await dio.get(BASE_API_URL + '/product/store/$idStore');
-      _loading = false;
-      notifyListeners();
-      if (res.statusCode == 200) {
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         _products = [];
         _products!.addAll(Product.productsFromJsonList(res.data));
         notifyListeners();
@@ -256,11 +248,7 @@ class ProductService with ChangeNotifier {
     notifyListeners();
   }
 
-<<<<<<< HEAD
   Future editProduct(BuildContext context, int index, FormData formData) async {
-=======
-  Future editProduct(BuildContext context, int index,  FormData formData) async {
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     _formsLoading = true;
     notifyListeners();
 
@@ -275,7 +263,6 @@ class ProductService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-<<<<<<< HEAD
 
       formData.fields.add(MapEntry("sellerId", _id));
       var res = await dio.put(BASE_API_URL + '/product/${_products![index].id}',
@@ -286,13 +273,6 @@ class ProductService with ChangeNotifier {
         /// Save new Store Data
         _products!.add(Product.fromJson(res.data));
 
-=======
-      formData.fields.add(MapEntry("sellerId", _id));
-      var res = await dio.post(BASE_API_URL + '/product/${_products![index].id}', data: formData);
-      if (res.statusCode == 200) {
-        /// Save new Store Data
-        _products!.add(Product.fromJson(res.data));
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         notifyListeners();
 
         /// Display Results Message
@@ -302,11 +282,8 @@ class ProductService with ChangeNotifier {
       }
     } on DioError catch (e) {
       if (e.response != null) {
-<<<<<<< HEAD
         print(e.response);
 
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         /// Display Error Response
         ToastSnackbar()
             .init(context)
@@ -346,12 +323,7 @@ class ProductService with ChangeNotifier {
       }
     } on DioError catch (e) {
       if (e.response != null) {
-<<<<<<< HEAD
       } else {}
-=======
-      } else {
-      }
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     }
     return false;
   }

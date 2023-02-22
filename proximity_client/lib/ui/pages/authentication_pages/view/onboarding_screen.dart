@@ -11,7 +11,6 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
     final loginValidation = Provider.of<LoginValidation>(context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -53,45 +52,5 @@ class OnboardingScreen extends StatelessWidget {
                   const SizedBox(height: normal_200),
                 ],
               )));
-=======
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const OnboardingCarousel(),
-            const Spacer(),
-            Row(
-              children: [
-                const SizedBox(width: normal_100),
-                Expanded(
-                    child: SecondaryButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignupScreen()));
-                  },
-                  title: 'Sign Up.',
-                )),
-                const SizedBox(width: normal_100),
-                Expanded(
-                    child: SecondaryButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()));
-                  },
-                  title: 'Log In.',
-                )),
-                const SizedBox(width: normal_100),
-              ],
-            ),
-            const SizedBox(height: normal_200),
-          ],
-        )));
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   }
 }

@@ -64,37 +64,28 @@ class ProductService with ChangeNotifier {
 
   Future getProximityProducts() async {
     /// open hive box
-<<<<<<< HEAD
+    ///
+    var credentialsBox = Boxes.getCredentials();
+    credentialsBox.put('first_time', false);
     print("rs1:");
     print("rs2:");
     // String _id = credentialsBox.get('id');
     //String _token = credentialsBox.get('token');
-=======
-    var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
     /// dataForm is already a parameter
 
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
-<<<<<<< HEAD
       print("rs3:");
 
-      //  dio.options.headers["token"] = "Bearer $_token";
+      dio.options.headers["token"] = "Bearer " "";
 
       var res = await dio.get(BASE_API_URL +
           '/search/product/?radius=24444&latitude=48.92920&langitude=2.31860239058733');
       print("rs4:");
       print("rs:" + res.statusCode.toString());
       print("rs:" + res.data);
-=======
-      dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL +
-          '/search/product/?radius=24444&latitude=48.92920&langitude=2.31860239058733');
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       if (res.statusCode == 200) {
         _products = [];
         _products.addAll(Product.productsFromJsonList(res.data));
@@ -114,12 +105,7 @@ class ProductService with ChangeNotifier {
 
   Future getTodayDeals() async {
     Future.delayed(const Duration(milliseconds: 6200), () {
-<<<<<<< HEAD
       _todayDeals.addAll(_products.where((element) => (element.discount != 0)));
-=======
-      _todayDeals
-          .addAll(_products.where((element) => (element.discount != 0)));
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       notifyListeners();
     });
   }

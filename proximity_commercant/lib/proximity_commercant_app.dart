@@ -5,10 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:proximity/l10n/l10n.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
-<<<<<<< HEAD
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/onBoard.dart';
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/view.dart';
 import 'package:proximity_commercant/ui/pages/pages.dart';
 
@@ -19,17 +16,13 @@ class ProximityCommercantApp extends StatelessWidget {
   Widget build(BuildContext context) {
     /// User Settings
     final userSettings = Provider.of<UserSettings>(context);
-<<<<<<< HEAD
 
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
     /// Changing the StatusBar and NavigationBar in Andorid
     bool themeIsDark = userSettings.theme == 'dark';
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         systemNavigationBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.light,
-<<<<<<< HEAD
         systemNavigationBarColor: themeIsDark
             ? scaffoldBackgroundDarkColor
             : scaffoldBackgroundLightColor,
@@ -51,25 +44,5 @@ class ProximityCommercantApp extends StatelessWidget {
         //for testing
         //home: const SignupScreen()
         );
-=======
-        systemNavigationBarColor:
-        themeIsDark ? scaffoldBackgroundDarkColor : scaffoldBackgroundLightColor,
-        statusBarColor: Colors.transparent));
-
-    return MaterialApp(
-      title: 'Proximity Commercant App',
-      theme: userSettings.theme == 'dark' ? darkTheme : lightTheme,
-      darkTheme: userSettings.theme == 'light' ? lightTheme : darkTheme,
-      locale: userSettings.locale,
-      supportedLocales: locales,
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      home: const LoginScreen(),
-    );
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   }
 }

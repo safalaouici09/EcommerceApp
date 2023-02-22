@@ -1,15 +1,9 @@
-<<<<<<< HEAD
 import 'dart:developer';
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:flutter/rendering.dart';
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 import 'package:proximity/config/values.dart';
 import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
@@ -29,13 +23,8 @@ class StoreCreationValidation with ChangeNotifier {
   bool? _openWeekend;
   bool? _openDay;
   bool? _openNight;
-<<<<<<< HEAD
   TimeOfDay? _openTime = TimeOfDay(hour: 09, minute: 00);
   TimeOfDay? _closeTime = TimeOfDay(hour: 18, minute: 00);
-=======
-  DateTime? _openTime;
-  DateTime? _closeTime;
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   Address _storeAddress = Address();
   List<dynamic> _storeImages = [];
   List<String> _deletedImages = [];
@@ -54,12 +43,7 @@ class StoreCreationValidation with ChangeNotifier {
           .contains(ShippingMethod.selfPickupPartial);
       _selfPickupTotal = store.policy!.shippingMethods!
           .contains(ShippingMethod.selfPickupTotal);
-<<<<<<< HEAD
       _selfPickup = _selfPickupFree || _selfPickupPartial || _selfPickupTotal;
-=======
-      _selfPickup =
-          _selfPickupFree || _selfPickupPartial || _selfPickupTotal;
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
       _delivery =
           (store.policy!.shippingMethods!.contains(ShippingMethod.delivery));
       _tax = store.policy!.tax;
@@ -101,15 +85,9 @@ class StoreCreationValidation with ChangeNotifier {
 
   bool? get openWeekend => _openWeekend;
 
-<<<<<<< HEAD
   TimeOfDay? get openTime => _openTime;
 
   TimeOfDay? get closeTime => _closeTime;
-=======
-  DateTime? get openTime => _openTime;
-
-  DateTime? get closeTime => _closeTime;
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
 
   Address get storeAddress => _storeAddress;
 
@@ -266,7 +244,6 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
-<<<<<<< HEAD
   getStartTime(BuildContext context, TimeOfDay? initTime) async {
     var newOpenTime = await showTimePicker(
       context: context,
@@ -293,19 +270,13 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
   /// A method to convert this form validator into a Store object
   FormData toFormData() {
     FormData _formData = FormData.fromMap({
       "name": storeName.value,
       "description": storeDescription.value,
-<<<<<<< HEAD
       // "isVerified": false,
       "location": '''{
-=======
-        "location": '''{
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         "type": "Point",
         "coordinates": [${storeAddress.lat ?? 0.0}, ${storeAddress.lng ?? 0.0}]
       }''',
@@ -330,10 +301,7 @@ class StoreCreationValidation with ChangeNotifier {
     });
     if (_storeImages.isNotEmpty) {
       if (_storeImages.first is File) {
-<<<<<<< HEAD
         print("pef" + _storeImages.first.path);
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
         _formData.files.add(MapEntry(
             'image', MultipartFile.fromFileSync(_storeImages.first.path)));
       }
