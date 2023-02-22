@@ -84,8 +84,8 @@ class ProductService with ChangeNotifier {
       var res = await dio.get(BASE_API_URL +
           '/search/product/?radius=24444&latitude=48.92920&langitude=2.31860239058733');
       print("rs4:");
-      print("rs:" + res.statusCode.toString());
-      print("rs:" + res.data);
+      print(res.statusCode.toString());
+      print(res.data);
       if (res.statusCode == 200) {
         _products = [];
         _products.addAll(Product.productsFromJsonList(res.data));
@@ -114,12 +114,12 @@ class ProductService with ChangeNotifier {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     // String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
+    // String _token = credentialsBox.get('token');
 
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
+      dio.options.headers["token"] = "Bearer ";
       var res = await dio.get(BASE_API_URL + '/product/$id');
 
       if (res.statusCode == 200) {
