@@ -194,7 +194,6 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
 
       var res = await dio.get(BASE_API_URL +
           '/search/product/?radius=24444&latitude=48.92920&langitude=2.31860239058733');
-
       if (res.statusCode == 200) {
         _products = [];
         _products.addAll(Product.productsFromJsonList(res.data));
@@ -228,7 +227,7 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
+      dio.options.headers["token"] = "Bearer ";
       var res = await dio.get(BASE_API_URL + '/product/$id');
 
       if (res.statusCode == 200) {

@@ -60,14 +60,14 @@ class StoreService with ChangeNotifier {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     // String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
+    // String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
 
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
+      dio.options.headers["token"] = "Bearer ";
       var res = await dio.get(BASE_API_URL + '/store/$_storeId');
       if (res.statusCode == 200) {
         _store = Store.fromJson(res.data);
@@ -93,14 +93,14 @@ class StoreService with ChangeNotifier {
     /// open hive boxP
     var credentialsBox = Boxes.getCredentials();
     // String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
+    // String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
 
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
+      dio.options.headers["token"] = "Bearer ";
       var res = await dio.get(BASE_API_URL + '/product/store/$_storeId');
       _loading = false;
       notifyListeners();
