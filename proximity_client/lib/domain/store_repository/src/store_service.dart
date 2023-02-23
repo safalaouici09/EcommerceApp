@@ -90,7 +90,7 @@ class StoreService with ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    /// open hive box
+    /// open hive boxP
     var credentialsBox = Boxes.getCredentials();
     // String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');

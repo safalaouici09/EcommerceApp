@@ -47,6 +47,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => UserService()),
     ChangeNotifierProvider(create: (_) => ProductService()),
     ChangeNotifierProvider(create: (_) => StoreProxy()),
+    ChangeNotifierProvider(create: (_) => ResetPasswordValidation()),
     ChangeNotifierProxyProvider<StoreProxy, StoreService>(
         create: (_) => StoreService(),
         update: (_, __, storeService) =>

@@ -31,7 +31,7 @@ class OTPValidation with ChangeNotifier {
       notifyListeners();
     }
   }
-  
+
   /// POST method
   void verify(BuildContext context) async {
     /// set loading to true
@@ -64,9 +64,11 @@ class OTPValidation with ChangeNotifier {
             message: "${res.statusMessage}", type: ToastSnackbarType.success);
 
         /// Go to [HomeScreen]
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-                (Route<dynamic> route) => false);
+        /*   Navigator.of(context).pushAndRemoveUntil(
+           MaterialPageRoute(builder: (context) => const MainScreen()),
+             (Route<dynamic> route) => false);*/
+        int count = 0;
+        Navigator.of(context).popUntil((_) => count++ == 2);
       }
     } on DioError catch (e) {
       if (e.response != null) {

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
-import 'package:proximity_client/domain/authentication/authentication.dart';
-import 'package:proximity_client/ui/pages/authentication_pages/authentication_pages.dart';
-import 'package:proximity_client/ui/pages/main_pages/main_pages.dart';
 import 'package:flutter/gestures.dart';
+import 'package:proximity_client/domain/authentication/src/login_validation.dart';
+import 'package:proximity_client/ui/pages/authentication_pages/view/password_recovery_screen.dart';
+import 'package:proximity_client/ui/pages/authentication_pages/view/signup_screen.dart';
+import 'package:proximity_client/ui/pages/main_pages/view/main_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -20,37 +21,38 @@ class LoginScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const TopBar(title: 'Log In.'),
+                Padding(
+                    padding: const EdgeInsets.all(normal_100)
+                        .copyWith(top: normal_200),
+                    child: Text('Log In.',
+                        style: Theme.of(context).textTheme.subtitle1,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis)),
                 const SizedBox(height: large_100),
 
                 /// Login Forms
-                RichEditText(
-                  errorText: loginValidation.email.error,
-                  children: [
-                    EditText(
-                        hintText: "Email or Phone Number.",
-                        prefixIcon: ProximityIcons.user,
-                        errorText: loginValidation.email.error,
-                        onChanged: (value) =>
-                            loginValidation.changeEmail(value),
-                        enabled: !loginValidation.loading,
-                        borderType: BorderType.top),
-                    EditText(
-                        hintText: "Password.",
-                        prefixIcon: ProximityIcons.password,
-                        suffixIcon: loginValidation.visibility
-                            ? ProximityIcons.eye_off
-                            : ProximityIcons.eye_on,
-                        suffixOnPressed: () =>
-                            loginValidation.changeVisibility(),
-                        obscureText: !loginValidation.visibility,
-                        errorText: loginValidation.password.error,
-                        onChanged: (value) =>
-                            loginValidation.changePassword(value),
-                        enabled: !loginValidation.loading,
-                        borderType: BorderType.bottom),
-                  ],
+                EditText(
+                    hintText: "Email, Phone Number or User Name.",
+                    prefixIcon: ProximityIcons.user,
+                    errorText: loginValidation.email.error,
+                    onChanged: (value) => loginValidation.changeEmail(value),
+                    enabled: !loginValidation.loading,
+                    borderType: BorderType.top),
+                const SizedBox(
+                  height: normal_100,
                 ),
+                EditText(
+                    hintText: "Password.",
+                    prefixIcon: ProximityIcons.password,
+                    suffixIcon: loginValidation.visibility
+                        ? ProximityIcons.eye_off
+                        : ProximityIcons.eye_on,
+                    suffixOnPressed: () => loginValidation.changeVisibility(),
+                    obscureText: !loginValidation.visibility,
+                    errorText: loginValidation.password.error,
+                    onChanged: (value) => loginValidation.changePassword(value),
+                    enabled: !loginValidation.loading,
+                    borderType: BorderType.bottom),
 
                 /// Error Messages
                 const SizedBox(height: small_100),
@@ -66,7 +68,11 @@ class LoginScreen extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     const PasswordRecoveryScreen())),
-                        child: const Text('Password Recovery',
+                        child: Text('Password Recovery',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(fontSize: normal_100),
                             textAlign: TextAlign.end))),
 
                 /// Login Button
@@ -99,7 +105,11 @@ class LoginScreen extends StatelessWidget {
                                           begin: Alignment.centerLeft,
                                           end: Alignment.centerRight)))),
                           const SizedBox(width: normal_100),
-                          const Text("Or Connect With",
+                          Text("Or Connect With",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(fontSize: normal_100),
                               textAlign: TextAlign.center),
                           const SizedBox(width: normal_100),
                           Expanded(
@@ -150,24 +160,30 @@ class LoginScreen extends StatelessWidget {
                                   width: normal_200, height: normal_200)))
                     ])),
                 const Spacer(),
-                Padding(
-                    padding: const EdgeInsets.all(normal_100),
-                    child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(children: [
-                          TextSpan(
-                              text: "Don't have an account?  ",
-                              style: Theme.of(context).textTheme.bodyText2),
-                          TextSpan(
-                              text: 'Sign Up.',
-                              style: Theme.of(context).textTheme.bodyText1,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignupScreen())))
-                        ])))
+
+                InkWell(
+                    onTap: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignupScreen())),
+                    child: Padding(
+                        padding: const EdgeInsets.all(normal_100),
+                        child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(children: [
+                              TextSpan(
+                                  text: "Don't have an account?  ",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2!
+                                      .copyWith(fontSize: normal_100)),
+                              TextSpan(
+                                  text: 'Sign Up.',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(fontSize: normal_100)),
+                            ]))))
               ]),
         ));
   }

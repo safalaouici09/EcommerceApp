@@ -82,7 +82,7 @@ class ProductScreen extends StatelessWidget {
           SecondaryButton(
               onPressed: () => Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => SignupScreen()),
-                  (Route<dynamic> route) => false),
+                  (Route<dynamic> route) => true),
               title: 'Buy Now.')
         ])
       ]));
