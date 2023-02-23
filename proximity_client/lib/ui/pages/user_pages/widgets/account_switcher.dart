@@ -11,7 +11,7 @@ class AccountSwitcher extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<UserService>(
       builder: (_, userService, __) {
-        return userService.valid
+        return userService.valid!
             ? Padding(
                 padding: const EdgeInsets.all(normal_100),
                 child: Row(children: [
@@ -25,13 +25,13 @@ class AccountSwitcher extends StatelessWidget {
                               width: tiny_50),
                           image: DecorationImage(
                               image: NetworkImage(
-                                  userService.user!.profileImage!.first)))),
+                                  userService.user!.profileImage!.first!)))),
                   const SizedBox(width: normal_100),
                   Expanded(
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                        Text(userService.user!.fullName,
+                        Text(userService.user!.userName!,
                             style: Theme.of(context).textTheme.subtitle2,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),

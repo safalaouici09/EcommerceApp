@@ -202,6 +202,11 @@ class ResetPasswordValidation with ChangeNotifier {
         // credentialsBox.put('firstTime', false);
         //credentialsBox.put("email", _email.value);
         //credentialsBox.put('token', res.data['token']);
+        
+        credentialsBox.put('token', res.data['data']['token']);
+        credentialsBox.put('id', res.data['data']['user']['id']);
+        credentialsBox.put('email', res.data['data']['user']['email']);
+        credentialsBox.put('welcome', res.data['data']['user']['welcome']);
         if (res.data["success"]) {
           ToastSnackbar().init(context).showToast(
               message: "${res.statusMessage}", type: ToastSnackbarType.success);

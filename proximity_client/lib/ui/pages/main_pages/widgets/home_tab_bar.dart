@@ -45,7 +45,7 @@ class HomeTabBar extends StatelessWidget {
                             text: 'Welcome\n',
                             style: Theme.of(context).textTheme.subtitle2),
                         TextSpan(
-                            text: '${userService.user!.firstName}.',
+                            text: '${userService.user!.userName}.',
                             style: Theme.of(context).textTheme.subtitle1)
                       ]))
                     : ShimmerFx(

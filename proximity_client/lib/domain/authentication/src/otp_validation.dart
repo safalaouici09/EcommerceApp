@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/ui/pages/main_pages/main_pages.dart';
+import 'package:proximity_client/ui/pages/authentication_pages/authentication_pages.dart';
 
 class OTPValidation with ChangeNotifier {
   // form fields
@@ -54,9 +55,17 @@ class OTPValidation with ChangeNotifier {
       if (res.statusCode == 200) {
         _loading = false;
         notifyListeners();
+        print("dataaaaaaaaaaaaaaaaaaa");
+        print(res.data);
+
+        credentialsBox.put('token', res.data["data"]['token']);
+        credentialsBox.put('id', res.data["data"]['user']['id']);
+        credentialsBox.put('email', res.data["data"]['user']['email']);
+        credentialsBox.put('username', res.data["data"]['user']['username']);
+        credentialsBox.put('welcome', res.data["data"]['user']['welcome']);
 
         /// Save Credentials
-        credentialsBox.put('firstTime', false);
+        // credentialsBox.put('firstTime', false);
         // credentialsBox.put('token', res.data['token']);
 
         /// Display Results Message
@@ -64,12 +73,19 @@ class OTPValidation with ChangeNotifier {
             message: "${res.statusMessage}", type: ToastSnackbarType.success);
 
         /// Go to [HomeScreen]
-        /*   Navigator.of(context).pushAndRemoveUntil(
-           MaterialPageRoute(builder: (context) => const MainScreen()),
-             (Route<dynamic> route) => false);*/
-        int count = 0;
-        Navigator.of(context).popUntil((_) => count++ == 2);
+        final welcome = credentialsBox.get('welcome');
+
+        if (welcome == null) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const WelcomeScreenAfterLogin()),
+              (Route<dynamic> route) => false);
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const MainScreen()),
+              (Route<dynamic> route) => false);
+        }
       }
+      
     } on DioError catch (e) {
       if (e.response != null) {
         /// Display Error Response

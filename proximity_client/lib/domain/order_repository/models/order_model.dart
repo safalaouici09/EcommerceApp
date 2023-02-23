@@ -80,39 +80,4 @@ class Order {
     return _list;
   }
 
-  static List<Order> orders = [
-    Order(
-        id: '070011138000',
-        orderStatus: OrderStatus.pending,
-        currency: '€',
-        totalPrice: 2599,
-        orderDate: DateTime.now().subtract(const Duration(days: 2, hours: 3)),
-        deliveryDate: null,
-        shippingAddress: User.user.address,
-        storeAddress: Store.stores[4].address,
-        storeId: Store.stores[4].id,
-        storeName: Store.stores[4].name,
-        storePhone: Store.stores[4].phoneNumber,
-        items: [
-          OrderItem(
-            id: '0',
-            name:
-                'MacBook Pro',
-            variantId: '62ea829a73ff0f593e711112',
-            variantName: '',
-            categoryName: '',
-            characteristics: [
-              {'name': 'Color', 'value': 'Silver'},
-              {'name': 'Size', 'value': '13 inches'},
-            ],
-            image: BASE_IMG_URL+'/'+'images/variantes/e52715f5-0b20-43e1-bc9b-654a8983c403macbook-color-2.jfif',
-            price: 1299,
-            discount: 0.0,
-            discountEndDate: DateTime.now().add(
-                const Duration(days: 31, hours: 23, minutes: 48, seconds: 3)),
-            storeId: '62ea7dceb54f5844e0278dfa',
-            orderedQuantity: 2,
-          )
-        ]),
-  ];
 }

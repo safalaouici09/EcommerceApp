@@ -14,6 +14,9 @@ class ProfileTabScreen extends StatelessWidget {
 
     String? _token = credentialsBox.get('token');
 
+    
+    final userService = Provider.of<UserService>(context);
+
     return (_token == null)
         ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: normal_100),
@@ -64,31 +67,26 @@ class ProfileTabScreen extends StatelessWidget {
         : ListView(
             padding: const EdgeInsets.symmetric(vertical: large_100),
             children: [
-              const AccountSwitcher(),
               const OrdersDashboard(),
               SectionDivider(
                   title: 'Settings.',
                   leadIcon: ProximityIcons.settings,
                   color: redSwatch.shade500),
-              Consumer<UserService>(builder: (context, userService, __) {
-                return ListButton(
+              ListButton(
                     title: 'Edit Profile.',
                     leadIcon: ProximityIcons.edit,
-                    onPressed: (userService.user == null)
+                    onPressed: (userService.user! == null)
                         ? null
                         : () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => EditProfileScreen(
-                                        user: userService.user!)));
-                          });
-              }),
-              Consumer<UserService>(builder: (context, userService, __) {
-                return ListButton(
+                                    builder: (context) => EditProfileScreen()));
+                          }),
+              ListButton(
                     title: 'Preferences.',
                     leadIcon: ProximityIcons.preferences,
-                    onPressed: (userService.user == null)
+                    onPressed: (userService.user! == null)
                         ? null
                         : () {
                             Navigator.push(
@@ -96,8 +94,7 @@ class ProfileTabScreen extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (context) => PreferencesScreen(
                                         user: userService.user!)));
-                          });
-              }),
+                          }),
               const ListButton(
                   title: 'Payment Methods.',
                   leadIcon: ProximityIcons.credit_card,

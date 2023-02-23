@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/domain/user_repository/models/models.dart';
+import 'package:proximity_client/ui/pages/main_pages/main_pages.dart';
 
 class UserService extends ChangeNotifier {
   User? _user;
@@ -21,6 +22,9 @@ class UserService extends ChangeNotifier {
   }
 
   bool get valid => (_user != null);
+
+  bool? get isVerified => (_user == null) ? null : (_user!.isVerified!);
+
 
   UserService() {
     getUserData();
@@ -88,6 +92,41 @@ class UserService extends ChangeNotifier {
         /// Save new User Data
         _user = User.fromJson(res.data);
         notifyListeners();
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+    notifyListeners();
+  }
+
+  Future welcomeValidate(BuildContext context) async {
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      var res = await dio.get(BASE_API_URL + '/user/welcome/$_id');
+
+      if (res.statusCode == 200) {
+        /// Save new User Data
+        _user = User.fromJson(res.data);
+        notifyListeners();
+        credentialsBox.put('welcome', 'true');
+
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+            (Route<dynamic> route) => false);
       }
     } on DioError catch (e) {
       if (e.response != null) {

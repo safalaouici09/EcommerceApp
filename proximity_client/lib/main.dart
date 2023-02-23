@@ -45,6 +45,14 @@ void main() async {
     ChangeNotifierProvider(create: (_) => SignupValidation()),
     ChangeNotifierProvider(create: (_) => OTPValidation()),
     ChangeNotifierProvider(create: (_) => UserService()),
+    
+    ChangeNotifierProxyProvider<LoginValidation, UserService>(
+        create: (_) => UserService(),
+        update: (_, __, UserService) => UserService!..getUserData()),
+    ChangeNotifierProxyProvider<OTPValidation, UserService>(
+        create: (_) => UserService(),
+        update: (_, __, UserService) => UserService!..getUserData()),
+        
     ChangeNotifierProvider(create: (_) => ProductService()),
     ChangeNotifierProvider(create: (_) => StoreProxy()),
     ChangeNotifierProvider(create: (_) => ResetPasswordValidation()),

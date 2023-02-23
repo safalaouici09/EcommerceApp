@@ -1,21 +1,26 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:proximity/config/config.dart';
+import 'package:proximity/config/backend.dart';
+import 'package:proximity/config/values.dart';
 import 'package:proximity/domain_repository/domain_repository.dart';
+import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
+import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_client/domain/user_repository/models/models.dart';
 
 class UserEditValidation with ChangeNotifier {
-  late ValidationItem _firstName;
-  late ValidationItem _lastName;
+  late ValidationItem _userName;
+
   late ValidationItem _emailAddress;
   late ValidationItem _password;
   late ValidationItem _phone;
   late DateTime _birthdate;
   late List<dynamic> _profileImage;
   late Address _address;
+  bool _imageUpdated = false;
 
   UserEditValidation.setUser(User user) {
-    _firstName = ValidationItem(user.firstName, null);
-    _lastName = ValidationItem(user.lastName, null);
+    _userName = ValidationItem(user.userName, null);
+
     _emailAddress = ValidationItem(user.email, null);
     _password = ValidationItem(null, null);
     _phone = ValidationItem(user.phone, null);
@@ -26,9 +31,7 @@ class UserEditValidation with ChangeNotifier {
   }
 
   // Getters
-  ValidationItem get firstName => _firstName;
-
-  ValidationItem get lastName => _lastName;
+  ValidationItem get userName => _userName;
 
   ValidationItem get emailAddress => _emailAddress;
 
@@ -44,12 +47,11 @@ class UserEditValidation with ChangeNotifier {
 
   // checks if forms is valid and verified
   bool get isValid {
-    if (_firstName.value != null &&
-        _lastName.value != null &&
-        _emailAddress.value != null &&
-        _phone.value != null &&
+    if (_userName.value != null && _emailAddress.value != null //&&
+        // _phone.value != null &&
         // birthdate.value != null &&
-        _address.isAddressValid) {
+        //  _address.isAddressValid
+        ) {
       return true;
     } else {
       return false;
@@ -57,13 +59,8 @@ class UserEditValidation with ChangeNotifier {
   }
 
   // Setters
-  void changeFirstName(String value) {
-    _firstName = ValidationItem(value, null);
-    notifyListeners();
-  }
-
-  void changeLastName(String value) {
-    _lastName = ValidationItem(value, null);
+  void changeUserName(String value) {
+    _userName = ValidationItem(value, null);
     notifyListeners();
   }
 
@@ -120,9 +117,53 @@ class UserEditValidation with ChangeNotifier {
   }
 
   /// image Picker
-  void editProfileImage(List<dynamic> imageList) {
+  void editProfileImage(List<dynamic> imageList) async {
     _profileImage.addAll(imageList);
     notifyListeners();
+
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /* final Map<String, dynamic> data = {
+      "image": await MultipartFile.fromFile(imageList[0].path,
+          filename: imageList[0].path.split('/').last)*/
+    final Map<String, dynamic> data = {
+      "image": MultipartFile.fromFileSync(_profileImage.first.path)
+    };
+    /*  final Map<String, dynamic> data =
+        MapEntry('image', MultipartFile.fromFileSync(_profileImage.first.path));*/
+    print("res.statusCode");
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      var res =
+          await dio.put(BASE_API_URL + '/user/update_image/$_id', data: data);
+      //_loading = false;
+      print(res.statusCode);
+      notifyListeners();
+      if (res.statusCode == 200) {
+        /// Save new User Data
+
+        notifyListeners();
+
+        /// Display Results Message
+        /* ToastSnackbar().init(context).showToast(
+            message: "${res.statusMessage}", type: ToastSnackbarType.success);
+        Navigator.pop(context);*/
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Display Error Response
+        /* ToastSnackbar().init(context).showToast(
+            message: "${e.response!.data}", type: ToastSnackbarType.error);*/
+      } else {
+        /// Display Error Message
+        /*   ToastSnackbar()
+            .init(context)
+            .showToast(message: e.message, type: ToastSnackbarType.error);*/
+      }
+    }
   }
 
   void removeProfileImage(int index) {
@@ -132,34 +173,98 @@ class UserEditValidation with ChangeNotifier {
 
   /// A method to convert the form into a User Object
   Map<String, dynamic> toDataForm() {
-    return {
-      "email": emailAddress.value,
-      // "password": password.value,
-      "firstName": firstName.value,
-      "lastName": lastName.value,
-      "phone": phone.value,
-      "adresse": {
-        "latitude": address.lat,
-        "longitude": address.lng,
-        "fullAdress": address.fullAddress ?? "",
-        "streetName": address.fullAddress ?? "",
-        "apartmentNumber": address.streetName ?? "",
-        "city": address.city ?? "",
-        "country": address.countryName ?? "",
-        "countryCode": address.countryCode ?? "",
-        "region": address.region ?? "",
-        "postalCode": address.postalCode ?? ""
-      },
-      "shippingAdress": {
-        "fullAdress": address.fullAddress ?? "",
-        "streetName": address.streetName ?? "",
-        "apartmentNumber": address.streetName ?? "",
-        "city": address.city ?? "",
-        "countryCode": address.countryCode ?? "",
-        "country": address.countryName ?? "",
-        "region": address.region ?? "",
-        "postalCode": address.postalCode
+    if (phone.value != null && emailAddress.value != null) {
+      return {
+        "email": emailAddress.value,
+        // "password": password.value,
+        "username": userName.value,
+
+        "phone": phone.value,
+        "adresse": {
+          "latitude": address.lat,
+          "longitude": address.lng,
+          "fullAdress": address.fullAddress ?? "",
+          "streetName": address.fullAddress ?? "",
+          "apartmentNumber": address.streetName ?? "",
+          "city": address.city ?? "",
+          "country": address.countryName ?? "",
+          "countryCode": address.countryCode ?? "",
+          "region": address.region ?? "",
+          "postalCode": address.postalCode ?? ""
+        },
+        "shippingAdress": {
+          "fullAdress": address.fullAddress ?? "",
+          "streetName": address.streetName ?? "",
+          "apartmentNumber": address.streetName ?? "",
+          "city": address.city ?? "",
+          "countryCode": address.countryCode ?? "",
+          "country": address.countryName ?? "",
+          "region": address.region ?? "",
+          "postalCode": address.postalCode
+        }
+      };
+    } else {
+      if (phone.value == null) {
+        return {
+          "email": emailAddress.value,
+          // "password": password.value,
+          "username": userName.value,
+
+          "adresse": {
+            "latitude": address.lat,
+            "longitude": address.lng,
+            "fullAdress": address.fullAddress ?? "",
+            "streetName": address.fullAddress ?? "",
+            "apartmentNumber": address.streetName ?? "",
+            "city": address.city ?? "",
+            "country": address.countryName ?? "",
+            "countryCode": address.countryCode ?? "",
+            "region": address.region ?? "",
+            "postalCode": address.postalCode ?? ""
+          },
+          "shippingAdress": {
+            "fullAdress": address.fullAddress ?? "",
+            "streetName": address.streetName ?? "",
+            "apartmentNumber": address.streetName ?? "",
+            "city": address.city ?? "",
+            "countryCode": address.countryCode ?? "",
+            "country": address.countryName ?? "",
+            "region": address.region ?? "",
+            "postalCode": address.postalCode
+          }
+        };
+      } else {
+        return {
+          //"email": emailAddress.value,
+          // "password": password.value,
+          "username": userName.value,
+
+          "phone": phone.value,
+
+          "adresse": {
+            "latitude": address.lat,
+            "longitude": address.lng,
+            "fullAdress": address.fullAddress ?? "",
+            "streetName": address.fullAddress ?? "",
+            "apartmentNumber": address.streetName ?? "",
+            "city": address.city ?? "",
+            "country": address.countryName ?? "",
+            "countryCode": address.countryCode ?? "",
+            "region": address.region ?? "",
+            "postalCode": address.postalCode ?? ""
+          },
+          "shippingAdress": {
+            "fullAdress": address.fullAddress ?? "",
+            "streetName": address.streetName ?? "",
+            "apartmentNumber": address.streetName ?? "",
+            "city": address.city ?? "",
+            "countryCode": address.countryCode ?? "",
+            "country": address.countryName ?? "",
+            "region": address.region ?? "",
+            "postalCode": address.postalCode
+          }
+        };
       }
-    };
+    }
   }
 }

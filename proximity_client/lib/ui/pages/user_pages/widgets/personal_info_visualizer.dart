@@ -17,7 +17,7 @@ class PersonalInfoVisualizer extends StatelessWidget {
             child: RichText(
                 text: TextSpan(children: [
               TextSpan(
-                  text: userService.user!.fullName,
+                  text: userService.user!.userName,
                   style: Theme.of(context).textTheme.bodyText1),
               TextSpan(text: '\n${userService.user!.address!.getAddressLine}'),
               TextSpan(text: '\n${userService.user!.address!.postalCode}'),
@@ -31,7 +31,7 @@ class PersonalInfoVisualizer extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => EditProfileScreen(user: userService.user!)));
+                            builder: (context) => EditProfileScreen()));
                   }
                 : null,
             title: 'Change.'),

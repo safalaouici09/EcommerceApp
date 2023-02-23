@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/ui/pages/main_pages/main_pages.dart';
+import 'package:proximity_client/ui/pages/authentication_pages/authentication_pages.dart';
 
 class LoginValidation with ChangeNotifier {
   // form fields
@@ -95,7 +96,8 @@ class LoginValidation with ChangeNotifier {
     /// prepare the dataForm
     final Map<String, dynamic> data = {
       "email": _email.value,
-      "password": _password.value
+      "password": _password.value , 
+      "role" : "user"
     };
 
     /// post the dataForm via dio call
@@ -103,19 +105,69 @@ class LoginValidation with ChangeNotifier {
       var res = await Dio().post(AUTH_API_URL + '/login', data: data);
 
       if (res.statusCode == 200) {
-        /// Save Credentials
-        credentialsBox.put('token', res.data['token']);
-        credentialsBox.put('id', res.data['user']['id']);
-        credentialsBox.put('email', res.data['user']['email']);
+        
+        if (res.data["success"]) {
+          credentialsBox.put('token', res.data["data"]['token']);
+          credentialsBox.put('id', res.data["data"]['user']['id']);
+          credentialsBox.put('email', res.data["data"]['user']['email']);
+          credentialsBox.put('email', _email.value);
+          credentialsBox.put('username', res.data["data"]['user']['username']);
+          credentialsBox.put('welcome', res.data["data"]['user']['welcome']);
+          ToastSnackbar().init(context).showToast(
+              message: "${res.data["message"]}",
+              type: ToastSnackbarType.success);
+          Future.delayed(largeAnimationDuration, () {
+            notifyListeners();
+          });
 
-        /// Display Results Message
-        ToastSnackbar().init(context).showToast(
-            message: "${res.statusMessage}", type: ToastSnackbarType.success);
+          /// Go to [HomeScreen]
+          final welcome = credentialsBox.get('welcome');
+          //var box = await Hive.openBox('authentication');
 
-        /// Go to [HomeScreen]
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-            (Route<dynamic> route) => false);
+          if (welcome == null) {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const WelcomeScreenAfterLogin()),
+                (Route<dynamic> route) => false);
+          } else {
+            /// Display Results Message
+            ToastSnackbar().init(context).showToast(
+                message: "${res.statusMessage}", type: ToastSnackbarType.success);
+
+            /// Go to [HomeScreen]
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const MainScreen()),
+                (Route<dynamic> route) => false);
+          }
+        } else {
+          credentialsBox.put('email', _email.value);
+          if (res.data["data"] == 1) {
+            ToastSnackbar().init(context).showToast(
+                message: "${res.data["message"]}",
+                type: ToastSnackbarType.error);
+          } else {
+            if (res.data["data"] == 2) {
+              ToastSnackbar().init(context).showToast(
+                  message: "${res.data["message"]}",
+                  type: ToastSnackbarType.error);
+            } else {
+              if (res.data["data"] == 3) {
+                ToastSnackbar().init(context).showToast(
+                    message: "${res.data["message"]}",
+                    type: ToastSnackbarType.error);
+              } else {
+                if (res.data["data"] == 4) {
+                  ToastSnackbar().init(context).showToast(
+                      message: "${res.data["message"]}",
+                      type: ToastSnackbarType.success);
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => const OTPScreen()),
+                      (Route<dynamic> route) => true);
+                }
+              }
+            }
+          }
+        }
       }
     } on DioError catch (e) {
       if (e.response != null) {

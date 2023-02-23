@@ -9,7 +9,7 @@ class PreferencesValidation with ChangeNotifier {
   late List<String> _preferredTags;
 
   PreferencesValidation.setUserPreferences(User user) {
-    _proximityRange = user.proximityRange ?? 10;
+    _proximityRange =  10;
     _preferredTags = [
       'Apple',
       'Smartphones',

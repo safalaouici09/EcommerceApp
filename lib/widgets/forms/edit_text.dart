@@ -569,12 +569,8 @@ class _EditTextState extends State<EditText> {
                     return const BorderRadius.vertical(
                         bottom: innerBorderRadius);
                   case BorderType.singleLeft:
-<<<<<<< HEAD
                     return const BorderRadius.horizontal(
                         left: innerBorderRadius);
-=======
-                    return const BorderRadius.horizontal(left: innerBorderRadius);
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                 }
               }()),
             ),
@@ -594,10 +590,7 @@ class _EditTextState extends State<EditText> {
               initialValue: widget.saved,
               onChanged: widget.onChanged,
               decoration: InputDecoration(
-<<<<<<< HEAD
                   labelText: widget.hintText,
-=======
->>>>>>> 013281680d734e7e73222774a5e78c0a7d5ce705
                   hintText: widget.hintText,
                   prefixIcon: (widget.prefixIcon != null)
                       ? Icon(widget.prefixIcon,
