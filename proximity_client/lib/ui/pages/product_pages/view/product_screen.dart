@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/ui/pages/authentication_pages/authentication_pages.dart';
 import 'package:proximity_client/ui/pages/product_pages/product_pages.dart';
 import 'package:proximity_client/ui/pages/store_pages/store_pages.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
@@ -31,16 +32,17 @@ class ProductScreen extends StatelessWidget {
           body: Stack(alignment: Alignment.bottomCenter, children: [
         ListView(children: [
           ProductImageCarousel(id: id, images: product.images!),
-          if (product.tags != null && product.tags!.isNotEmpty) Padding(
-              padding: const EdgeInsets.symmetric(horizontal: small_100),
-              child: Wrap(
-                  spacing: small_100,
-                  runSpacing: 0,
-                  children: product.tags!
-                      .map((item) => Chip(
-                          label: Text(item,
-                              style: Theme.of(context).textTheme.bodyText2)))
-                      .toList())),
+          if (product.tags != null && product.tags!.isNotEmpty)
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: small_100),
+                child: Wrap(
+                    spacing: small_100,
+                    runSpacing: 0,
+                    children: product.tags!
+                        .map((item) => Chip(
+                            label: Text(item,
+                                style: Theme.of(context).textTheme.bodyText2)))
+                        .toList())),
           ProductDetailsSection(
               name: product.name!,
               price: product.price!,
@@ -78,7 +80,10 @@ class ProductScreen extends StatelessWidget {
               onPressed: () => showProductModal(context, product.id!),
               title: 'Add to Cart.'),
           SecondaryButton(
-              onPressed: () => Navigator.pop(context), title: 'Buy Now.')
+              onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => SignupScreen()),
+                  (Route<dynamic> route) => false),
+              title: 'Buy Now.')
         ])
       ]));
     });
