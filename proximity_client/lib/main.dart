@@ -11,6 +11,7 @@ import 'package:proximity_client/domain/product_repository/product_repository.da
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
+import 'package:proximity_client/CustomErrorWidget.dart';
 
 import 'proximity_app.dart';
 
@@ -39,6 +40,7 @@ void main() async {
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
+  ErrorWidget.builder = (error) => CustomErrorWidget();
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => LoginValidation()),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/authentication/authentication.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
@@ -15,6 +16,7 @@ class ProfileTabScreen extends StatelessWidget {
     String? _token = credentialsBox.get('token');
 
     
+    final loginValidation = Provider.of<LoginValidation>(context);
     final userService = Provider.of<UserService>(context);
 
     return (_token == null)
@@ -67,6 +69,7 @@ class ProfileTabScreen extends StatelessWidget {
         : ListView(
             padding: const EdgeInsets.symmetric(vertical: large_100),
             children: [
+              const AccountSwitcher(),
               const OrdersDashboard(),
               SectionDivider(
                   title: 'Settings.',
@@ -149,11 +152,12 @@ class ProfileTabScreen extends StatelessWidget {
               ListButton(
                   title: 'Logout.',
                   onPressed: () {
+                    loginValidation.logout();
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute<void>(
                             builder: (BuildContext context) =>
-                                const OnboardingScreen()),
+                                const MainScreen()),
                         (route) => false);
                   }),
               const SizedBox(height: large_200 + small_100),

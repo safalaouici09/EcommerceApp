@@ -1,10 +1,14 @@
 import 'dart:ui';
+import 'package:provider/provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'home_tab_screen.dart';
 import 'map_tab_screen.dart';
 import 'cart_tab_screen.dart';
 import 'profile_tab_screen.dart';
+import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_client/domain/user_repository/user_repository.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -18,12 +22,24 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
+
     super.initState();
     _index = 0;
   }
 
   @override
   Widget build(BuildContext context) {
+
+
+    final userService = Provider.of<UserService>(context);
+
+    var credentialsBox = Boxes.getCredentials();
+    String? _token = credentialsBox.get('token');
+
+    if(_token != null && userService.user == null) {
+      userService.getUserData() ;
+    }
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(

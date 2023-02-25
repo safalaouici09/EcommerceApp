@@ -63,5 +63,5 @@ class User {
         ),
         isVerified = parsedJson['isVerified'] ?? false,
         welcome = parsedJson['welcome'] ?? false,
-        profileImage = parsedJson['image'];
+        profileImage = parsedJson['profileImage']  ;
 }
