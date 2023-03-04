@@ -8,6 +8,7 @@ import 'package:proximity_commercant/domain/user_repository/user_repository.dart
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/onBoard.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/view.dart';
 import 'package:proximity_commercant/ui/pages/pages.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 
 class ProximityCommercantApp extends StatelessWidget {
   const ProximityCommercantApp({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class ProximityCommercantApp extends StatelessWidget {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        home: const OnBoard()
+        home: const StorePolicyScreen()
         //for testing
         //home: const SignupScreen()
         );

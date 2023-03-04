@@ -17,6 +17,11 @@ class StoreCreationValidation with ChangeNotifier {
   bool _selfPickupFree = false;
   bool _selfPickupPartial = false;
   bool _selfPickupTotal = false;
+  bool _returnShippingFee = false;
+  bool _returnTotalFee = false;
+  bool _returnPartialFee = false;
+  int? _returnPerFee;
+
   bool _delivery = false;
   double? _tax;
   double? _selfPickupPrice;
@@ -29,6 +34,32 @@ class StoreCreationValidation with ChangeNotifier {
   List<dynamic> _storeImages = [];
   List<String> _deletedImages = [];
 
+  bool _reservationFree = false;
+  bool _reservationPartial = false;
+  bool _reservationTotal = false;
+  bool _reservationConcelationFree = false;
+  bool _reservationConcelationPartial = false;
+  bool? _returnAccept = false;
+  bool? _returnNotAccept = false;
+  int? _reservationDuration;
+  int? _returnMaxDays;
+  double? _reservationtax;
+  double? _reservationcancelationtax;
+  bool? get reservationFree => _reservationFree;
+  bool? get reservationPartial => _reservationPartial;
+  bool? get reservationTotal => _reservationTotal;
+  bool? get returnShippingFee => _returnShippingFee;
+  bool? get returnPartialFee => _returnPartialFee;
+  bool? get returnTotalFee => _returnTotalFee;
+  int? get returnPerFee => _returnPerFee;
+  bool? get reservationConcelationFree => _reservationConcelationFree;
+  bool? get reservationConcelationPartial => _reservationConcelationPartial;
+  int? get reservationDuration => _reservationDuration;
+  int? get returnMaxDays => _returnMaxDays;
+  double? get reservationtax => _reservationtax;
+  double? get reservationcancelationtax => _reservationcancelationtax;
+  bool? get returnAccept => _returnAccept;
+  bool? get returnNotAccept => _returnNotAccept;
   StoreCreationValidation();
 
   StoreCreationValidation.setStore(Store store) {
@@ -145,6 +176,44 @@ class StoreCreationValidation with ChangeNotifier {
     });
   }
 
+  void toggleReturnShippingFee(bool value) {
+    _returnShippingFee = value;
+
+    notifyListeners();
+  }
+
+  void toggleReturnTotalFee(bool value) {
+    _returnTotalFee = value;
+    if (value) {
+      _returnPartialFee = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReturnPartialFee(bool value) {
+    _returnPartialFee = value;
+    if (value) {
+      _returnTotalFee = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReturnAccept(bool value) {
+    _returnAccept = value;
+    if (value) {
+      _returnNotAccept = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReturnNotAccept(bool value) {
+    _returnNotAccept = value;
+    if (value) {
+      _returnAccept = false;
+    }
+    notifyListeners();
+  }
+
   /// Policy Form Validators
   void toggleSelfPickup() {
     _selfPickup = !_selfPickup;
@@ -160,6 +229,23 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleReservationFree(bool value) {
+    _reservationFree = value;
+    if (value) {
+      _reservationPartial = false;
+      _reservationTotal = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReservationConcelationFree(bool value) {
+    _reservationConcelationFree = value;
+    if (value) {
+      _reservationConcelationPartial = false;
+    }
+    notifyListeners();
+  }
+
   void toggleSelfPickupPartial(bool value) {
     _selfPickupPartial = value;
     if (value) {
@@ -169,11 +255,55 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleReservationPartial(bool value) {
+    _reservationPartial = value;
+    if (value) {
+      _reservationFree = false;
+      _reservationTotal = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReservationConcelationPartial(bool value) {
+    _reservationConcelationPartial = value;
+    if (value) {
+      _reservationConcelationFree = false;
+    }
+    notifyListeners();
+  }
+
   void toggleSelfPickupTotal(bool value) {
     _selfPickupTotal = value;
     if (value) {
       _selfPickupFree = false;
       _selfPickupPartial = false;
+    }
+    notifyListeners();
+  }
+
+  void changeResevationDuration(String day, int index) {
+    _reservationDuration = int.parse(day);
+
+    notifyListeners();
+  }
+
+  void changeReturnPerFee(String percentage, int index) {
+    _returnPerFee = int.parse(percentage);
+
+    notifyListeners();
+  }
+
+  void changeReturnMaxDays(String day, int index) {
+    _returnMaxDays = int.parse(day);
+
+    notifyListeners();
+  }
+
+  void toggleReservationTotal(bool value) {
+    _reservationTotal = value;
+    if (value) {
+      _reservationFree = false;
+      _reservationPartial = false;
     }
     notifyListeners();
   }
