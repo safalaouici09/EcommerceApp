@@ -12,6 +12,7 @@ import 'package:proximity_commercant/domain/user_repository/user_repository.dart
 import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.dart';
 
 import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
+import 'package:proximity_commercant/ui/widgets/address_picker/area_selection_screen.dart';
 
 class StorePolicyScreen extends StatefulWidget {
   const StorePolicyScreen({Key? key}) : super(key: key);
@@ -184,14 +185,15 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                           .copyWith(top: 0),
                                       child: TertiaryButton(
                                           onPressed: () async {
-                                            final Address _result = await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AddressSelectionScreen(
-                                                            currentAddress:
-                                                                storeCreationValidation
-                                                                    .storeAddress)));
+                                            final Address _result =
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            AreaSelectionScreen(
+                                                                currentAddress:
+                                                                    storeCreationValidation
+                                                                        .storeAddress)));
                                             storeCreationValidation
                                                 .changeAddress(_result);
                                           },
