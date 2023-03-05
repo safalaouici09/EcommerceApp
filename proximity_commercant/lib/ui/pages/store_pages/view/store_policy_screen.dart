@@ -39,7 +39,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 elevation: 0.0,
               ),
               body: SafeArea(
-                child: Column(
+                child: Stack(
                   children: [
                     Expanded(
                       child: Stepper(
@@ -63,22 +63,28 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                 });
                         },
                         controlsBuilder: (context, details) {
-                          return Padding(
-                            padding: const EdgeInsets.all(normal_100),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                if (_currentStep != 0)
-                                  SecondaryButton(
-                                      onPressed: details.onStepCancel,
-                                      title: "Back"),
-                                PrimaryButton(
-                                  onPressed: details.onStepContinue,
-                                  title:
-                                      _currentStep == 3 ? "confirm" : "Next.",
-                                ),
-                              ],
+                          return Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(normal_100),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  if (_currentStep != 0)
+                                    SecondaryButton(
+                                        onPressed: details.onStepCancel,
+                                        title: "Back"),
+                                  PrimaryButton(
+                                    onPressed: details.onStepContinue,
+                                    title:
+                                        _currentStep == 3 ? "confirm" : "Next.",
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -89,8 +95,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                               content: Column(
                                 children: [
                                   SectionDivider(
-                                      leadIcon: ProximityIcons.policy,
-                                      title: 'Store Policy.',
+                                      leadIcon: Icons.local_shipping_outlined,
+                                      title: 'Shipping Policy.',
                                       color: redSwatch.shade500),
                                   const InfoMessage(
                                       message:
@@ -199,29 +205,99 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                           },
                                           title: 'Set Delivery Area.'),
                                     ),
-                                    EditText(
-                                      hintText: 'Delivery Tax.',
-                                      keyboardType: TextInputType.number,
-                                      saved:
-                                          (storeCreationValidation.tax == null)
-                                              ? ""
-                                              : storeCreationValidation.tax
-                                                  .toString(),
-                                      //   enabled:
-                                      // (store.policy == null) || editScreen,
-                                      onChanged:
-                                          storeCreationValidation.changeTax,
-                                    )
+                                    Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: normal_100),
+                                        child: Row(children: [
+                                          Expanded(
+                                              child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: small_100),
+                                            child: LargeIconButton(
+                                                onPressed: storeCreationValidation
+                                                    .toggleShippingFixedPrice,
+                                                selected: (storeCreationValidation
+                                                        .shippingFixedPrice ??
+                                                    false),
+                                                icon: DuotoneIcon(
+                                                    primaryLayer: Icons.euro,
+                                                    secondaryLayer:
+                                                        ProximityIcons
+                                                            .delivery_duotone_2,
+                                                    color: redSwatch.shade500),
+                                                title: 'Fixed Price'),
+                                          )),
+                                          Expanded(
+                                              child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: small_100),
+                                            child: LargeIconButton(
+                                                onPressed:
+                                                    storeCreationValidation
+                                                        .toggleShippingPerKm,
+                                                selected:
+                                                    (storeCreationValidation
+                                                            .shippingPerKm ??
+                                                        true),
+                                                icon: DuotoneIcon(
+                                                    primaryLayer:
+                                                        Icons.place_outlined,
+                                                    secondaryLayer:
+                                                        ProximityIcons
+                                                            .delivery_duotone_2,
+                                                    color: redSwatch.shade500),
+                                                title: ' By KM'),
+                                          ))
+                                        ])),
+                                    storeCreationValidation.shippingFixedPrice!
+                                        ? Padding(
+                                            padding:
+                                                const EdgeInsets.all(small_100),
+                                            child: EditText(
+                                              hintText: 'Delivery Tax. ',
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              saved: (storeCreationValidation
+                                                          .tax ==
+                                                      null)
+                                                  ? ""
+                                                  : storeCreationValidation.tax
+                                                      .toString(),
+                                              //   enabled:
+                                              // (store.policy == null) || editScreen,
+                                              onChanged: storeCreationValidation
+                                                  .changeTax,
+                                            ),
+                                          )
+                                        : Container(),
+                                    storeCreationValidation.shippingPerKm!
+                                        ? Padding(
+                                            padding:
+                                                const EdgeInsets.all(small_100),
+                                            child: EditText(
+                                              hintText: 'Delivery Tax per km. ',
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              saved: (storeCreationValidation
+                                                          .tax ==
+                                                      null)
+                                                  ? ""
+                                                  : storeCreationValidation.tax
+                                                      .toString(),
+                                              //   enabled:
+                                              // (store.policy == null) || editScreen,
+                                              onChanged: storeCreationValidation
+                                                  .changeTax,
+                                            ),
+                                          )
+                                        : Container(),
                                   ],
                                 ],
                               )),
                           getReservationWidget(
                               storeCreationValidation, context),
                           getReturnWidget(storeCreationValidation, context),
-                          Step(
-                              isActive: _currentStep >= 3,
-                              title: Text("Orders"),
-                              content: Container()),
+                          getOrdersStep(storeCreationValidation, context),
                         ],
                       ),
                     ),
@@ -229,6 +305,78 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 ),
               ));
         }));
+  }
+
+  Step getOrdersStep(
+      StoreCreationValidation storeCreationValidation, BuildContext context) {
+    return Step(
+        isActive: _currentStep >= 3,
+        title: Text("Orders"),
+        content: Column(
+          children: [
+            SectionDivider(
+                leadIcon: Icons.check_circle_outline,
+                title: 'Orders Validation.',
+                color: redSwatch.shade500),
+            const InfoMessage(message: '.'),
+            Padding(
+              padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
+              child: Column(
+                children: [
+                  ListToggle(
+                      title: 'Automatic validation',
+                      value: storeCreationValidation.oredersAutoValidation!,
+                      onToggle:
+                          storeCreationValidation.toggleOrdersAutoValidation),
+                  ListToggle(
+                      title: 'Manuel validation',
+                      value: storeCreationValidation.oredersManValidation!,
+                      onToggle:
+                          storeCreationValidation.toggleOredersManValidation),
+                  ListToggle(
+                      title: 'Both',
+                      value: storeCreationValidation.oredersMixValidation!,
+                      onToggle:
+                          storeCreationValidation.toggleOrdersMixValidation),
+                ],
+              ),
+            ),
+            const SizedBox(height: normal_100),
+            SectionDivider(
+                leadIcon: Icons.notifications_none_outlined,
+                title: 'Notifications .',
+                color: redSwatch.shade500),
+            Padding(
+              padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
+              child: ListToggle(
+                  title: 'Real time',
+                  value: storeCreationValidation.notifRealTime!,
+                  onToggle: storeCreationValidation.toggleNotifRealTime),
+            ),
+            !storeCreationValidation.notifRealTime!
+                ? Padding(
+                    padding: const EdgeInsets.all(small_100),
+                    child: DropDownSelector<String>(
+                      // labelText: 'Product Category.',
+                      hintText: 'I want to be notifed every.',
+                      onChanged: storeCreationValidation.changeNotifDuration,
+                      borderType: BorderType.middle,
+                      savedValue:
+                          storeCreationValidation.notifDuration.toString(),
+                      items: hoursMap.entries
+                          .map((item) => DropdownItem<String>(
+                              value: item.key,
+                              child: Text(item.value,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2!
+                                      .copyWith(fontWeight: FontWeight.w600))))
+                          .toList(),
+                    ),
+                  )
+                : Container(),
+          ],
+        ));
   }
 
   Step getReservationWidget(

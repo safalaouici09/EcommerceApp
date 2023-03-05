@@ -51,7 +51,24 @@ const Duration hugeAnimationDuration = Duration(milliseconds: 3200);
 const int MAX_ORDER_QUANTITY = 50;
 const int MIN_SEARCH_DISTANCE = 2;
 const int MAX_SEARCH_DISTANCE = 50;
+//hours
+Map<String, String> hoursMap = {
+  '1': '1 hour',
+  '2': '2 hours',
+  '3': '3 hours',
+  '4': '4 hours',
+  '5': '5 hours',
+  '6': '6 hours',
+  '7': '7 hours',
+  '8': '8 hours',
+  '9': '9 hours',
+  '10': '10 hours',
+  '11': '11 hours',
+  '12': '12 hours',
+  '13': '13 hours',
+};
 //days
+
 Map<String, String> daysMap = {
   '1': '1 day',
   '2': '2 days',

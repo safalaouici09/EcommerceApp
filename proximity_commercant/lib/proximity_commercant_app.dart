@@ -41,7 +41,7 @@ class ProximityCommercantApp extends StatelessWidget {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        home: const StorePolicyScreen()
+        home: const OnBoard()
         //for testing
         //home: const SignupScreen()
         );

@@ -6,6 +6,7 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.dart';
 
 import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
@@ -280,6 +281,21 @@ class StoreCreationScreen extends StatelessWidget {
                   onChanged: storeCreationValidation.changePostalCode,
                 ),
               ]),
+              SectionDivider(
+                  leadIcon: ProximityIcons.policy,
+                  title: 'Store Policy.',
+                  color: redSwatch.shade500),
+              Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                child: TertiaryButton(
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => StorePolicyScreen()));
+                    },
+                    title: 'Set Store Policy.'),
+              ),
 
               /// Image Picker
               SectionDivider(
