@@ -78,10 +78,30 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                     SecondaryButton(
                                         onPressed: details.onStepCancel,
                                         title: "Back"),
-                                  PrimaryButton(
-                                    onPressed: details.onStepContinue,
-                                    title:
-                                        _currentStep == 3 ? "confirm" : "Next.",
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      PrimaryButton(
+                                        buttonState: (_currentStep == 0 &&
+                                                    storeCreationValidation
+                                                        .shippingIsValid) ||
+                                                (_currentStep == 1 &&
+                                                    storeCreationValidation
+                                                        .reservationIsValid) ||
+                                                (_currentStep == 2 &&
+                                                    storeCreationValidation
+                                                        .returnIsValid) ||
+                                                (_currentStep == 3 &&
+                                                    storeCreationValidation
+                                                        .ordersIsValid)
+                                            ? ButtonState.enabled
+                                            : ButtonState.disabled,
+                                        onPressed: details.onStepContinue,
+                                        title: _currentStep == 3
+                                            ? "confirm"
+                                            : "Next.",
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -200,8 +220,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                                                 currentAddress:
                                                                     storeCreationValidation
                                                                         .storeAddress)));
-                                            storeCreationValidation
-                                                .changeAddress(_result);
+                                            //  storeCreationValidation
+                                            //  .changeAddress(_result);
                                           },
                                           title: 'Set Delivery Area.'),
                                     ),
@@ -258,15 +278,16 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                               keyboardType:
                                                   TextInputType.number,
                                               saved: (storeCreationValidation
-                                                          .tax ==
+                                                          .shippingFixedPriceTax ==
                                                       null)
                                                   ? ""
-                                                  : storeCreationValidation.tax
+                                                  : storeCreationValidation
+                                                      .shippingFixedPriceTax
                                                       .toString(),
                                               //   enabled:
                                               // (store.policy == null) || editScreen,
                                               onChanged: storeCreationValidation
-                                                  .changeTax,
+                                                  .changeShippingFixedPriceTax,
                                             ),
                                           )
                                         : Container(),
@@ -279,15 +300,16 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                               keyboardType:
                                                   TextInputType.number,
                                               saved: (storeCreationValidation
-                                                          .tax ==
+                                                          .shippingPerKmTax ==
                                                       null)
                                                   ? ""
-                                                  : storeCreationValidation.tax
+                                                  : storeCreationValidation
+                                                      .shippingPerKmTax
                                                       .toString(),
                                               //   enabled:
                                               // (store.policy == null) || editScreen,
                                               onChanged: storeCreationValidation
-                                                  .changeTax,
+                                                  .changeShippingPerKmTax,
                                             ),
                                           )
                                         : Container(),
@@ -415,11 +437,11 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     EditText(
                       hintText: 'Reservation Price.',
                       keyboardType: TextInputType.number,
-                      saved: (storeCreationValidation.selfPickupPrice == null)
+                      saved: (storeCreationValidation.reservationtax == null)
                           ? ""
-                          : storeCreationValidation.selfPickupPrice.toString(),
+                          : storeCreationValidation.reservationtax!.toString(),
                       //enabled: (store.policy == null) || editScreen,
-                      onChanged: storeCreationValidation.changeSelfPickupPrice,
+                      onChanged: storeCreationValidation.changeReservationTax,
                     )
                   ],
                 ],
