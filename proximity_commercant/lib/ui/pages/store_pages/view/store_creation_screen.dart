@@ -6,6 +6,7 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.dart';
 
 import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
@@ -100,84 +101,7 @@ class StoreCreationScreen extends StatelessWidget {
               ]),
 
               /// Policy
-              SectionDivider(
-                  leadIcon: ProximityIcons.policy,
-                  title: 'Store Policy.',
-                  color: redSwatch.shade500),
-              const InfoMessage(
-                  message:
-                      'Select the type of Deliveries your store support, and set a delivery tax value in case you deliver your orders.'),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                  child: Row(children: [
-                    Expanded(
-                        child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: small_100),
-                      child: LargeIconButton(
-                          onPressed: storeCreationValidation.toggleSelfPickup,
-                          selected:
-                              (storeCreationValidation.selfPickup ?? false),
-                          icon: DuotoneIcon(
-                              primaryLayer:
-                                  ProximityIcons.self_pickup_duotone_1,
-                              secondaryLayer:
-                                  ProximityIcons.self_pickup_duotone_2,
-                              color: redSwatch.shade500),
-                          title: 'Self Pickup'),
-                    )),
-                    Expanded(
-                        child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: small_100),
-                      child: LargeIconButton(
-                          onPressed: storeCreationValidation.toggleDelivery,
-                          selected: (storeCreationValidation.delivery ?? false),
-                          icon: DuotoneIcon(
-                              primaryLayer: ProximityIcons.delivery_duotone_1,
-                              secondaryLayer: ProximityIcons.delivery_duotone_2,
-                              color: redSwatch.shade500),
-                          title: 'Delivery'),
-                    ))
-                  ])),
-              if (storeCreationValidation.selfPickup ?? false) ...[
-                ListToggle(
-                    title: 'Free SelfPickup',
-                    value: storeCreationValidation.selfPickupFree!,
-                    onToggle: storeCreationValidation.toggleSelfPickupFree),
-                ListToggle(
-                    title: 'Partial SelfPickup',
-                    value: storeCreationValidation.selfPickupPartial!,
-                    onToggle: storeCreationValidation.toggleSelfPickupPartial),
-                ListToggle(
-                    title: 'Total SelfPickup',
-                    value: storeCreationValidation.selfPickupTotal!,
-                    onToggle: storeCreationValidation.toggleSelfPickupTotal),
-                if (!(storeCreationValidation.selfPickupFree ?? false)) ...[
-                  const SizedBox(height: normal_100),
-                  EditText(
-                    hintText: 'SelfPickup Price.',
-                    keyboardType: TextInputType.number,
-                    saved: (storeCreationValidation.selfPickupPrice == null)
-                        ? ""
-                        : storeCreationValidation.selfPickupPrice.toString(),
-                    enabled: (store.policy == null) || editScreen,
-                    onChanged: storeCreationValidation.changeSelfPickupPrice,
-                  )
-                ],
-              ],
-              if (storeCreationValidation.delivery ?? false) ...[
-                const SizedBox(height: normal_100),
-                EditText(
-                  hintText: 'Delivery Tax.',
-                  keyboardType: TextInputType.number,
-                  saved: (storeCreationValidation.tax == null)
-                      ? ""
-                      : storeCreationValidation.tax.toString(),
-                  enabled: (store.policy == null) || editScreen,
-                  onChanged: storeCreationValidation.changeTax,
-                )
-              ],
+
               const SizedBox(height: normal_100),
 
               SectionDivider(
@@ -357,6 +281,21 @@ class StoreCreationScreen extends StatelessWidget {
                   onChanged: storeCreationValidation.changePostalCode,
                 ),
               ]),
+              SectionDivider(
+                  leadIcon: ProximityIcons.policy,
+                  title: 'Store Policy.',
+                  color: redSwatch.shade500),
+              Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                child: TertiaryButton(
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => StorePolicyScreen()));
+                    },
+                    title: 'Set Store Policy.'),
+              ),
 
               /// Image Picker
               SectionDivider(

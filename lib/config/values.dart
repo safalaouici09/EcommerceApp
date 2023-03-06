@@ -51,6 +51,56 @@ const Duration hugeAnimationDuration = Duration(milliseconds: 3200);
 const int MAX_ORDER_QUANTITY = 50;
 const int MIN_SEARCH_DISTANCE = 2;
 const int MAX_SEARCH_DISTANCE = 50;
+//hours
+Map<String, String> hoursMap = {
+  '1': '1 hour',
+  '2': '2 hours',
+  '3': '3 hours',
+  '4': '4 hours',
+  '5': '5 hours',
+  '6': '6 hours',
+  '7': '7 hours',
+  '8': '8 hours',
+  '9': '9 hours',
+  '10': '10 hours',
+  '11': '11 hours',
+  '12': '12 hours',
+  '13': '13 hours',
+};
+//days
+
+Map<String, String> daysMap = {
+  '1': '1 day',
+  '2': '2 days',
+  '3': '3 days',
+  '4': '4 days',
+  '5': '5 days',
+  '6': '6 days',
+  '7': '7 days',
+  '8': '8 days',
+  '9': '9 days',
+  '10': '10 days',
+  '11': '11 days',
+  '12': '12 days',
+  '13': '13 days',
+  '14': '14 days',
+  '15': '15 days',
+  '16': '16 days',
+  '17': '17 days',
+  '18': '18 days',
+  '19': '19 days',
+  '20': '20 days',
+  '21': '21 days',
+  '22': '22 days',
+  '23': '23 days',
+  '24': '24 days',
+  '25': '25 days',
+  '26': '26 days',
+  '27': '27 days',
+  '28': '28 days',
+  '29': '29 days',
+  '30': '30 days',
+};
 
 /// Country list with CountryCode
 const Map<String, String> countryList = {
@@ -264,4 +314,15 @@ const Map<String, String> countryList = {
   'YE': 'Yemen',
   'ZM': 'Zambia',
   'ZW': 'Zimbabwe'
+};
+Map<String, String> percentageValues = {
+  '10': '10%',
+  '20': '20%',
+  '30': '30%',
+  '40': '40%',
+  '50': '50%',
+  '60': '60%',
+  '70': '70%',
+  '80': '80%',
+  '90': '90%',
 };

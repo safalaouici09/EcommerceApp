@@ -14,11 +14,20 @@ class StoreCreationValidation with ChangeNotifier {
   ValidationItem _storeDescription = ValidationItem(null, null);
   ValidationItem _storeCategory = ValidationItem(null, null);
   bool _selfPickup = false;
+  bool _shippingFixedPrice = false;
+  bool _shippingPerKm = false;
   bool _selfPickupFree = false;
   bool _selfPickupPartial = false;
   bool _selfPickupTotal = false;
+  bool _returnShippingFee = false;
+  bool _returnTotalFee = false;
+  bool _returnPartialFee = false;
+  int? _returnPerFee;
+
   bool _delivery = false;
   double? _tax;
+  double? _shippingPerKmTax;
+  double? _shippingFixedPriceTax;
   double? _selfPickupPrice;
   bool? _openWeekend;
   bool? _openDay;
@@ -28,6 +37,49 @@ class StoreCreationValidation with ChangeNotifier {
   Address _storeAddress = Address();
   List<dynamic> _storeImages = [];
   List<String> _deletedImages = [];
+  double _shippingMaxKM = 10;
+
+  bool _reservationFree = false;
+
+  bool _reservationPartial = false;
+  bool _reservationTotal = false;
+  bool _reservationConcelationFree = false;
+  bool _oredersAutoValidation = false;
+  bool _oredersManValidation = false;
+  bool _oredersMixValidation = false;
+  bool _notifRealTime = false;
+  bool _reservationConcelationPartial = false;
+  bool _returnAccept = false;
+  bool _returnNotAccept = false;
+  int? _reservationDuration;
+  int? _notifDuration;
+  int? _returnMaxDays;
+  double? _reservationtax;
+  double? _reservationcancelationtax;
+  bool? get reservationFree => _reservationFree;
+  bool? get reservationPartial => _reservationPartial;
+  bool? get reservationTotal => _reservationTotal;
+  bool? get oredersAutoValidation => _oredersAutoValidation;
+  bool? get oredersManValidation => _oredersManValidation;
+  bool? get oredersMixValidation => _oredersMixValidation;
+  bool? get notifRealTime => _notifRealTime;
+  bool? get returnShippingFee => _returnShippingFee;
+  bool? get returnPartialFee => _returnPartialFee;
+  bool? get returnTotalFee => _returnTotalFee;
+  int? get returnPerFee => _returnPerFee;
+  bool? get reservationConcelationFree => _reservationConcelationFree;
+  bool? get reservationConcelationPartial => _reservationConcelationPartial;
+  int? get reservationDuration => _reservationDuration;
+  int? get notifDuration => _notifDuration;
+  int? get returnMaxDays => _returnMaxDays;
+  double? get reservationtax => _reservationtax;
+  double? get shippingPerKmTax => _shippingPerKmTax;
+  double? get shippingFixedPriceTax => _shippingFixedPriceTax;
+
+  double? get reservationcancelationtax => _reservationcancelationtax;
+  bool? get returnAccept => _returnAccept;
+  bool? get returnNotAccept => _returnNotAccept;
+  double get shippingMaxKM => _shippingMaxKM;
 
   StoreCreationValidation();
 
@@ -70,6 +122,8 @@ class StoreCreationValidation with ChangeNotifier {
   ValidationItem get storeDescription => _storeDescription;
 
   bool? get selfPickup => _selfPickup;
+  bool? get shippingFixedPrice => _shippingFixedPrice;
+  bool? get shippingPerKm => _shippingPerKm;
 
   bool? get selfPickupFree => _selfPickupFree;
 
@@ -106,6 +160,73 @@ class StoreCreationValidation with ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  bool get shippingIsValid {
+    if ((_selfPickup &
+            (_selfPickupFree ||
+                (_selfPickupPartial && _selfPickupPrice != null) ||
+                (_selfPickupTotal && _selfPickupPrice != null))) ||
+        (_delivery &
+            ((_shippingPerKm && _shippingPerKmTax != null) ||
+                (_shippingFixedPrice && _shippingFixedPriceTax != null)))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool get reservationIsValid {
+    if ((_reservationFree ||
+            (_reservationPartial && _reservationtax != null) ||
+            _reservationTotal) &&
+        (_reservationDuration != null) &&
+        (_reservationConcelationFree ||
+            (_reservationConcelationPartial &&
+                _reservationcancelationtax != null))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool get returnIsValid {
+    if (_returnNotAccept ||
+        (_returnAccept &&
+            (_returnMaxDays != null) &&
+            (_returnShippingFee ||
+                _returnTotalFee ||
+                (_returnPartialFee && _returnPerFee != null)))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool get ordersIsValid {
+    if ((_oredersAutoValidation ||
+            _oredersManValidation ||
+            _oredersMixValidation) &&
+        (_notifRealTime || _notifDuration != null)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void ChangeShippingMaxKM(double value) {
+    _shippingMaxKM = value;
+    notifyListeners();
+  }
+
+  void incrShippingMaxKM() {
+    _shippingMaxKM += 10;
+    notifyListeners();
+  }
+
+  void decShippingMaxKM() {
+    _shippingMaxKM -= 10;
+    notifyListeners();
   }
 
   // Setters
@@ -145,9 +266,66 @@ class StoreCreationValidation with ChangeNotifier {
     });
   }
 
+  void toggleReturnShippingFee(bool value) {
+    _returnShippingFee = value;
+
+    notifyListeners();
+  }
+
+  void toggleReturnTotalFee(bool value) {
+    _returnTotalFee = value;
+    if (value) {
+      _returnPartialFee = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReturnPartialFee(bool value) {
+    _returnPartialFee = value;
+    if (value) {
+      _returnTotalFee = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReturnAccept(bool value) {
+    _returnAccept = value;
+    if (value) {
+      _returnNotAccept = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReturnNotAccept(bool value) {
+    _returnNotAccept = value;
+    if (value) {
+      _returnAccept = false;
+    }
+    notifyListeners();
+  }
+
   /// Policy Form Validators
   void toggleSelfPickup() {
     _selfPickup = !_selfPickup;
+    if (_selfPickup) {
+      _delivery = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleShippingFixedPrice() {
+    _shippingFixedPrice = !_shippingFixedPrice;
+    if (_shippingFixedPrice) {
+      _shippingPerKm = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleShippingPerKm() {
+    _shippingPerKm = !_shippingPerKm;
+    if (_shippingPerKm) {
+      _shippingFixedPrice = false;
+    }
     notifyListeners();
   }
 
@@ -156,6 +334,59 @@ class StoreCreationValidation with ChangeNotifier {
     if (value) {
       _selfPickupPartial = false;
       _selfPickupTotal = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReservationFree(bool value) {
+    _reservationFree = value;
+    if (value) {
+      _reservationPartial = false;
+      _reservationTotal = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleOrdersAutoValidation(bool value) {
+    _oredersAutoValidation = value;
+    if (value) {
+      _oredersManValidation = false;
+      _oredersMixValidation = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleNotifRealTime(bool value) {
+    _notifRealTime = value;
+    /*  if (value) {
+      _oredersManValidation = false;
+      _oredersMixValidation = false;
+    }*/
+    notifyListeners();
+  }
+
+  void toggleOredersManValidation(bool value) {
+    _oredersManValidation = value;
+    if (value) {
+      _oredersAutoValidation = false;
+      _oredersMixValidation = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleOrdersMixValidation(bool value) {
+    _oredersMixValidation = value;
+    if (value) {
+      _oredersAutoValidation = false;
+      _oredersManValidation = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReservationConcelationFree(bool value) {
+    _reservationConcelationFree = value;
+    if (value) {
+      _reservationConcelationPartial = false;
     }
     notifyListeners();
   }
@@ -169,6 +400,23 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleReservationPartial(bool value) {
+    _reservationPartial = value;
+    if (value) {
+      _reservationFree = false;
+      _reservationTotal = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleReservationConcelationPartial(bool value) {
+    _reservationConcelationPartial = value;
+    if (value) {
+      _reservationConcelationFree = false;
+    }
+    notifyListeners();
+  }
+
   void toggleSelfPickupTotal(bool value) {
     _selfPickupTotal = value;
     if (value) {
@@ -178,10 +426,46 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void changeResevationDuration(String day, int index) {
+    _reservationDuration = int.parse(day);
+
+    notifyListeners();
+  }
+
+  void changeNotifDuration(String hour, int index) {
+    _notifDuration = int.parse(hour);
+
+    notifyListeners();
+  }
+
+  void changeReturnPerFee(String percentage, int index) {
+    _returnPerFee = int.parse(percentage);
+
+    notifyListeners();
+  }
+
+  void changeReturnMaxDays(String day, int index) {
+    _returnMaxDays = int.parse(day);
+
+    notifyListeners();
+  }
+
+  void toggleReservationTotal(bool value) {
+    _reservationTotal = value;
+    if (value) {
+      _reservationFree = false;
+      _reservationPartial = false;
+    }
+    notifyListeners();
+  }
+
   void toggleDelivery() {
     _delivery = !_delivery;
     if (!_delivery) {
       _tax = null;
+    }
+    if (_delivery) {
+      _selfPickup = false;
     }
     notifyListeners();
   }
@@ -191,8 +475,23 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void changeShippingPerKmTax(String value) {
+    _shippingPerKmTax = double.tryParse(value);
+    notifyListeners();
+  }
+
+  void changeShippingFixedPriceTax(String value) {
+    _shippingFixedPriceTax = double.tryParse(value);
+    notifyListeners();
+  }
+
   void changeSelfPickupPrice(String value) {
     _selfPickupPrice = double.tryParse(value);
+    notifyListeners();
+  }
+
+  void changeReservationTax(String value) {
+    _reservationtax = double.tryParse(value);
     notifyListeners();
   }
 
