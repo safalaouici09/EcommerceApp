@@ -11,6 +11,7 @@ import 'package:proximity_client/domain/product_repository/product_repository.da
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
+import 'package:proximity_client/ui/pages/pages.dart';
 
 import 'proximity_app.dart';
 
@@ -45,14 +46,12 @@ void main() async {
     ChangeNotifierProvider(create: (_) => SignupValidation()),
     ChangeNotifierProvider(create: (_) => OTPValidation()),
     ChangeNotifierProvider(create: (_) => UserService()),
-    
     ChangeNotifierProxyProvider<LoginValidation, UserService>(
         create: (_) => UserService(),
         update: (_, __, UserService) => UserService!..getUserData()),
     ChangeNotifierProxyProvider<OTPValidation, UserService>(
         create: (_) => UserService(),
         update: (_, __, UserService) => UserService!..getUserData()),
-        
     ChangeNotifierProvider(create: (_) => ProductService()),
     ChangeNotifierProvider(create: (_) => StoreProxy()),
     ChangeNotifierProvider(create: (_) => ResetPasswordValidation()),
@@ -64,5 +63,5 @@ void main() async {
     ChangeNotifierProvider(create: (context) => CartService()),
     ChangeNotifierProvider(create: (_) => WishlistService()),
     ChangeNotifierProvider(create: (context) => UserSettings()),
-  ], child: const ProximityApp()));
+  ], child: ProximityApp()));
 }

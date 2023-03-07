@@ -28,20 +28,20 @@ class _MainScreenState extends State<MainScreen> {
         resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Stack(alignment: Alignment.bottomCenter, children: [
-              (() {
-                switch (_index) {
-                  case 0:
-                    return const HomeTabScreen();
-                  case 1:
-                    return const MapTabScreen();
-                  case 2:
-                    return const CartTabScreen();
-                  case 3:
-                    return const ProfileTabScreen();
-                  default:
-                    return const HomeTabScreen();
-                }
-              }()),
+          (() {
+            switch (_index) {
+              case 0:
+                return const HomeTabScreen();
+              case 1:
+                return const MapTabScreen();
+              case 2:
+                return const CartTabScreen();
+              case 3:
+                return const ProfileTabScreen();
+              default:
+                return const HomeTabScreen();
+            }
+          }()),
           Material(
               color: Colors.transparent,
               child: ClipRect(
