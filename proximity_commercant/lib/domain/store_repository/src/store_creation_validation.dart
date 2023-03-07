@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:proximity/config/values.dart';
 import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/widgets/widgets.dart';
 
 class StoreCreationValidation with ChangeNotifier {
   String? _id;
@@ -32,6 +33,8 @@ class StoreCreationValidation with ChangeNotifier {
   bool? _openWeekend;
   bool? _openDay;
   bool? _openNight;
+  bool? _globalPolicy = false;
+  bool? _customPolicy = false;
   TimeOfDay? _openTime = TimeOfDay(hour: 09, minute: 00);
   TimeOfDay? _closeTime = TimeOfDay(hour: 18, minute: 00);
   Address _storeAddress = Address();
@@ -80,7 +83,8 @@ class StoreCreationValidation with ChangeNotifier {
   bool? get returnAccept => _returnAccept;
   bool? get returnNotAccept => _returnNotAccept;
   double get shippingMaxKM => _shippingMaxKM;
-
+  bool? get globalPolicy => _globalPolicy;
+  bool? get customPolicy => _customPolicy;
   StoreCreationValidation();
 
   StoreCreationValidation.setStore(Store store) {
@@ -268,6 +272,27 @@ class StoreCreationValidation with ChangeNotifier {
 
   void toggleReturnShippingFee(bool value) {
     _returnShippingFee = value;
+
+    notifyListeners();
+  }
+
+  void toggleGlobalPolicy(
+    bool value,
+  ) {
+    _globalPolicy = value;
+    if (value) {
+      _customPolicy = false;
+
+      //StoreDialogs.gobalPolicy(context!, 1);
+    }
+    notifyListeners();
+  }
+
+  void toggleCustomPolicy(bool value) {
+    _customPolicy = value;
+    if (value) {
+      _globalPolicy = false;
+    }
 
     notifyListeners();
   }

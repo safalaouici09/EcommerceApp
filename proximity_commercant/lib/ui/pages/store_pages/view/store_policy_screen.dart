@@ -48,7 +48,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                         type: StepperType.horizontal,
                         onStepContinue: () {
                           _currentStep == 3
-                              ? null
+                              ? Navigator.pop(context)
                               : setState(() {
                                   _currentStep = _currentStep + 1;
                                   print(_currentStep);
@@ -163,6 +163,30 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                         ))
                                       ])),
                                   if (storeCreationValidation.selfPickup ??
+                                      true)
+                                    DropDownSelector<String>(
+                                      // labelText: 'Product Category.',
+                                      hintText: 'Max Days to Pick Up.',
+                                      onChanged: storeCreationValidation
+                                          .changeReturnMaxDays,
+                                      borderType: BorderType.middle,
+                                      savedValue: storeCreationValidation
+                                          .returnMaxDays
+                                          .toString(),
+                                      items: daysMap.entries
+                                          .map((item) => DropdownItem<String>(
+                                              value: item.key,
+                                              child: Text(item.value,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle2!
+                                                      .copyWith(
+                                                          fontWeight: FontWeight
+                                                              .w600))))
+                                          .toList(),
+                                    ),
+
+                                  /*  if (storeCreationValidation.selfPickup ??
                                       false) ...[
                                     ListToggle(
                                         title: 'Free SelfPickup',
@@ -202,7 +226,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                             .changeSelfPickupPrice,
                                       )
                                     ],
-                                  ],
+                                  ],*/
                                   if (storeCreationValidation.delivery ??
                                       false) ...[
                                     const SizedBox(height: normal_100),

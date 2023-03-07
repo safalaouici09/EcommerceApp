@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 
 /// This class has a couple of DialogWidgets to avoid BoilerPlate between Widgets
 ///
@@ -179,6 +180,66 @@ class StoreDialogs {
                                                                 builder:
                                                                     (context) =>
                                                                         const HomeScreen()),
+                                                            (Route<dynamic>
+                                                                    route) =>
+                                                                false);
+                                                  }))))
+                            ]))
+                      ])))));
+
+  static void gobalPolicy(
+    BuildContext context,
+    int index,
+    /*{int? popCount}*/
+  ) =>
+      showDialogPopup(
+          context: context,
+          pageBuilder: (ctx, anim1, anim2) => StatefulBuilder(
+              builder: (context, setState) => DialogPopup(
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width - normal_200 * 2,
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        const SizedBox(height: normal_100),
+                        Stack(children: [
+                          ImageFiltered(
+                              imageFilter: blurFilter,
+                              child: Icon(Icons.check_circle_outline_outlined,
+                                  color: blueSwatch.shade100.withOpacity(1 / 3),
+                                  size: normal_300)),
+                          Icon(Icons.check_circle_outline_outlined,
+                              color: blueSwatch.shade100, size: normal_300)
+                        ]),
+                        Padding(
+                            padding: const EdgeInsets.only(
+                                top: normal_100,
+                                left: normal_100,
+                                right: normal_100),
+                            child: Text(
+                                "You have chosen the global policy for your store.\n Please note that the global policy has not yet been set \n and will be used as the default policy for your store once it is set. \n However, you will have the ability to change the policy if you desire",
+                                textAlign: TextAlign.center)),
+                        Padding(
+                            padding: const EdgeInsets.all(normal_100),
+                            child:
+                                Row(mainAxisSize: MainAxisSize.max, children: [
+                              Expanded(
+                                  child: SecondaryButton(
+                                      title: 'Cancel.',
+                                      onPressed: () => Navigator.pop(context))),
+                              const SizedBox(width: normal_100),
+                              Expanded(
+                                  child: Consumer<StoreService>(
+                                      builder: (context, storeService, child) =>
+                                          Expanded(
+                                              child: PrimaryButton(
+                                                  title: 'Agree.',
+                                                  onPressed: () {
+                                                    /// Go to [HomeScreen]
+                                                    Navigator.of(context)
+                                                        .pushAndRemoveUntil(
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        StorePolicyScreen()),
                                                             (Route<dynamic>
                                                                     route) =>
                                                                 false);

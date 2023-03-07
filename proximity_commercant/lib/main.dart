@@ -13,6 +13,7 @@ import 'package:proximity_commercant/domain/user_repository/user_repository.dart
 
 import 'proximity_commercant_app.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   WidgetsFlutterBinding.ensureInitialized();

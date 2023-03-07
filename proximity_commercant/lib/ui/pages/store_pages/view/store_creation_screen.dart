@@ -285,16 +285,39 @@ class StoreCreationScreen extends StatelessWidget {
                   leadIcon: ProximityIcons.policy,
                   title: 'Store Policy.',
                   color: redSwatch.shade500),
+
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
-                child: TertiaryButton(
-                    onPressed: () async {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => StorePolicyScreen()));
-                    },
-                    title: 'Set Store Policy.'),
+                child: Column(
+                  children: [
+                    ListToggle(
+                        title: 'keep global policy',
+                        value: storeCreationValidation.globalPolicy!,
+                        onToggle: storeCreationValidation.toggleGlobalPolicy),
+                    storeCreationValidation.globalPolicy!
+                        ? Padding(
+                            padding: const EdgeInsets.all(normal_100)
+                                .copyWith(top: 0),
+                            child: TertiaryButton(
+                                onPressed: () async {
+                                  // final Address _result = await
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              StorePolicyScreen()));
+                                  // storeCreationValidation.changeAddress(_result);
+                                },
+                                title: 'Set Global Policy .'),
+                          )
+                        : Container(),
+                    ListToggle(
+                      title: 'custom policy',
+                      value: storeCreationValidation.customPolicy!,
+                      onToggle: storeCreationValidation.toggleCustomPolicy,
+                    ),
+                  ],
+                ),
               ),
 
               /// Image Picker

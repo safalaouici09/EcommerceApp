@@ -6,6 +6,7 @@ import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/onBoard.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 import 'package:proximity_commercant/ui/pages/user_pages/user_pages.dart';
 
 class SideMenu extends StatelessWidget {
@@ -61,6 +62,21 @@ class SideMenu extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const EditProfileScreen()));
+                            });
+                      }),
+                  Selector<UserService, bool?>(
+                      selector: (_, userService) => userService.isVerified,
+                      builder: (context, valid, child) {
+                        return ListButton(
+                            title: 'Edit Global Policy.',
+                            leadIcon: ProximityIcons.password,
+                            enabled: valid,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const StorePolicyScreen()));
                             });
                       }),
                   ListButton(
