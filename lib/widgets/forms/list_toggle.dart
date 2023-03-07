@@ -3,7 +3,12 @@ import 'package:proximity/config/config.dart';
 import 'package:proximity/icons/proximity_icons.dart';
 
 class ListToggle extends StatefulWidget {
-  const ListToggle({Key? key, required this.value, this.onToggle, required this.title, this.leadIcon})
+  const ListToggle(
+      {Key? key,
+      required this.value,
+      this.onToggle,
+      required this.title,
+      this.leadIcon})
       : super(key: key);
 
   final String title;
@@ -16,15 +21,15 @@ class ListToggle extends StatefulWidget {
 }
 
 class _ListToggleState extends State<ListToggle> {
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        widget.onToggle!.call(!widget.value);
+        widget.onToggle!.call(
+          !widget.value,
+        );
       },
-      child: Row(
-          children: [
+      child: Row(children: [
         if (widget.leadIcon != null)
           Padding(
               padding: const EdgeInsets.all(small_100),
@@ -46,7 +51,8 @@ class _ListToggleState extends State<ListToggle> {
                   Stack(
                     alignment: Alignment.center,
                     children: [
-                      const Icon(ProximityIcons.chevron_right, color: Colors.transparent),
+                      const Icon(ProximityIcons.chevron_right,
+                          color: Colors.transparent),
                       Container(
                           height: normal_100,
                           width: normal_250,
