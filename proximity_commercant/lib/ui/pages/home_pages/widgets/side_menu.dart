@@ -50,7 +50,8 @@ class SideMenu extends StatelessWidget {
                             });
                       }),
                   Selector<UserService, bool?>(
-                      selector: (_, userService) => userService.isVerified,
+                      selector: (_, userService) =>
+                          userService.user?.policy != null,
                       builder: (context, valid, child) {
                         return ListButton(
                             title: 'Verify Identity.',
@@ -69,14 +70,15 @@ class SideMenu extends StatelessWidget {
                       builder: (context, valid, child) {
                         return ListButton(
                             title: 'Edit Global Policy.',
-                            leadIcon: ProximityIcons.password,
+                            leadIcon: ProximityIcons.policy,
                             enabled: valid,
                             onPressed: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const StorePolicyScreen()));
+                                      builder: (context) => StorePolicyScreen(
+                                            global: true,
+                                          )));
                             });
                       }),
                   ListButton(

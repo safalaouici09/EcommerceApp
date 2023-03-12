@@ -49,8 +49,41 @@ class ProductScreen extends StatelessWidget {
               discount: product.discount),
           ProductVariantsSection(id: id, productVariants: product.variants!),
           ProductDescription(description: product.description!),
+          // policy section
+          SectionDivider(
+              leadIcon: ProximityIcons.policy,
+              title: 'policy de livraison et de retours .',
+              color: Theme.of(context).primaryColor),
+          // MasonryGrid(
+          PolicyCard(
+            leadIcon: ProximityIcons.shipping,
+            title: "Shipping",
+            subTitle:
+                "Estimated delivery time is [X] days. Shipping fees will apply and will be calculated at checkout based on your location",
+          ),
+
+          PolicyCard(
+            leadIcon: ProximityIcons.self_pickup,
+            title: "Pick UP",
+            subTitle:
+                "You're just [X] days away from getting your hands on it. Remember to pick up your order from our store within [X] days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
+          ),
+          PolicyCard(
+            leadIcon: Icons.book_online,
+            title: "Reservation",
+            subTitle:
+                "A deposit of [X] may be required to secure your reservation.Once your reservation is confirmed, you may pick up your item at our store on the date specified in your reservation confirmation.",
+          ),
+
+          PolicyCard(
+            leadIcon: Icons.settings_backup_restore,
+            title: "Return and Refund  ",
+            subTitle:
+                "You may return your item within [X] days of receipt for a refund, provided that the item is in its original condition and with all tags attached. Please note that all sales are final for items marked as 'final sale. ",
+          ),
 
           /// Store Section
+
           StoreSection(idStore: product.storeId!),
 
           /// Similar Products Section
@@ -87,5 +120,31 @@ class ProductScreen extends StatelessWidget {
         ])
       ]));
     });
+  }
+}
+
+class PolicyCard extends StatelessWidget {
+  PolicyCard(
+      {Key? key,
+      required this.leadIcon,
+      required this.title,
+      required this.subTitle})
+      : super(key: key);
+  final IconData leadIcon;
+  final String title;
+  final String subTitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        leadIcon,
+        color: Theme.of(context).disabledColor,
+      ),
+      title: Text(title,
+          style: Theme.of(context).textTheme.bodyLarge!,
+          textAlign: TextAlign.start),
+      subtitle: Text(subTitle, style: Theme.of(context).textTheme.bodyText2),
+    );
   }
 }

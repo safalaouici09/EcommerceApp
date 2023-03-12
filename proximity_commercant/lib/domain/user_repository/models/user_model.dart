@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:proximity/domain_repository/models/address_model.dart';
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:path_provider/path_provider.dart';
+import 'package:proximity_commercant/domain/store_repository/models/models.dart';
 
 class User {
   String? id;
@@ -17,19 +18,20 @@ class User {
   bool? isVerified;
   bool? welcome;
   List<dynamic>? profileImage;
+  Policy? policy;
 
-  User({
-    this.id,
-    this.userName,
-    this.email,
-    this.phone,
-    this.birthdate,
-    this.address,
-    this.shippingAddress,
-    this.isVerified,
-    this.welcome,
-    this.profileImage,
-  });
+  User(
+      {this.id,
+      this.userName,
+      this.email,
+      this.phone,
+      this.birthdate,
+      this.address,
+      this.shippingAddress,
+      this.isVerified,
+      this.welcome,
+      this.profileImage,
+      this.policy});
 
   User.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
@@ -63,5 +65,6 @@ class User {
         ),
         isVerified = parsedJson['isVerified'] ?? false,
         welcome = parsedJson['welcome'] ?? false,
-        profileImage = parsedJson['image'];
+        profileImage = parsedJson['image'],
+        policy = parsedJson['policy'];
 }

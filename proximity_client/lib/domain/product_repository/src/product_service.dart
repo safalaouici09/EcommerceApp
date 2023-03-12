@@ -136,7 +136,7 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
   List<String> get ads => _ads;
 
   ProductService() {
-    _products = [];
+    // _products = [];
     _searchResults = [];
     _todayDeals = [];
     _wishList = <Product>{};
@@ -195,7 +195,7 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
       var res = await dio.get(BASE_API_URL +
           '/search/product/?radius=24444&latitude=48.92920&langitude=2.31860239058733');
       if (res.statusCode == 200) {
-        _products = [];
+        //   _products = [];
         _products.addAll(Product.productsFromJsonList(res.data));
         notifyListeners();
       }

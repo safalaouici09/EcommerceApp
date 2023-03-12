@@ -26,6 +26,7 @@ class SectionDivider extends StatelessWidget {
           Text(title, style: Theme.of(context).textTheme.bodyText2),
           const SizedBox(width: small_100),
           const Expanded(child: Divider(height: tiny_50, thickness: tiny_50)),
+          const Expanded(child: Divider(height: tiny_50, thickness: tiny_50)),
           if (seeMore != null)
             GestureDetector(
                 onTap: seeMore,
