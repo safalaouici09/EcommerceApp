@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -636,6 +636,8 @@ class StoreCreationValidation with ChangeNotifier {
 
     /// post the dataForm via dio call
     debugPrint(data.toString());
+    jsonEncode(data);
+    print(jsonEncode(data));
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
@@ -655,6 +657,7 @@ class StoreCreationValidation with ChangeNotifier {
     } on DioError catch (e) {
       if (e.response != null) {
         /// Display Error Response
+        ///
         ToastSnackbar().init(context).showToast(
             message: "${e.response!.data}", type: ToastSnackbarType.error);
       } else {
@@ -664,79 +667,79 @@ class StoreCreationValidation with ChangeNotifier {
             .showToast(message: e.message, type: ToastSnackbarType.error);
       }
     }
+
     //  _loading = false;
     notifyListeners();
   }
 
   Map<String, dynamic> policytoFormData() {
     return {
-      "pickup": {"timeLimit": "$selfPickUplMaxDays"},
-      "pickup": '''{
-      "timeLimit" : $selfPickUplMaxDays,
-    }''',
-      "delivery": '''{
-            "zone" : {
-                "centerPoint" :{
-                    "latitude" : "$selfPickUplMaxDays", 
-                    "longitude" :"$selfPickUplMaxDays", 
-                } , 
-                "raduis" :"$shippingMaxKM,
-            } ,
-            "pricing" :{
-                "fixe" :"$shippingFixedPrice" , 
-                "km" :"$shippingPerKm" , 
-            },
-        },''',
-      "reservation": '''
-            "duration" : "$reservationDuration" ,
-            "payment" : {
-                "free" : "$reservationFree"  ,
-                "partial" : { 
-                    "fixe" : "$reservationtax" 
-                    "percentage" : "$reservationtax"  ,
-                } ,
-                "total" :"$reservationTotal"  ,
-            }, "cancelation" : {
-                "restrictions" : {
-                    "fixe" : "$reservationcancelationtax"  ,
-                    "percentage" : "$reservationcancelationtax  ,
-                }
-            } ,''',
-      "return": '''{
-            "duration" :${shippingPerKm}  ,
-            "productStatus" : ${returnCondition}  ,
-            "returnMethod" :${returnCondition}  ,
-            "refund" : {
-                "order" : {
-                    "fixe" : ${returnPerFee}  ,
-                    "percentage" :${returnPerFee}  ,
-                } , 
-                "shipping ": {
-                    "fixe" : ${returnPerFee} ,
-                    "percentage" : ${returnPerFee}  ,
-                },
-            } , 
-
-        }''',
-      "order": '''{
-            "validation" : {
-             "auto" :${oredersAutoValidation} , 
-                "manual" :${oredersManValidation} , 
-            } ,
-            "notification" : {
-                "realtime" :${notifRealTime ?? ""} ,
-               "time":${notifDuration ?? ""}  , 
-                "perOrdersNbr" :${notifDuration ?? ""} , 
-                "sendMode" : {
-                    "mail" :${false} , 
-                    "sms" :${false}  , 
-                    "popup" :${false} , 
-                    "vibration" :${false}  , 
-                    "ringing" :${false} , 
-                } ,
-            } 
-
-        }''',
+      "pickup": {
+        "timeLimit": selfPickUplMaxDays,
+      },
+      "delivery": {
+        "zone": {
+          "centerPoint": {
+            "latitude": selfPickUplMaxDays,
+            "longitude": selfPickUplMaxDays,
+          },
+          "raduis": shippingMaxKM,
+        },
+        "pricing": {
+          "fixe": shippingFixedPrice,
+          "km": shippingPerKm,
+        },
+      },
+      "reservation": {
+        "duration": reservationDuration,
+        "payment": {
+          "free": reservationFree,
+          "partial": {
+            "fixe": reservationtax,
+            "percentage": reservationtax,
+          },
+          "total": reservationTotal,
+        },
+        "cancelation": {
+          "restrictions": {
+            "fixe": reservationcancelationtax,
+            "percentage": reservationcancelationtax,
+          }
+        },
+      },
+      "return": {
+        "duration": shippingPerKm,
+        "productStatus": returnCondition,
+        "returnMethod": returnCondition,
+        "refund": {
+          "order": {
+            "fixe": returnPerFee,
+            "percentage": returnPerFee,
+          },
+          "shipping ": {
+            "fixe": returnPerFee,
+            "percentage": returnPerFee,
+          },
+        },
+      },
+      "order": {
+        "validation": {
+          "auto": oredersAutoValidation,
+          "manual": oredersManValidation,
+        },
+        "notification": {
+          "realtime": notifRealTime,
+          "time": notifDuration,
+          "perOrdersNbr": notifDuration,
+          "sendMode": {
+            "mail": false,
+            "sms": false,
+            "popup": false,
+            "vibration": false,
+            "ringing": false,
+          },
+        }
+      },
     };
   }
 
