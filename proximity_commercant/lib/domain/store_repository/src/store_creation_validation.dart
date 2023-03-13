@@ -622,10 +622,11 @@ class StoreCreationValidation with ChangeNotifier {
     }
     notifyListeners();
   }
-  
-Future updatePolicy(BuildContext context, Map<String, dynamic> data) async {
-   //_loading = true;
+
+  Future updatePolicy(BuildContext context, Map<String, dynamic> data) async {
+    //_loading = true;
     notifyListeners();
+
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
@@ -634,15 +635,16 @@ Future updatePolicy(BuildContext context, Map<String, dynamic> data) async {
     /// dataForm is already a parameter
 
     /// post the dataForm via dio call
+    debugPrint(data.toString());
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
       var res = await dio.put(BASE_API_URL + '/user/$_id', data: data);
-     // _loading = false;
+      // _loading = false;
       notifyListeners();
       if (res.statusCode == 200) {
         /// Save new User Data
-      var policy = Policy.fromJson(res.data);
+        //  var policy = Policy.fromJson(res.data);
         notifyListeners();
 
         /// Display Results Message
@@ -653,9 +655,8 @@ Future updatePolicy(BuildContext context, Map<String, dynamic> data) async {
     } on DioError catch (e) {
       if (e.response != null) {
         /// Display Error Response
-        ToastSnackbar()
-            .init(context)
-            .showToast(message: "${e.response!.data["message"]}", type: ToastSnackbarType.error);
+        ToastSnackbar().init(context).showToast(
+            message: "${e.response!.data}", type: ToastSnackbarType.error);
       } else {
         /// Display Error Message
         ToastSnackbar()
@@ -663,39 +664,42 @@ Future updatePolicy(BuildContext context, Map<String, dynamic> data) async {
             .showToast(message: e.message, type: ToastSnackbarType.error);
       }
     }
-  //  _loading = false;
+    //  _loading = false;
     notifyListeners();
-  FormData? policytoFormData() {
-    FormData? _formData = FormData.fromMap({
+  }
+
+  Map<String, dynamic> policytoFormData() {
+    return {
+      "pickup": {"timeLimit": "$selfPickUplMaxDays"},
       "pickup": '''{
-      "timeLimit" : "${selfPickUplMaxDays ?? ""}",
+      "timeLimit" : $selfPickUplMaxDays,
     }''',
       "delivery": '''{
             "zone" : {
                 "centerPoint" :{
-                    "latitude" : "${selfPickUplMaxDays}, 
-                    "longitude" :"${selfPickUplMaxDays}, 
+                    "latitude" : "$selfPickUplMaxDays", 
+                    "longitude" :"$selfPickUplMaxDays", 
                 } , 
-                "raduis" :"${shippingMaxKM},
+                "raduis" :"$shippingMaxKM,
             } ,
             "pricing" :{
-                "fixe" :"${shippingFixedPrice} , 
-                "km" :"${shippingPerKm} , 
+                "fixe" :"$shippingFixedPrice" , 
+                "km" :"$shippingPerKm" , 
             },
         },''',
-      "reservation": '''{
-            "duration" : ${reservationDuration}  ,
+      "reservation": '''
+            "duration" : "$reservationDuration" ,
             "payment" : {
-                "free" : ${reservationFree}  ,
+                "free" : "$reservationFree"  ,
                 "partial" : { 
-                    "fixe" : ${reservationtax}  ,
-                    "percentage" : ${reservationtax}  ,
+                    "fixe" : "$reservationtax" 
+                    "percentage" : "$reservationtax"  ,
                 } ,
-                "total" : ${reservationTotal}  ,
+                "total" :"$reservationTotal"  ,
             }, "cancelation" : {
                 "restrictions" : {
-                    "fixe" : ${reservationcancelationtax}  ,
-                    "percentage" : ${reservationcancelationtax}  ,
+                    "fixe" : "$reservationcancelationtax"  ,
+                    "percentage" : "$reservationcancelationtax  ,
                 }
             } ,''',
       "return": '''{
@@ -733,7 +737,7 @@ Future updatePolicy(BuildContext context, Map<String, dynamic> data) async {
             } 
 
         }''',
-    });
+    };
   }
 
   /// A method to convert this form validator into a Store object

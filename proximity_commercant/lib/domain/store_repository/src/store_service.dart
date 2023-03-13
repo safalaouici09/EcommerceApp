@@ -185,6 +185,62 @@ class StoreService with ChangeNotifier {
     notifyListeners();
   }
 
+  Future updateGlobalPolicy(BuildContext context, FormData formData) async {
+    _formsLoading = true;
+    notifyListeners();
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      debugPrint("Policy form");
+
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      formData.fields.add(MapEntry("sellerId", _id));
+      var res =
+          await dio.post(BASE_API_URL + '/store/createStore', data: formData);
+
+      if (res.statusCode == 200) {
+        /// Save new Store Data
+
+        getStores();
+        //  stores!.add(Store.fromJson(res.data));
+
+        _formsLoading = false;
+        notifyListeners();
+
+        /// Display Results Message
+        //  ToastSnackbar().init(context).showToast(
+        //      message: "${res.statusMessage}", type: ToastSnackbarType.success);
+        Future.delayed(largeAnimationDuration, () {
+          notifyListeners();
+        });
+
+        // Navigator.pop(context);
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Display Error Response
+        ToastSnackbar()
+            .init(context)
+            .showToast(message: "${e.response}", type: ToastSnackbarType.error);
+      } else {
+        /// Display Error Message
+        ToastSnackbar()
+            .init(context)
+            .showToast(message: e.message, type: ToastSnackbarType.error);
+      }
+    }
+    _formsLoading = false;
+    notifyListeners();
+  }
+
   Future editStore(BuildContext context, int index, FormData formData,
       List<String> deletedImages) async {
     _formsLoading = true;
