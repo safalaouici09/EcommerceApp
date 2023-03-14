@@ -735,8 +735,8 @@ class StoreCreationValidation with ChangeNotifier {
       "delivery": {
         "zone": {
           "centerPoint": {
-            "latitude": selfPickUplMaxDays,
-            "longitude": selfPickUplMaxDays,
+            "latitude": storeAddress.lat ?? 0.0,
+            "longitude": storeAddress.lng ?? 0.0,
           },
           "raduis": shippingMaxKM,
         },
@@ -787,11 +787,11 @@ class StoreCreationValidation with ChangeNotifier {
           "time": notifDuration,
           "perOrdersNbr": notifDuration,
           "sendMode": {
-            "mail": false,
-            "sms": false,
-            "popup": false,
-            "vibration": false,
-            "ringing": false,
+            "mail": notifEmail,
+            "sms": notifSms,
+            "popup": notifPopUp,
+            "vibration": notifInPlateforme,
+            "ringing": notifInPlateforme,
           },
         }
       },
