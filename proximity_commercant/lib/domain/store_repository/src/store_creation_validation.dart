@@ -37,6 +37,11 @@ class StoreCreationValidation with ChangeNotifier {
   bool? _openWeekend;
   bool? _openDay;
   bool? _openNight;
+  bool _notifSms = false;
+  bool _notifEmail = false;
+  bool _notifInPlateforme = true;
+  bool _notifPopUp = false;
+
   bool? _globalPolicy = false;
   bool? _customPolicy = false;
   TimeOfDay? _openTime = TimeOfDay(hour: 09, minute: 00);
@@ -55,6 +60,8 @@ class StoreCreationValidation with ChangeNotifier {
   bool _oredersManValidation = false;
   bool _oredersMixValidation = false;
   bool _notifRealTime = false;
+  bool _notifHourly = false;
+  bool _notifBatch = false;
   bool _reservationConcelationPartial = false;
   bool _returnAccept = false;
   bool _returnNotAccept = false;
@@ -71,6 +78,8 @@ class StoreCreationValidation with ChangeNotifier {
   bool? get oredersManValidation => _oredersManValidation;
   bool? get oredersMixValidation => _oredersMixValidation;
   bool? get notifRealTime => _notifRealTime;
+  bool? get notifHourly => _notifHourly;
+  bool? get notifBatch => _notifBatch;
   bool? get returnShippingFee => _returnShippingFee;
   bool? get returnPartialFee => _returnPartialFee;
   bool? get returnTotalFee => _returnTotalFee;
@@ -149,6 +158,10 @@ class StoreCreationValidation with ChangeNotifier {
   double? get selfPickupPrice => _selfPickupPrice;
 
   bool? get openWeekend => _openWeekend;
+  bool? get notifEmail => _notifEmail;
+  bool? get notifSms => _notifSms;
+  bool? get notifInPlateforme => _notifInPlateforme;
+  bool? get notifPopUp => _notifPopUp;
 
   TimeOfDay? get openTime => _openTime;
 
@@ -299,6 +312,30 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleNotifEmail(bool value) {
+    _notifEmail = value;
+
+    notifyListeners();
+  }
+
+  void toggleNotifSms(bool value) {
+    _notifSms = value;
+
+    notifyListeners();
+  }
+
+  void toggleNotifInPlateforme(bool value) {
+    _notifInPlateforme = value;
+
+    notifyListeners();
+  }
+
+  void toggleNotifPopup(bool value) {
+    _notifPopUp = value;
+
+    notifyListeners();
+  }
+
   void toggleGlobalPolicy(
     bool value,
   ) {
@@ -406,10 +443,28 @@ class StoreCreationValidation with ChangeNotifier {
 
   void toggleNotifRealTime(bool value) {
     _notifRealTime = value;
-    /*  if (value) {
-      _oredersManValidation = false;
-      _oredersMixValidation = false;
-    }*/
+    if (value) {
+      _notifHourly = false;
+      _notifBatch = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleNotifHourly(bool value) {
+    _notifHourly = value;
+    if (value) {
+      _notifRealTime = false;
+      _notifBatch = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleNotifBatch(bool value) {
+    _notifBatch = value;
+    if (value) {
+      _notifRealTime = false;
+      _notifHourly = false;
+    }
     notifyListeners();
   }
 

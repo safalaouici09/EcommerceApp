@@ -8,10 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
-import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
-import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.dart';
 
-import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
 import 'package:proximity_commercant/ui/widgets/address_picker/area_selection_screen.dart';
 
 class StorePolicyScreen extends StatefulWidget {
@@ -359,33 +356,102 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 color: redSwatch.shade500),
             Padding(
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
-              child: ListToggle(
-                  title: 'Real time',
-                  value: storeCreationValidation.notifRealTime!,
-                  onToggle: storeCreationValidation.toggleNotifRealTime),
+              child: Column(
+                children: [
+                  ListToggle(
+                      title: 'Real-time notifications',
+                      value: storeCreationValidation.notifRealTime!,
+                      onToggle: storeCreationValidation.toggleNotifRealTime),
+                  ListToggle(
+                      title: 'Hourly notificationss',
+                      value: storeCreationValidation.notifHourly!,
+                      onToggle: storeCreationValidation.toggleNotifHourly),
+                  ListToggle(
+                      title: 'Batch notifications ',
+                      value: storeCreationValidation.notifBatch!,
+                      onToggle: storeCreationValidation.toggleNotifBatch),
+                  storeCreationValidation.notifHourly!
+                      ? Padding(
+                          padding: const EdgeInsets.all(small_100),
+                          child: DropDownSelector<String>(
+                            // labelText: 'Product Category.',
+                            hintText: 'I want to be notifed every.',
+                            onChanged:
+                                storeCreationValidation.changeNotifDuration,
+                            borderType: BorderType.middle,
+                            savedValue: storeCreationValidation.notifDuration
+                                .toString(),
+                            items: hoursMap.entries
+                                .map((item) => DropdownItem<String>(
+                                    value: item.key,
+                                    child: Text(item.value,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w600))))
+                                .toList(),
+                          ),
+                        )
+                      : Container(),
+                  storeCreationValidation.notifBatch!
+                      ? Padding(
+                          padding: const EdgeInsets.all(small_100),
+                          child: DropDownSelector<String>(
+                            // labelText: 'Product Category.',
+                            hintText: 'Batch Notification Frequency.',
+                            onChanged:
+                                storeCreationValidation.changeNotifDuration,
+                            borderType: BorderType.middle,
+                            savedValue: storeCreationValidation.notifDuration
+                                .toString(),
+                            items: hoursMap.entries
+                                .map((item) => DropdownItem<String>(
+                                    value: item.key,
+                                    child: Text(item.key,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w600))))
+                                .toList(),
+                          ),
+                        )
+                      : Container(),
+                ],
+              ),
             ),
-            !storeCreationValidation.notifRealTime!
-                ? Padding(
-                    padding: const EdgeInsets.all(small_100),
-                    child: DropDownSelector<String>(
-                      // labelText: 'Product Category.',
-                      hintText: 'I want to be notifed every.',
-                      onChanged: storeCreationValidation.changeNotifDuration,
-                      borderType: BorderType.middle,
-                      savedValue:
-                          storeCreationValidation.notifDuration.toString(),
-                      items: hoursMap.entries
-                          .map((item) => DropdownItem<String>(
-                              value: item.key,
-                              child: Text(item.value,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(fontWeight: FontWeight.w600))))
-                          .toList(),
-                    ),
-                  )
-                : Container(),
+            SectionDivider(
+                leadIcon: Icons.notifications_active_outlined,
+                title: 'Order notification preferences.',
+                color: redSwatch.shade500),
+            const InfoMessage(
+                message:
+                    'Choose how you want to be notified of new orders. Select from email, SMS, phone call, or in-platform notifications. Pick your preferred method(s) for convenience.'),
+            Padding(
+              padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
+              child: Column(
+                children: [
+                  ListToggle(
+                      title: 'In-platform notifications',
+                      value: storeCreationValidation.notifInPlateforme!,
+                      onToggle:
+                          storeCreationValidation.toggleNotifInPlateforme),
+                  ListToggle(
+                      title: 'Pop pup notifications ',
+                      value: storeCreationValidation.notifPopUp!,
+                      onToggle: storeCreationValidation.toggleNotifPopup),
+                  ListToggle(
+                      title: 'Email notifications',
+                      value: storeCreationValidation.notifEmail!,
+                      onToggle: storeCreationValidation.toggleNotifEmail),
+                  ListToggle(
+                      title: 'SMS notifications',
+                      value: storeCreationValidation.notifSms!,
+                      onToggle: storeCreationValidation.toggleNotifSms),
+                ],
+              ),
+            ),
           ],
         ));
   }
