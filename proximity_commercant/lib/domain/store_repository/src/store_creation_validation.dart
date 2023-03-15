@@ -1,12 +1,16 @@
-import 'dart:developer';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:proximity/config/backend.dart';
 import 'package:proximity/config/values.dart';
 import 'package:proximity/domain_repository/domain_repository.dart';
+import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
+import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
+import 'package:proximity_commercant/domain/user_repository/models/user_model.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/widgets/widgets.dart';
 
 class StoreCreationValidation with ChangeNotifier {
@@ -24,7 +28,7 @@ class StoreCreationValidation with ChangeNotifier {
   bool _returnTotalFee = false;
   bool _returnPartialFee = false;
   int? _returnPerFee;
-
+  String? _returnCondition;
   bool _delivery = false;
   double? _tax;
   double? _shippingPerKmTax;
@@ -33,6 +37,11 @@ class StoreCreationValidation with ChangeNotifier {
   bool? _openWeekend;
   bool? _openDay;
   bool? _openNight;
+  bool _notifSms = false;
+  bool _notifEmail = false;
+  bool _notifInPlateforme = true;
+  bool _notifPopUp = false;
+
   bool? _globalPolicy = false;
   bool? _customPolicy = false;
   TimeOfDay? _openTime = TimeOfDay(hour: 09, minute: 00);
@@ -51,12 +60,15 @@ class StoreCreationValidation with ChangeNotifier {
   bool _oredersManValidation = false;
   bool _oredersMixValidation = false;
   bool _notifRealTime = false;
+  bool _notifHourly = false;
+  bool _notifBatch = false;
   bool _reservationConcelationPartial = false;
   bool _returnAccept = false;
   bool _returnNotAccept = false;
   int? _reservationDuration;
   int? _notifDuration;
   int? _returnMaxDays;
+  int? _selfPickUpMaxDays;
   double? _reservationtax;
   double? _reservationcancelationtax;
   bool? get reservationFree => _reservationFree;
@@ -66,6 +78,8 @@ class StoreCreationValidation with ChangeNotifier {
   bool? get oredersManValidation => _oredersManValidation;
   bool? get oredersMixValidation => _oredersMixValidation;
   bool? get notifRealTime => _notifRealTime;
+  bool? get notifHourly => _notifHourly;
+  bool? get notifBatch => _notifBatch;
   bool? get returnShippingFee => _returnShippingFee;
   bool? get returnPartialFee => _returnPartialFee;
   bool? get returnTotalFee => _returnTotalFee;
@@ -75,6 +89,7 @@ class StoreCreationValidation with ChangeNotifier {
   int? get reservationDuration => _reservationDuration;
   int? get notifDuration => _notifDuration;
   int? get returnMaxDays => _returnMaxDays;
+  int? get selfPickUplMaxDays => _selfPickUpMaxDays;
   double? get reservationtax => _reservationtax;
   double? get shippingPerKmTax => _shippingPerKmTax;
   double? get shippingFixedPriceTax => _shippingFixedPriceTax;
@@ -85,6 +100,7 @@ class StoreCreationValidation with ChangeNotifier {
   double get shippingMaxKM => _shippingMaxKM;
   bool? get globalPolicy => _globalPolicy;
   bool? get customPolicy => _customPolicy;
+  String? get returnCondition => _returnCondition;
   StoreCreationValidation();
 
   StoreCreationValidation.setStore(Store store) {
@@ -142,6 +158,10 @@ class StoreCreationValidation with ChangeNotifier {
   double? get selfPickupPrice => _selfPickupPrice;
 
   bool? get openWeekend => _openWeekend;
+  bool? get notifEmail => _notifEmail;
+  bool? get notifSms => _notifSms;
+  bool? get notifInPlateforme => _notifInPlateforme;
+  bool? get notifPopUp => _notifPopUp;
 
   TimeOfDay? get openTime => _openTime;
 
@@ -167,6 +187,17 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   bool get shippingIsValid {
+    if ((_selfPickup && _selfPickUpMaxDays != null) ||
+        (_delivery &
+            ((_shippingPerKm && _shippingPerKmTax != null) ||
+                (_shippingFixedPrice && _shippingFixedPriceTax != null)))) {
+      return true;
+    } else {
+      return false;
+    }
+  } /*
+
+  bool get shippingIsValid {
     if ((_selfPickup &
             (_selfPickupFree ||
                 (_selfPickupPartial && _selfPickupPrice != null) ||
@@ -178,7 +209,7 @@ class StoreCreationValidation with ChangeNotifier {
     } else {
       return false;
     }
-  }
+  }*/
 
   bool get reservationIsValid {
     if ((_reservationFree ||
@@ -233,6 +264,11 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void changeReturnCondition(String value) {
+    _returnCondition = value;
+    notifyListeners();
+  }
+
   // Setters
   void changeStoreName(String value) {
     if (value.length > 3) {
@@ -272,6 +308,30 @@ class StoreCreationValidation with ChangeNotifier {
 
   void toggleReturnShippingFee(bool value) {
     _returnShippingFee = value;
+
+    notifyListeners();
+  }
+
+  void toggleNotifEmail(bool value) {
+    _notifEmail = value;
+
+    notifyListeners();
+  }
+
+  void toggleNotifSms(bool value) {
+    _notifSms = value;
+
+    notifyListeners();
+  }
+
+  void toggleNotifInPlateforme(bool value) {
+    _notifInPlateforme = value;
+
+    notifyListeners();
+  }
+
+  void toggleNotifPopup(bool value) {
+    _notifPopUp = value;
 
     notifyListeners();
   }
@@ -383,10 +443,28 @@ class StoreCreationValidation with ChangeNotifier {
 
   void toggleNotifRealTime(bool value) {
     _notifRealTime = value;
-    /*  if (value) {
-      _oredersManValidation = false;
-      _oredersMixValidation = false;
-    }*/
+    if (value) {
+      _notifHourly = false;
+      _notifBatch = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleNotifHourly(bool value) {
+    _notifHourly = value;
+    if (value) {
+      _notifRealTime = false;
+      _notifBatch = false;
+    }
+    notifyListeners();
+  }
+
+  void toggleNotifBatch(bool value) {
+    _notifBatch = value;
+    if (value) {
+      _notifRealTime = false;
+      _notifHourly = false;
+    }
     notifyListeners();
   }
 
@@ -452,7 +530,7 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   void changeResevationDuration(String day, int index) {
-    _reservationDuration = int.parse(day);
+    _reservationDuration = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
 
     notifyListeners();
   }
@@ -470,7 +548,13 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   void changeReturnMaxDays(String day, int index) {
-    _returnMaxDays = int.parse(day);
+    _returnMaxDays = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
+
+    notifyListeners();
+  }
+
+  void changeSelfPickUpMaxDays(String day, int index) {
+    _selfPickUpMaxDays = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
 
     notifyListeners();
   }
@@ -592,6 +676,144 @@ class StoreCreationValidation with ChangeNotifier {
       _closeTime = newCloseTime;
     }
     notifyListeners();
+  }
+
+  Future updatePolicy(BuildContext context, Map<String, dynamic> data) async {
+    //_loading = true;
+    notifyListeners();
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    debugPrint(data.toString());
+    jsonEncode(data);
+    print(jsonEncode(data));
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      var res = await dio.put(BASE_API_URL + '/user/$_id', data: data);
+      // _loading = false;
+      notifyListeners();
+      if (res.statusCode == 200) {
+        /// Save new User Data
+        //  var policy = Policy.fromJson(res.data);
+        notifyListeners();
+
+        /// Display Results Message
+        ToastSnackbar().init(context).showToast(
+            message: "${res.statusMessage}", type: ToastSnackbarType.success);
+        Navigator.pop(context);
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Display Error Response
+        ///
+        ToastSnackbar().init(context).showToast(
+            message: "${e.response!.data}", type: ToastSnackbarType.error);
+      } else {
+        /// Display Error Message
+        ToastSnackbar()
+            .init(context)
+            .showToast(message: e.message, type: ToastSnackbarType.error);
+      }
+    }
+
+    //  _loading = false;
+    notifyListeners();
+  }
+
+  Map<String, dynamic> policytoFormData() {
+    var pickup = null ;
+    var delivery = null ; 
+    var returnPolicy = null ; 
+
+    if( selfPickUplMaxDays != null  ) {
+      pickup = {
+          "timeLimit": selfPickUplMaxDays
+        } ;
+    }else {
+      delivery = {
+          "zone": {
+            "centerPoint": {
+              "latitude": storeAddress.lat ?? 0.0,
+              "longitude": storeAddress.lng ?? 0.0
+            },
+            "raduis": shippingMaxKM ?? 0
+          },
+          "pricing": {
+            "fixe": shippingFixedPrice ?? 0,
+            "km": shippingPerKm ?? 0
+          }
+        } ;
+    }
+
+    if(returnAccept != null && returnAccept == true) {
+      returnPolicy = {
+          "duration": returnMaxDays,
+          "productStatus": returnCondition,
+          "refund": {
+          "returnMethod": returnCondition,
+            "order": {
+              "fixe": returnPerFee,
+              "percentage": returnPerFee
+            },
+            "shipping": {
+              "fixe": returnPerFee,
+              "percentage": returnPerFee
+            }
+          }
+        } ;
+    }
+
+
+    return {
+      "policy" : {
+
+        "pickup": pickup,
+        "delivery": delivery,
+        "reservation": {
+          "duration": reservationDuration,
+          "payment": {
+            "free": reservationFree,
+            "partial": {
+              "fixe": reservationtax,
+              "percentage": reservationtax
+            },
+            "total": reservationTotal
+          },
+          "cancelation": {
+            "restrictions": {
+              "fixe": reservationcancelationtax,
+              "percentage": reservationcancelationtax
+            }
+          }
+        },
+        "return": returnPolicy,
+        "order": {
+          "validation": {
+            "auto": oredersAutoValidation,
+            "manual": oredersManValidation
+          },
+          "notification": {
+            "realtime": notifRealTime,
+            "time": notifDuration,
+            "perOrdersNbr": notifDuration,
+            "sendMode": {
+              "mail": notifEmail,
+              "sms": notifSms,
+              "popup": notifPopUp,
+              "vibration": notifInPlateforme,
+              "ringing": notifInPlateforme
+            }
+          }
+        }
+      }
+    };
   }
 
   /// A method to convert this form validator into a Store object

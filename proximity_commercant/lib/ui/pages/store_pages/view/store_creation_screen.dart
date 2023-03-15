@@ -285,7 +285,9 @@ class StoreCreationScreen extends StatelessWidget {
                   leadIcon: ProximityIcons.policy,
                   title: 'Store Policy.',
                   color: redSwatch.shade500),
-
+              InfoMessage(
+                  message:
+                      ' Kepp  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Column(
@@ -305,7 +307,9 @@ class StoreCreationScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              StorePolicyScreen()));
+                                              StorePolicyScreen(
+                                                global: true,
+                                              )));
                                   // storeCreationValidation.changeAddress(_result);
                                 },
                                 title: 'Set Global Policy .'),

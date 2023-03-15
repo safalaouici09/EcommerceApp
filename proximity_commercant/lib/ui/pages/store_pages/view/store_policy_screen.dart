@@ -8,15 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
-import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
-import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.dart';
 
-import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
 import 'package:proximity_commercant/ui/widgets/address_picker/area_selection_screen.dart';
 
 class StorePolicyScreen extends StatefulWidget {
-  const StorePolicyScreen({Key? key}) : super(key: key);
-
+  StorePolicyScreen({Key? key, this.global}) : super(key: key);
+  bool? global;
   @override
   State<StorePolicyScreen> createState() => _StorePolicyScreenState();
 }
@@ -25,7 +22,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   @override
   int _currentStep = 0;
   bool isLastStep = false;
-  List<int> _days = List.generate(30, (index) => index + 1);
+
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<StoreCreationValidation>(
         // create: (context) => StoreCreationValidation.setStore(store),
@@ -34,323 +31,288 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
             builder: (context, storeCreationValidation, storeService, child) {
           return Scaffold(
               appBar: AppBar(
-                title: TopBar(title: 'Store Policy.'),
+                title: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TopBar(
+                      title: widget.global!
+                          ? 'Stores Golbal Policy.'
+                          : 'Store Policy.'),
+                ),
                 backgroundColor: Colors.white,
                 elevation: 0.0,
               ),
               body: SafeArea(
-                child: Stack(
-                  children: [
-                    Expanded(
-                      child: Stepper(
-                        elevation: 0.0,
-                        currentStep: _currentStep,
-                        type: StepperType.horizontal,
-                        onStepContinue: () {
-                          _currentStep == 3
-                              ? Navigator.pop(context)
-                              : setState(() {
-                                  _currentStep = _currentStep + 1;
-                                  print(_currentStep);
-                                });
-                        },
-                        onStepCancel: () {
-                          _currentStep == 0
-                              ? null
-                              : setState(() {
-                                  _currentStep -= 1;
-                                  print(_currentStep);
-                                });
-                        },
-                        controlsBuilder: (context, details) {
-                          return Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.all(normal_100),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  if (_currentStep != 0)
-                                    SecondaryButton(
-                                        onPressed: details.onStepCancel,
-                                        title: "Back"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      PrimaryButton(
-                                        buttonState: (_currentStep == 0 &&
-                                                    storeCreationValidation
-                                                        .shippingIsValid) ||
-                                                (_currentStep == 1 &&
-                                                    storeCreationValidation
-                                                        .reservationIsValid) ||
-                                                (_currentStep == 2 &&
-                                                    storeCreationValidation
-                                                        .returnIsValid) ||
-                                                (_currentStep == 3 &&
-                                                    storeCreationValidation
-                                                        .ordersIsValid)
-                                            ? ButtonState.enabled
-                                            : ButtonState.disabled,
-                                        onPressed: details.onStepContinue,
-                                        title: _currentStep == 3
-                                            ? "confirm"
-                                            : "Next.",
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                child: Expanded(
+                  child: Stepper(
+                    physics: ClampingScrollPhysics(),
+                    elevation: 0.0,
+                    currentStep: _currentStep,
+                    type: StepperType.horizontal,
+                    onStepContinue: () {
+                      _currentStep == 3
+                          ? storeCreationValidation.updatePolicy(context,
+                              storeCreationValidation.policytoFormData())
+                          : setState(() {
+                              _currentStep = _currentStep + 1;
+                              print(_currentStep);
+                            });
+                    },
+                    onStepCancel: () {
+                      _currentStep == 0
+                          ? null
+                          : setState(() {
+                              _currentStep -= 1;
+                              print(_currentStep);
+                            });
+                    },
+                    controlsBuilder: (context, details) {
+                      return Padding(
+                        padding: const EdgeInsets.all(normal_100),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            if (_currentStep != 0)
+                              SecondaryButton(
+                                  onPressed: details.onStepCancel,
+                                  title: "Back"),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                PrimaryButton(
+                                  buttonState: (_currentStep == 0 &&
+                                              storeCreationValidation
+                                                  .shippingIsValid) ||
+                                          (_currentStep == 1 &&
+                                              storeCreationValidation
+                                                  .reservationIsValid) ||
+                                          (_currentStep == 2 &&
+                                              storeCreationValidation
+                                                  .returnIsValid) ||
+                                          (_currentStep == 3 &&
+                                              storeCreationValidation
+                                                  .ordersIsValid)
+                                      ? ButtonState.enabled
+                                      : ButtonState.disabled,
+                                  onPressed: details.onStepContinue,
+                                  title:
+                                      _currentStep == 3 ? "confirm" : "Next.",
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                        steps: [
-                          Step(
-                              isActive: _currentStep >= 0,
-                              title: Text("Shipping"),
-                              content: Column(
-                                children: [
-                                  SectionDivider(
-                                      leadIcon: Icons.local_shipping_outlined,
-                                      title: 'Shipping Policy.',
-                                      color: redSwatch.shade500),
-                                  const InfoMessage(
-                                      message:
-                                          'Select the type of Deliveries your store support, and set a delivery tax value in case you deliver your orders.'),
-                                  Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: normal_100),
-                                      child: Row(children: [
-                                        Expanded(
-                                            child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: small_100),
-                                          child: LargeIconButton(
-                                              onPressed: storeCreationValidation
-                                                  .toggleSelfPickup,
-                                              selected: (storeCreationValidation
-                                                      .selfPickup ??
-                                                  false),
-                                              icon: DuotoneIcon(
-                                                  primaryLayer: ProximityIcons
-                                                      .self_pickup_duotone_1,
-                                                  secondaryLayer: ProximityIcons
-                                                      .self_pickup_duotone_2,
-                                                  color: redSwatch.shade500),
-                                              title: 'Self Pickup'),
-                                        )),
-                                        Expanded(
-                                            child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: small_100),
-                                          child: LargeIconButton(
-                                              onPressed: storeCreationValidation
-                                                  .toggleDelivery,
-                                              selected: (storeCreationValidation
-                                                      .delivery ??
-                                                  false),
-                                              icon: DuotoneIcon(
-                                                  primaryLayer: ProximityIcons
-                                                      .delivery_duotone_1,
-                                                  secondaryLayer: ProximityIcons
-                                                      .delivery_duotone_2,
-                                                  color: redSwatch.shade500),
-                                              title: 'Delivery'),
-                                        ))
-                                      ])),
-                                  if (storeCreationValidation.selfPickup ??
-                                      true)
-                                    DropDownSelector<String>(
-                                      // labelText: 'Product Category.',
-                                      hintText: 'Max Days to Pick Up.',
-                                      onChanged: storeCreationValidation
-                                          .changeReturnMaxDays,
-                                      borderType: BorderType.middle,
-                                      savedValue: storeCreationValidation
-                                          .returnMaxDays
-                                          .toString(),
-                                      items: daysMap.entries
-                                          .map((item) => DropdownItem<String>(
-                                              value: item.key,
-                                              child: Text(item.value,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle2!
-                                                      .copyWith(
-                                                          fontWeight: FontWeight
-                                                              .w600))))
-                                          .toList(),
-                                    ),
-
-                                  /*  if (storeCreationValidation.selfPickup ??
-                                      false) ...[
-                                    ListToggle(
-                                        title: 'Free SelfPickup',
-                                        value: storeCreationValidation
-                                            .selfPickupFree!,
-                                        onToggle: storeCreationValidation
-                                            .toggleSelfPickupFree),
-                                    ListToggle(
-                                        title: 'Partial SelfPickup',
-                                        value: storeCreationValidation
-                                            .selfPickupPartial!,
-                                        onToggle: storeCreationValidation
-                                            .toggleSelfPickupPartial),
-                                    ListToggle(
-                                        title: 'Total SelfPickup',
-                                        value: storeCreationValidation
-                                            .selfPickupTotal!,
-                                        onToggle: storeCreationValidation
-                                            .toggleSelfPickupTotal),
-                                    if (!(storeCreationValidation
-                                            .selfPickupFree ??
-                                        false)) ...[
-                                      const SizedBox(height: normal_100),
-                                      EditText(
-                                        hintText: 'SelfPickup Price.',
-                                        keyboardType: TextInputType.number,
-                                        saved: (storeCreationValidation
-                                                    .selfPickupPrice ==
-                                                null)
-                                            ? ""
-                                            : storeCreationValidation
-                                                .selfPickupPrice
-                                                .toString(),
-                                        //    enabled: (store.policy == null) ||
-                                        //    editScreen,
-                                        onChanged: storeCreationValidation
-                                            .changeSelfPickupPrice,
-                                      )
-                                    ],
-                                  ],*/
-                                  if (storeCreationValidation.delivery ??
-                                      false) ...[
-                                    const SizedBox(height: normal_100),
-                                    Padding(
-                                      padding: const EdgeInsets.all(normal_100)
-                                          .copyWith(top: 0),
-                                      child: TertiaryButton(
-                                          onPressed: () async {
-                                            final Address _result =
-                                                await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            AreaSelectionScreen(
-                                                                currentAddress:
-                                                                    storeCreationValidation
-                                                                        .storeAddress)));
-                                            //  storeCreationValidation
-                                            //  .changeAddress(_result);
-                                          },
-                                          title: 'Set Delivery Area.'),
-                                    ),
-                                    Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: normal_100),
-                                        child: Row(children: [
-                                          Expanded(
-                                              child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: small_100),
-                                            child: LargeIconButton(
-                                                onPressed: storeCreationValidation
-                                                    .toggleShippingFixedPrice,
-                                                selected: (storeCreationValidation
-                                                        .shippingFixedPrice ??
-                                                    false),
-                                                icon: DuotoneIcon(
-                                                    primaryLayer: Icons.euro,
-                                                    secondaryLayer:
-                                                        ProximityIcons
-                                                            .delivery_duotone_2,
-                                                    color: redSwatch.shade500),
-                                                title: 'Fixed Price'),
-                                          )),
-                                          Expanded(
-                                              child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: small_100),
-                                            child: LargeIconButton(
-                                                onPressed:
-                                                    storeCreationValidation
-                                                        .toggleShippingPerKm,
-                                                selected:
-                                                    (storeCreationValidation
-                                                            .shippingPerKm ??
-                                                        true),
-                                                icon: DuotoneIcon(
-                                                    primaryLayer:
-                                                        Icons.place_outlined,
-                                                    secondaryLayer:
-                                                        ProximityIcons
-                                                            .delivery_duotone_2,
-                                                    color: redSwatch.shade500),
-                                                title: ' By KM'),
-                                          ))
-                                        ])),
-                                    storeCreationValidation.shippingFixedPrice!
-                                        ? Padding(
-                                            padding:
-                                                const EdgeInsets.all(small_100),
-                                            child: EditText(
-                                              hintText: 'Delivery Tax. ',
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              saved: (storeCreationValidation
-                                                          .shippingFixedPriceTax ==
-                                                      null)
-                                                  ? ""
-                                                  : storeCreationValidation
-                                                      .shippingFixedPriceTax
-                                                      .toString(),
-                                              //   enabled:
-                                              // (store.policy == null) || editScreen,
-                                              onChanged: storeCreationValidation
-                                                  .changeShippingFixedPriceTax,
-                                            ),
-                                          )
-                                        : Container(),
-                                    storeCreationValidation.shippingPerKm!
-                                        ? Padding(
-                                            padding:
-                                                const EdgeInsets.all(small_100),
-                                            child: EditText(
-                                              hintText: 'Delivery Tax per km. ',
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              saved: (storeCreationValidation
-                                                          .shippingPerKmTax ==
-                                                      null)
-                                                  ? ""
-                                                  : storeCreationValidation
-                                                      .shippingPerKmTax
-                                                      .toString(),
-                                              //   enabled:
-                                              // (store.policy == null) || editScreen,
-                                              onChanged: storeCreationValidation
-                                                  .changeShippingPerKmTax,
-                                            ),
-                                          )
-                                        : Container(),
-                                  ],
-                                ],
-                              )),
-                          getReservationWidget(
-                              storeCreationValidation, context),
-                          getReturnWidget(storeCreationValidation, context),
-                          getOrdersStep(storeCreationValidation, context),
-                        ],
-                      ),
-                    ),
-                  ],
+                          ],
+                        ),
+                      );
+                    },
+                    steps: [
+                      getShippingStep(storeCreationValidation, context),
+                      getReservationStep(storeCreationValidation, context),
+                      getReturnStep(storeCreationValidation, context),
+                      getOrdersStep(storeCreationValidation, context),
+                    ],
+                  ),
                 ),
               ));
         }));
+  }
+
+  Step getShippingStep(
+      StoreCreationValidation storeCreationValidation, BuildContext context) {
+    return Step(
+        isActive: _currentStep >= 0,
+        title: Text("Shipping"),
+        content: Column(
+          children: [
+            SectionDivider(
+                leadIcon: Icons.local_shipping_outlined,
+                title: 'Shipping Policy.',
+                color: redSwatch.shade500),
+            const InfoMessage(
+                message:
+                    'Select the type of Deliveries your store support, and set a delivery tax value in case you deliver your orders.'),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: Row(children: [
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: small_100),
+                    child: LargeIconButton(
+                        onPressed: storeCreationValidation.toggleSelfPickup,
+                        selected: (storeCreationValidation.selfPickup ?? false),
+                        icon: DuotoneIcon(
+                            primaryLayer: ProximityIcons.self_pickup_duotone_1,
+                            secondaryLayer:
+                                ProximityIcons.self_pickup_duotone_2,
+                            color: redSwatch.shade500),
+                        title: 'Self Pickup'),
+                  )),
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: small_100),
+                    child: LargeIconButton(
+                        onPressed: storeCreationValidation.toggleDelivery,
+                        selected: (storeCreationValidation.delivery ?? false),
+                        icon: DuotoneIcon(
+                            primaryLayer: ProximityIcons.delivery_duotone_1,
+                            secondaryLayer: ProximityIcons.delivery_duotone_2,
+                            color: redSwatch.shade500),
+                        title: 'Delivery'),
+                  ))
+                ])),
+            if (storeCreationValidation.selfPickup ?? true)
+              Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
+                child: DropDownSelector<String>(
+                  // labelText: 'Product Category.',
+                  hintText: 'Max Days to Pick Up.',
+                  onChanged: storeCreationValidation.changeSelfPickUpMaxDays,
+                  borderType: BorderType.middle,
+                  savedValue:
+                      storeCreationValidation.selfPickUplMaxDays.toString(),
+                  items: daysMap.entries
+                      .map((item) => DropdownItem<String>(
+                          value: item.key,
+                          child: Text(item.value,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(fontWeight: FontWeight.w600))))
+                      .toList(),
+                ),
+              ),
+
+            /*  if (storeCreationValidation.selfPickup ??
+                                    false) ...[
+                                  ListToggle(
+                                      title: 'Free SelfPickup',
+                                      value: storeCreationValidation
+                                          .selfPickupFree!,
+                                      onToggle: storeCreationValidation
+                                          .toggleSelfPickupFree),
+                                  ListToggle(
+                                      title: 'Partial SelfPickup',
+                                      value: storeCreationValidation
+                                          .selfPickupPartial!,
+                                      onToggle: storeCreationValidation
+                                          .toggleSelfPickupPartial),
+                                  ListToggle(
+                                      title: 'Total SelfPickup',
+                                      value: storeCreationValidation
+                                          .selfPickupTotal!,
+                                      onToggle: storeCreationValidation
+                                          .toggleSelfPickupTotal),
+                                  if (!(storeCreationValidation
+                                          .selfPickupFree ??
+                                      false)) ...[
+                                    const SizedBox(height: normal_100),
+                                    EditText(
+                                      hintText: 'SelfPickup Price.',
+                                      keyboardType: TextInputType.number,
+                                      saved: (storeCreationValidation
+                                                  .selfPickupPrice ==
+                                              null)
+                                          ? ""
+                                          : storeCreationValidation
+                                              .selfPickupPrice
+                                              .toString(),
+                                      //    enabled: (store.policy == null) ||
+                                      //    editScreen,
+                                      onChanged: storeCreationValidation
+                                          .changeSelfPickupPrice,
+                                    )
+                                  ],
+                                ],*/
+            if (storeCreationValidation.delivery ?? false) ...[
+              const SizedBox(height: normal_100),
+              Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                child: TertiaryButton(
+                    onPressed: () async {
+                      final Address _result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AreaSelectionScreen(
+                                  currentAddress:
+                                      storeCreationValidation.storeAddress)));
+                      //  storeCreationValidation
+                      //  .changeAddress(_result);
+                    },
+                    title: 'Set Delivery Area.'),
+              ),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                  child: Row(children: [
+                    Expanded(
+                        child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: small_100),
+                      child: LargeIconButton(
+                          onPressed:
+                              storeCreationValidation.toggleShippingFixedPrice,
+                          selected:
+                              (storeCreationValidation.shippingFixedPrice ??
+                                  false),
+                          icon: DuotoneIcon(
+                              primaryLayer: Icons.euro,
+                              secondaryLayer: ProximityIcons.delivery_duotone_2,
+                              color: redSwatch.shade500),
+                          title: 'Fixed Price'),
+                    )),
+                    Expanded(
+                        child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: small_100),
+                      child: LargeIconButton(
+                          onPressed:
+                              storeCreationValidation.toggleShippingPerKm,
+                          selected:
+                              (storeCreationValidation.shippingPerKm ?? true),
+                          icon: DuotoneIcon(
+                              primaryLayer: Icons.place_outlined,
+                              secondaryLayer: ProximityIcons.delivery_duotone_2,
+                              color: redSwatch.shade500),
+                          title: ' By KM'),
+                    ))
+                  ])),
+              storeCreationValidation.shippingFixedPrice!
+                  ? Padding(
+                      padding: const EdgeInsets.all(small_100),
+                      child: EditText(
+                        hintText: 'Delivery Tax. ',
+                        keyboardType: TextInputType.number,
+                        saved: (storeCreationValidation.shippingFixedPriceTax ==
+                                null)
+                            ? ""
+                            : storeCreationValidation.shippingFixedPriceTax
+                                .toString(),
+                        //   enabled:
+                        // (store.policy == null) || editScreen,
+                        onChanged:
+                            storeCreationValidation.changeShippingFixedPriceTax,
+                      ),
+                    )
+                  : Container(),
+              storeCreationValidation.shippingPerKm!
+                  ? Padding(
+                      padding: const EdgeInsets.all(small_100),
+                      child: EditText(
+                        hintText: 'Delivery Tax per km. ',
+                        keyboardType: TextInputType.number,
+                        saved:
+                            (storeCreationValidation.shippingPerKmTax == null)
+                                ? ""
+                                : storeCreationValidation.shippingPerKmTax
+                                    .toString(),
+                        //   enabled:
+                        // (store.policy == null) || editScreen,
+                        onChanged:
+                            storeCreationValidation.changeShippingPerKmTax,
+                      ),
+                    )
+                  : Container(),
+            ],
+          ],
+        ));
   }
 
   Step getOrdersStep(
@@ -394,38 +356,107 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 color: redSwatch.shade500),
             Padding(
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
-              child: ListToggle(
-                  title: 'Real time',
-                  value: storeCreationValidation.notifRealTime!,
-                  onToggle: storeCreationValidation.toggleNotifRealTime),
+              child: Column(
+                children: [
+                  ListToggle(
+                      title: 'Real-time notifications',
+                      value: storeCreationValidation.notifRealTime!,
+                      onToggle: storeCreationValidation.toggleNotifRealTime),
+                  ListToggle(
+                      title: 'Hourly notificationss',
+                      value: storeCreationValidation.notifHourly!,
+                      onToggle: storeCreationValidation.toggleNotifHourly),
+                  ListToggle(
+                      title: 'Batch notifications ',
+                      value: storeCreationValidation.notifBatch!,
+                      onToggle: storeCreationValidation.toggleNotifBatch),
+                  storeCreationValidation.notifHourly!
+                      ? Padding(
+                          padding: const EdgeInsets.all(small_100),
+                          child: DropDownSelector<String>(
+                            // labelText: 'Product Category.',
+                            hintText: 'I want to be notifed every.',
+                            onChanged:
+                                storeCreationValidation.changeNotifDuration,
+                            borderType: BorderType.middle,
+                            savedValue: storeCreationValidation.notifDuration
+                                .toString(),
+                            items: hoursMap.entries
+                                .map((item) => DropdownItem<String>(
+                                    value: item.key,
+                                    child: Text(item.value,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w600))))
+                                .toList(),
+                          ),
+                        )
+                      : Container(),
+                  storeCreationValidation.notifBatch!
+                      ? Padding(
+                          padding: const EdgeInsets.all(small_100),
+                          child: DropDownSelector<String>(
+                            // labelText: 'Product Category.',
+                            hintText: 'Batch Notification Frequency.',
+                            onChanged:
+                                storeCreationValidation.changeNotifDuration,
+                            borderType: BorderType.middle,
+                            savedValue: storeCreationValidation.notifDuration
+                                .toString(),
+                            items: hoursMap.entries
+                                .map((item) => DropdownItem<String>(
+                                    value: item.key,
+                                    child: Text(item.key,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w600))))
+                                .toList(),
+                          ),
+                        )
+                      : Container(),
+                ],
+              ),
             ),
-            !storeCreationValidation.notifRealTime!
-                ? Padding(
-                    padding: const EdgeInsets.all(small_100),
-                    child: DropDownSelector<String>(
-                      // labelText: 'Product Category.',
-                      hintText: 'I want to be notifed every.',
-                      onChanged: storeCreationValidation.changeNotifDuration,
-                      borderType: BorderType.middle,
-                      savedValue:
-                          storeCreationValidation.notifDuration.toString(),
-                      items: hoursMap.entries
-                          .map((item) => DropdownItem<String>(
-                              value: item.key,
-                              child: Text(item.value,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(fontWeight: FontWeight.w600))))
-                          .toList(),
-                    ),
-                  )
-                : Container(),
+            SectionDivider(
+                leadIcon: Icons.notifications_active_outlined,
+                title: 'Order notification preferences.',
+                color: redSwatch.shade500),
+            const InfoMessage(
+                message:
+                    'Choose how you want to be notified of new orders. Select from email, SMS, phone call, or in-platform notifications. Pick your preferred method(s) for convenience.'),
+            Padding(
+              padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
+              child: Column(
+                children: [
+                  ListToggle(
+                      title: 'In-platform notifications',
+                      value: storeCreationValidation.notifInPlateforme!,
+                      onToggle:
+                          storeCreationValidation.toggleNotifInPlateforme),
+                  ListToggle(
+                      title: 'Pop pup notifications ',
+                      value: storeCreationValidation.notifPopUp!,
+                      onToggle: storeCreationValidation.toggleNotifPopup),
+                  ListToggle(
+                      title: 'Email notifications',
+                      value: storeCreationValidation.notifEmail!,
+                      onToggle: storeCreationValidation.toggleNotifEmail),
+                  ListToggle(
+                      title: 'SMS notifications',
+                      value: storeCreationValidation.notifSms!,
+                      onToggle: storeCreationValidation.toggleNotifSms),
+                ],
+              ),
+            ),
           ],
         ));
   }
 
-  Step getReservationWidget(
+  Step getReservationStep(
       StoreCreationValidation storeCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 1,
@@ -533,7 +564,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         ));
   }
 
-  Step getReturnWidget(
+  Step getReturnStep(
       StoreCreationValidation storeCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 2,
@@ -568,7 +599,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     children: [
                       SectionDivider(
                           leadIcon: Icons.timelapse_outlined,
-                          title: 'Return  duration.',
+                          title: 'Return conditions.',
                           color: redSwatch.shade500),
                       DropDownSelector<String>(
                         // labelText: 'Product Category.',
@@ -587,6 +618,13 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                         .copyWith(
                                             fontWeight: FontWeight.w600))))
                             .toList(),
+                      ),
+                      const EditTextSpacer(),
+                      EditText(
+                        hintText: "Return status",
+                        onChanged:
+                            storeCreationValidation.changeReturnCondition,
+                        saved: storeCreationValidation.returnCondition,
                       ),
                       SectionDivider(
                           leadIcon: Icons.cancel_outlined,
