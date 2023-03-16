@@ -12,7 +12,7 @@ class PersonalInfoVisualizer extends StatelessWidget {
     return Consumer<UserService>(builder: (_, userService, __) {
       return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
         const SizedBox(width: normal_100),
-        if (userService.valid)
+        if (userService.user! != null)
           Expanded(
             child: RichText(
                 text: TextSpan(children: [
@@ -26,7 +26,7 @@ class PersonalInfoVisualizer extends StatelessWidget {
           ),
         const SizedBox(width: normal_100),
         TertiaryButton(
-            onPressed: userService.valid
+            onPressed: userService.user! != null
                 ? () {
                     Navigator.push(
                         context,

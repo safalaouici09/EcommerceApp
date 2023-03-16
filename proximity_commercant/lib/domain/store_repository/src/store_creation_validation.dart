@@ -530,7 +530,7 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   void changeResevationDuration(String day, int index) {
-    _reservationDuration = int.parse(day);
+    _reservationDuration = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
 
     notifyListeners();
   }
@@ -548,13 +548,13 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   void changeReturnMaxDays(String day, int index) {
-    _returnMaxDays = int.parse(day);
+    _returnMaxDays = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
 
     notifyListeners();
   }
 
   void changeSelfPickUpMaxDays(String day, int index) {
-    _selfPickUpMaxDays = int.parse(day);
+    _selfPickUpMaxDays = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
 
     notifyListeners();
   }
@@ -728,73 +728,91 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   Map<String, dynamic> policytoFormData() {
+    var pickup = null ;
+    var delivery = null ; 
+    var returnPolicy = null ; 
+
+    if( selfPickUplMaxDays != null  ) {
+      pickup = {
+          "timeLimit": selfPickUplMaxDays
+        } ;
+    }else {
+      delivery = {
+          "zone": {
+            "centerPoint": {
+              "latitude": storeAddress.lat ?? 0.0,
+              "longitude": storeAddress.lng ?? 0.0
+            },
+            "raduis": shippingMaxKM ?? 0
+          },
+          "pricing": {
+            "fixe": shippingFixedPrice ?? 0,
+            "km": shippingPerKm ?? 0
+          }
+        } ;
+    }
+
+    if(returnAccept != null && returnAccept == true) {
+      returnPolicy = {
+          "duration": returnMaxDays,
+          "productStatus": returnCondition,
+          "refund": {
+          "returnMethod": returnCondition,
+            "order": {
+              "fixe": returnPerFee,
+              "percentage": returnPerFee
+            },
+            "shipping": {
+              "fixe": returnPerFee,
+              "percentage": returnPerFee
+            }
+          }
+        } ;
+    }
+
+
     return {
-      "pickup": {
-        "timeLimit": selfPickUplMaxDays,
-      },
-      "delivery": {
-        "zone": {
-          "centerPoint": {
-            "latitude": storeAddress.lat ?? 0.0,
-            "longitude": storeAddress.lng ?? 0.0,
+      "policy" : {
+
+        "pickup": pickup,
+        "delivery": delivery,
+        "reservation": {
+          "duration": reservationDuration,
+          "payment": {
+            "free": reservationFree,
+            "partial": {
+              "fixe": reservationtax,
+              "percentage": reservationtax
+            },
+            "total": reservationTotal
           },
-          "raduis": shippingMaxKM,
-        },
-        "pricing": {
-          "fixe": shippingFixedPrice,
-          "km": shippingPerKm,
-        },
-      },
-      "reservation": {
-        "duration": reservationDuration,
-        "payment": {
-          "free": reservationFree,
-          "partial": {
-            "fixe": reservationtax,
-            "percentage": reservationtax,
-          },
-          "total": reservationTotal,
-        },
-        "cancelation": {
-          "restrictions": {
-            "fixe": reservationcancelationtax,
-            "percentage": reservationcancelationtax,
+          "cancelation": {
+            "restrictions": {
+              "fixe": reservationcancelationtax,
+              "percentage": reservationcancelationtax
+            }
           }
         },
-      },
-      "return": {
-        "duration": shippingPerKm,
-        "productStatus": returnCondition,
-        "returnMethod": returnCondition,
-        "refund": {
-          "order": {
-            "fixe": returnPerFee,
-            "percentage": returnPerFee,
+        "return": returnPolicy,
+        "order": {
+          "validation": {
+            "auto": oredersAutoValidation,
+            "manual": oredersManValidation
           },
-          "shipping ": {
-            "fixe": returnPerFee,
-            "percentage": returnPerFee,
-          },
-        },
-      },
-      "order": {
-        "validation": {
-          "auto": oredersAutoValidation,
-          "manual": oredersManValidation,
-        },
-        "notification": {
-          "realtime": notifRealTime,
-          "time": notifDuration,
-          "perOrdersNbr": notifDuration,
-          "sendMode": {
-            "mail": notifEmail,
-            "sms": notifSms,
-            "popup": notifPopUp,
-            "vibration": notifInPlateforme,
-            "ringing": notifInPlateforme,
-          },
+          "notification": {
+            "realtime": notifRealTime,
+            "time": notifDuration,
+            "perOrdersNbr": notifDuration,
+            "sendMode": {
+              "mail": notifEmail,
+              "sms": notifSms,
+              "popup": notifPopUp,
+              "vibration": notifInPlateforme,
+              "ringing": notifInPlateforme
+            }
+          }
         }
-      },
+      }
     };
   }
 

@@ -34,19 +34,29 @@ class UserSettings with ChangeNotifier {
   _saveSettings() async {
     var settingsBox = Boxes.getSettingsBox();
     settingsBox.put('theme', _theme);
-    settingsBox.put('locale_language', _locale!.languageCode);
-    settingsBox.put('locale_country', _locale!.countryCode);
+    if( _locale!.languageCode != null) {
+      settingsBox.put('locale_language', _locale!.languageCode);
+    }
+    if(_locale!.countryCode != null) {
+      settingsBox.put('locale_country', _locale!.countryCode);
+
+    }
   }
 
   _loadSettings() async {
     var settingsBox = Boxes.getSettingsBox();
-    String theme = settingsBox.get('theme');
+    String? theme = settingsBox.get('theme');
     Locale? locale = (settingsBox.get('locale_language') != null &&
         settingsBox.get('locale_country') != null)
         ? Locale(settingsBox.get('locale_language'),
         settingsBox.get('locale_country'))
         : null;
-    changeTheme(theme);
+
+        if(theme != null) {
+          changeTheme(theme);
+        }else {
+          changeTheme("light" );
+        }
     if (locale != null) changeLocale(locale);
   }
 }

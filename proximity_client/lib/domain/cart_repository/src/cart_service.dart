@@ -123,104 +123,114 @@ class CartService with ChangeNotifier {
 
   /// POST methods
   /// Order a Cart
-  Future order(BuildContext context, String storeId) async {
+  Future order(BuildContext context, String? storeId) async {
     /// get total price
-    final double _totalPrice = getTotalPrice(storeId);
+    if(storeId != null) {
+      final double _totalPrice = getTotalPrice(storeId);
 
-    /// get Store Policy
-    final Policy _policy = Policy.policy;
+      /// get Store Policy
+      final Policy _policy = Policy.policy;
 
-    /// convert [List<CartItem>] into [List<OrderItem>]
-    final List<OrderItem> _orderItems = [];
-    cartItemsBox.values.forEach((item) {
-      if (item.storeId == storeId) {
-        _orderItems.add(OrderItem.fromCartItem(item));
-      }
-    });
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => OrderConfirmationScreen(
-                  orderItems: _orderItems,
-                  totalPrice: _totalPrice,
-                  policy: _policy,
-                )));
+      /// convert [List<CartItem>] into [List<OrderItem>]
+      final List<OrderItem> _orderItems = [];
+      cartItemsBox.values.forEach((item) {
+        if (item.storeId == storeId) {
+          _orderItems.add(OrderItem.fromCartItem(item));
+        }
+      });
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => OrderConfirmationScreen(
+                    orderItems: _orderItems,
+                    totalPrice: _totalPrice,
+                    policy: _policy,
+                  )));
+    }
   }
 
   Future addToCart(BuildContext context, Product product,
-      ProductVariant productVariant, Store store, int quantity) async {
-    // start the loading animation
-    _loadingAdd = true;
-    notifyListeners();
+      ProductVariant productVariant, Store? store, int quantity , {int noredirection = 0} ) async {
 
-    /// if store already exists, add order
-    if (cartItemsBox.containsKey(productVariant.id)) {
-      final CartItem _cartItem = cartItemsBox.get(productVariant.id);
-      _cartItem.orderedQuantity++;
-      _cartItem.save();
-    } else {
-      /// the cartItem that will be modified or inserted
-      final CartItem _cartItem =
-          CartItem.fromProduct(product, productVariant, quantity, true);
-      cartItemsBox.put(productVariant.id, _cartItem);
+        if(store != null) {
+            // start the loading animation
+            _loadingAdd = true;
+            notifyListeners();
 
-      /// if store exists, add [CartItem.key] to the existing [CartOrder]
-      /// otherwise, creates a new [CartOrder]
-      if (cartBox.containsKey(store.id)) {
-        Cart _cart = cartBox.get(store.id);
-        _cart.cartItemsKeys!.add(productVariant.id!);
-        _cart.save();
-      } else {
-        // the cart that will be modified or inserted
-        final Cart _cart = Cart(
-          storeId: store.id,
-          storeName: store.name,
-          cartItemsKeys: [productVariant.id!],
-        );
-        cartBox.put(store.id, _cart);
-      }
-    }
+            /// if store already exists, add order
+            if (cartItemsBox.containsKey(productVariant.id)) {
+              final CartItem _cartItem = cartItemsBox.get(productVariant.id);
+              _cartItem.orderedQuantity++;
+              _cartItem.save();
+            } else {
+              /// the cartItem that will be modified or inserted
+              final CartItem _cartItem =
+                  CartItem.fromProduct(product, productVariant, quantity, true);
+              cartItemsBox.put(productVariant.id, _cartItem);
 
-    /// open hive box
-    var credentialsBox = Boxes.getCredentials();
-    String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
+              /// if store exists, add [CartItem.key] to the existing [CartOrder]
+              /// otherwise, creates a new [CartOrder]
+              if (cartBox.containsKey(store.id)) {
+                Cart _cart = cartBox.get(store.id);
+                _cart.cartItemsKeys!.add(productVariant.id!);
+                _cart.save();
+              } else {
+                // the cart that will be modified or inserted
+                final Cart _cart = Cart(
+                  storeId: store.id,
+                  storeName: store.name,
+                  cartItemsKeys: [productVariant.id!],
+                );
+                cartBox.put(store.id, _cart);
+              }
+            }
 
-    /// dataForm is already a parameter
+            /// open hive box
+            var credentialsBox = Boxes.getCredentials();
+            String _id = credentialsBox.get('id');
+            String _token = credentialsBox.get('token');
 
-    /// post the dataForm via dio call
-    try {
-      Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.post(BASE_API_URL + '/cart/add/', data: {
-        "productId": product.id,
-        "quantity": quantity,
-        "variantId": productVariant.id
-      });
-      if (res.statusCode == 200) {
-        // stop the loading animation
-        _loadingAdd = false;
-        notifyListeners();
+            /// dataForm is already a parameter
 
-        /// Display Results Message
-        ToastSnackbar().init(context).showToast(
-            message: "Product Successfully added to Cart!",
-            type: ToastSnackbarType.success);
-        Navigator.pop(context);
-      }
-    } on DioError catch (e) {
-      if (e.response != null) {
-        /// Display Error Response
-        ToastSnackbar()
-            .init(context)
-            .showToast(message: "${e.response}", type: ToastSnackbarType.error);
-      } else {
-        /// Display Error Message
-        ToastSnackbar()
-            .init(context)
-            .showToast(message: e.message, type: ToastSnackbarType.error);
-      }
-    }
+            /// post the dataForm via dio call
+            try {
+              Dio dio = Dio();
+              dio.options.headers["token"] = "Bearer $_token";
+              var res = await dio.post(BASE_API_URL + '/cart/add/', data: {
+                "productId": product.id,
+                "quantity": quantity,
+                "variantId": productVariant.id
+              });
+              if (res.statusCode == 200) {
+                // stop the loading animation
+                _loadingAdd = false;
+                notifyListeners();
+
+                /// Display Results Message
+                ToastSnackbar().init(context).showToast(
+                    message: "Product Successfully added to Cart!",
+                    type: ToastSnackbarType.success);
+                    if(noredirection == 0) {
+                        Navigator.pop(context);
+                    }else {
+                        order(context , store.id) ; 
+                    }
+              }
+            } on DioError catch (e) {
+              if (e.response != null) {
+                /// Display Error Response
+                ToastSnackbar()
+                    .init(context)
+                    .showToast(message: "${e.response}", type: ToastSnackbarType.error);
+              } else {
+                /// Display Error Message
+                ToastSnackbar()
+                    .init(context)
+                    .showToast(message: e.message, type: ToastSnackbarType.error);
+              }
+            }
+
+        }
   }
 
   Future deleteOrderFromCart(String key) async {

@@ -20,7 +20,7 @@ class HomeTabBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    (userService.valid)
+                    (userService.user! != null)
                         ? Text(
                             '${userService.user!.address!.city}, ${userService.user!.address!.countryName}',
                             style: Theme.of(context).textTheme.bodyText2)
@@ -38,7 +38,7 @@ class HomeTabBar extends StatelessWidget {
           Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
             const SizedBox(width: normal_100),
             Expanded(
-                child: (userService.valid)
+                child: (userService.user! != null)
                     ? RichText(
                         text: TextSpan(children: [
                         TextSpan(

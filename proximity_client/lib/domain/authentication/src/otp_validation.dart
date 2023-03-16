@@ -75,7 +75,7 @@ class OTPValidation with ChangeNotifier {
         /// Go to [HomeScreen]
         final welcome = credentialsBox.get('welcome');
 
-        if (welcome == null) {
+        if (welcome == null || welcome == 'false') {
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => const WelcomeScreenAfterLogin()),
               (Route<dynamic> route) => false);

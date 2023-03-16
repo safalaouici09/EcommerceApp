@@ -124,7 +124,7 @@ class LoginValidation with ChangeNotifier {
           final welcome = credentialsBox.get('welcome');
           //var box = await Hive.openBox('authentication');
 
-          if (welcome == null) {
+          if (welcome == null || welcome == 'false')  {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const WelcomeScreenAfterLogin()),
                 (Route<dynamic> route) => false);
@@ -196,6 +196,17 @@ class LoginValidation with ChangeNotifier {
       _isLogged = true;
     }
   }
+  
+  
+
+  void logout() async {
+    var credentialsBox = Boxes.getCredentials();
+    // Delete an item
+    await credentialsBox.delete('token');
+    _isLogged = false;
+    notifyListeners();
+  }
+
 
   void googleLogin(BuildContext context) async {}
 

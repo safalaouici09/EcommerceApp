@@ -21,7 +21,6 @@ class UserService extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get valid => (_user != null);
 
   bool? get isVerified => (_user == null) ? null : (_user!.isVerified!);
 
@@ -61,9 +60,8 @@ class UserService extends ChangeNotifier {
     } on DioError catch (e) {
       if (e.response != null) {
         /// Display Error Response
-        ToastSnackbar()
-            .init(context)
-            .showToast(message: "${e.response!.data["message"]}", type: ToastSnackbarType.error);
+        ToastSnackbar().init(context).showToast(
+            message: "${e.response!.data}", type: ToastSnackbarType.error);
       } else {
         /// Display Error Message
         ToastSnackbar()

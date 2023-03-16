@@ -18,7 +18,7 @@ class User {
   bool? isVerified;
   bool? welcome;
   List<dynamic>? profileImage;
-  Policy? policy;
+  dynamic?  policy;
 
   User(
       {this.id,
@@ -66,5 +66,5 @@ class User {
         isVerified = parsedJson['isVerified'] ?? false,
         welcome = parsedJson['welcome'] ?? false,
         profileImage = parsedJson['image'],
-        policy = parsedJson['policy'];
+        policy = parsedJson['policy'] ?? null ;
 }

@@ -22,6 +22,8 @@ class _WelcomeScreenAfterLoginState extends State<WelcomeScreenAfterLogin> {
   Widget build(BuildContext context) {
     final userService = Provider.of<UserService>(context);
 
+    if(userService.user == null) userService.getUserData() ;
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
@@ -31,14 +33,10 @@ class _WelcomeScreenAfterLoginState extends State<WelcomeScreenAfterLogin> {
                 children: <Widget>[
               Column(
                 children: <Widget>[
-                  SizedBox(
-                    height: huge_200,
-                    width: 100,
-                    child: FittedBox(
-                      child: Image.asset("assets/img/welcome.png"),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
+                  FittedBox(
+                    child:  Image.asset("assets/img/welcome.png") ,
+                    fit: BoxFit.fill,
+                  ) ,
                   Container(
                     padding: EdgeInsets.only(
                         left: 20, top: 20 + 20, right: 20, bottom: 20),

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
@@ -11,21 +13,37 @@ class AccountSwitcher extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<UserService>(
       builder: (_, userService, __) {
-        return userService.valid!
+        return userService.user! != null
             ? Padding(
                 padding: const EdgeInsets.all(normal_100),
                 child: Row(children: [
-                  Container(
-                      height: large_150,
-                      width: large_150,
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(largeRadius),
-                          border: Border.all(
-                              color: Theme.of(context).dividerColor,
-                              width: tiny_50),
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  userService.user!.profileImage!.first!)))),
+                  // Container(
+                  //     height: large_150,
+                  //     width: large_150,
+                  //     decoration: BoxDecoration(
+                  //         borderRadius: const BorderRadius.all(largeRadius),
+                  //         border: Border.all(
+                  //             color: Theme.of(context).dividerColor,
+                  //             width: tiny_50),
+                  //         image: DecorationImage(
+                  //             image: NetworkImage(
+                  //                 userService.user!.profileImage!.first!)))),
+                  SizedBox(
+                        height: large_150,
+                        width: large_150,
+                        child: Stack(alignment: Alignment.topRight, children: [
+                          Positioned.fill(
+                              child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(normalRadius),
+                                  child: FittedBox(
+                                      fit: BoxFit.cover,
+                                      child: 
+                                      // (userService.user!.profileImage! != null )  
+                                      //     ?  Image.network(userService.user!.profileImage!.first!)
+                                      //     : 
+                                          Image.network("https://cdn-icons-png.flaticon.com/512/5853/5853761.png")
+                                          ))),
+                  ])) ,
                   const SizedBox(width: normal_100),
                   Expanded(
                       child: Column(

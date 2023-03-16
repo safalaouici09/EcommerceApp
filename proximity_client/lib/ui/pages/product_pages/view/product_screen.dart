@@ -5,6 +5,10 @@ import 'package:proximity_client/ui/pages/authentication_pages/authentication_pa
 import 'package:proximity_client/ui/pages/product_pages/product_pages.dart';
 import 'package:proximity_client/ui/pages/store_pages/store_pages.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
+import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_client/ui/pages/main_pages/view/cart_tab_screen.dart';
+import 'package:proximity_client/domain/store_repository/store_repository.dart';
+import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 
 class ProductScreen extends StatelessWidget {
   const ProductScreen({Key? key, required this.id}) : super(key: key);
@@ -15,6 +19,11 @@ class ProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
+    var credentialsBox = Boxes.getCredentials();
+    String? _token = credentialsBox.get('token');
+    
+    final cartService = Provider.of<CartService>(context);
+    final storeService = Provider.of<StoreService>(context);
 
     return Consumer<ProductService>(builder: (context, productService, child) {
       Product product =
@@ -113,9 +122,26 @@ class ProductScreen extends StatelessWidget {
               onPressed: () => showProductModal(context, product.id!),
               title: 'Add to Cart.'),
           SecondaryButton(
-              onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => SignupScreen()),
-                  (Route<dynamic> route) => true),
+              onPressed: () =>{
+                  if(_token != null) {
+                    if(storeService.store != null) {
+                        cartService.addToCart(
+                                      context,
+                                      product,
+                                      product.variants![0],
+                                      storeService.store,
+                                      1 , 
+                                      noredirection: 1 )  
+                    } 
+
+
+                  }else {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => SignupScreen()),
+                          (Route<dynamic> route) => true) 
+                  }
+                }
+                  ,
               title: 'Buy Now.')
         ])
       ]));
