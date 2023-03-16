@@ -177,7 +177,7 @@ class StoreCreationValidation with ChangeNotifier {
   bool get isValid {
     if (_storeName.value != null &&
         _storeDescription.value != null &&
-        (_selfPickup || _delivery) &&
+        // (_selfPickup || _delivery) &&
         // _shopCategory.value != null &&
         _storeAddress.isAddressValid) {
       return true;
