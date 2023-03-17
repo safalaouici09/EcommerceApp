@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/services.dart';
+import 'package:proximity_client/CustomErrorWidget.dart';
 import 'package:proximity_client/domain/authentication/authentication.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
@@ -11,11 +12,7 @@ import 'package:proximity_client/domain/product_repository/product_repository.da
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
-<<<<<<< HEAD
-import 'package:proximity_client/CustomErrorWidget.dart';
-=======
 import 'package:proximity_client/ui/pages/pages.dart';
->>>>>>> dafd0ca2386f8c9152f9e2348bdd2ddd0e89660d
 
 import 'proximity_app.dart';
 

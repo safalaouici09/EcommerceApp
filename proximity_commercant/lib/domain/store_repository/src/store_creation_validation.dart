@@ -118,11 +118,11 @@ class StoreCreationValidation with ChangeNotifier {
       _selfPickup = _selfPickupFree || _selfPickupPartial || _selfPickupTotal;
       _delivery =
           (store.policy!.shippingMethods!.contains(ShippingMethod.delivery));
-      _tax = store.policy!.tax;
-      _selfPickupPrice = store.policy!.selfPickUpPrice;
+      //_tax = store.policy!.tax;
+      /* _selfPickupPrice = store.policy!.selfPickUpPrice;
       _openWeekend = store.policy!.openWeekend;
       _openDay = store.policy!.openDay;
-      _openNight = store.policy!.openNight;
+      _openNight = store.policy!.openNight;*/
       // _openTime = DateTime.parse(store.policy!.openTime!);
       // _closeTime = DateTime.parse(store.policy!.closeTime!);
     }
@@ -530,7 +530,8 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   void changeResevationDuration(String day, int index) {
-    _reservationDuration = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
+    _reservationDuration =
+        int.parse(day.replaceAll("days", "").replaceAll("day", ""));
 
     notifyListeners();
   }
@@ -548,13 +549,15 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   void changeReturnMaxDays(String day, int index) {
-    _returnMaxDays = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
+    _returnMaxDays =
+        int.parse(day.replaceAll("days", "").replaceAll("day", ""));
 
     notifyListeners();
   }
 
   void changeSelfPickUpMaxDays(String day, int index) {
-    _selfPickUpMaxDays = int.parse(day.replaceAll("days" , "").replaceAll("day",""));
+    _selfPickUpMaxDays =
+        int.parse(day.replaceAll("days", "").replaceAll("day", ""));
 
     notifyListeners();
   }
@@ -728,62 +731,46 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   Map<String, dynamic> policytoFormData() {
-    var pickup = null ;
-    var delivery = null ; 
-    var returnPolicy = null ; 
+    var pickup = null;
+    var delivery = null;
+    var returnPolicy = null;
 
-    if( selfPickUplMaxDays != null  ) {
-      pickup = {
-          "timeLimit": selfPickUplMaxDays
-        } ;
-    }else {
+    if (selfPickUplMaxDays != null) {
+      pickup = {"timeLimit": selfPickUplMaxDays};
+    } else {
       delivery = {
-          "zone": {
-            "centerPoint": {
-              "latitude": storeAddress.lat ?? 0.0,
-              "longitude": storeAddress.lng ?? 0.0
-            },
-            "raduis": shippingMaxKM ?? 0
+        "zone": {
+          "centerPoint": {
+            "latitude": storeAddress.lat ?? 0.0,
+            "longitude": storeAddress.lng ?? 0.0
           },
-          "pricing": {
-            "fixe": shippingFixedPrice ?? 0,
-            "km": shippingPerKm ?? 0
-          }
-        } ;
+          "raduis": shippingMaxKM ?? 0
+        },
+        "pricing": {"fixe": shippingFixedPrice ?? 0, "km": shippingPerKm ?? 0}
+      };
     }
 
-    if(returnAccept != null && returnAccept == true) {
+    if (returnAccept != null && returnAccept == true) {
       returnPolicy = {
-          "duration": returnMaxDays,
-          "productStatus": returnCondition,
-          "refund": {
+        "duration": returnMaxDays,
+        "productStatus": returnCondition,
+        "refund": {
           "returnMethod": returnCondition,
-            "order": {
-              "fixe": returnPerFee,
-              "percentage": returnPerFee
-            },
-            "shipping": {
-              "fixe": returnPerFee,
-              "percentage": returnPerFee
-            }
-          }
-        } ;
+          "order": {"fixe": returnPerFee, "percentage": returnPerFee},
+          "shipping": {"fixe": returnPerFee, "percentage": returnPerFee}
+        }
+      };
     }
-
 
     return {
-      "policy" : {
-
+      "policy": {
         "pickup": pickup,
         "delivery": delivery,
         "reservation": {
           "duration": reservationDuration,
           "payment": {
             "free": reservationFree,
-            "partial": {
-              "fixe": reservationtax,
-              "percentage": reservationtax
-            },
+            "partial": {"fixe": reservationtax, "percentage": reservationtax},
             "total": reservationTotal
           },
           "cancelation": {
