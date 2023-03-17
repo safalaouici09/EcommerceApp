@@ -64,7 +64,8 @@ class StoreCreationValidation with ChangeNotifier {
   bool _notifBatch = false;
   bool _reservationConcelationPartial = false;
   bool _returnAccept = false;
-  bool _returnNotAccept = false;
+  bool _reservationAccept = false;
+
   int? _reservationDuration;
   int? _notifDuration;
   int? _returnMaxDays;
@@ -96,11 +97,14 @@ class StoreCreationValidation with ChangeNotifier {
 
   double? get reservationcancelationtax => _reservationcancelationtax;
   bool? get returnAccept => _returnAccept;
-  bool? get returnNotAccept => _returnNotAccept;
+  bool? get reservationAccept => _reservationAccept;
+
   double get shippingMaxKM => _shippingMaxKM;
   bool? get globalPolicy => _globalPolicy;
   bool? get customPolicy => _customPolicy;
   String? get returnCondition => _returnCondition;
+  String? _returnMethode;
+  String? get returnMethode => _returnMethode;
   StoreCreationValidation();
 
   StoreCreationValidation.setStore(Store store) {
@@ -212,13 +216,15 @@ class StoreCreationValidation with ChangeNotifier {
   }*/
 
   bool get reservationIsValid {
-    if ((_reservationFree ||
-            (_reservationPartial && _reservationtax != null) ||
-            _reservationTotal) &&
-        (_reservationDuration != null) &&
-        (_reservationConcelationFree ||
-            (_reservationConcelationPartial &&
-                _reservationcancelationtax != null))) {
+    if (_reservationAccept == false ||
+        (_reservationAccept == true &&
+            ((_reservationFree ||
+                    (_reservationPartial && _reservationtax != null) ||
+                    _reservationTotal) &&
+                (_reservationDuration != null) &&
+                (_reservationConcelationFree ||
+                    (_reservationConcelationPartial &&
+                        _reservationcancelationtax != null))))) {
       return true;
     } else {
       return false;
@@ -226,7 +232,7 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   bool get returnIsValid {
-    if (_returnNotAccept ||
+    if (!_returnAccept ||
         (_returnAccept &&
             (_returnMaxDays != null) &&
             (_returnShippingFee ||
@@ -266,6 +272,11 @@ class StoreCreationValidation with ChangeNotifier {
 
   void changeReturnCondition(String value) {
     _returnCondition = value;
+    notifyListeners();
+  }
+
+  void changeReturnMethode(String value) {
+    _returnMethode = value;
     notifyListeners();
   }
 
@@ -375,17 +386,13 @@ class StoreCreationValidation with ChangeNotifier {
 
   void toggleReturnAccept(bool value) {
     _returnAccept = value;
-    if (value) {
-      _returnNotAccept = false;
-    }
+
     notifyListeners();
   }
 
-  void toggleReturnNotAccept(bool value) {
-    _returnNotAccept = value;
-    if (value) {
-      _returnAccept = false;
-    }
+  void toggleReservationAceept(bool value) {
+    _reservationAccept = value;
+
     notifyListeners();
   }
 
@@ -604,6 +611,11 @@ class StoreCreationValidation with ChangeNotifier {
 
   void changeReservationTax(String value) {
     _reservationtax = double.tryParse(value);
+    notifyListeners();
+  }
+
+  void changeReservationCancelationTax(String value) {
+    _reservationcancelationtax = double.tryParse(value);
     notifyListeners();
   }
 

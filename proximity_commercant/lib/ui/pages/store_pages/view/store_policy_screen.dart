@@ -34,9 +34,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 title: Align(
                   alignment: Alignment.centerLeft,
                   child: TopBar(
-                      title: widget.global!
-                          ? 'Stores Golbal Policy.'
-                          : 'Store Policy.'),
+                      title:
+                          widget.global! ? 'Golbal Policy.' : 'Store Policy.'),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0.0,
@@ -54,7 +53,6 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                               storeCreationValidation.policytoFormData())
                           : setState(() {
                               _currentStep = _currentStep + 1;
-                              print(_currentStep);
                             });
                     },
                     onStepCancel: () {
@@ -463,103 +461,132 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         title: Text("Reservation "),
         content: Column(
           children: [
-            SectionDivider(
-                leadIcon: Icons.book_outlined,
-                title: 'Reservation fee.',
-                color: redSwatch.shade500),
-            const InfoMessage(
-                message:
-                    'indicate the reservation policy for your product. Include whether the reservation is free, partial or total, the maximum days for reservation, and any applicable cancellation fees.'),
-            Padding(
-              padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
-              child: Column(
-                children: [
-                  ListToggle(
-                      title: 'Free Reservation',
-                      value: storeCreationValidation.reservationFree!,
-                      onToggle: storeCreationValidation.toggleReservationFree),
-                  ListToggle(
-                      title: 'Partial Reservation',
-                      value: storeCreationValidation.reservationPartial!,
-                      onToggle:
-                          storeCreationValidation.toggleReservationPartial),
-                  ListToggle(
-                      title: 'Total Reservation',
-                      value: storeCreationValidation.reservationTotal!,
-                      onToggle: storeCreationValidation.toggleReservationTotal),
-                  if ((storeCreationValidation.reservationPartial ?? true)) ...[
-                    const SizedBox(height: normal_100),
-                    EditText(
-                      hintText: 'Reservation Price.',
-                      keyboardType: TextInputType.number,
-                      saved: (storeCreationValidation.reservationtax == null)
-                          ? ""
-                          : storeCreationValidation.reservationtax!.toString(),
-                      //enabled: (store.policy == null) || editScreen,
-                      onChanged: storeCreationValidation.changeReservationTax,
-                    )
-                  ],
-                ],
-              ),
-            ),
-            const SizedBox(height: normal_100),
-            SectionDivider(
-                leadIcon: Icons.timelapse_outlined,
-                title: 'Reservation duration.',
-                color: redSwatch.shade500),
-            DropDownSelector<String>(
-              // labelText: 'Product Category.',
-              hintText: 'Reservation duration.',
-              onChanged: storeCreationValidation.changeResevationDuration,
-              borderType: BorderType.middle,
-              savedValue:
-                  storeCreationValidation.reservationDuration.toString(),
-              items: daysMap.entries
-                  .map((item) => DropdownItem<String>(
-                      value: item.key,
-                      child: Text(item.value,
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle2!
-                              .copyWith(fontWeight: FontWeight.w600))))
-                  .toList(),
-            ),
-            SectionDivider(
-                leadIcon: Icons.cancel_outlined,
-                title: 'Reservation cancelation.',
-                color: redSwatch.shade500),
-            Padding(
-              padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
-              child: Column(
-                children: [
-                  ListToggle(
-                      title: 'Free Cancelation',
-                      value:
-                          storeCreationValidation.reservationConcelationFree!,
-                      onToggle: storeCreationValidation
-                          .toggleReservationConcelationFree),
-                  ListToggle(
-                      title: 'Chargeable Cancelation',
-                      value: storeCreationValidation
-                          .reservationConcelationPartial!,
-                      onToggle: storeCreationValidation
-                          .toggleReservationConcelationPartial),
-                  if ((storeCreationValidation.reservationConcelationPartial ??
-                      true)) ...[
-                    const SizedBox(height: normal_100),
-                    EditText(
-                      hintText: 'Cancelation Fee.',
-                      keyboardType: TextInputType.number,
-                      saved: (storeCreationValidation.selfPickupPrice == null)
-                          ? ""
-                          : storeCreationValidation.selfPickupPrice.toString(),
-                      //enabled: (store.policy == null) || editScreen,
-                      onChanged: storeCreationValidation.changeSelfPickupPrice,
-                    )
-                  ],
-                ],
-              ),
-            ),
+            ListToggle(
+                title: 'Allow Reservations',
+                value: storeCreationValidation.reservationAccept!,
+                onToggle: storeCreationValidation.toggleReservationAceept),
+            storeCreationValidation.reservationAccept!
+                ? Column(
+                    children: [
+                      SectionDivider(
+                          leadIcon: Icons.book_outlined,
+                          title: 'Reservation fee.',
+                          color: redSwatch.shade500),
+                      const InfoMessage(
+                          message:
+                              'indicate the reservation policy for your product. Include whether the reservation is free, partial or total, the maximum days for reservation, and any applicable cancellation fees.'),
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(normal_100).copyWith(right: 0),
+                        child: Column(
+                          children: [
+                            ListToggle(
+                                title: 'Free Reservation',
+                                value: storeCreationValidation.reservationFree!,
+                                onToggle: storeCreationValidation
+                                    .toggleReservationFree),
+                            ListToggle(
+                                title: 'Partial Reservation',
+                                value:
+                                    storeCreationValidation.reservationPartial!,
+                                onToggle: storeCreationValidation
+                                    .toggleReservationPartial),
+                            ListToggle(
+                                title: 'Total Reservation',
+                                value:
+                                    storeCreationValidation.reservationTotal!,
+                                onToggle: storeCreationValidation
+                                    .toggleReservationTotal),
+                            if ((storeCreationValidation.reservationPartial ??
+                                true)) ...[
+                              const SizedBox(height: normal_100),
+                              EditText(
+                                hintText: 'Reservation Price.',
+                                keyboardType: TextInputType.number,
+                                saved: (storeCreationValidation
+                                            .reservationtax ==
+                                        null)
+                                    ? ""
+                                    : storeCreationValidation.reservationtax!
+                                        .toString(),
+                                //enabled: (store.policy == null) || editScreen,
+                                onChanged: storeCreationValidation
+                                    .changeReservationTax,
+                              )
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: normal_100),
+                      SectionDivider(
+                          leadIcon: Icons.timelapse_outlined,
+                          title: 'Reservation duration.',
+                          color: redSwatch.shade500),
+                      DropDownSelector<String>(
+                        // labelText: 'Product Category.',
+                        hintText: 'Reservation duration.',
+                        onChanged:
+                            storeCreationValidation.changeResevationDuration,
+                        borderType: BorderType.middle,
+                        savedValue: storeCreationValidation.reservationDuration
+                            .toString(),
+                        items: daysMap.entries
+                            .map((item) => DropdownItem<String>(
+                                value: item.key,
+                                child: Text(item.value,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2!
+                                        .copyWith(
+                                            fontWeight: FontWeight.w600))))
+                            .toList(),
+                      ),
+                      SectionDivider(
+                          leadIcon: Icons.cancel_outlined,
+                          title: 'Reservation cancelation.',
+                          color: redSwatch.shade500),
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(normal_100).copyWith(right: 0),
+                        child: Column(
+                          children: [
+                            ListToggle(
+                                title: 'Free Cancelation',
+                                value: storeCreationValidation
+                                    .reservationConcelationFree!,
+                                onToggle: storeCreationValidation
+                                    .toggleReservationConcelationFree),
+                            ListToggle(
+                                title: 'Chargeable Cancelation',
+                                value: storeCreationValidation
+                                    .reservationConcelationPartial!,
+                                onToggle: storeCreationValidation
+                                    .toggleReservationConcelationPartial),
+                            if ((storeCreationValidation
+                                    .reservationConcelationPartial ??
+                                true)) ...[
+                              const SizedBox(height: normal_100),
+                              EditText(
+                                hintText: 'Cancelation Fee.',
+                                keyboardType: TextInputType.number,
+                                saved: (storeCreationValidation
+                                            .reservationcancelationtax ==
+                                        null)
+                                    ? ""
+                                    : storeCreationValidation
+                                        .reservationcancelationtax
+                                        .toString(),
+                                //enabled: (store.policy == null) || editScreen,
+                                onChanged: storeCreationValidation
+                                    .changeReservationCancelationTax,
+                              )
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Container()
           ],
         ));
   }
@@ -586,10 +613,6 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       title: 'Allow Returns',
                       value: storeCreationValidation.returnAccept!,
                       onToggle: storeCreationValidation.toggleReturnAccept),
-                  ListToggle(
-                      title: 'Decline Returns',
-                      value: storeCreationValidation.returnNotAccept!,
-                      onToggle: storeCreationValidation.toggleReturnNotAccept),
                 ],
               ),
             ),
@@ -625,6 +648,12 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                         onChanged:
                             storeCreationValidation.changeReturnCondition,
                         saved: storeCreationValidation.returnCondition,
+                      ),
+                      const EditTextSpacer(),
+                      EditText(
+                        hintText: "Return method",
+                        onChanged: storeCreationValidation.changeReturnMethode,
+                        saved: storeCreationValidation.returnMethode,
                       ),
                       SectionDivider(
                           leadIcon: Icons.cancel_outlined,
