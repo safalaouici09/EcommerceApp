@@ -778,7 +778,7 @@ class StoreCreationValidation with ChangeNotifier {
 
     return {
       "policy": {
-        "workTime": workingTime,
+        "workingTime": workingTime,
         "pickup": pickup,
         "delivery": delivery,
         "reservation": {

@@ -11,7 +11,7 @@ import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.da
 
 import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
 
-class StoreCreationScreen extends StatelessWidget {
+class StoreCreationScreen extends StatefulWidget {
   const StoreCreationScreen(
       {Key? key, this.index, required this.store, this.editScreen = false})
       : super(key: key);
@@ -21,12 +21,91 @@ class StoreCreationScreen extends StatelessWidget {
   final bool editScreen;
 
   @override
+  State<StoreCreationScreen> createState() => _StoreCreationScreenState();
+}
+
+class _StoreCreationScreenState extends State<StoreCreationScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    User? _user = context.watch<UserService>().user;
+
+    if (_user!.policy == null) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        showDialogPopup(
+            context: context,
+            pageBuilder: (ctx, anim1, anim2) => StatefulBuilder(
+                builder: (context, setState) => DialogPopup(
+                    child: SizedBox(
+                        width:
+                            MediaQuery.of(context).size.width - normal_200 * 2,
+                        child:
+                            Column(mainAxisSize: MainAxisSize.min, children: [
+                          const SizedBox(height: normal_100),
+                          Stack(children: [
+                            ImageFiltered(
+                                imageFilter: blurFilter,
+                                child: Icon(Icons.check_circle_outline_outlined,
+                                    color:
+                                        blueSwatch.shade100.withOpacity(1 / 3),
+                                    size: normal_300)),
+                            Icon(ProximityIcons.policy,
+                                color: blueSwatch.shade100, size: normal_300)
+                          ]),
+                          Padding(
+                              padding: const EdgeInsets.only(
+                                  top: normal_100,
+                                  left: normal_100,
+                                  right: normal_100),
+                              child: Text(
+                                  'Please set your global policy before creating a new store.To ensure consistency across all your stores, it is important to set a global policy that will apply to all your stores. This policy can include details such as shipping and return policies, terms of service, and other important information for your customers.To set your global policy, please click the "Set Policy" button below. If you are  not ready to set your policy yet, you can click "Cancel" ',
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                  textAlign: TextAlign.center)),
+                          Padding(
+                              padding: const EdgeInsets.all(normal_100),
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                        child: SecondaryButton(
+                                            title: 'Cancel.',
+                                            onPressed: () =>
+                                                Navigator.pop(context))),
+                                    const SizedBox(width: normal_100),
+                                    Expanded(
+                                        child: Consumer<StoreService>(
+                                            builder: (context, storeService,
+                                                    child) =>
+                                                Expanded(
+                                                    child: PrimaryButton(
+                                                        title: 'Set Policy.',
+                                                        onPressed: () {
+                                                          /// Go to [HomeScreen]
+                                                          Navigator.of(context)
+                                                              .pushAndRemoveUntil(
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              StorePolicyScreen(
+                                                                                global: true,
+                                                                              )),
+                                                                  (Route<dynamic>
+                                                                          route) =>
+                                                                      false);
+                                                        }))))
+                                  ]))
+                        ])))));
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
 
     return ChangeNotifierProvider<StoreCreationValidation>(
-        create: (context) => StoreCreationValidation.setStore(store),
+        create: (context) => StoreCreationValidation.setStore(widget.store),
         child: Consumer2<StoreCreationValidation, StoreService>(
             builder: (context, storeCreationValidation, storeService, child) {
           /// first check if [index] is null or not
@@ -36,15 +115,18 @@ class StoreCreationScreen extends StatelessWidget {
           /// otherwise we need to check if we already fetched the data and then
           /// proceed with the rendering
           ///
-          if (index != null) {
-            didFetch = storeService.stores![index!].allFetched();
-            if (!didFetch) storeService.getStoreByIndex(index!);
+          if (widget.index != null) {
+            didFetch = storeService.stores![widget.index!].allFetched();
+            if (!didFetch) storeService.getStoreByIndex(widget.index!);
           }
           return Scaffold(
               body: SafeArea(
                   child: Stack(alignment: Alignment.bottomCenter, children: [
             ListView(children: [
-              TopBar(title: editScreen ? 'Edit Store.' : 'Create a new Store.'),
+              TopBar(
+                  title: widget.editScreen
+                      ? 'Edit Store.'
+                      : 'Create a new Store.'),
               SectionDivider(
                   leadIcon: ProximityIcons.user,
                   title: 'Store owner.',
@@ -73,7 +155,7 @@ class StoreCreationScreen extends StatelessWidget {
                   borderType: BorderType.top,
                   saved: storeCreationValidation.storeName.value,
                   errorText: storeCreationValidation.storeName.error,
-                  enabled: (store.name == null) || editScreen,
+                  enabled: (widget.store.name == null) || widget.editScreen,
                   onChanged: storeCreationValidation.changeStoreName,
                 ),
               ]),
@@ -87,7 +169,8 @@ class StoreCreationScreen extends StatelessWidget {
                     saved: storeCreationValidation.storeDescription.value,
                     errorText: storeCreationValidation.storeDescription.error,
                     maxLines: 5,
-                    enabled: (store.description == null) || editScreen,
+                    enabled:
+                        (widget.store.description == null) || widget.editScreen,
                     onChanged: storeCreationValidation.changeStoreDescription,
                   ),
                 ],
@@ -212,7 +295,7 @@ class StoreCreationScreen extends StatelessWidget {
                   hintText: 'Street Address Line 1.',
                   borderType: BorderType.top,
                   saved: storeCreationValidation.storeAddress.fullAddress,
-                  enabled: (store.address == null) || editScreen,
+                  enabled: (widget.store.address == null) || widget.editScreen,
                   onChanged: storeCreationValidation.changeFullAddress,
                 ),
               ]),
@@ -223,7 +306,8 @@ class StoreCreationScreen extends StatelessWidget {
                     hintText: 'Street Address Line 2.',
                     borderType: BorderType.middle,
                     saved: storeCreationValidation.storeAddress.streetName,
-                    enabled: (store.address == null) || editScreen,
+                    enabled:
+                        (widget.store.address == null) || widget.editScreen,
                     onChanged: storeCreationValidation.changeStreetName,
                   ),
                 ],
@@ -255,7 +339,8 @@ class StoreCreationScreen extends StatelessWidget {
                     hintText: 'Region.',
                     borderType: BorderType.middle,
                     saved: storeCreationValidation.storeAddress.region,
-                    enabled: (store.address == null) || editScreen,
+                    enabled:
+                        (widget.store.address == null) || widget.editScreen,
                     onChanged: storeCreationValidation.changeRegion,
                   ),
                 ],
@@ -267,7 +352,8 @@ class StoreCreationScreen extends StatelessWidget {
                     hintText: 'City.',
                     borderType: BorderType.middle,
                     saved: storeCreationValidation.storeAddress.city,
-                    enabled: (store.address == null) || editScreen,
+                    enabled:
+                        (widget.store.address == null) || widget.editScreen,
                     onChanged: storeCreationValidation.changeCity,
                   ),
                 ],
@@ -277,7 +363,7 @@ class StoreCreationScreen extends StatelessWidget {
                   hintText: 'Postal Code.',
                   borderType: BorderType.bottom,
                   saved: storeCreationValidation.storeAddress.postalCode,
-                  enabled: (store.address == null) || editScreen,
+                  enabled: (widget.store.address == null) || widget.editScreen,
                   onChanged: storeCreationValidation.changePostalCode,
                 ),
               ]),
@@ -345,8 +431,8 @@ class StoreCreationScreen extends StatelessWidget {
                           ? ButtonState.enabled
                           : ButtonState.disabled,
                   onPressed: () {
-                    if (editScreen) {
-                      storeService.editStore(context, index!,
+                    if (widget.editScreen) {
+                      storeService.editStore(context, widget.index!,
                           storeCreationValidation.toFormData(), []);
                     } else {
                       StoreDialogs.confirmStore(context, 1);
