@@ -746,6 +746,8 @@ class StoreCreationValidation with ChangeNotifier {
     var pickup = null;
     var delivery = null;
     var returnPolicy = null;
+    WorkingTime workingTime = WorkingTime(
+        openTime: _openTime.toString(), closeTime: _closeTime.toString());
 
     if (selfPickUplMaxDays != null) {
       pickup = {"timeLimit": selfPickUplMaxDays};
@@ -776,6 +778,7 @@ class StoreCreationValidation with ChangeNotifier {
 
     return {
       "policy": {
+        "workTime": workingTime,
         "pickup": pickup,
         "delivery": delivery,
         "reservation": {
@@ -834,15 +837,7 @@ class StoreCreationValidation with ChangeNotifier {
         "country": "${storeAddress.countryName ?? ""}",
         "countryCode": "FR"
       }''',
-      "policies": '''{
-        "selfPickUp": "${(selfPickupFree ?? false) ? "free" : (selfPickupPartial ?? false) ? "partial" : (selfPickupTotal ?? false) ? "total" : ""}",
-        "selfPickUpPrice": ${_selfPickupPrice ?? 0},
-        "delivery": ${delivery ?? false},
-        "tax": ${tax ?? 0},
-        "openWeekend": true,
-        "openTime": "8:00",
-        "closeTime": "17:00"
-      }'''
+      "policy": policytoFormData()
     });
     if (_storeImages.isNotEmpty) {
       if (_storeImages.first is File) {
