@@ -27,7 +27,7 @@ class StoreCreationValidation with ChangeNotifier {
   bool _returnShippingFee = false;
   bool _returnTotalFee = false;
   bool _returnPartialFee = false;
-  int? _returnPerFee;
+  double? _returnPerFee;
   String? _returnCondition;
   bool _delivery = false;
   double? _tax;
@@ -84,7 +84,7 @@ class StoreCreationValidation with ChangeNotifier {
   bool? get returnShippingFee => _returnShippingFee;
   bool? get returnPartialFee => _returnPartialFee;
   bool? get returnTotalFee => _returnTotalFee;
-  int? get returnPerFee => _returnPerFee;
+  double? get returnPerFee => _returnPerFee;
   bool? get reservationConcelationFree => _reservationConcelationFree;
   bool? get reservationConcelationPartial => _reservationConcelationPartial;
   int? get reservationDuration => _reservationDuration;
@@ -550,7 +550,7 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   void changeReturnPerFee(String percentage, int index) {
-    _returnPerFee = int.parse(percentage);
+    _returnPerFee = double.parse(percentage);
 
     notifyListeners();
   }
@@ -748,8 +748,50 @@ class StoreCreationValidation with ChangeNotifier {
     var returnPolicy = null;
     WorkingTime workingTime = WorkingTime(
         openTime: _openTime.toString(), closeTime: _closeTime.toString());
+    PickupPolicy pickupPolicy = PickupPolicy(timeLimit: selfPickUplMaxDays);
+    DeliveryPolicy deliveryPolicy = DeliveryPolicy(
+        zone: Zone(
+            latitude: storeAddress.lat ?? 0.0,
+            longitude: storeAddress.lng ?? 0.0,
+            radius: shippingMaxKM ?? 0),
+        pricing: Pricing(
+            fixedPrice: shippingFixedPriceTax ?? 0.0,
+            kmPrice: shippingPerKmTax));
+    ReturnPolicy(
+        duration: reservationDuration,
+        productStatus: returnCondition,
+        returnMethod: returnMethode,
+        refund: Refund(
+            order: OrderRefund(
+              fixe: _returnPerFee,
+            ),
+            shipping: ShippingRefund(fixe: _returnPerFee)));
+    ReservationPolicy reservationPolicy = ReservationPolicy(
+        payment: ReservationPayment(
+            fixedPrice: _reservationtax, percentage: _reservationtax),
+        cancelation: ReservationCancelation(fix: _reservationcancelationtax));
+    OrderPolicy orderPolicy = OrderPolicy(
+        validation: Validation(
+            auto: _oredersAutoValidation, manual: _oredersManValidation),
+        notification: OrderNotification(
+            realtime: _notifRealTime,
+            time: _notifDuration,
+            perOrdersNbr: _notifDuration,
+            sendMode: SendMode(
+                mail: notifEmail,
+                sms: _notifSms,
+                popup: _notifPopUp,
+                vibration: _notifInPlateforme)));
+    Policy policy = Policy(
+        workingTimePolicy: workingTime,
+        pickupPolicy: pickupPolicy,
+        deliveryPolicy: deliveryPolicy,
+        reservationPolicy: reservationPolicy,
+        returnPolicy: returnPolicy,
+        orderPolicy: orderPolicy);
+    return policy.toJson();
 
-    if (selfPickUplMaxDays != null) {
+    /*  if (selfPickUplMaxDays != null) {
       pickup = {"timeLimit": selfPickUplMaxDays};
     } else {
       delivery = {
@@ -778,8 +820,7 @@ class StoreCreationValidation with ChangeNotifier {
 
     return {
       "policy": {
-        "workingTime": workingTime,
-        "pickup": pickup,
+        "pickups": pickup,
         "delivery": delivery,
         "reservation": {
           "duration": reservationDuration,
@@ -815,7 +856,7 @@ class StoreCreationValidation with ChangeNotifier {
           }
         }
       }
-    };
+    };*/
   }
 
   /// A method to convert this form validator into a Store object

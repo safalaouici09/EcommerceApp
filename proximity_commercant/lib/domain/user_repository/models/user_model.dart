@@ -66,5 +66,7 @@ class User {
         isVerified = parsedJson['isVerified'] ?? false,
         welcome = parsedJson['welcome'] ?? false,
         profileImage = parsedJson['image'],
-        policy = parsedJson['policy'] ?? null;
+        policy = parsedJson['policy'] == null
+            ? parsedJson['policy']
+            : Policy.fromJson(parsedJson['policy']);
 }

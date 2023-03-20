@@ -22,41 +22,44 @@ class Policy {
   });
 
   Policy.fromJson(Map<String, dynamic> json) {
-    workingTimePolicy = WorkingTime.fromJson(json['workingTime ']);
+    // workingTimePolicy = WorkingTime.fromJson(json['workingTime ']);
     pickupPolicy = PickupPolicy.fromJson(json['pickup']);
     deliveryPolicy = DeliveryPolicy.fromJson(json['delivery']);
     returnPolicy = ReturnPolicy.fromJson(json['return']);
     reservationPolicy = ReservationPolicy.fromJson(json['reservation']);
     orderPolicy = OrderPolicy.fromJson(json['order']);
-
-    Map<String, dynamic> toJson() {
-      final Map<String, dynamic> data = new Map<String, dynamic>();
-      if (pickupPolicy != null) {
-        data['pickup'] = pickupPolicy!.toJson();
-      }
-      if (deliveryPolicy != null) {
-        data['delivery'] = deliveryPolicy!.toJson();
-      }
-      if (reservationPolicy != null) {
-        data['reservation'] = this.reservationPolicy!.toJson();
-      }
-      if (returnPolicy != null) {
-        data['return'] = returnPolicy!.toJson();
-      }
-      if (orderPolicy != null) {
-        data['order'] = orderPolicy!.toJson();
-      }
-      return data;
-    }
   }
 
-  // workingTimeexpiration: const Duration(days: 15),
-  // tax: 1.8,
-  // selfPickUpPrice: 1.5);
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (workingTimePolicy != null) {
+      data['workingTime'] = workingTimePolicy!.toJson();
+    }
+    if (pickupPolicy != null) {
+      data['pickup'] = pickupPolicy!.toJson();
+    }
+    if (deliveryPolicy != null) {
+      data['delivery'] = deliveryPolicy!.toJson();
+    }
+    if (reservationPolicy != null) {
+      data['reservation'] = this.reservationPolicy!.toJson();
+    }
+    if (returnPolicy != null) {
+      data['return'] = returnPolicy!.toJson();
+    }
+    if (orderPolicy != null) {
+      data['order'] = orderPolicy!.toJson();
+    }
+    return data;
+  }
 }
 
+// workingTimeexpiration: const Duration(days: 15),
+// tax: 1.8,
+// selfPickUpPrice: 1.5);
+
 class PickupPolicy {
-  int timeLimit;
+  int? timeLimit;
 
   PickupPolicy({required this.timeLimit});
   factory PickupPolicy.fromJson(Map<String, dynamic> json) {
@@ -73,21 +76,26 @@ class PickupPolicy {
 }
 
 class DeliveryPolicy {
-  Zone zone;
-  Pricing pricing;
+  Zone? zone;
+  Pricing? pricing;
 
   DeliveryPolicy({required this.zone, required this.pricing});
   factory DeliveryPolicy.fromJson(Map<String, dynamic> json) {
     return DeliveryPolicy(
-      zone: Zone.fromJson(json['zone'] as Map<String, dynamic>),
-      pricing: Pricing.fromJson(json['pricing'] as Map<String, dynamic>),
+      zone: Zone.fromJson(json['zone']),
+      pricing: Pricing.fromJson(json['pricing']),
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['zone'] = zone.toJson();
-    data['pricing'] = pricing.toJson();
+    if (zone != null) {
+      data['zone'] = zone!.toJson();
+    }
+    if (pricing != null) {
+      data['pricing'] = pricing!.toJson();
+    }
+
     return data;
   }
 }
@@ -225,9 +233,9 @@ class ReservationPayment {
 }
 
 class ReturnPolicy {
-  int duration;
-  String productStatus;
-  String returnMethod;
+  int? duration;
+  String? productStatus;
+  String? returnMethod;
   Refund refund;
 
   ReturnPolicy({
@@ -354,7 +362,7 @@ class WorkingTime {
 
 class OrderPolicy {
   Validation? validation;
-  Notification? notification;
+  OrderNotification? notification;
 
   OrderPolicy({this.validation, this.notification});
 
@@ -364,7 +372,7 @@ class OrderPolicy {
           ? Validation.fromJson(json['validation'])
           : null,
       notification: json['notification'] != null
-          ? Notification.fromJson(json['notification'])
+          ? OrderNotification.fromJson(json['notification'])
           : null,
     );
   }
@@ -402,16 +410,17 @@ class Validation {
   }
 }
 
-class Notification {
+class OrderNotification {
   bool? realtime;
   int? time;
   int? perOrdersNbr;
   SendMode? sendMode;
 
-  Notification({this.realtime, this.time, this.perOrdersNbr, this.sendMode});
+  OrderNotification(
+      {this.realtime, this.time, this.perOrdersNbr, this.sendMode});
 
-  factory Notification.fromJson(Map<String, dynamic> json) {
-    return Notification(
+  factory OrderNotification.fromJson(Map<String, dynamic> json) {
+    return OrderNotification(
       realtime: json['realtime'] as bool?,
       time: json['time'] as int?,
       perOrdersNbr: json['perOrdersNbr'] as int?,
