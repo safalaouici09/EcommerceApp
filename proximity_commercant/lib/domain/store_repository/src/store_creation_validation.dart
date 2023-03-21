@@ -11,6 +11,7 @@ import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
 import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/models/user_model.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/view/store_creation_screen.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/widgets/widgets.dart';
 
 class StoreCreationValidation with ChangeNotifier {
@@ -400,7 +401,7 @@ class StoreCreationValidation with ChangeNotifier {
   void toggleSelfPickup() {
     _selfPickup = !_selfPickup;
     if (_selfPickup) {
-      _delivery = false;
+      // _delivery = false;
     }
     notifyListeners();
   }
@@ -563,8 +564,7 @@ class StoreCreationValidation with ChangeNotifier {
   }
 
   void changeSelfPickUpMaxDays(String day, int index) {
-    _selfPickUpMaxDays =
-        int.parse(day.replaceAll("days", "").replaceAll("day", ""));
+    _selfPickUpMaxDays = int.parse(day);
 
     notifyListeners();
   }
@@ -584,7 +584,7 @@ class StoreCreationValidation with ChangeNotifier {
       _tax = null;
     }
     if (_delivery) {
-      _selfPickup = false;
+      // _selfPickup = false;
     }
     notifyListeners();
   }
@@ -722,7 +722,10 @@ class StoreCreationValidation with ChangeNotifier {
         /// Display Results Message
         ToastSnackbar().init(context).showToast(
             message: "${res.statusMessage}", type: ToastSnackbarType.success);
-        Navigator.pop(context);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StoreCreationScreen(store: Store())));
       }
     } on DioError catch (e) {
       if (e.response != null) {
@@ -751,25 +754,34 @@ class StoreCreationValidation with ChangeNotifier {
     PickupPolicy pickupPolicy = PickupPolicy(timeLimit: selfPickUplMaxDays);
     DeliveryPolicy deliveryPolicy = DeliveryPolicy(
         zone: Zone(
-            latitude: storeAddress.lat ?? 0.0,
-            longitude: storeAddress.lng ?? 0.0,
-            radius: shippingMaxKM ?? 0),
+            centerPoint: CenterPoint(
+              latitude: storeAddress.lat ?? 46.2276,
+              longitude: storeAddress.lng ?? 2.2137,
+            ),
+            radius: shippingMaxKM ?? 10.1),
         pricing: Pricing(
-            fixedPrice: shippingFixedPriceTax ?? 0.0,
-            kmPrice: shippingPerKmTax));
+            fixedPrice: shippingFixedPriceTax ?? 0.1.toDouble(),
+            kmPrice: shippingPerKmTax ?? 0.1.toDouble()));
     ReturnPolicy(
-        duration: reservationDuration,
+        duration: reservationDuration ?? 2,
         productStatus: returnCondition,
         returnMethod: returnMethode,
         refund: Refund(
             order: OrderRefund(
-              fixe: _returnPerFee,
+              fixe: _returnPerFee ?? 0.1.toDouble(),
             ),
-            shipping: ShippingRefund(fixe: _returnPerFee)));
+            shipping: ShippingRefund(fixe: _returnPerFee ?? 0.1.toDouble())));
     ReservationPolicy reservationPolicy = ReservationPolicy(
         payment: ReservationPayment(
-            fixedPrice: _reservationtax, percentage: _reservationtax),
-        cancelation: ReservationCancelation(fix: _reservationcancelationtax));
+            free: _reservationFree,
+            total: _reservationTotal,
+            partial: Partial(
+                fixe: _reservationtax ?? 0.2.toDouble(),
+                percentage: _reservationtax ?? 0.2.toDouble())),
+        cancelation: ReservationCancelation(
+          restrictions:
+              Restrictions(fix: _reservationcancelationtax ?? 0.3.toDouble()),
+        ));
     OrderPolicy orderPolicy = OrderPolicy(
         validation: Validation(
             auto: _oredersAutoValidation, manual: _oredersManValidation),
@@ -783,14 +795,13 @@ class StoreCreationValidation with ChangeNotifier {
                 popup: _notifPopUp,
                 vibration: _notifInPlateforme)));
     Policy policy = Policy(
-        workingTimePolicy: workingTime,
+        //  workingTimePolicy: workingTime,
         pickupPolicy: pickupPolicy,
         deliveryPolicy: deliveryPolicy,
         reservationPolicy: reservationPolicy,
         returnPolicy: returnPolicy,
         orderPolicy: orderPolicy);
-    return policy.toJson();
-
+    return {"policy": policy.toJson()};
     /*  if (selfPickUplMaxDays != null) {
       pickup = {"timeLimit": selfPickUplMaxDays};
     } else {
