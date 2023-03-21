@@ -22,7 +22,7 @@ class Policy {
   });
 
   Policy.fromJson(Map<String, dynamic> json) {
-    // workingTimePolicy = WorkingTime.fromJson(json['workingTime ']);
+    workingTimePolicy = WorkingTime.fromJson(json['workingTime']);
     pickupPolicy = PickupPolicy.fromJson(json['pickup']);
     deliveryPolicy = DeliveryPolicy.fromJson(json['delivery']);
     returnPolicy = ReturnPolicy.fromJson(json['return']);
@@ -101,17 +101,17 @@ class DeliveryPolicy {
 }
 
 class Zone {
-  double latitude;
-  double longitude;
-  double radius;
+  double? latitude;
+  double? longitude;
+  double? radius;
 
   Zone({required this.latitude, required this.longitude, required this.radius});
 
   factory Zone.fromJson(Map<String, dynamic> json) {
     return Zone(
-      latitude: json['centerPoint']['latitude'] as double,
-      longitude: json['centerPoint']['longitude'] as double,
-      radius: json['radius'] as double,
+      latitude: json['centerPoint']['latitude'] as double?,
+      longitude: json['centerPoint']['longitude'] as double?,
+      radius: json['radius'] as double?,
     );
   }
   Map<String, dynamic> toJson() {
@@ -214,20 +214,25 @@ class ReservationPayment {
   factory ReservationPayment.fromJson(Map<String, dynamic> json) {
     return ReservationPayment(
       free: json['free'],
-      partial: json['partial'],
+      partial: json['partial'] != null,
       total: json['total'],
-      fixedPrice: json['fixedPrice'],
-      percentage: json['percentage'],
+      fixedPrice: json['partial']['fixe'],
+      percentage: json['partial']['percentage'],
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['free'] = this.free;
-    data['partial'] = this.partial;
+    if(this.partial != null) {
+      var Map<String, dynamic> data_partial = new Map<String, dynamic>();
+      data_partial['fixedPrice'] = this.fixedPrice;
+      data_partial['percentage'] = this.percentage;
+      data['partial'] = data_partial ;
+    }else {
+      data['partial'] = null;
+    }
     data['total'] = this.total;
-    data['fixedPrice'] = this.fixedPrice;
-    data['percentage'] = this.percentage;
     return data;
   }
 }
