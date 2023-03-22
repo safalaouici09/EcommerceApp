@@ -43,7 +43,7 @@ class StoreCreationValidation with ChangeNotifier {
   bool _notifInPlateforme = true;
   bool _notifPopUp = false;
 
-  bool? _globalPolicy = false;
+  bool? _globalPolicy = true;
   bool? _customPolicy = false;
   TimeOfDay? _openTime = TimeOfDay(hour: 09, minute: 00);
   TimeOfDay? _closeTime = TimeOfDay(hour: 18, minute: 00);
@@ -695,6 +695,11 @@ class StoreCreationValidation with ChangeNotifier {
 
   Future updatePolicy(BuildContext context, Map<String, dynamic> data) async {
     //_loading = true;
+    /*  Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => StoreCreationScreen(store: Store())));*/
+
     notifyListeners();
 
     /// open hive box

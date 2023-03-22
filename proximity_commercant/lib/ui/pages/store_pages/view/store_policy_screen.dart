@@ -49,8 +49,10 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     type: StepperType.horizontal,
                     onStepContinue: () {
                       _currentStep == 3
-                          ? storeCreationValidation.updatePolicy(context,
-                              storeCreationValidation.policytoFormData())
+                          ? widget.global!
+                              ? storeCreationValidation.updatePolicy(context,
+                                  storeCreationValidation.policytoFormData())
+                              : Navigator.pop(context)
                           : setState(() {
                               _currentStep = _currentStep + 1;
                             });

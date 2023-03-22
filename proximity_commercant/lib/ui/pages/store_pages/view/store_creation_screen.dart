@@ -382,7 +382,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                         title: 'keep global policy',
                         value: storeCreationValidation.globalPolicy!,
                         onToggle: storeCreationValidation.toggleGlobalPolicy),
-                    storeCreationValidation.globalPolicy!
+                    !storeCreationValidation.globalPolicy!
                         ? Padding(
                             padding: const EdgeInsets.all(normal_100)
                                 .copyWith(top: 0),
@@ -394,18 +394,13 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               StorePolicyScreen(
-                                                global: true,
+                                                global: false,
                                               )));
                                   // storeCreationValidation.changeAddress(_result);
                                 },
-                                title: 'Set Global Policy .'),
+                                title: 'Set Custom  Policy .'),
                           )
                         : Container(),
-                    ListToggle(
-                      title: 'custom policy',
-                      value: storeCreationValidation.customPolicy!,
-                      onToggle: storeCreationValidation.toggleCustomPolicy,
-                    ),
                   ],
                 ),
               ),
