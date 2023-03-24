@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
+import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 
 import 'package:proximity_commercant/ui/widgets/address_picker/area_selection_screen.dart';
@@ -24,11 +25,11 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   bool isLastStep = false;
 
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<StoreCreationValidation>(
-        // create: (context) => StoreCreationValidation.setStore(store),
-        create: (context) => StoreCreationValidation(),
-        child: Consumer2<StoreCreationValidation, StoreService>(
-            builder: (context, storeCreationValidation, storeService, child) {
+    return ChangeNotifierProvider<PolicyValidation>(
+        // create: (context) =>PolicyValidation.setStore(store),
+        create: (context) => PolicyValidation(),
+        child: Consumer2<PolicyValidation, StoreService>(
+            builder: (context, policyCreationValidation, storeService, child) {
           return Scaffold(
               appBar: AppBar(
                 title: Align(
@@ -50,8 +51,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     onStepContinue: () {
                       _currentStep == 3
                           ? widget.global!
-                              ? storeCreationValidation.updatePolicy(context,
-                                  storeCreationValidation.policytoFormData())
+                              ? policyCreationValidation.updatePolicy(context,
+                                  policyCreationValidation.policytoFormData())
                               : Navigator.pop(context)
                           : setState(() {
                               _currentStep = _currentStep + 1;
@@ -81,16 +82,16 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                               children: [
                                 PrimaryButton(
                                   buttonState: (_currentStep == 0 &&
-                                              storeCreationValidation
+                                              policyCreationValidation
                                                   .shippingIsValid) ||
                                           (_currentStep == 1 &&
-                                              storeCreationValidation
+                                              policyCreationValidation
                                                   .reservationIsValid) ||
                                           (_currentStep == 2 &&
-                                              storeCreationValidation
+                                              policyCreationValidation
                                                   .returnIsValid) ||
                                           (_currentStep == 3 &&
-                                              storeCreationValidation
+                                              policyCreationValidation
                                                   .ordersIsValid)
                                       ? ButtonState.enabled
                                       : ButtonState.disabled,
@@ -105,10 +106,10 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       );
                     },
                     steps: [
-                      getShippingStep(storeCreationValidation, context),
-                      getReservationStep(storeCreationValidation, context),
-                      getReturnStep(storeCreationValidation, context),
-                      getOrdersStep(storeCreationValidation, context),
+                      getShippingStep(policyCreationValidation, context),
+                      getReservationStep(policyCreationValidation, context),
+                      getReturnStep(policyCreationValidation, context),
+                      getOrdersStep(policyCreationValidation, context),
                     ],
                   ),
                 ),
@@ -117,7 +118,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   }
 
   Step getShippingStep(
-      StoreCreationValidation storeCreationValidation, BuildContext context) {
+     PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 0,
         title: Text("Shipping"),
@@ -137,8 +138,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: small_100),
                     child: LargeIconButton(
-                        onPressed: storeCreationValidation.toggleSelfPickup,
-                        selected: (storeCreationValidation.selfPickup ?? false),
+                        onPressed: policyCreationValidation.toggleSelfPickup,
+                        selected: (policyCreationValidation.selfPickup ?? false),
                         icon: DuotoneIcon(
                             primaryLayer: ProximityIcons.self_pickup_duotone_1,
                             secondaryLayer:
@@ -150,8 +151,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: small_100),
                     child: LargeIconButton(
-                        onPressed: storeCreationValidation.toggleDelivery,
-                        selected: (storeCreationValidation.delivery ?? false),
+                        onPressed: policyCreationValidation.toggleDelivery,
+                        selected: (policyCreationValidation.delivery ?? false),
                         icon: DuotoneIcon(
                             primaryLayer: ProximityIcons.delivery_duotone_1,
                             secondaryLayer: ProximityIcons.delivery_duotone_2,
@@ -159,16 +160,16 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                         title: 'Delivery'),
                   ))
                 ])),
-            if (storeCreationValidation.selfPickup ?? true)
+            if (policyCreationValidation.selfPickup ?? true)
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
                 child: DropDownSelector<String>(
                   // labelText: 'Product Category.',
                   hintText: 'Max Days to Pick Up.',
-                  onChanged: storeCreationValidation.changeSelfPickUpMaxDays,
+                  onChanged: policyCreationValidation.changeSelfPickUpMaxDays,
                   borderType: BorderType.middle,
                   savedValue:
-                      storeCreationValidation.selfPickUplMaxDays.toString(),
+                      policyCreationValidation.selfPickUplMaxDays.toString(),
                   items: daysMap.entries
                       .map((item) => DropdownItem<String>(
                           value: item.key,
@@ -181,48 +182,48 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 ),
               ),
 
-            /*  if (storeCreationValidation.selfPickup ??
+            /*  if (policyCreationValidation.selfPickup ??
                                     false) ...[
                                   ListToggle(
                                       title: 'Free SelfPickup',
-                                      value: storeCreationValidation
+                                      value: policyCreationValidation
                                           .selfPickupFree!,
-                                      onToggle: storeCreationValidation
+                                      onToggle: policyCreationValidation
                                           .toggleSelfPickupFree),
                                   ListToggle(
                                       title: 'Partial SelfPickup',
-                                      value: storeCreationValidation
+                                      value: policyCreationValidation
                                           .selfPickupPartial!,
-                                      onToggle: storeCreationValidation
+                                      onToggle: policyCreationValidation
                                           .toggleSelfPickupPartial),
                                   ListToggle(
                                       title: 'Total SelfPickup',
-                                      value: storeCreationValidation
+                                      value: policyCreationValidation
                                           .selfPickupTotal!,
-                                      onToggle: storeCreationValidation
+                                      onToggle: policyCreationValidation
                                           .toggleSelfPickupTotal),
-                                  if (!(storeCreationValidation
+                                  if (!(policyCreationValidation
                                           .selfPickupFree ??
                                       false)) ...[
                                     const SizedBox(height: normal_100),
                                     EditText(
                                       hintText: 'SelfPickup Price.',
                                       keyboardType: TextInputType.number,
-                                      saved: (storeCreationValidation
+                                      saved: (policyCreationValidation
                                                   .selfPickupPrice ==
                                               null)
                                           ? ""
-                                          : storeCreationValidation
+                                          : policyCreationValidation
                                               .selfPickupPrice
                                               .toString(),
                                       //    enabled: (store.policy == null) ||
                                       //    editScreen,
-                                      onChanged: storeCreationValidation
+                                      onChanged: policyCreationValidation
                                           .changeSelfPickupPrice,
                                     )
                                   ],
                                 ],*/
-            if (storeCreationValidation.delivery ?? false) ...[
+            if (policyCreationValidation.delivery ?? false) ...[
               const SizedBox(height: normal_100),
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
@@ -233,8 +234,11 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           MaterialPageRoute(
                               builder: (context) => AreaSelectionScreen(
                                   currentAddress:
-                                      storeCreationValidation.storeAddress)));
-                      //  storeCreationValidation
+                                      policyCreationValidation.deliveryCenter)));
+                      policyCreationValidation
+                          .changeDeliveryCenterdress(_result);
+
+                      //  policyCreationValidation
                       //  .changeAddress(_result);
                     },
                     title: 'Set Delivery Area.'),
@@ -248,9 +252,9 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           const EdgeInsets.symmetric(horizontal: small_100),
                       child: LargeIconButton(
                           onPressed:
-                              storeCreationValidation.toggleShippingFixedPrice,
+                              policyCreationValidation.toggleShippingFixedPrice,
                           selected:
-                              (storeCreationValidation.shippingFixedPrice ??
+                              (policyCreationValidation.shippingFixedPrice ??
                                   false),
                           icon: DuotoneIcon(
                               primaryLayer: Icons.euro,
@@ -264,9 +268,9 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           const EdgeInsets.symmetric(horizontal: small_100),
                       child: LargeIconButton(
                           onPressed:
-                              storeCreationValidation.toggleShippingPerKm,
+                              policyCreationValidation.toggleShippingPerKm,
                           selected:
-                              (storeCreationValidation.shippingPerKm ?? true),
+                              (policyCreationValidation.shippingPerKm ?? true),
                           icon: DuotoneIcon(
                               primaryLayer: Icons.place_outlined,
                               secondaryLayer: ProximityIcons.delivery_duotone_2,
@@ -274,39 +278,39 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           title: ' By KM'),
                     ))
                   ])),
-              storeCreationValidation.shippingFixedPrice!
+              policyCreationValidation.shippingFixedPrice!
                   ? Padding(
                       padding: const EdgeInsets.all(small_100),
                       child: EditText(
                         hintText: 'Delivery Tax. ',
                         keyboardType: TextInputType.number,
-                        saved: (storeCreationValidation.shippingFixedPriceTax ==
+                        saved: (policyCreationValidation.shippingFixedPriceTax ==
                                 null)
                             ? ""
-                            : storeCreationValidation.shippingFixedPriceTax
+                            : policyCreationValidation.shippingFixedPriceTax
                                 .toString(),
                         //   enabled:
                         // (store.policy == null) || editScreen,
                         onChanged:
-                            storeCreationValidation.changeShippingFixedPriceTax,
+                            policyCreationValidation.changeShippingFixedPriceTax,
                       ),
                     )
                   : Container(),
-              storeCreationValidation.shippingPerKm!
+              policyCreationValidation.shippingPerKm!
                   ? Padding(
                       padding: const EdgeInsets.all(small_100),
                       child: EditText(
                         hintText: 'Delivery Tax per km. ',
                         keyboardType: TextInputType.number,
                         saved:
-                            (storeCreationValidation.shippingPerKmTax == null)
+                            (policyCreationValidation.shippingPerKmTax == null)
                                 ? ""
-                                : storeCreationValidation.shippingPerKmTax
+                                : policyCreationValidation.shippingPerKmTax
                                     .toString(),
                         //   enabled:
                         // (store.policy == null) || editScreen,
                         onChanged:
-                            storeCreationValidation.changeShippingPerKmTax,
+                            policyCreationValidation.changeShippingPerKmTax,
                       ),
                     )
                   : Container(),
@@ -316,7 +320,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   }
 
   Step getOrdersStep(
-      StoreCreationValidation storeCreationValidation, BuildContext context) {
+     PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 3,
         title: Text("Orders"),
@@ -333,19 +337,19 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 children: [
                   ListToggle(
                       title: 'Automatic validation',
-                      value: storeCreationValidation.oredersAutoValidation!,
+                      value: policyCreationValidation.oredersAutoValidation!,
                       onToggle:
-                          storeCreationValidation.toggleOrdersAutoValidation),
+                          policyCreationValidation.toggleOrdersAutoValidation),
                   ListToggle(
                       title: 'Manuel validation',
-                      value: storeCreationValidation.oredersManValidation!,
+                      value: policyCreationValidation.oredersManValidation!,
                       onToggle:
-                          storeCreationValidation.toggleOredersManValidation),
+                          policyCreationValidation.toggleOredersManValidation),
                   ListToggle(
                       title: 'Both',
-                      value: storeCreationValidation.oredersMixValidation!,
+                      value: policyCreationValidation.oredersMixValidation!,
                       onToggle:
-                          storeCreationValidation.toggleOrdersMixValidation),
+                          policyCreationValidation.toggleOrdersMixValidation),
                 ],
               ),
             ),
@@ -360,26 +364,26 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 children: [
                   ListToggle(
                       title: 'Real-time notifications',
-                      value: storeCreationValidation.notifRealTime!,
-                      onToggle: storeCreationValidation.toggleNotifRealTime),
+                      value: policyCreationValidation.notifRealTime!,
+                      onToggle: policyCreationValidation.toggleNotifRealTime),
                   ListToggle(
                       title: 'Hourly notificationss',
-                      value: storeCreationValidation.notifHourly!,
-                      onToggle: storeCreationValidation.toggleNotifHourly),
+                      value: policyCreationValidation.notifHourly!,
+                      onToggle: policyCreationValidation.toggleNotifHourly),
                   ListToggle(
                       title: 'Batch notifications ',
-                      value: storeCreationValidation.notifBatch!,
-                      onToggle: storeCreationValidation.toggleNotifBatch),
-                  storeCreationValidation.notifHourly!
+                      value: policyCreationValidation.notifBatch!,
+                      onToggle: policyCreationValidation.toggleNotifBatch),
+                  policyCreationValidation.notifHourly!
                       ? Padding(
                           padding: const EdgeInsets.all(small_100),
                           child: DropDownSelector<String>(
                             // labelText: 'Product Category.',
                             hintText: 'I want to be notifed every.',
                             onChanged:
-                                storeCreationValidation.changeNotifDuration,
+                                policyCreationValidation.changeNotifDuration,
                             borderType: BorderType.middle,
-                            savedValue: storeCreationValidation.notifDuration
+                            savedValue: policyCreationValidation.notifDuration
                                 .toString(),
                             items: hoursMap.entries
                                 .map((item) => DropdownItem<String>(
@@ -394,16 +398,16 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           ),
                         )
                       : Container(),
-                  storeCreationValidation.notifBatch!
+                  policyCreationValidation.notifBatch!
                       ? Padding(
                           padding: const EdgeInsets.all(small_100),
                           child: DropDownSelector<String>(
                             // labelText: 'Product Category.',
                             hintText: 'Batch Notification Frequency.',
                             onChanged:
-                                storeCreationValidation.changeNotifDuration,
+                                policyCreationValidation.changeNotifDuration,
                             borderType: BorderType.middle,
-                            savedValue: storeCreationValidation.notifDuration
+                            savedValue: policyCreationValidation.notifDuration
                                 .toString(),
                             items: hoursMap.entries
                                 .map((item) => DropdownItem<String>(
@@ -434,21 +438,21 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 children: [
                   ListToggle(
                       title: 'In-platform notifications',
-                      value: storeCreationValidation.notifInPlateforme!,
+                      value: policyCreationValidation.notifInPlateforme!,
                       onToggle:
-                          storeCreationValidation.toggleNotifInPlateforme),
+                          policyCreationValidation.toggleNotifInPlateforme),
                   ListToggle(
                       title: 'Pop pup notifications ',
-                      value: storeCreationValidation.notifPopUp!,
-                      onToggle: storeCreationValidation.toggleNotifPopup),
+                      value: policyCreationValidation.notifPopUp!,
+                      onToggle: policyCreationValidation.toggleNotifPopup),
                   ListToggle(
                       title: 'Email notifications',
-                      value: storeCreationValidation.notifEmail!,
-                      onToggle: storeCreationValidation.toggleNotifEmail),
+                      value: policyCreationValidation.notifEmail!,
+                      onToggle: policyCreationValidation.toggleNotifEmail),
                   ListToggle(
                       title: 'SMS notifications',
-                      value: storeCreationValidation.notifSms!,
-                      onToggle: storeCreationValidation.toggleNotifSms),
+                      value: policyCreationValidation.notifSms!,
+                      onToggle: policyCreationValidation.toggleNotifSms),
                 ],
               ),
             ),
@@ -457,7 +461,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   }
 
   Step getReservationStep(
-      StoreCreationValidation storeCreationValidation, BuildContext context) {
+     PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 1,
         title: Text("Reservation "),
@@ -465,9 +469,9 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
           children: [
             ListToggle(
                 title: 'Allow Reservations',
-                value: storeCreationValidation.reservationAccept!,
-                onToggle: storeCreationValidation.toggleReservationAceept),
-            storeCreationValidation.reservationAccept!
+                value: policyCreationValidation.reservationAccept!,
+                onToggle: policyCreationValidation.toggleReservationAceept),
+            policyCreationValidation.reservationAccept!
                 ? Column(
                     children: [
                       SectionDivider(
@@ -484,35 +488,35 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           children: [
                             ListToggle(
                                 title: 'Free Reservation',
-                                value: storeCreationValidation.reservationFree!,
-                                onToggle: storeCreationValidation
+                                value: policyCreationValidation.reservationFree!,
+                                onToggle: policyCreationValidation
                                     .toggleReservationFree),
                             ListToggle(
                                 title: 'Partial Reservation',
                                 value:
-                                    storeCreationValidation.reservationPartial!,
-                                onToggle: storeCreationValidation
+                                    policyCreationValidation.reservationPartial!,
+                                onToggle: policyCreationValidation
                                     .toggleReservationPartial),
                             ListToggle(
                                 title: 'Total Reservation',
                                 value:
-                                    storeCreationValidation.reservationTotal!,
-                                onToggle: storeCreationValidation
+                                    policyCreationValidation.reservationTotal!,
+                                onToggle: policyCreationValidation
                                     .toggleReservationTotal),
-                            if ((storeCreationValidation.reservationPartial ??
+                            if ((policyCreationValidation.reservationPartial ??
                                 true)) ...[
                               const SizedBox(height: normal_100),
                               EditText(
                                 hintText: 'Reservation Price.',
                                 keyboardType: TextInputType.number,
-                                saved: (storeCreationValidation
+                                saved: (policyCreationValidation
                                             .reservationtax ==
                                         null)
                                     ? ""
-                                    : storeCreationValidation.reservationtax!
+                                    : policyCreationValidation.reservationtax!
                                         .toString(),
                                 //enabled: (store.policy == null) || editScreen,
-                                onChanged: storeCreationValidation
+                                onChanged: policyCreationValidation
                                     .changeReservationTax,
                               )
                             ],
@@ -528,9 +532,9 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                         // labelText: 'Product Category.',
                         hintText: 'Reservation duration.',
                         onChanged:
-                            storeCreationValidation.changeResevationDuration,
+                            policyCreationValidation.changeResevationDuration,
                         borderType: BorderType.middle,
-                        savedValue: storeCreationValidation.reservationDuration
+                        savedValue: policyCreationValidation.reservationDuration
                             .toString(),
                         items: daysMap.entries
                             .map((item) => DropdownItem<String>(
@@ -554,32 +558,32 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           children: [
                             ListToggle(
                                 title: 'Free Cancelation',
-                                value: storeCreationValidation
+                                value: policyCreationValidation
                                     .reservationConcelationFree!,
-                                onToggle: storeCreationValidation
+                                onToggle: policyCreationValidation
                                     .toggleReservationConcelationFree),
                             ListToggle(
                                 title: 'Chargeable Cancelation',
-                                value: storeCreationValidation
+                                value: policyCreationValidation
                                     .reservationConcelationPartial!,
-                                onToggle: storeCreationValidation
+                                onToggle: policyCreationValidation
                                     .toggleReservationConcelationPartial),
-                            if ((storeCreationValidation
+                            if ((policyCreationValidation
                                     .reservationConcelationPartial ??
                                 true)) ...[
                               const SizedBox(height: normal_100),
                               EditText(
                                 hintText: 'Cancelation Fee.',
                                 keyboardType: TextInputType.number,
-                                saved: (storeCreationValidation
+                                saved: (policyCreationValidation
                                             .reservationcancelationtax ==
                                         null)
                                     ? ""
-                                    : storeCreationValidation
+                                    : policyCreationValidation
                                         .reservationcancelationtax
                                         .toString(),
                                 //enabled: (store.policy == null) || editScreen,
-                                onChanged: storeCreationValidation
+                                onChanged: policyCreationValidation
                                     .changeReservationCancelationTax,
                               )
                             ],
@@ -594,7 +598,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   }
 
   Step getReturnStep(
-      StoreCreationValidation storeCreationValidation, BuildContext context) {
+     PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 2,
         title: Text("Return "),
@@ -613,13 +617,13 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 children: [
                   ListToggle(
                       title: 'Allow Returns',
-                      value: storeCreationValidation.returnAccept!,
-                      onToggle: storeCreationValidation.toggleReturnAccept),
+                      value: policyCreationValidation.returnAccept!,
+                      onToggle: policyCreationValidation.toggleReturnAccept),
                 ],
               ),
             ),
             const SizedBox(height: normal_100),
-            storeCreationValidation.returnAccept!
+            policyCreationValidation.returnAccept!
                 ? Column(
                     children: [
                       SectionDivider(
@@ -629,10 +633,10 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       DropDownSelector<String>(
                         // labelText: 'Product Category.',
                         hintText: 'Max Days to Return.',
-                        onChanged: storeCreationValidation.changeReturnMaxDays,
+                        onChanged: policyCreationValidation.changeReturnMaxDays,
                         borderType: BorderType.middle,
                         savedValue:
-                            storeCreationValidation.returnMaxDays.toString(),
+                            policyCreationValidation.returnMaxDays.toString(),
                         items: daysMap.entries
                             .map((item) => DropdownItem<String>(
                                 value: item.key,
@@ -648,14 +652,14 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       EditText(
                         hintText: "Return status",
                         onChanged:
-                            storeCreationValidation.changeReturnCondition,
-                        saved: storeCreationValidation.returnCondition,
+                            policyCreationValidation.changeReturnCondition,
+                        saved: policyCreationValidation.returnCondition,
                       ),
                       const EditTextSpacer(),
                       EditText(
                         hintText: "Return method",
-                        onChanged: storeCreationValidation.changeReturnMethode,
-                        saved: storeCreationValidation.returnMethode,
+                        onChanged: policyCreationValidation.changeReturnMethode,
+                        saved: policyCreationValidation.returnMethode,
                       ),
                       SectionDivider(
                           leadIcon: Icons.cancel_outlined,
@@ -669,30 +673,30 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                             ListToggle(
                                 title: 'Shipping Fees.',
                                 value:
-                                    storeCreationValidation.returnShippingFee!,
-                                onToggle: storeCreationValidation
+                                    policyCreationValidation.returnShippingFee!,
+                                onToggle: policyCreationValidation
                                     .toggleReturnShippingFee),
                             ListToggle(
                                 title: 'Full Refund',
-                                value: storeCreationValidation.returnTotalFee!,
-                                onToggle: storeCreationValidation
+                                value: policyCreationValidation.returnTotalFee!,
+                                onToggle: policyCreationValidation
                                     .toggleReturnTotalFee),
                             ListToggle(
                                 title: 'Partial Refund',
                                 value:
-                                    storeCreationValidation.returnPartialFee!,
-                                onToggle: storeCreationValidation
+                                    policyCreationValidation.returnPartialFee!,
+                                onToggle: policyCreationValidation
                                     .toggleReturnPartialFee),
-                            if ((storeCreationValidation.returnPartialFee ??
+                            if ((policyCreationValidation.returnPartialFee ??
                                 true)) ...[
                               const SizedBox(height: normal_100),
                               DropDownSelector<String>(
                                 // labelText: 'Product Category.',
                                 hintText: 'Partial Refund Amount .',
                                 onChanged:
-                                    storeCreationValidation.changeReturnPerFee,
+                                    policyCreationValidation.changeReturnPerFee,
                                 borderType: BorderType.middle,
-                                savedValue: storeCreationValidation.returnPerFee
+                                savedValue: policyCreationValidation.returnPerFee
                                     .toString(),
                                 items: percentageValues.entries
                                     .map((item) => DropdownItem<String>(

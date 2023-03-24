@@ -101,22 +101,22 @@ class DeliveryPolicy {
 }
 
 class Zone {
-  CenterPoint centerPoint;
+  CenterPoint? centerPoint;
 
-  double radius;
+  int? radius;
 
   Zone({required this.centerPoint, required this.radius});
 
   factory Zone.fromJson(Map<String, dynamic> json) {
     return Zone(
       centerPoint: CenterPoint.fromJson(json['centerPoint']),
-      radius: json['radius'] as double,
+      radius: json['radius'],
     );
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['centerPoint'] = centerPoint.toJson();
-    data['radius'] = radius ?? 10.0.toDouble();
+    data['centerPoint'] = centerPoint!.toJson();
+    data['radius'] = radius;
     return data;
   }
 }
@@ -128,8 +128,9 @@ class CenterPoint {
   CenterPoint({required this.latitude, required this.longitude});
 
   factory CenterPoint.fromJson(Map<String, dynamic> json) => CenterPoint(
-        latitude: json['latitude'] as double?,
-        longitude: json['longitude'] as double?,
+        latitude: json['latitude'] != null ? json['latitude'].toDouble() : null,
+        longitude:
+            json['longitude'] != null ? json['longitude'].toDouble() : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -145,15 +146,15 @@ class Pricing {
   Pricing({this.fixedPrice, this.kmPrice});
   factory Pricing.fromJson(Map<String, dynamic> json) {
     return Pricing(
-      fixedPrice: json['fixe'] as double?,
-      kmPrice: json['km'] as double?,
+      fixedPrice: json['fixe'] != null ? json['fixe'].toDouble() : null,
+      kmPrice: json['km'] != null ? json['km'].toDouble() : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fixe'] = this.fixedPrice;
-    data['km'] = this.kmPrice;
+    data['fixe'] = fixedPrice;
+    data['km'] = kmPrice;
     return data;
   }
 }
@@ -210,14 +211,15 @@ class Restrictions {
   Restrictions({this.fix, this.percentage});
 
   Restrictions.fromJson(Map<String, dynamic> json) {
-    fix = json['fixe'];
-    percentage = json['percentage'];
+    fix = json['fixe'] != null ? json['fixe'].toDouble() : null;
+    percentage =
+        json['percentage'] != null ? json['percentage'].toDouble() : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fixe'] = fix ?? 0.0.toDouble();
-    data['percentage'] = percentage ?? 0.0.toDouble();
+    data['fixe'] = fix;
+    data['percentage'] = percentage;
     return data;
   }
 }
@@ -413,11 +415,11 @@ class OrderPolicy {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    if (this.validation != null) {
-      data['validation'] = this.validation!.toJson();
+    if (validation != null) {
+      data['validation'] = validation!.toJson();
     }
-    if (this.notification != null) {
-      data['notification'] = this.notification!.toJson();
+    if (notification != null) {
+      data['notification'] = notification!.toJson();
     }
     return data;
   }
@@ -426,20 +428,22 @@ class OrderPolicy {
 class Validation {
   bool? auto;
   bool? manual;
-
-  Validation({this.auto, this.manual});
+  bool? both;
+  Validation({this.auto, this.manual, this.both});
 
   factory Validation.fromJson(Map<String, dynamic> json) {
     return Validation(
-      auto: json['auto'] as bool?,
-      manual: json['manual'] as bool?,
-    );
+        auto: json['auto'] as bool?, manual: json['manual'] as bool?
+        // both: json['both']
+        );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['auto'] = this.auto;
-    data['manual'] = this.manual;
+    data['auto'] = auto;
+    data['manual'] = manual;
+    //  data['both'] = both;
+
     return data;
   }
 }
