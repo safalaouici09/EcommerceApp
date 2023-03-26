@@ -6,6 +6,7 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
+import 'package:proximity_commercant/ui/pages/home_pages/view/home_screen.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.dart';
 
@@ -69,8 +70,14 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                     Expanded(
                                         child: SecondaryButton(
                                             title: 'Cancel.',
-                                            onPressed: () =>
-                                                Navigator.pop(context))),
+                                            onPressed: () => Navigator.of(
+                                                    context)
+                                                .pushAndRemoveUntil(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HomeScreen()),
+                                                    (Route<dynamic> route) =>
+                                                        false))),
                                     const SizedBox(width: normal_100),
                                     Expanded(
                                         child: Consumer<StoreService>(
@@ -382,7 +389,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                         title: 'keep global policy',
                         value: storeCreationValidation.globalPolicy!,
                         onToggle: storeCreationValidation.toggleGlobalPolicy),
-                    storeCreationValidation.globalPolicy!
+                    !storeCreationValidation.globalPolicy!
                         ? Padding(
                             padding: const EdgeInsets.all(normal_100)
                                 .copyWith(top: 0),
@@ -394,18 +401,13 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               StorePolicyScreen(
-                                                global: true,
+                                                global: false,
                                               )));
                                   // storeCreationValidation.changeAddress(_result);
                                 },
-                                title: 'Set Global Policy .'),
+                                title: 'Set Custom  Policy .'),
                           )
                         : Container(),
-                    ListToggle(
-                      title: 'custom policy',
-                      value: storeCreationValidation.customPolicy!,
-                      onToggle: storeCreationValidation.toggleCustomPolicy,
-                    ),
                   ],
                 ),
               ),

@@ -7,6 +7,7 @@ import 'package:proximity/config/themes/google_map_theme.dart';
 import 'package:location/location.dart';
 import 'package:geocoding/geocoding.dart' as geocoder;
 import 'package:proximity/proximity.dart';
+import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/src/store_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/src/store_service.dart';
 
@@ -140,10 +141,10 @@ class _AreaSelectionScreenState extends State<AreaSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     getUserLocation();
-    return ChangeNotifierProvider<StoreCreationValidation>(
-        create: (context) => StoreCreationValidation(), //.setStore(store),
-        child: Consumer2<StoreCreationValidation, StoreService>(
-            builder: (context, storeCreationValidation, storeService, child) {
+    return ChangeNotifierProvider<PolicyValidation>(
+        create: (context) => PolicyValidation(), //.setStore(store),
+        child: Consumer2<PolicyValidation, StoreService>(
+            builder: (context, policyValidation, storeService, child) {
           return Scaffold(
               body: Stack(children: [
             Expanded(
@@ -163,7 +164,7 @@ class _AreaSelectionScreenState extends State<AreaSelectionScreen> {
                           circleId: CircleId("circle"),
                           center: selectedLocation,
                           //LatLng(48.35250847104775, 2.31860239058733),
-                          radius: storeCreationValidation.shippingMaxKM * 1000,
+                          radius: policyValidation.shippingMaxKM * 1000,
                           fillColor: Colors.blue.withOpacity(0.5),
                           strokeColor: Colors.blue,
                           strokeWidth: 2)
@@ -217,15 +218,15 @@ class _AreaSelectionScreenState extends State<AreaSelectionScreen> {
                         //TimeButton(onPressed: null, text: Text('$_counter')),
                         SmallIconButton(
                           icon: Icon(Icons.minimize_outlined),
-                          onPressed: storeCreationValidation.decShippingMaxKM,
+                          onPressed: policyValidation.decShippingMaxKM,
                         ),
                         SizedBox(
                           width: 200,
                           height: 60,
                           child: TimeButton(
                             onPressed:
-                                storeCreationValidation.incrShippingMaxKM,
-                            text: Text(storeCreationValidation.shippingMaxKM
+                                policyValidation.incrShippingMaxKM,
+                            text: Text(policyValidation.shippingMaxKM
                                     .toString() +
                                 "  KM"),
                           ),
@@ -235,7 +236,7 @@ class _AreaSelectionScreenState extends State<AreaSelectionScreen> {
 
                           borderType: BorderType.top,
                           saved: _counter.toString(),*/
-                          //errorText: storeCreationValidation.storeName.error,
+                          //errorText: policyValidation.storeName.error,
                           enabled: true,
                           //   onChanged: _incrementCounter,
                         ),*/
@@ -244,7 +245,7 @@ class _AreaSelectionScreenState extends State<AreaSelectionScreen> {
                         //TimeButton(onPressed: null, text: Text('$_counter')),
                         SmallIconButton(
                           icon: Icon(Icons.add),
-                          onPressed: storeCreationValidation.incrShippingMaxKM,
+                          onPressed: policyValidation.incrShippingMaxKM,
                         ),
                       ],
                     ),
