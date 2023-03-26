@@ -9,6 +9,7 @@ import 'cart_tab_screen.dart';
 import 'profile_tab_screen.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
+import 'package:proximity_client/ui/pages/main_pages/view/cart_slider_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -51,7 +52,8 @@ class _MainScreenState extends State<MainScreen> {
               case 1:
                 return const MapTabScreen();
               case 2:
-                return const CartTabScreen();
+                // return const CartTabScreen();
+                return  CartSliderScreen() ;
               case 3:
                 return const ProfileTabScreen();
               default:

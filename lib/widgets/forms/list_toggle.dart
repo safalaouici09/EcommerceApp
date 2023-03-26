@@ -7,6 +7,9 @@ class ListToggle extends StatefulWidget {
       {Key? key,
       required this.value,
       this.onToggle,
+      this.toggleId,
+      this.importantMessage,
+      this.onToggleId,
       required this.title,
       this.leadIcon})
       : super(key: key);
@@ -15,6 +18,9 @@ class ListToggle extends StatefulWidget {
   final IconData? leadIcon;
   final bool value;
   final ValueChanged<bool>? onToggle;
+  final String? toggleId;
+  final String? importantMessage;
+  final ValueChanged<List<dynamic>>? onToggleId;
 
   @override
   State<ListToggle> createState() => _ListToggleState();
@@ -23,13 +29,7 @@ class ListToggle extends StatefulWidget {
 class _ListToggleState extends State<ListToggle> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        widget.onToggle!.call(
-          !widget.value,
-        );
-      },
-      child: Row(children: [
+    return Row(children: [
         if (widget.leadIcon != null)
           Padding(
               padding: const EdgeInsets.all(small_100),
@@ -48,6 +48,12 @@ class _ListToggleState extends State<ListToggle> {
                   Expanded(
                       child: Text(widget.title,
                           style: Theme.of(context).textTheme.headline5)),
+                  if (widget.importantMessage != null)
+                      Padding(
+                        padding: const EdgeInsets.all(small_100),
+                        child: Text(widget.importantMessage ?? "" ,
+                          style: Theme.of(context).textTheme.caption)
+                    ) ,
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -60,6 +66,22 @@ class _ListToggleState extends State<ListToggle> {
                               color: Theme.of(context).dividerColor,
                               borderRadius:
                                   const BorderRadius.all(smallRadius))),
+                      InkWell(
+                          onTap: () {
+                            if(widget.toggleId != null) {
+                              widget.onToggleId!.call(
+                                [
+                                  !widget.value,
+                                  widget.toggleId
+                                ]
+                              );
+                            }else {
+                              widget.onToggle!.call(
+                                !widget.value
+                              );
+                            }
+                          },
+                          child: 
                       AnimatedContainer(
                           duration: smallAnimationDuration,
                           height: normal_150,
@@ -72,11 +94,11 @@ class _ListToggleState extends State<ListToggle> {
                                 ? Theme.of(context).primaryColor
                                 : Theme.of(context).textTheme.bodyText1!.color,
                             borderRadius: const BorderRadius.all(normalRadius),
-                          ))
+                          )))
                     ],
                   )
                 ])))
-      ]),
+      ],
     );
   }
 }

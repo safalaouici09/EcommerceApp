@@ -43,7 +43,7 @@ class SmallProductCard extends StatelessWidget {
                       height: huge_100 - small_50, width: huge_100 - small_50,
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter)
-                      : Image.network(BASE_API_URL+'/'+product.images!.first,
+                      : Image.network(BASE_IMG_URL+'/'+product.images!.first,
                       height: huge_100 - small_50, width: huge_100 - small_50,
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
