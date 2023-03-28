@@ -23,9 +23,9 @@ class Policy {
 
   Policy.fromJson(Map<String, dynamic> json) {
     // workingTimePolicy = WorkingTime.fromJson(json['workingTime ']);
-    pickupPolicy = PickupPolicy.fromJson(json['pickup']);
-    deliveryPolicy = DeliveryPolicy.fromJson(json['delivery']);
-    returnPolicy = ReturnPolicy.fromJson(json['return']);
+    // pickupPolicy = PickupPolicy.fromJson(json['pickup']);
+    // deliveryPolicy = DeliveryPolicy.fromJson(json['delivery']);
+    // returnPolicy = ReturnPolicy.fromJson(json['return']);
     reservationPolicy = ReservationPolicy.fromJson(json['reservation']);
     orderPolicy = OrderPolicy.fromJson(json['order']);
   }
@@ -64,7 +64,7 @@ class PickupPolicy {
   PickupPolicy({required this.timeLimit});
   factory PickupPolicy.fromJson(Map<String, dynamic> json) {
     return PickupPolicy(
-      timeLimit: json['timeLimit'] as int,
+      timeLimit: json['timeLimit'] != null ? json['timeLimit'].toInt() : null,
     );
   }
 
@@ -116,6 +116,9 @@ class Zone {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['centerPoint'] = centerPoint!.toJson();
+    if (radius == null) {
+      print("set policy");
+    }
     data['radius'] = radius;
     return data;
   }
@@ -162,14 +165,14 @@ class Pricing {
 class ReservationPolicy {
   final int? duration;
   final ReservationPayment payment;
-  final ReservationCancelation cancelation;
+  final ReservationCancelation? cancelation;
 
   ReservationPolicy(
       {this.duration, required this.payment, required this.cancelation});
 
   factory ReservationPolicy.fromJson(Map<String, dynamic> json) {
     return ReservationPolicy(
-      duration: json['duration'] as int?,
+      duration: json['duration'],
       payment:
           ReservationPayment.fromJson(json['payment'] as Map<String, dynamic>),
       cancelation: ReservationCancelation.fromJson(
@@ -181,7 +184,10 @@ class ReservationPolicy {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['duration'] = duration;
     data['payment'] = payment.toJson();
-    data['cancelation'] = cancelation.toJson();
+    if (cancelation != null) {
+      data['cancelation'] = cancelation!.toJson();
+    }
+
     return data;
   }
 }
@@ -218,6 +224,7 @@ class Restrictions {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+
     data['fixe'] = fix;
     data['percentage'] = percentage;
     return data;
@@ -241,8 +248,10 @@ class ReservationPayment {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['free'] = this.free;
-    data['partial'] = partial!.toJson();
+    data['free'] = free;
+    if (partial != null) {
+      data['partial'] = partial!.toJson();
+    }
 
     data['total'] = this.total;
     return data;
@@ -294,7 +303,7 @@ class ReturnPolicy {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['duration'] = this.duration;
     data['productStatus'] = this.productStatus;
-    data['returnMethod'] = this.returnMethod;
+    data['returnMethod'] = returnMethod;
     data['refund'] = this.refund.toJson();
     return data;
   }
@@ -302,7 +311,7 @@ class ReturnPolicy {
 
 class Refund {
   OrderRefund order;
-  ShippingRefund shipping;
+  ShippingRefund? shipping;
 
   Refund({
     required this.order,
@@ -318,8 +327,11 @@ class Refund {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['order'] = this.order.toJson();
-    data['shipping'] = this.shipping.toJson();
+    data['order'] = order.toJson();
+    if (shipping != null) {
+      data['shipping'] = shipping!.toJson();
+    }
+
     return data;
   }
 }

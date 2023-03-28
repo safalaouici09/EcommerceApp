@@ -42,7 +42,7 @@ class Store {
         image = parsedJson['imageUrl'],
         followers = parsedJson['followers'],
         isActive = parsedJson['isActive'],
-        policy = Policy(
+        /* policy = Policy(
             shippingMethods: [
               if (parsedJson['policies']['delivery'] ?? false)
                 ShippingMethod.delivery,
@@ -61,7 +61,7 @@ class Store {
             openNight: parsedJson['policies']['openNight'] ?? false,
             openDay: parsedJson['policies']['openDay'] ?? false,
             openTime: parsedJson['policies']['openTime'] ?? false,
-            closeTime: parsedJson['policies']['closeTime'] ?? false),
+            closeTime: parsedJson['policies']['closeTime'] ?? false),*/
         address = Address(
           lat: (parsedJson['location']['coordinates'][0] ?? 0).toDouble(),
           lng: (parsedJson['location']['coordinates'][1] ?? 0).toDouble(),

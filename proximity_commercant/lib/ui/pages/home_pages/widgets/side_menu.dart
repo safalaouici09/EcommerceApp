@@ -16,6 +16,7 @@ class SideMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width - normal_200;
     final loginValidation = Provider.of<LoginValidation>(context);
+    final userService = Provider.of<UserService>(context);
     return SafeArea(
         child: Card(
             margin: EdgeInsets.zero,
@@ -66,7 +67,8 @@ class SideMenu extends StatelessWidget {
                             });
                       }),
                   Selector<UserService, bool?>(
-                      selector: (_, userService) => userService.isVerified,
+                      selector: (_, userService) =>
+                          userService.user?.policy != null,
                       builder: (context, valid, child) {
                         return ListButton(
                             title: 'Edit Global Policy.',
@@ -77,6 +79,7 @@ class SideMenu extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => StorePolicyScreen(
+                                            policy: userService.user?.policy,
                                             global: true,
                                           )));
                             });

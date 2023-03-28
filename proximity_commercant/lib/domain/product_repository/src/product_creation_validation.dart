@@ -260,6 +260,7 @@ class ProductCreationValidation with ChangeNotifier {
         }
       }
     }
+    // to do remooooove
     if (_variants.isNotEmpty) {
       for (ProductVariant v in _variants) {
         if (v.image is File) {

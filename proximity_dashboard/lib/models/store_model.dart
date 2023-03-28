@@ -11,5 +11,5 @@ class Store {
     required this.address,
     required this.seller,
     required this.verified,
-});
+  });
 }

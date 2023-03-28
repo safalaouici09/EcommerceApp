@@ -13,8 +13,9 @@ import 'package:proximity_commercant/domain/store_repository/store_repository.da
 import 'package:proximity_commercant/ui/widgets/address_picker/area_selection_screen.dart';
 
 class StorePolicyScreen extends StatefulWidget {
-  StorePolicyScreen({Key? key, this.global}) : super(key: key);
+  StorePolicyScreen({Key? key, this.global, this.policy}) : super(key: key);
   bool? global;
+  Policy? policy;
   @override
   State<StorePolicyScreen> createState() => _StorePolicyScreenState();
 }
@@ -26,10 +27,12 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
 
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<PolicyValidation>(
-        // create: (context) =>PolicyValidation.setStore(store),
-        create: (context) => PolicyValidation(),
-        child: Consumer2<PolicyValidation, StoreService>(
-            builder: (context, policyCreationValidation, storeService, child) {
+        create: (context) => PolicyValidation.setPolicy(widget.policy),
+        // create: (context) => PolicyValidation(),
+        child:
+            Consumer3<PolicyValidation, StoreService, StoreCreationValidation>(
+                builder: (context, policyCreationValidation, storeService,
+                    storecreationValidation, child) {
           return Scaffold(
               appBar: AppBar(
                 title: Align(
@@ -49,14 +52,27 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     currentStep: _currentStep,
                     type: StepperType.horizontal,
                     onStepContinue: () {
-                      _currentStep == 3
-                          ? widget.global!
-                              ? policyCreationValidation.updatePolicy(context,
-                                  policyCreationValidation.policytoFormData())
-                              : Navigator.pop(context)
-                          : setState(() {
-                              _currentStep = _currentStep + 1;
-                            });
+                      if (_currentStep == 3) {
+                        if (widget.global!) {
+                          policyCreationValidation.updatePolicy(context,
+                              policyCreationValidation.policytoFormData());
+                        } else {
+                          setState(() {
+                            widget.policy =
+                                policyCreationValidation.getPolicy();
+                            storecreationValidation.setPolicy(widget.policy!);
+                            print(widget.policy!.toJson());
+                          });
+
+                          /* StoreCreationValidation.setPolicy(
+                              policyCreationValidation.getPolicy());*/
+                          Navigator.pop(context);
+                        }
+                      } else {
+                        setState(() {
+                          _currentStep = _currentStep + 1;
+                        });
+                      }
                     },
                     onStepCancel: () {
                       _currentStep == 0
@@ -118,7 +134,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   }
 
   Step getShippingStep(
-     PolicyValidation policyCreationValidation, BuildContext context) {
+      PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 0,
         title: Text("Shipping"),
@@ -139,7 +155,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: small_100),
                     child: LargeIconButton(
                         onPressed: policyCreationValidation.toggleSelfPickup,
-                        selected: (policyCreationValidation.selfPickup ?? false),
+                        selected:
+                            (policyCreationValidation.selfPickup ?? false),
                         icon: DuotoneIcon(
                             primaryLayer: ProximityIcons.self_pickup_duotone_1,
                             secondaryLayer:
@@ -233,8 +250,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => AreaSelectionScreen(
-                                  currentAddress:
-                                      policyCreationValidation.deliveryCenter)));
+                                  currentAddress: policyCreationValidation
+                                      .deliveryCenter)));
                       policyCreationValidation
                           .changeDeliveryCenterdress(_result);
 
@@ -284,15 +301,16 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       child: EditText(
                         hintText: 'Delivery Tax. ',
                         keyboardType: TextInputType.number,
-                        saved: (policyCreationValidation.shippingFixedPriceTax ==
-                                null)
-                            ? ""
-                            : policyCreationValidation.shippingFixedPriceTax
-                                .toString(),
+                        saved:
+                            (policyCreationValidation.shippingFixedPriceTax ==
+                                    null)
+                                ? ""
+                                : policyCreationValidation.shippingFixedPriceTax
+                                    .toString(),
                         //   enabled:
                         // (store.policy == null) || editScreen,
-                        onChanged:
-                            policyCreationValidation.changeShippingFixedPriceTax,
+                        onChanged: policyCreationValidation
+                            .changeShippingFixedPriceTax,
                       ),
                     )
                   : Container(),
@@ -320,7 +338,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   }
 
   Step getOrdersStep(
-     PolicyValidation policyCreationValidation, BuildContext context) {
+      PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 3,
         title: Text("Orders"),
@@ -461,7 +479,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   }
 
   Step getReservationStep(
-     PolicyValidation policyCreationValidation, BuildContext context) {
+      PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 1,
         title: Text("Reservation "),
@@ -488,13 +506,14 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           children: [
                             ListToggle(
                                 title: 'Free Reservation',
-                                value: policyCreationValidation.reservationFree!,
+                                value:
+                                    policyCreationValidation.reservationFree!,
                                 onToggle: policyCreationValidation
                                     .toggleReservationFree),
                             ListToggle(
                                 title: 'Partial Reservation',
-                                value:
-                                    policyCreationValidation.reservationPartial!,
+                                value: policyCreationValidation
+                                    .reservationPartial!,
                                 onToggle: policyCreationValidation
                                     .toggleReservationPartial),
                             ListToggle(
@@ -598,7 +617,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   }
 
   Step getReturnStep(
-     PolicyValidation policyCreationValidation, BuildContext context) {
+      PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 2,
         title: Text("Return "),
@@ -696,7 +715,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                 onChanged:
                                     policyCreationValidation.changeReturnPerFee,
                                 borderType: BorderType.middle,
-                                savedValue: policyCreationValidation.returnPerFee
+                                savedValue: policyCreationValidation
+                                    .returnPerFee
                                     .toString(),
                                 items: percentageValues.entries
                                     .map((item) => DropdownItem<String>(

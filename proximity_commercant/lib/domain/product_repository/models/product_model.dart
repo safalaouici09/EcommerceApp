@@ -1,3 +1,5 @@
+import 'package:proximity_commercant/domain/product_repository/models/offer_model.dart';
+
 import 'product_variant_model.dart';
 import 'package:proximity/config/backend.dart';
 
@@ -15,6 +17,7 @@ class Product {
   String? categoryName;
   List<dynamic>? tags;
   String? storeId;
+  String? offer_id;
 
   Product(
       {this.id,
@@ -29,7 +32,9 @@ class Product {
       this.categoryId,
       this.categoryName,
       // this.tags,
-      this.storeId});
+
+      this.storeId,
+      this.offer_id});
 
   Product.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
@@ -38,12 +43,15 @@ class Product {
         price = parsedJson['price'].toDouble(),
         quantity = parsedJson['quantity'],
         categoryId = parsedJson['categoryId'],
-        images = parsedJson['images'].map((el) => BASE_IMG_URL + '/' + el).toList() ,
+        images =
+            parsedJson['images'].map((el) => BASE_IMG_URL + '/' + el).toList(),
         tags = parsedJson['tags'],
-        variants = ProductVariant.productVariantsFromJsonList(parsedJson['variants']),
+        variants =
+            ProductVariant.productVariantsFromJsonList(parsedJson['variants']),
         storeId = parsedJson['storeId'],
         discount = parsedJson['discount'].toDouble(),
-        discountEndDate = DateTime.parse(parsedJson['discountExpiration']);
+        discountEndDate = DateTime.parse(parsedJson['discountExpiration']),
+        offer_id = parsedJson['offer'];
 
   static List<Product> productsFromJsonList(List<dynamic> parsedJson) {
     List<Product> _list = [];
@@ -73,7 +81,7 @@ class Product {
     Product(
         id: '0',
         name:
-        'Xiaomi Cleargrass -compatible Alarm Clock smart Control Temperature Humidity Display LCD Screen Adjustable Nightlight - gray',
+            'Xiaomi Cleargrass -compatible Alarm Clock smart Control Temperature Humidity Display LCD Screen Adjustable Nightlight - gray',
         description: '''Main Features
 
 Description :
@@ -186,7 +194,7 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
         id: '1',
         name: 'Nintendo Switch™ Family - Nintendo',
         description:
-        "The Nintendo Switch (ニ ン テ ン ド ー ス イ ッ チ, Nintendō Suitchi) is a video game console produced by Nintendo, succeeding the Wii U.\nIt is the first hybrid console in the history of video games, which could also do as a living room console as a portable console.",
+            "The Nintendo Switch (ニ ン テ ン ド ー ス イ ッ チ, Nintendō Suitchi) is a video game console produced by Nintendo, succeeding the Wii U.\nIt is the first hybrid console in the history of video games, which could also do as a living room console as a portable console.",
         price: 500.0,
         discount: 1 / 3,
         discountEndDate: DateTime.now()
@@ -230,7 +238,7 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
         id: '2',
         name: 'Playstation 4',
         description:
-        "The PlayStation 4 (PS4) is a home video game console developed by Sony Computer Entertainment. ... The console also supports HDR10 High-dynamic-range video and playback of 4K resolution multimedia.",
+            "The PlayStation 4 (PS4) is a home video game console developed by Sony Computer Entertainment. ... The console also supports HDR10 High-dynamic-range video and playback of 4K resolution multimedia.",
         price: 340.0,
         discount: 0.0,
         images: ['https://i.ibb.co/TYtFs62/ps4.png'],
@@ -248,7 +256,7 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
         id: '2',
         name: 'Playstation 4',
         description:
-        "The PlayStation 4 (PS4) is a home video game console developed by Sony Computer Entertainment. ... The console also supports HDR10 High-dynamic-range video and playback of 4K resolution multimedia.",
+            "The PlayStation 4 (PS4) is a home video game console developed by Sony Computer Entertainment. ... The console also supports HDR10 High-dynamic-range video and playback of 4K resolution multimedia.",
         price: 340.0,
         discount: 0.0,
         images: ['https://i.ibb.co/TYtFs62/ps4.png'],
