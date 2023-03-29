@@ -186,12 +186,13 @@ class ProductCreationScreen extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => StorePolicyScreen(
                                             global: false,
-                                            store: true,
+                                            store: false,
+                                            product: true,
                                           )));
                               productCreationValidation.setPolicy(
                                   policyResult!); // storeCreationValidation.changeAddress(_result);
                             },
-                            title: 'Set Custom  Policy .'),
+                            title: 'Set product  Policy .'),
                       )
                     else
                       Container(),
@@ -316,11 +317,16 @@ class ProductCreationScreen extends StatelessWidget {
                           : ButtonState.disabled,
                   onPressed: () {
                     if (editScreen) {
-                      productService.editProduct(context, index!,
-                          productCreationValidation.toFormData());
+                      productService.editProduct(
+                          context,
+                          index!,
+                          productCreationValidation
+                              .toFormData(productCreationValidation.policy));
                     } else {
                       productService.addProduct(
-                          context, productCreationValidation.toFormData());
+                          context,
+                          productCreationValidation
+                              .toFormData(productCreationValidation.policy));
                     }
                   },
                   title: editScreen ? 'Update.' : 'Confirm.')

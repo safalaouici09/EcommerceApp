@@ -1,4 +1,5 @@
 import 'package:proximity_commercant/domain/product_repository/models/offer_model.dart';
+import 'package:proximity_commercant/domain/store_repository/models/models.dart';
 
 import 'product_variant_model.dart';
 import 'package:proximity/config/backend.dart';
@@ -18,6 +19,7 @@ class Product {
   List<dynamic>? tags;
   String? storeId;
   String? offer_id;
+  Policy? policy;
 
   Product(
       {this.id,
@@ -31,8 +33,7 @@ class Product {
       this.variants,
       this.categoryId,
       this.categoryName,
-      // this.tags,
-
+      this.policy,
       this.storeId,
       this.offer_id});
 
@@ -51,7 +52,10 @@ class Product {
         storeId = parsedJson['storeId'],
         discount = parsedJson['discount'].toDouble(),
         discountEndDate = DateTime.parse(parsedJson['discountExpiration']),
-        offer_id = parsedJson['offer'];
+        offer_id = parsedJson['offer'],
+        policy = parsedJson['policy'] == null
+            ? null
+            : Policy.fromJson(parsedJson['policy']);
 
   static List<Product> productsFromJsonList(List<dynamic> parsedJson) {
     List<Product> _list = [];

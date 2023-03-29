@@ -411,6 +411,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                       builder: (context) => StorePolicyScreen(
                                             global: false,
                                             store: true,
+                                            policy: widget.store.policy,
                                           )));
                               storeCreationValidation.setPolicy(policyResult!);
                               print("after push" +
