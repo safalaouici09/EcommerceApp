@@ -5,6 +5,7 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
+import 'package:proximity_client/ui/pages/main_pages/view/cart_slider_screen.dart';
 
 class CartTile extends StatelessWidget {
   const CartTile({Key? key, required this.cart}) : super(key: key);
@@ -118,9 +119,15 @@ class CartTile extends StatelessWidget {
                                       .headline4)
                             ]))),
                 PrimaryButton(
-                    onPressed: cartService.valid(cart.storeId!)
-                        ? () => cartService.order(context, cart.storeId!)
-                        : null,
+                    // onPressed: cartService.valid(cart.storeId!)
+                    //     ? () => cartService.order(context, cart.storeId!)
+                    //     : null,
+                    onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>  CartSliderScreen()));
+                    } ,
                     title:
                         'Order(${cartService.getTotalQuantity(cart.storeId!)})')
               ]))

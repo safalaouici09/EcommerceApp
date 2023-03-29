@@ -84,10 +84,10 @@ class OrderConfirmationScreen extends StatelessWidget {
                   leadIcon: ProximityIcons.visa,
                   color: blueSwatch.shade400,
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PaymentMethodScreen()));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const PaymentMethodScreen()));
                   }),
               UnconfirmedOrderTile(
                 storeName: 'XIAOMI Store',

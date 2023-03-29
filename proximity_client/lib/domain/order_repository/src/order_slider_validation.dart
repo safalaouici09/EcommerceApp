@@ -117,6 +117,77 @@ class OrderSliderValidation with ChangeNotifier  {
   // Getters
   ShippingMethod? get shippingMethod => _shippingMethod;
   List<ProductCart> get products => _products;
+  
+  String? _cardNumber;
+  String? _expdate;
+  String? _cvc;
+  String? _name;
+  String? _phone;
+  String? _city;
+  String? _street;
+  String? _street2;
+  String? _postalCode;
+
+  
+  String? get cardNumber => _cardNumber;
+  String? get expdate => _expdate;
+  String? get cvc => _cvc;
+  String? get name => _name;
+  String? get phone => _phone;
+  String? get city => _city;
+  String? get street => _street;
+  String? get street2 => _street2;
+  String? get postalCode => _postalCode;
+
+  
+
+  void changecardNumber(String value) {
+    _cardNumber = value;
+    notifyListeners();
+  }
+  void changeexpdate(String value) {
+    if(value.length < 6) {
+      if(value.length == 2 && _expdate!.length == 3 ) {
+        _expdate = value.substring(0,1) ;
+      }
+      else if(value.length == 2 ) {
+      _expdate = value+"/" ;
+      }else {
+        _expdate = value;
+      }  
+    }
+    
+    notifyListeners();
+  }
+  void changecvc(String value) {
+    _cvc = value;
+    notifyListeners();
+  }
+  void changename(String value) {
+    _name = value;
+    notifyListeners();
+  }
+  void changephone(String value) {
+    _phone = value;
+    notifyListeners();
+  }
+  void changecity(String value) {
+    _city = value;
+    notifyListeners();
+  }
+  void changestreet(String value) {
+    _street = value;
+    notifyListeners();
+  }
+  void changestreet2(String value) {
+    _street2 = value;
+    notifyListeners();
+  }
+  void changepostalCode(String value) {
+    _postalCode = value;
+    notifyListeners();
+  }
+
 
   // Setters
   void toggleReservation(List<dynamic> value) {

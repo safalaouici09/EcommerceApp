@@ -52,8 +52,8 @@ class _MainScreenState extends State<MainScreen> {
               case 1:
                 return const MapTabScreen();
               case 2:
-                // return const CartTabScreen();
-                return  CartSliderScreen() ;
+                return const CartTabScreen();
+                // return  CartSliderScreen() ;
               case 3:
                 return const ProfileTabScreen();
               default:

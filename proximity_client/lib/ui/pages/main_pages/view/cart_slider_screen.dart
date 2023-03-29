@@ -9,7 +9,7 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/product_pages/widgets/widgets.dart';
-import 'package:proximity_client/ui/pages/order_pages/widgets/widgets.dart';
+import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
 
 class CartSliderScreen extends StatefulWidget {
   CartSliderScreen({Key? key}) : super(key: key);
@@ -21,6 +21,12 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
   @override
   int _currentStep = 0;
   bool isLastStep = false;
+
+  void onPay(int value) {
+    setState(() {
+      _currentStep = value;
+    });
+  }
 
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<OrderSliderValidation>(
@@ -40,7 +46,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
               body: SafeArea(
                 child: Expanded(
                   child: Padding(
-                      padding: const EdgeInsets.only(bottom: large_200),
+                      padding: const EdgeInsets.only(bottom: 0),
                       child:
                           Stepper(
                             physics: ClampingScrollPhysics(),
@@ -50,6 +56,8 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                             onStepContinue: () {
                               _currentStep == 2
                                   ? null
+                                  : _currentStep == 3 
+                                  ?  Navigator.pop(context)
                                   : setState(() {
                                       _currentStep = _currentStep + 1;
                                     });
@@ -66,21 +74,22 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                               return Padding(
                                 padding: const EdgeInsets.all(small_100),
                                 child: Row(
-                                  mainAxisAlignment: _currentStep != 0 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end ,
+                                  mainAxisAlignment: _currentStep != 0 && _currentStep != 3 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end ,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    if (_currentStep != 0)
+                                    if (_currentStep != 0 && _currentStep < 3 )
                                       SecondaryButton(
                                           onPressed: details.onStepCancel,
                                           title: "Back"),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
+                                        if ( _currentStep != 2)
                                         PrimaryButton(
                                           buttonState:   ButtonState.enabled,
                                           onPressed: details.onStepContinue,
                                           title:
-                                              _currentStep == 2 ? "confirm" : "Next.",
+                                              _currentStep == 3 ? "Done" :  "Next.",
                                         ),
                                       ],
                                     ),
@@ -108,10 +117,6 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
         content: 
         Column(
           children: [
-            SectionDivider(
-                leadIcon: Icons.local_shipping_outlined,
-                title: 'Order Items.',
-                color: redSwatch.shade500),
                 
             Column(children:[
                   for(var item in orderSliderValidation.products ) CardItem(product : item , orderSliderValidation : orderSliderValidation )  , 
@@ -129,18 +134,18 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
     double  productDeliveryTotal = orderSliderValidation.getDeliveryItemsTotal() ;
     double  productPickupTotal = orderSliderValidation.getPickupItemsTotal() ;
     return Step(
-        isActive: _currentStep >= 0,
+        isActive: _currentStep >= 1,
         title: Text("Bills"),
         content: Column(
           children: [
                 Column(children:[
                   if(productReservationTotal != 0.0 ) 
-                    BillItem(orderSliderValidation : orderSliderValidation , reservationBill : true , deliveryBill: false , pickupBill : false) ,
+                    BillItem(orderSliderValidation : orderSliderValidation , reservationBill : true , deliveryBill: false , pickupBill : false , payment : false) ,
                   if(productDeliveryTotal != 0.0) 
-                    BillItem(orderSliderValidation : orderSliderValidation , reservationBill : false , deliveryBill: true , pickupBill : false) ,
+                    BillItem(orderSliderValidation : orderSliderValidation , reservationBill : false , deliveryBill: true , pickupBill : false , payment : false) ,
                   if(productPickupTotal != 0.0) 
-                    BillItem(orderSliderValidation : orderSliderValidation , reservationBill : false , deliveryBill: false , pickupBill : true) ,
-                  BillItem(orderSliderValidation : orderSliderValidation , reservationBill : false , deliveryBill: false , pickupBill : false) ,
+                    BillItem(orderSliderValidation : orderSliderValidation , reservationBill : false , deliveryBill: false , pickupBill : true , payment : false) ,
+                  BillItem(orderSliderValidation : orderSliderValidation , reservationBill : false , deliveryBill: false , pickupBill : false , payment : false) ,
                 ]),
                 
           ],
@@ -150,22 +155,15 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
   Step getPaymentStep(
       OrderSliderValidation orderSliderValidation, BuildContext context) {
     return Step(
-        isActive: _currentStep >= 0,
+        isActive: _currentStep >= 2,
         title: Text("Payment"),
         content: Column(
           children: [
-            SectionDivider(
-                leadIcon: Icons.local_shipping_outlined,
-                title: 'Payment',
-                color: redSwatch.shade500),
-            const InfoMessage(
-                message:
-                    ''),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: small_100),
-                child: Row(children:[
+                child: PaymentMethodScreen(orderSliderValidation : orderSliderValidation , onPay : onPay ) 
 
-                ])),
+                ),
                 
           ],
         ));
@@ -173,23 +171,19 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
 
    Step getDoneStep(
       OrderSliderValidation orderSliderValidation, BuildContext context) {
-    return Step(
-        isActive: _currentStep >= 0,
+     return Step(
+        isActive: _currentStep >= 1,
         title: Text("Done"),
         content: Column(
           children: [
-            SectionDivider(
-                leadIcon: Icons.local_shipping_outlined,
-                title: 'Done',
-                color: redSwatch.shade500),
+            
             const InfoMessage(
                 message:
-                    ''),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: small_100),
-                child: Row(children:[
-
-                ])),
+                    'Your order has been made successfully, we will inform you once it will be validated'),
+                Column(children:[
+                  BillItem(orderSliderValidation : orderSliderValidation , reservationBill : false , deliveryBill: false , pickupBill : false , payment : true) ,
+               
+                ]),
                 
           ],
         ));
