@@ -38,6 +38,8 @@ class ProximityIcons {
 
   static const _fontFamily = 'Proximity';
   static const _packageName = 'proximity';
+  static const IconData applePay = IconData(0xe9a1, fontFamily: _fontFamily, fontPackage: "mbi");
+  static const IconData googlePay = IconData(0xeaab, fontFamily: _fontFamily, fontPackage: "mbi") ;
 
   static const IconData order =
       IconData(0xe800, fontFamily: _fontFamily, fontPackage: _packageName);
