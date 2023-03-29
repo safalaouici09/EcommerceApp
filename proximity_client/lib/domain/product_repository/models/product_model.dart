@@ -62,7 +62,7 @@ class Product {
         (discountEndDate != null) &&
         (images != null) &&
         (variants != null) &&
-        (categoryName != null) &&
+        // (categoryName != null) &&
         (storeId != null));
   }
 
