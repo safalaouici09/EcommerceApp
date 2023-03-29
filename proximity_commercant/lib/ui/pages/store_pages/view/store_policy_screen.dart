@@ -43,8 +43,11 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 title: Align(
                   alignment: Alignment.centerLeft,
                   child: TopBar(
-                      title:
-                          widget.global! ? 'Golbal Policy.' : 'Store Policy.'),
+                      title: widget.global!
+                          ? 'Golbal Policy.'
+                          : widget.store!
+                              ? 'Store Policy.'
+                              : 'Product Policy'),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0.0,
@@ -63,25 +66,10 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                               policyCreationValidation.policytoFormData());
                           Navigator.pop(context);
                         } else {
-                          if (widget.store!) {
-                            setState(() {
-                              widget.policy =
-                                  policyCreationValidation.getPolicy();
-                              print('before puch' +
-                                  policyCreationValidation
-                                      .getPolicy()
-                                      .toJson()
-                                      .toString());
-
-                              storecreationValidation.setPolicy(widget.policy!);
-                              print('before puch' +
-                                  storecreationValidation.policy!
-                                      .toJson()
-                                      .toString());
-                              Navigator.pop(context,
-                                  policyCreationValidation.getPolicy());
-                            });
-                          }
+                          setState(() {
+                            Navigator.pop(
+                                context, policyCreationValidation.getPolicy());
+                          });
 
                           /* StoreCreationValidation.setPolicy(
                               policyCreationValidation.getPolicy());*/

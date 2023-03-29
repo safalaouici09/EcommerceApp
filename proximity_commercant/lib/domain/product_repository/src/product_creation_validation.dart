@@ -16,7 +16,7 @@ class ProductCreationValidation with ChangeNotifier {
   ValidationItem _category = ValidationItem(null, null);
   double? _price;
   double? _discount;
-  bool? _storePolicy;
+  bool? _storePolicy = true;
   bool? _productPolicy;
   Policy? _policy;
 
@@ -127,7 +127,7 @@ class ProductCreationValidation with ChangeNotifier {
   }
 
   // Setters
-  setPolicy(Policy policy) {
+  setPolicy(Policy? policy) {
     _policy = policy;
     print("policyyyy " + _policy!.toJson().toString());
   }
@@ -271,7 +271,7 @@ class ProductCreationValidation with ChangeNotifier {
   }
 
   /// A method to convert this form validator into a Store object
-  FormData toFormData() {
+  FormData toFormData(Policy? policy) {
     FormData _formData = FormData.fromMap({
       "name": name.value,
       "description": description.value,
@@ -280,6 +280,7 @@ class ProductCreationValidation with ChangeNotifier {
       // "discount": discount,
       "variantes": _variantsFormData(),
       "storeId": _storeId,
+      "policy": policy!.toJson(),
     });
 
     if (_images.isNotEmpty) {
