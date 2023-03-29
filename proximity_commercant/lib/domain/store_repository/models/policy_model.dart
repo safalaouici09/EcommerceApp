@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Policy {
   // List<ShippingMethod>? shippingMethods;
 
@@ -27,27 +29,23 @@ class Policy {
     orderPolicy = json['order'] == null ? null :  OrderPolicy.fromJson(json['order']);
   }
 
-  Map<String, dynamic> toJson() {
+  String toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (workingTimePolicy != null) {
-      data['workingTime'] = workingTimePolicy!.toJson();
-    }
-    if (pickupPolicy != null) {
-      data['pickup'] = pickupPolicy!.toJson();
-    }
-    if (deliveryPolicy != null) {
-      data['delivery'] = deliveryPolicy!.toJson();
-    }
-    if (reservationPolicy != null) {
-      data['reservation'] = this.reservationPolicy!.toJson();
-    }
-    if (returnPolicy != null) {
-      data['return'] = returnPolicy!.toJson();
-    }
-    if (orderPolicy != null) {
-      data['order'] = orderPolicy!.toJson();
-    }
-    return data;
+    
+    data['workingTime'] = workingTimePolicy == null ? null :  workingTimePolicy!.toJson();
+    
+    data['pickup'] = pickupPolicy == null ? null :  pickupPolicy!.toJson();
+
+    data['delivery'] = deliveryPolicy == null ? null :  deliveryPolicy!.toJson();
+
+    data['reservation'] = reservationPolicy == null ? null : this.reservationPolicy!.toJson();
+
+    data['return'] = returnPolicy == null ? null :   returnPolicy!.toJson();
+    
+    data['order'] = orderPolicy == null ? null :   orderPolicy!.toJson();
+
+    print(json.encode(data)) ;
+    return json.encode(data);
   }
 }
 

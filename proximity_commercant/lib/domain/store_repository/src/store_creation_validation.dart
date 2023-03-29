@@ -25,7 +25,7 @@ class StoreCreationValidation with ChangeNotifier {
   Address _storeAddress = Address();
   List<dynamic> _storeImages = [];
   List<String> _deletedImages = [];
-  Policy? _policy;
+  Policy? _policy = null ;
 
   StoreCreationValidation();
 
