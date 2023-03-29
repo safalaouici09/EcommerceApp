@@ -31,7 +31,7 @@ class ProductScreen extends StatelessWidget {
         product =
             productService.products!.firstWhere((element) => element.id == id);
       }
-      productService.getOffer(id);
+      // productService.getOffer(id);
 
       return Scaffold(
           body: Stack(alignment: Alignment.bottomCenter, children: [

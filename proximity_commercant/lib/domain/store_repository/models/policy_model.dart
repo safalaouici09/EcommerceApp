@@ -19,12 +19,12 @@ class Policy {
   });
 
   Policy.fromJson(Map<String, dynamic> json) {
-    workingTimePolicy = WorkingTime.fromJson(json['workingTime']);
-    pickupPolicy = PickupPolicy.fromJson(json['pickup']);
-    deliveryPolicy = DeliveryPolicy.fromJson(json['delivery']);
-    returnPolicy = ReturnPolicy.fromJson(json['return']);
-    reservationPolicy = ReservationPolicy.fromJson(json['reservation']);
-    orderPolicy = OrderPolicy.fromJson(json['order']);
+    workingTimePolicy = json['workingTime'] == null ? null :  WorkingTime.fromJson(json['workingTime']);
+    pickupPolicy = json['pickup'] == null ? null :  PickupPolicy.fromJson(json['pickup']);
+    deliveryPolicy = json['delivery'] == null ? null :  DeliveryPolicy.fromJson(json['delivery']);
+    returnPolicy = json['return'] == null ? null :  ReturnPolicy.fromJson(json['return']);
+    reservationPolicy = json['reservation'] == null ? null :  ReservationPolicy.fromJson(json['reservation']);
+    orderPolicy = json['order'] == null ? null :  OrderPolicy.fromJson(json['order']);
   }
 
   Map<String, dynamic> toJson() {

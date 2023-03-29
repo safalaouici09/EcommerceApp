@@ -61,7 +61,7 @@ class ProductService with ChangeNotifier {
     _formsLoading = false;
     _isPercentage = _discountType == 'amount' ? false : true;
     getStoreProducts();
-    getStoreOffers();
+    // getStoreOffers();
   }
 
   reloadList(ProductProxy productProxy) {
