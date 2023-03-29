@@ -48,6 +48,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
   late AnimationController _drawerAnimation;
   late int _openedSideMenu;
   final GlobalKey _createStoreKey = GlobalKey();
+  late UserService _userService;
 
   void _openSideMenu() {
     setState(() => _openedSideMenu = 1);
@@ -66,7 +67,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
   Widget build(BuildContext context) {
     final storeService = Provider.of<StoreService>(context);
     final userService = Provider.of<UserService>(context);
-
     double _screenWidth = MediaQuery.of(context).size.width;
     double _viewPortFraction = (_screenWidth - large_150 * 2) / _screenWidth;
     double _pageWidth = _screenWidth - large_200 * 2;

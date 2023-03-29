@@ -195,7 +195,7 @@ class _AreaSelectionScreenState extends State<AreaSelectionScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const TopBar(title: 'Select an address'),
+                      const TopBar(title: 'Select a shipping area '),
                       Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: normal_100),
@@ -224,11 +224,10 @@ class _AreaSelectionScreenState extends State<AreaSelectionScreen> {
                           width: 200,
                           height: 60,
                           child: TimeButton(
-                            onPressed:
-                                policyValidation.incrShippingMaxKM,
-                            text: Text(policyValidation.shippingMaxKM
-                                    .toString() +
-                                "  KM"),
+                            onPressed: policyValidation.incrShippingMaxKM,
+                            text: Text(
+                                policyValidation.shippingMaxKM.toString() +
+                                    "  KM"),
                           ),
                           /* child: TextField(
                           controller: _counterController,

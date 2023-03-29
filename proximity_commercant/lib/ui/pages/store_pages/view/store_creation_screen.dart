@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
+import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
+import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/view/home_screen.dart';
@@ -13,9 +15,12 @@ import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.da
 import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
 
 class StoreCreationScreen extends StatefulWidget {
-  const StoreCreationScreen(
-      {Key? key, this.index, required this.store, this.editScreen = false})
-      : super(key: key);
+  const StoreCreationScreen({
+    Key? key,
+    this.index,
+    required this.store,
+    this.editScreen = false,
+  }) : super(key: key);
 
   final int? index;
   final Store store;
@@ -106,8 +111,11 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
     }
   }
 
+  Policy? policyResult;
   @override
   Widget build(BuildContext context) {
+    final policyValidation = Provider.of<PolicyValidation>(context);
+
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
 
@@ -122,8 +130,10 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           /// otherwise we need to check if we already fetched the data and then
           /// proceed with the rendering
           ///
+
           if (widget.index != null) {
             didFetch = storeService.stores![widget.index!].allFetched();
+
             if (!didFetch) storeService.getStoreByIndex(widget.index!);
           }
           return Scaffold(
@@ -211,7 +221,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                     context, storeCreationValidation.openTime);
                               }),
                               /* selected:
-                              (storeCreationValidation.selfPickup ?? false),*/
+                                  (storeCreationValidation.selfPickup ?? false),*/
                               text: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: normal_100),
@@ -251,7 +261,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                     context, storeCreationValidation.closeTime);
                               }),
                               /* selected:
-                              (storeCreationValidation.selfPickup ?? false),*/
+                                  (storeCreationValidation.selfPickup ?? false),*/
                               text: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: normal_100),
@@ -380,7 +390,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                   color: redSwatch.shade500),
               InfoMessage(
                   message:
-                      ' Kepp  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
+                      ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Column(
@@ -389,25 +399,46 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                         title: 'keep global policy',
                         value: storeCreationValidation.globalPolicy!,
                         onToggle: storeCreationValidation.toggleGlobalPolicy),
-                    !storeCreationValidation.globalPolicy!
-                        ? Padding(
-                            padding: const EdgeInsets.all(normal_100)
-                                .copyWith(top: 0),
-                            child: TertiaryButton(
-                                onPressed: () async {
-                                  // final Address _result = await
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              StorePolicyScreen(
+                    if (!storeCreationValidation.globalPolicy!)
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(normal_100).copyWith(top: 0),
+                        child: TertiaryButton(
+                            onPressed: () async {
+                              Policy? policyResult = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => StorePolicyScreen(
+                                            global: false,
+                                            store: true,
+                                          )));
+                              storeCreationValidation.setPolicy(policyResult!);
+                              print("after push" +
+                                  storeCreationValidation.policy!
+                                      .toJson()
+                                      .toString());
+
+                              // final Address _result = await
+                              /* widget.editScreen
+                                            ? Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        StorePolicyScreen(
+                                                          global: false,
+                                                          policy: widget
+                                                              .store.policy,
+                                                        )))
+                                            :
+                                            Policy? storePolicy=  StorePolicyScreen(
                                                 global: false,
-                                              )));
-                                  // storeCreationValidation.changeAddress(_result);
-                                },
-                                title: 'Set Custom  Policy .'),
-                          )
-                        : Container(),
+                                              );*/
+                              // storeCreationValidation.changeAddress(_result);
+                            },
+                            title: 'Set Custom  Policy .'),
+                      )
+                    else
+                      Container(),
                   ],
                 ),
               ),
@@ -434,12 +465,23 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                           : ButtonState.disabled,
                   onPressed: () {
                     if (widget.editScreen) {
-                      storeService.editStore(context, widget.index!,
-                          storeCreationValidation.toFormData(), []);
+                      storeService.editStore(
+                          context,
+                          widget.index!,
+                          storeCreationValidation
+                              .toFormData(storeCreationValidation.policy!),
+                          []);
                     } else {
+                      print('confirmVa' +
+                          policyValidation.getPolicy().toJson().toString());
+                      print('confirmCr' +
+                          storeCreationValidation.policy!.toString());
+
                       StoreDialogs.confirmStore(context, 1);
                       storeService.addStore(
-                          context, storeCreationValidation.toFormData());
+                          context,
+                          storeCreationValidation
+                              .toFormData(storeCreationValidation.policy!));
                     }
                   },
                   title: 'Confirm.')

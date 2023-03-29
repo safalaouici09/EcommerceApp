@@ -79,7 +79,7 @@ class UserService extends ChangeNotifier {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
+    String? _token = credentialsBox.get('token');
 
     /// post the dataForm via dio call
     try {
@@ -90,7 +90,7 @@ class UserService extends ChangeNotifier {
       if (res.statusCode == 200) {
         /// Save new User Data
         _user = User.fromJson(res.data);
-        print(_user) ;
+        print(_user);
         notifyListeners();
       }
     } on DioError catch (e) {

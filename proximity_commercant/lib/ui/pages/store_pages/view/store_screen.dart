@@ -131,7 +131,34 @@ class _StoreScreenState extends State<StoreScreen> {
                             product: productService.products![index]))
                   ])
           ]);
-        })
+        }),
+        SectionDivider(
+            leadIcon: Icons.discount_outlined,
+            title: 'Store Offers.',
+            color: Theme.of(context).primaryColor),
+        Consumer<ProductService>(builder: (_, productService, __) {
+          // if (productService.fetchMore && reachedEnd) {
+          //   productService.getStoreProducts();
+          //   reachedEnd = false;
+          // }
+          return Column(children: [
+            if (productService.products == null)
+              const Center(child: CircularProgressIndicator())
+            else
+              MasonryGrid(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: normal_100, horizontal: small_100),
+                  column: 2,
+                  children: [
+                    ...List.generate(
+                        productService.products!.length,
+                        (index) => productService.products![index].discount > 0
+                            ? ProductCardDiscount(
+                                product: productService.products![index])
+                            : Container())
+                  ])
+          ]);
+        }),
       ]));
     });
   }

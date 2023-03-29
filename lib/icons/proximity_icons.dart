@@ -4,12 +4,12 @@ class DuotoneIcon extends StatelessWidget {
   const DuotoneIcon(
       {Key? key,
       required this.primaryLayer,
-      required this.secondaryLayer,
+      this.secondaryLayer,
       this.size,
       this.color})
       : super(key: key);
 
-  final IconData primaryLayer, secondaryLayer;
+  final IconData? primaryLayer, secondaryLayer;
   final double? size;
   final Color? color;
 

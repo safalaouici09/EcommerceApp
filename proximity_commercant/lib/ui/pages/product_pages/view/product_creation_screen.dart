@@ -5,6 +5,7 @@ import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/ui/pages/product_pages/product_pages.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 
 class ProductCreationScreen extends StatelessWidget {
   const ProductCreationScreen(
@@ -156,6 +157,46 @@ class ProductCreationScreen extends StatelessWidget {
                       enabled: (product.quantity == null) || editScreen,
                       onChanged: productCreationValidation.changeQuantity),
                 ],
+              ),
+              // Product Policy
+              SectionDivider(
+                  leadIcon: ProximityIcons.policy,
+                  title: 'Store Policy.',
+                  color: redSwatch.shade500),
+              InfoMessage(
+                  message:
+                      ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
+
+              Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                child: Column(
+                  children: [
+                    ListToggle(
+                        title: 'keep store policy',
+                        value: productCreationValidation.storePolicy!,
+                        onToggle: productCreationValidation.toggleStorePolicy),
+                    if (!productCreationValidation.storePolicy!)
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(normal_100).copyWith(top: 0),
+                        child: TertiaryButton(
+                            onPressed: () async {
+                              Policy? policyResult = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => StorePolicyScreen(
+                                            global: false,
+                                            store: true,
+                                          )));
+                              productCreationValidation.setPolicy(
+                                  policyResult!); // storeCreationValidation.changeAddress(_result);
+                            },
+                            title: 'Set Custom  Policy .'),
+                      )
+                    else
+                      Container(),
+                  ],
+                ),
               ),
 
               /// Product Variants

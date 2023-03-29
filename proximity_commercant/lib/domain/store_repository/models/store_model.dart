@@ -99,8 +99,8 @@ class Store {
         (description != null) &&
         (rating != null) &&
         (image != null) &&
-        (address != null) &&
-        (policy != null));
+        (address != null)); // &&
+    //  (policy != null));
   }
 
   static List<Store> stores = [

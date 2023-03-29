@@ -4,21 +4,19 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:proximity/config/backend.dart';
 import 'package:proximity/config/values.dart';
 import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
 import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
-import 'package:proximity_commercant/domain/user_repository/models/user_model.dart';
+import 'package:proximity_commercant/domain/user_repository/src/user_service.dart';
+import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
+
 import 'package:proximity_commercant/ui/pages/store_pages/view/store_creation_screen.dart';
-import 'package:proximity_commercant/ui/pages/store_pages/widgets/widgets.dart';
 
 class PolicyValidation with ChangeNotifier {
-
-
-
-  
   bool _selfPickup = false;
   bool _shippingFixedPrice = false;
   bool _shippingPerKm = false;
@@ -70,6 +68,7 @@ class PolicyValidation with ChangeNotifier {
   int? _selfPickUpMaxDays;
   double? _reservationtax;
   double? _reservationcancelationtax;
+  //the getters
   bool? get reservationFree => _reservationFree;
   bool? get reservationPartial => _reservationPartial;
   bool? get reservationTotal => _reservationTotal;
@@ -184,6 +183,105 @@ class PolicyValidation with ChangeNotifier {
       return true;
     } else {
       return false;
+    }
+  }
+
+  PolicyValidation();
+
+//setter
+  PolicyValidation.setPolicy(Policy? policy) {
+    if (policy != null) {
+      //set policy
+      if (policy.pickupPolicy!.timeLimit != null) {
+        _selfPickup = true;
+        _selfPickUpMaxDays = policy.pickupPolicy!.timeLimit;
+      } //set delivery
+
+      if (policy.deliveryPolicy!.zone!.radius != null) {
+        _delivery = true;
+        _deliveryCenter.lat =
+            policy.deliveryPolicy!.zone!.centerPoint!.latitude;
+        _deliveryCenter.lng =
+            policy.deliveryPolicy!.zone!.centerPoint!.longitude;
+        //  _shippingMaxKM = policy.deliveryPolicy!.zone!.radius!;
+        if (policy.deliveryPolicy!.pricing!.fixedPrice != null) {
+          _shippingFixedPrice = true;
+          _shippingFixedPriceTax = policy.deliveryPolicy!.pricing!.fixedPrice;
+        }
+        if (policy.deliveryPolicy!.pricing!.kmPrice != null) {
+          _shippingPerKm = true;
+          _shippingPerKmTax = policy.deliveryPolicy!.pricing!.kmPrice;
+        }
+      }
+      //set reservation
+      if (policy.reservationPolicy!.duration != null) {
+        _reservationAccept = true;
+        if (policy.reservationPolicy!.payment.free != null) {
+          _reservationFree = policy.reservationPolicy!.payment.free!;
+          _reservationTotal = false;
+          _reservationPartial = false;
+        }
+        if (policy.reservationPolicy!.payment.total != null) {
+          _reservationTotal = true;
+          _reservationFree = false;
+
+          _reservationPartial = false;
+        }
+
+        if (policy.reservationPolicy!.payment.partial!.fixe != null) {
+          _reservationPartial = true;
+          _reservationtax = policy.reservationPolicy!.payment.partial!.fixe!;
+        }
+        if (policy.reservationPolicy!.cancelation!.restrictions!.fix == null) {
+          _reservationConcelationFree = true;
+        } else {
+          if (policy.reservationPolicy!.cancelation!.restrictions!.fix !=
+              null) {
+            _reservationConcelationPartial = true;
+            _reservationcancelationtax =
+                policy.reservationPolicy!.cancelation!.restrictions!.fix!;
+          }
+        }
+      }
+      //set return
+      if (policy.returnPolicy!.duration != null) {
+        _returnAccept = true;
+        _returnMaxDays = policy.returnPolicy!.duration;
+        _returnCondition = policy.returnPolicy!.productStatus;
+        _returnMethode = policy.returnPolicy!.returnMethod;
+        if (policy.returnPolicy!.refund.shipping!.fixe != null) {
+          _returnShippingFee = true;
+        }
+        if (policy.returnPolicy!.refund!.order.fixe != null) {
+          _returnPartialFee = true;
+
+          _returnPerFee = policy.returnPolicy!.refund!.order.fixe;
+        }
+      }
+
+      //set orders
+      if (policy.orderPolicy != null) {
+        _oredersAutoValidation = policy.orderPolicy!.validation!.auto!;
+        _oredersManValidation = policy.orderPolicy!.validation!.manual!;
+        //  _oredersMixValidation = policy.orderPolicy!.validation!.both!;
+        _notifRealTime = policy.orderPolicy!.notification!.realtime!;
+      }
+
+      if (policy.orderPolicy!.notification!.perOrdersNbr != null) {
+        _notifBatch = true;
+        _notifDuration = policy.orderPolicy!.notification!.perOrdersNbr!;
+      }
+      if (policy.orderPolicy!.notification!.time != null) {
+        _notifHourly = true;
+        _notifDuration = policy.orderPolicy!.notification!.perOrdersNbr!;
+      }
+      _notifEmail = policy.orderPolicy!.notification!.sendMode!.mail!;
+      _notifPopUp = policy.orderPolicy!.notification!.sendMode!.popup!;
+      _notifSms = policy.orderPolicy!.notification!.sendMode!.sms!;
+      _notifInPlateforme =
+          policy.orderPolicy!.notification!.sendMode!.vibration!;
+    } else {
+      return;
     }
   }
 
@@ -392,6 +490,7 @@ class PolicyValidation with ChangeNotifier {
 
   void incrShippingMaxKM() {
     _shippingMaxKM += 10;
+    print(_shippingMaxKM);
     notifyListeners();
   }
 
@@ -406,8 +505,8 @@ class PolicyValidation with ChangeNotifier {
   }
 
   void changeResevationDuration(String day, int index) {
-    _reservationDuration =
-        int.parse(day.replaceAll("days", "").replaceAll("day", ""));
+    _reservationDuration = int.parse(day);
+    // int.parse(day.replaceAll("days", "").replaceAll("day", ""));
 
     notifyListeners();
   }
@@ -523,10 +622,10 @@ class PolicyValidation with ChangeNotifier {
         /// Display Results Message
         ToastSnackbar().init(context).showToast(
             message: "${res.statusMessage}", type: ToastSnackbarType.success);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => StoreCreationScreen(store: Store())));
+        Provider.of<UserService>(context, listen: false).getUserData();
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
       }
     } on DioError catch (e) {
       if (e.response != null) {
@@ -566,32 +665,37 @@ class PolicyValidation with ChangeNotifier {
                 latitude: _deliveryCenter.lat,
                 longitude: _deliveryCenter.lng,
               ),
-              radius: shippingMaxKM),
+              radius: _shippingMaxKM),
           pricing: Pricing(
-              fixedPrice: shippingFixedPriceTax ?? 0.1.toDouble(),
-              kmPrice: shippingPerKmTax ?? 0.1.toDouble()));
+              fixedPrice: shippingFixedPriceTax, kmPrice: shippingPerKmTax));
     }
     if (_returnAccept) {
       returnPolicy = ReturnPolicy(
-          duration: reservationDuration,
+          duration: _returnMaxDays,
           productStatus: returnCondition,
           returnMethod: returnMethode,
           refund: Refund(
               order: OrderRefund(
                 fixe: _returnPerFee,
               ),
-              shipping: ShippingRefund(fixe: _returnPerFee)));
+              shipping: _returnShippingFee
+                  ? ShippingRefund(fixe: _returnPerFee)
+                  : null));
     }
     if (_reservationAccept) {
       reservationPolicy = ReservationPolicy(
+          duration: _reservationDuration,
           payment: ReservationPayment(
               free: _reservationFree,
               total: _reservationTotal,
-              partial:
-                  Partial(fixe: _reservationtax, percentage: _reservationtax)),
-          cancelation: ReservationCancelation(
-            restrictions: Restrictions(fix: _reservationcancelationtax),
-          ));
+              partial: _reservationPartial
+                  ? Partial(fixe: _reservationtax, percentage: _reservationtax)
+                  : null),
+          cancelation: _reservationConcelationFree
+              ? null
+              : ReservationCancelation(
+                  restrictions: Restrictions(fix: _reservationcancelationtax),
+                ));
     }
 
     OrderPolicy orderPolicy = OrderPolicy(
@@ -616,5 +720,82 @@ class PolicyValidation with ChangeNotifier {
         returnPolicy: returnPolicy,
         orderPolicy: orderPolicy);
     return {"policy": policy.toJson()};
+  }
+
+  Policy getPolicy() {
+    var pickup = null;
+    var delivery = null;
+    ReturnPolicy? returnPolicy;
+    PickupPolicy? pickupPolicy;
+    DeliveryPolicy? deliveryPolicy;
+    ReservationPolicy? reservationPolicy;
+
+    WorkingTime workingTime = WorkingTime(
+        openTime: _openTime.toString(), closeTime: _closeTime.toString());
+    if (_selfPickup) {
+      pickupPolicy = PickupPolicy(timeLimit: selfPickUplMaxDays);
+    }
+    if (_delivery) {
+      deliveryPolicy = DeliveryPolicy(
+          zone: Zone(
+              centerPoint: CenterPoint(
+                latitude: _deliveryCenter.lat,
+                longitude: _deliveryCenter.lng,
+              ),
+              radius: _shippingMaxKM),
+          pricing: Pricing(
+              fixedPrice: shippingFixedPriceTax, kmPrice: shippingPerKmTax));
+    }
+    if (_returnAccept) {
+      returnPolicy = ReturnPolicy(
+          duration: _returnMaxDays,
+          productStatus: returnCondition,
+          returnMethod: returnMethode,
+          refund: Refund(
+              order: OrderRefund(
+                fixe: _returnPerFee,
+              ),
+              shipping: _returnShippingFee
+                  ? ShippingRefund(fixe: _returnPerFee)
+                  : null));
+    }
+    if (_reservationAccept) {
+      reservationPolicy = ReservationPolicy(
+          duration: _reservationDuration,
+          payment: ReservationPayment(
+              free: _reservationFree,
+              total: _reservationTotal,
+              partial: _reservationPartial
+                  ? Partial(fixe: _reservationtax, percentage: _reservationtax)
+                  : null),
+          cancelation: _reservationConcelationFree
+              ? null
+              : ReservationCancelation(
+                  restrictions: Restrictions(fix: _reservationcancelationtax),
+                ));
+    }
+
+    OrderPolicy orderPolicy = OrderPolicy(
+        validation: Validation(
+            auto: _oredersAutoValidation,
+            manual: _oredersManValidation,
+            both: _oredersMixValidation),
+        notification: OrderNotification(
+            realtime: _notifRealTime,
+            time: _notifDuration,
+            perOrdersNbr: _notifDuration,
+            sendMode: SendMode(
+                mail: _notifEmail,
+                sms: _notifSms,
+                popup: _notifPopUp,
+                vibration: _notifInPlateforme)));
+    Policy policy = Policy(
+        //  workingTimePolicy: workingTime,
+        pickupPolicy: pickupPolicy,
+        deliveryPolicy: deliveryPolicy,
+        reservationPolicy: reservationPolicy,
+        returnPolicy: returnPolicy,
+        orderPolicy: orderPolicy);
+    return policy;
   }
 }

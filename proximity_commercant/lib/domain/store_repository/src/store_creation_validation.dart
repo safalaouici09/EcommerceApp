@@ -25,6 +25,7 @@ class StoreCreationValidation with ChangeNotifier {
   Address _storeAddress = Address();
   List<dynamic> _storeImages = [];
   List<String> _deletedImages = [];
+  Policy? _policy;
 
   StoreCreationValidation();
 
@@ -33,8 +34,9 @@ class StoreCreationValidation with ChangeNotifier {
     _storeName = ValidationItem(store.name, null);
     // _storeCategory = ValidationItem(store.category?.toString(), null);
     _storeDescription = ValidationItem(store.description, null);
-    if (store.policy != null) {
-      /*
+
+    // if (store.policy != null) {
+    /*
       _selfPickupFree = store.policy!.shippingMethods!
           .contains(ShippingMethod.selfPickupFree);
       _selfPickupPartial = store.policy!.shippingMethods!
@@ -44,14 +46,14 @@ class StoreCreationValidation with ChangeNotifier {
       _selfPickup = _selfPickupFree || _selfPickupPartial || _selfPickupTotal;
       _delivery =
           (store.policy!.shippingMethods!.contains(ShippingMethod.delivery));*/
-      //_tax = store.policy!.tax;
-      /* _selfPickupPrice = store.policy!.selfPickUpPrice;
+    //_tax = store.policy!.tax;
+    /* _selfPickupPrice = store.policy!.selfPickUpPrice;
       _openWeekend = store.policy!.openWeekend;
       _openDay = store.policy!.openDay;
       _openNight = store.policy!.openNight;*/
-      // _openTime = DateTime.parse(store.policy!.openTime!);
-      // _closeTime = DateTime.parse(store.policy!.closeTime!);
-    }
+    // _openTime = DateTime.parse(store.policy!.openTime!);
+    // _closeTime = DateTime.parse(store.policy!.closeTime!);
+    // }
     if (store.address != null) {
       _storeAddress = store.address!;
     }
@@ -68,6 +70,7 @@ class StoreCreationValidation with ChangeNotifier {
   ValidationItem get storeDescription => _storeDescription;
   bool? get globalPolicy => _globalPolicy;
   bool? get customPolicy => _customPolicy;
+
   bool? _globalPolicy = true;
   bool? _customPolicy = false;
   TimeOfDay? get openTime => _openTime;
@@ -75,10 +78,14 @@ class StoreCreationValidation with ChangeNotifier {
   TimeOfDay? get closeTime => _closeTime;
 
   Address get storeAddress => _storeAddress;
+  Policy? get policy => _policy;
 
   List<dynamic> get storeImages => _storeImages;
 
   List<String> get deletedImages => _deletedImages;
+  setPolicy(Policy policy) {
+    _policy = policy;
+  }
 
   // checks if forms is valid and verified
   bool get isValid {
@@ -225,7 +232,6 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
-
   /*  if (selfPickUplMaxDays != null) {
       pickup = {"timeLimit": selfPickUplMaxDays};
     } else {
@@ -294,7 +300,8 @@ class StoreCreationValidation with ChangeNotifier {
     };*/
 
   /// A method to convert this form validator into a Store object
-  FormData toFormData() {
+  FormData toFormData(Policy policy) {
+    print('tfd' + policy.toJson().toString());
     FormData _formData = FormData.fromMap({
       "name": storeName.value,
       "description": storeDescription.value,
@@ -312,15 +319,17 @@ class StoreCreationValidation with ChangeNotifier {
         "country": "${storeAddress.countryName ?? ""}",
         "countryCode": "FR"
       }''',
-      //"policy": policytoFormData()
+      // "policy": policy.toJson()
     });
+
+    // _formData.fields.add(policytoFormData);
     if (_storeImages.isNotEmpty) {
       if (_storeImages.first is File) {
-        print("pef" + _storeImages.first.path);
         _formData.files.add(MapEntry(
             'image', MultipartFile.fromFileSync(_storeImages.first.path)));
       }
     }
+    print("ff" + _formData.toString());
     return _formData;
   }
 }
