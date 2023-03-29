@@ -11,7 +11,7 @@ class Store {
   String? ownerPhoneNumber;
   dynamic image;
   Address? address;
-  // Policy? policy;
+  Policy? policy;
   List<Category>? categories;
   bool? isActive;
   // bool? isVerified;
@@ -29,7 +29,7 @@ class Store {
     this.ownerPhoneNumber,
     this.image,
     this.address,
-    //  this.policy,
+    this.policy,
     this.categories,
     this.followers,
     this.isActive,
@@ -47,7 +47,7 @@ class Store {
         //isVerified = parsedJson[' isVerified'],
         followers = parsedJson['followers'],
         isActive = parsedJson['isActive'],
-        //policy = Policy.fromJson(parsedJson['policy']),
+        policy = Policy.fromJson(parsedJson['policy']),
         /*   policy = Policy(
           shippingMethods: [
             if (parsedJson['policies']['delivery'] ?? false)

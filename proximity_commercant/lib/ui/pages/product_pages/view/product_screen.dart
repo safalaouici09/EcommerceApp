@@ -15,21 +15,23 @@ class ProductScreen extends StatelessWidget {
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
 
-    return Consumer<ProductService>(builder: (context, productService, child) {
+    return Consumer2<ProductService, ProductCreationValidation>(
+        builder: (context, productService, productCreationValidation, child) {
       Product product =
           productService.products!.firstWhere((element) => element.id == id);
       int index =
           productService.products!.indexWhere((element) => element.id == id);
 
       /// Do a getShop if necessary
+
       didFetch = product.allFetched();
       if (!didFetch) {
-        productService.getOffer(id);
         productService.getProduct(id);
 
         product =
             productService.products!.firstWhere((element) => element.id == id);
       }
+      productService.getOffer(id);
 
       return Scaffold(
           body: Stack(alignment: Alignment.bottomCenter, children: [
@@ -152,7 +154,7 @@ class ProductScreen extends StatelessWidget {
                                               productService
                                                   .editProductDiscount(
                                                       context,
-                                                      id,
+                                                      index,
                                                       productService
                                                           .discountAmount);
                                             } else {
@@ -172,7 +174,7 @@ class ProductScreen extends StatelessWidget {
                                               productService
                                                   .editProductDiscount(
                                                       context,
-                                                      id,
+                                                      index,
                                                       productService
                                                           .discountAmount);
                                               Navigator.pop(context);

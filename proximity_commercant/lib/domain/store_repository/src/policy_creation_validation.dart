@@ -11,6 +11,8 @@ import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
 import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
+import 'package:proximity_commercant/domain/user_repository/src/user_service.dart';
+import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
 
 import 'package:proximity_commercant/ui/pages/store_pages/view/store_creation_screen.dart';
 
@@ -195,7 +197,7 @@ class PolicyValidation with ChangeNotifier {
         _selfPickUpMaxDays = policy.pickupPolicy!.timeLimit;
       } //set delivery
 
-      if (policy.deliveryPolicy!.zone!.centerPoint!.latitude != null) {
+      if (policy.deliveryPolicy!.zone!.radius != null) {
         _delivery = true;
         _deliveryCenter.lat =
             policy.deliveryPolicy!.zone!.centerPoint!.latitude;
@@ -210,8 +212,6 @@ class PolicyValidation with ChangeNotifier {
           _shippingPerKm = true;
           _shippingPerKmTax = policy.deliveryPolicy!.pricing!.kmPrice;
         }
-        print(_shippingPerKm.toString());
-        print(_shippingMaxKM);
       }
       //set reservation
       if (policy.reservationPolicy!.duration != null) {
@@ -251,12 +251,11 @@ class PolicyValidation with ChangeNotifier {
         _returnMethode = policy.returnPolicy!.returnMethod;
         if (policy.returnPolicy!.refund.shipping!.fixe != null) {
           _returnShippingFee = true;
-        } else {
-          if (policy.returnPolicy!.refund!.order.fixe != null) {
-            _returnPartialFee = true;
+        }
+        if (policy.returnPolicy!.refund!.order.fixe != null) {
+          _returnPartialFee = true;
 
-            _returnPerFee = policy.returnPolicy!.refund!.order.fixe;
-          }
+          _returnPerFee = policy.returnPolicy!.refund!.order.fixe;
         }
       }
 
@@ -506,8 +505,8 @@ class PolicyValidation with ChangeNotifier {
   }
 
   void changeResevationDuration(String day, int index) {
-    _reservationDuration =
-        int.parse(day.replaceAll("days", "").replaceAll("day", ""));
+    _reservationDuration = int.parse(day);
+    // int.parse(day.replaceAll("days", "").replaceAll("day", ""));
 
     notifyListeners();
   }
@@ -623,10 +622,10 @@ class PolicyValidation with ChangeNotifier {
         /// Display Results Message
         ToastSnackbar().init(context).showToast(
             message: "${res.statusMessage}", type: ToastSnackbarType.success);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => StoreCreationScreen(store: Store())));
+        Provider.of<UserService>(context, listen: false).getUserData();
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
       }
     } on DioError catch (e) {
       if (e.response != null) {

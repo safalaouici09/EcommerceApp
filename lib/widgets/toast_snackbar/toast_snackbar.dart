@@ -121,7 +121,7 @@ class ToastSnackbar {
           Expanded(
               child: Text(
             message,
-            style: Theme.of(context!).textTheme.bodyText1,
+            style: Theme.of(context!).textTheme.bodyLarge,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           )),

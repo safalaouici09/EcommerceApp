@@ -13,6 +13,8 @@ class ProductCreationValidation with ChangeNotifier {
   ValidationItem _description = ValidationItem(null, null);
   ValidationItem _category = ValidationItem(null, null);
   double? _price;
+  double? _discount;
+
   int? _quantity;
   Map<String, Set<String>> _characteristics = {};
   List<ProductVariant> _variants = [];
@@ -64,6 +66,8 @@ class ProductCreationValidation with ChangeNotifier {
   ValidationItem get category => _category;
 
   double? get price => _price;
+
+  double? get discount => _discount;
 
   int? get quantity => _quantity;
 
@@ -158,6 +162,11 @@ class ProductCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void changeDiscount(double value) {
+    _discount = value;
+    notifyListeners();
+  }
+
   void changeQuantity(String value) {
     _quantity = int.tryParse(value);
     notifyListeners();
@@ -245,7 +254,7 @@ class ProductCreationValidation with ChangeNotifier {
       "description": description.value,
       "categoryId": category.value,
       "price": price,
-      // "quantity": quantity,
+      // "discount": discount,
       "variantes": _variantsFormData(),
       "storeId": _storeId,
     });

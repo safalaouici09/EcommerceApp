@@ -294,10 +294,17 @@ class ProductService with ChangeNotifier {
   }
 
   Future editProductDiscount(
-      BuildContext context, String id, double? discount) async {
+      BuildContext context, int index, double? discount) async {
     _formsLoading = true;
+    _discountAmount = _discountAmount! / 100;
+    // discount = discount! / 100;
     notifyListeners();
-    FormData formData = FormData.fromMap({"discount": discount});
+
+    FormData formData = FormData.fromMap({
+      "discount": _discountAmount,
+    }); //"discountType": discountType});
+
+    print('form data' + formData.fields.toString());
 
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
@@ -313,9 +320,11 @@ class ProductService with ChangeNotifier {
 
       formData.fields.add(MapEntry("sellerId", _id));
       formData.fields.add(MapEntry("storeId", idStore!));
+      print("form " + formData.fields.toString());
 
-      var res = await dio.put(BASE_API_URL + '/product/$id}', data: formData);
-      print("form " + formData.toString());
+      var res = await dio.put(BASE_API_URL + '/product/${_products![index].id}',
+          data: formData);
+
       print("res" + res.statusCode.toString());
       if (res.statusCode == 200) {
         /// Save new Store Data
@@ -324,23 +333,14 @@ class ProductService with ChangeNotifier {
         notifyListeners();
 
         /// Display Results Message
-        ToastSnackbar().init(context).showToast(
-            message: "${res.statusMessage}", type: ToastSnackbarType.success);
-        Navigator.pop(context);
       }
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response);
 
         /// Display Error Response
-        ToastSnackbar()
-            .init(context)
-            .showToast(message: "${e.response}", type: ToastSnackbarType.error);
       } else {
         /// Display Error Message
-        ToastSnackbar()
-            .init(context)
-            .showToast(message: e.message, type: ToastSnackbarType.error);
       }
     }
     _formsLoading = false;

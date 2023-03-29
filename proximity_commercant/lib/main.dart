@@ -39,6 +39,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => UserService()),
     ChangeNotifierProvider(create: (_) => PolicyValidation()),
     ChangeNotifierProvider(create: (_) => StoreCreationValidation()),
+    ChangeNotifierProvider(create: (_) => ProductCreationValidation()),
     ChangeNotifierProxyProvider<LoginValidation, UserService>(
         create: (_) => UserService(),
         update: (_, __, UserService) => UserService!..getUserData()),

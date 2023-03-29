@@ -150,11 +150,12 @@ class _StoreScreenState extends State<StoreScreen> {
                       vertical: normal_100, horizontal: small_100),
                   column: 2,
                   children: [
-                    const ProductCreationButton(),
                     ...List.generate(
                         productService.products!.length,
-                        (index) => ProductCard(
-                            product: productService.products![index]))
+                        (index) => productService.products![index].discount > 0
+                            ? ProductCardDiscount(
+                                product: productService.products![index])
+                            : Container())
                   ])
           ]);
         }),

@@ -34,6 +34,7 @@ class StoreCreationValidation with ChangeNotifier {
     _storeName = ValidationItem(store.name, null);
     // _storeCategory = ValidationItem(store.category?.toString(), null);
     _storeDescription = ValidationItem(store.description, null);
+
     // if (store.policy != null) {
     /*
       _selfPickupFree = store.policy!.shippingMethods!
@@ -84,8 +85,7 @@ class StoreCreationValidation with ChangeNotifier {
   List<String> get deletedImages => _deletedImages;
   setPolicy(Policy policy) {
     _policy = policy;
-    //print("policyyyy ");
-    //print(_policy!.toJson());
+    print("policyyyy " + _policy!.toJson().toString());
   }
 
   // checks if forms is valid and verified
@@ -300,10 +300,9 @@ class StoreCreationValidation with ChangeNotifier {
       }
     };*/
 
-  setOffer(String id) {}
-
   /// A method to convert this form validator into a Store object
-  FormData toFormData() {
+  FormData toFormData(Policy policy) {
+    print('tfd' + policy.toJson().toString());
     FormData _formData = FormData.fromMap({
       "name": storeName.value,
       "description": storeDescription.value,
@@ -321,8 +320,10 @@ class StoreCreationValidation with ChangeNotifier {
         "country": "${storeAddress.countryName ?? ""}",
         "countryCode": "FR"
       }''',
-      //  "policy": _policy!.toJson()
+      "policy": policy.toJson()
     });
+
+    // _formData.fields.add(policytoFormData);
     if (_storeImages.isNotEmpty) {
       if (_storeImages.first is File) {
         _formData.files.add(MapEntry(

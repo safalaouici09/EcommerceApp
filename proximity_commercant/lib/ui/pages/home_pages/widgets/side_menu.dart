@@ -82,6 +82,8 @@ class SideMenu extends StatelessWidget {
                                             policy: userService.user?.policy,
                                             global: true,
                                           )));
+                              print('pp');
+                              print(userService.user?.policy!.toJson());
                             });
                       }),
                   ListButton(

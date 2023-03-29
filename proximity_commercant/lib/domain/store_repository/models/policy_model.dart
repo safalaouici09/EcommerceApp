@@ -1,8 +1,5 @@
-import 'package:proximity_commercant/domain/order_repository/models/models.dart';
-import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
-
 class Policy {
-  List<ShippingMethod>? shippingMethods;
+  // List<ShippingMethod>? shippingMethods;
 
   WorkingTime? workingTimePolicy;
   PickupPolicy? pickupPolicy;
@@ -23,9 +20,9 @@ class Policy {
 
   Policy.fromJson(Map<String, dynamic> json) {
     // workingTimePolicy = WorkingTime.fromJson(json['workingTime ']);
-    // pickupPolicy = PickupPolicy.fromJson(json['pickup']);
-    // deliveryPolicy = DeliveryPolicy.fromJson(json['delivery']);
-    // returnPolicy = ReturnPolicy.fromJson(json['return']);
+    pickupPolicy = PickupPolicy.fromJson(json['pickup']);
+    deliveryPolicy = DeliveryPolicy.fromJson(json['delivery']);
+    returnPolicy = ReturnPolicy.fromJson(json['return']);
     reservationPolicy = ReservationPolicy.fromJson(json['reservation']);
     orderPolicy = OrderPolicy.fromJson(json['order']);
   }
@@ -266,8 +263,9 @@ class Partial {
 
   factory Partial.fromJson(Map<String, dynamic> json) {
     return Partial(
-      fixe: json['fixe'],
-      percentage: json['percentage'],
+      fixe: json['fixe'] != null ? json['fixe'].toDouble() : null,
+      percentage:
+          json['percentage'] != null ? json['percentage'].toDouble() : null,
     );
   }
 
@@ -347,8 +345,9 @@ class OrderRefund {
 
   factory OrderRefund.fromJson(Map<String, dynamic> json) {
     return OrderRefund(
-      fixe: json['fixe'],
-      percentage: json['percentage'],
+      fixe: json['fixe'] != null ? json['fixe'].toDouble() : null,
+      percentage:
+          json['percentage'] != null ? json['percentage'].toDouble() : null,
     );
   }
 
@@ -371,8 +370,9 @@ class ShippingRefund {
 
   factory ShippingRefund.fromJson(Map<String, dynamic> json) {
     return ShippingRefund(
-      fixe: json['fixe'],
-      percentage: json['percentage'],
+      fixe: json['fixe'] != null ? json['fixe'].toDouble() : null,
+      percentage:
+          json['percentage'] != null ? json['percentage'].toDouble() : null,
     );
   }
 

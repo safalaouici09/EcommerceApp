@@ -15,9 +15,12 @@ import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.da
 import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
 
 class StoreCreationScreen extends StatefulWidget {
-  const StoreCreationScreen(
-      {Key? key, this.index, required this.store, this.editScreen = false})
-      : super(key: key);
+  const StoreCreationScreen({
+    Key? key,
+    this.index,
+    required this.store,
+    this.editScreen = false,
+  }) : super(key: key);
 
   final int? index;
   final Store store;
@@ -110,15 +113,16 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final policyValidation = Provider.of<PolicyValidation>(context);
+    final policyValidation = Provider.of<PolicyValidation>(context);
+
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
 
     return ChangeNotifierProvider<StoreCreationValidation>(
         create: (context) => StoreCreationValidation.setStore(widget.store),
-        child:
-            Consumer3<StoreCreationValidation, StoreService, PolicyValidation>(
-                builder: (context, storeCreationValidation, storeService,
-                    policyValidation, child) {
+        child: Consumer2<StoreCreationValidation, StoreService>(
+            builder: (context, storeCreationValidation, storeService, child) {
           /// first check if [index] is null or not
           /// if it is null then it's a ShopAddingScreen, so no need to fetch data
           /// to edit it, and no need for a loading screen
@@ -135,309 +139,291 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           return Scaffold(
               body: SafeArea(
                   child: Stack(alignment: Alignment.bottomCenter, children: [
-            Selector<StoreCreationValidation, void>(
-                selector: (_, storeCreationValidation) =>
-                    storeCreationValidation
-                        .setPolicy(policyValidation.getPolicy()),
-                builder: (context, policy, child) {
-                  return ListView(children: [
-                    TopBar(
-                        title: widget.editScreen
-                            ? 'Edit Store.'
-                            : 'Create a new Store.'),
-                    SectionDivider(
-                        leadIcon: ProximityIcons.user,
-                        title: 'Store owner.',
-                        color: redSwatch.shade500),
-                    Selector<UserService, String?>(
-                        selector: (_, userService) => userService.user!.email,
-                        builder: (context, email, child) {
-                          return RichEditText(
-                            children: [
-                              EditText(
-                                  hintText: 'Owner email.',
-                                  saved: email,
-                                  enabled: true),
-                            ],
-                          );
-                        }),
-
-                    /// Store Details
-                    SectionDivider(
-                        leadIcon: ProximityIcons.edit,
-                        title: 'Store details.',
-                        color: redSwatch.shade500),
-                    RichEditText(children: [
-                      EditText(
-                        hintText: 'Name.',
-                        borderType: BorderType.top,
-                        saved: storeCreationValidation.storeName.value,
-                        errorText: storeCreationValidation.storeName.error,
-                        enabled:
-                            (widget.store.name == null) || widget.editScreen,
-                        onChanged: storeCreationValidation.changeStoreName,
-                      ),
-                    ]),
-                    const EditTextSpacer(),
-                    RichEditText(
+            ListView(children: [
+              TopBar(
+                  title: widget.editScreen
+                      ? 'Edit Store.'
+                      : 'Create a new Store.'),
+              SectionDivider(
+                  leadIcon: ProximityIcons.user,
+                  title: 'Store owner.',
+                  color: redSwatch.shade500),
+              Selector<UserService, String?>(
+                  selector: (_, userService) => userService.user!.email,
+                  builder: (context, email, child) {
+                    return RichEditText(
                       children: [
                         EditText(
-                          hintText: 'Description.',
-                          borderType: BorderType.bottom,
-                          keyboardType: TextInputType.multiline,
-                          saved: storeCreationValidation.storeDescription.value,
-                          errorText:
-                              storeCreationValidation.storeDescription.error,
-                          maxLines: 5,
-                          enabled: (widget.store.description == null) ||
-                              widget.editScreen,
-                          onChanged:
-                              storeCreationValidation.changeStoreDescription,
-                        ),
+                            hintText: 'Owner email.',
+                            saved: email,
+                            enabled: true),
                       ],
+                    );
+                  }),
+
+              /// Store Details
+              SectionDivider(
+                  leadIcon: ProximityIcons.edit,
+                  title: 'Store details.',
+                  color: redSwatch.shade500),
+              RichEditText(children: [
+                EditText(
+                  hintText: 'Name.',
+                  borderType: BorderType.top,
+                  saved: storeCreationValidation.storeName.value,
+                  errorText: storeCreationValidation.storeName.error,
+                  enabled: (widget.store.name == null) || widget.editScreen,
+                  onChanged: storeCreationValidation.changeStoreName,
+                ),
+              ]),
+              const EditTextSpacer(),
+              RichEditText(
+                children: [
+                  EditText(
+                    hintText: 'Description.',
+                    borderType: BorderType.bottom,
+                    keyboardType: TextInputType.multiline,
+                    saved: storeCreationValidation.storeDescription.value,
+                    errorText: storeCreationValidation.storeDescription.error,
+                    maxLines: 5,
+                    enabled:
+                        (widget.store.description == null) || widget.editScreen,
+                    onChanged: storeCreationValidation.changeStoreDescription,
+                  ),
+                ],
+              ),
+
+              /// Error Messages
+              const SizedBox(height: small_100),
+              ErrorMessage(errors: [
+                storeCreationValidation.storeName.error,
+                storeCreationValidation.storeDescription.error
+              ]),
+
+              /// Policy
+
+              const SizedBox(height: normal_100),
+
+              SectionDivider(
+                  leadIcon: Icons.timer_outlined,
+                  title: 'Working time.',
+                  color: redSwatch.shade500),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                  child: Row(children: [
+                    Expanded(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: small_100),
+                            child: TimeButton(
+                              onPressed: (() async {
+                                storeCreationValidation.getStartTime(
+                                    context, storeCreationValidation.openTime);
+                              }),
+                              /* selected:
+                                  (storeCreationValidation.selfPickup ?? false),*/
+                              text: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: normal_100),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${storeCreationValidation.openTime?.hour.toString().padLeft(2, '0')}:${storeCreationValidation.openTime?.minute.toString().padLeft(2, '0')}',
+                                      style: const TextStyle(fontSize: 15),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Icon(
+                                      Icons.timer_outlined,
+                                      size: normal_200,
+                                      color: redSwatch.shade500,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ))),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: small_100),
+                      child: Text(
+                        ' To ',
+                        style: const TextStyle(fontSize: 15),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
+                    Expanded(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: small_100),
+                            child: TimeButton(
+                              onPressed: (() async {
+                                storeCreationValidation.getClosingTime(
+                                    context, storeCreationValidation.closeTime);
+                              }),
+                              /* selected:
+                                  (storeCreationValidation.selfPickup ?? false),*/
+                              text: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: normal_100),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${storeCreationValidation.closeTime?.hour.toString().padLeft(2, '0')}:${storeCreationValidation.closeTime?.minute.toString().padLeft(2, '0')}',
+                                      style: const TextStyle(fontSize: 15),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Icon(
+                                      Icons.timer_outlined,
+                                      size: normal_200,
+                                      color: redSwatch.shade500,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ))),
+                  ])),
 
-                    /// Error Messages
-                    const SizedBox(height: small_100),
-                    ErrorMessage(errors: [
-                      storeCreationValidation.storeName.error,
-                      storeCreationValidation.storeDescription.error
-                    ]),
-
-                    /// Policy
-
-                    const SizedBox(height: normal_100),
-
-                    SectionDivider(
-                        leadIcon: Icons.timer_outlined,
-                        title: 'Working time.',
-                        color: redSwatch.shade500),
-                    Padding(
+              /// Address
+              SectionDivider(
+                  leadIcon: ProximityIcons.address,
+                  title: 'Address.',
+                  color: redSwatch.shade500),
+              const InfoMessage(
+                  message:
+                      'Select your Store Location from the Address Picker, then edit the address info for more accuracy.'),
+              Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                child: TertiaryButton(
+                    onPressed: () async {
+                      final Address _result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddressSelectionScreen(
+                                  currentAddress:
+                                      storeCreationValidation.storeAddress)));
+                      storeCreationValidation.changeAddress(_result);
+                    },
+                    title: 'Select Address.'),
+              ),
+              RichEditText(children: [
+                EditText(
+                  hintText: 'Street Address Line 1.',
+                  borderType: BorderType.top,
+                  saved: storeCreationValidation.storeAddress.fullAddress,
+                  enabled: (widget.store.address == null) || widget.editScreen,
+                  onChanged: storeCreationValidation.changeFullAddress,
+                ),
+              ]),
+              const EditTextSpacer(),
+              RichEditText(
+                children: [
+                  EditText(
+                    hintText: 'Street Address Line 2.',
+                    borderType: BorderType.middle,
+                    saved: storeCreationValidation.storeAddress.streetName,
+                    enabled:
+                        (widget.store.address == null) || widget.editScreen,
+                    onChanged: storeCreationValidation.changeStreetName,
+                  ),
+                ],
+              ),
+              const EditTextSpacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: DropDownSelector<String>(
+                  // labelText: 'Product Category.',
+                  hintText: 'Country.',
+                  onChanged: storeCreationValidation.changeCountry,
+                  borderType: BorderType.middle,
+                  savedValue: storeCreationValidation.storeAddress.countryCode,
+                  items: countryList.entries
+                      .map((item) => DropdownItem<String>(
+                          value: item.key,
+                          child: Text(item.value,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(fontWeight: FontWeight.w600))))
+                      .toList(),
+                ),
+              ),
+              const EditTextSpacer(),
+              RichEditText(
+                children: [
+                  EditText(
+                    hintText: 'Region.',
+                    borderType: BorderType.middle,
+                    saved: storeCreationValidation.storeAddress.region,
+                    enabled:
+                        (widget.store.address == null) || widget.editScreen,
+                    onChanged: storeCreationValidation.changeRegion,
+                  ),
+                ],
+              ),
+              const EditTextSpacer(),
+              RichEditText(
+                children: [
+                  EditText(
+                    hintText: 'City.',
+                    borderType: BorderType.middle,
+                    saved: storeCreationValidation.storeAddress.city,
+                    enabled:
+                        (widget.store.address == null) || widget.editScreen,
+                    onChanged: storeCreationValidation.changeCity,
+                  ),
+                ],
+              ),
+              RichEditText(children: [
+                EditText(
+                  hintText: 'Postal Code.',
+                  borderType: BorderType.bottom,
+                  saved: storeCreationValidation.storeAddress.postalCode,
+                  enabled: (widget.store.address == null) || widget.editScreen,
+                  onChanged: storeCreationValidation.changePostalCode,
+                ),
+              ]),
+              SectionDivider(
+                  leadIcon: ProximityIcons.policy,
+                  title: 'Store Policy.',
+                  color: redSwatch.shade500),
+              InfoMessage(
+                  message:
+                      ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
+              Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                child: Column(
+                  children: [
+                    ListToggle(
+                        title: 'keep global policy',
+                        value: storeCreationValidation.globalPolicy!,
+                        onToggle: storeCreationValidation.toggleGlobalPolicy),
+                    if (!storeCreationValidation.globalPolicy!)
+                      Padding(
                         padding:
-                            const EdgeInsets.symmetric(horizontal: normal_100),
-                        child: Row(children: [
-                          Expanded(
-                              child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: small_100),
-                                  child: TimeButton(
-                                    onPressed: (() async {
-                                      storeCreationValidation.getStartTime(
-                                          context,
-                                          storeCreationValidation.openTime);
-                                    }),
-                                    /* selected:
-                                  (storeCreationValidation.selfPickup ?? false),*/
-                                    text: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: normal_100),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '${storeCreationValidation.openTime?.hour.toString().padLeft(2, '0')}:${storeCreationValidation.openTime?.minute.toString().padLeft(2, '0')}',
-                                            style:
-                                                const TextStyle(fontSize: 15),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Icon(
-                                            Icons.timer_outlined,
-                                            size: normal_200,
-                                            color: redSwatch.shade500,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ))),
-                          const Padding(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: small_100),
-                            child: Text(
-                              ' To ',
-                              style: const TextStyle(fontSize: 15),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Expanded(
-                              child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: small_100),
-                                  child: TimeButton(
-                                    onPressed: (() async {
-                                      storeCreationValidation.getClosingTime(
-                                          context,
-                                          storeCreationValidation.closeTime);
-                                    }),
-                                    /* selected:
-                                  (storeCreationValidation.selfPickup ?? false),*/
-                                    text: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: normal_100),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '${storeCreationValidation.closeTime?.hour.toString().padLeft(2, '0')}:${storeCreationValidation.closeTime?.minute.toString().padLeft(2, '0')}',
-                                            style:
-                                                const TextStyle(fontSize: 15),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Icon(
-                                            Icons.timer_outlined,
-                                            size: normal_200,
-                                            color: redSwatch.shade500,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ))),
-                        ])),
+                            const EdgeInsets.all(normal_100).copyWith(top: 0),
+                        child: TertiaryButton(
+                            onPressed: () async {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => StorePolicyScreen(
+                                            global: false,
+                                            store: true,
+                                          )));
+                              print("after push" +
+                                  policyValidation
+                                      .getPolicy()
+                                      .toJson()
+                                      .toString());
+                              print("after push" +
+                                  storeCreationValidation.policy!
+                                      .toJson()
+                                      .toString());
 
-                    /// Address
-                    SectionDivider(
-                        leadIcon: ProximityIcons.address,
-                        title: 'Address.',
-                        color: redSwatch.shade500),
-                    const InfoMessage(
-                        message:
-                            'Select your Store Location from the Address Picker, then edit the address info for more accuracy.'),
-                    Padding(
-                      padding:
-                          const EdgeInsets.all(normal_100).copyWith(top: 0),
-                      child: TertiaryButton(
-                          onPressed: () async {
-                            final Address _result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddressSelectionScreen(
-                                            currentAddress:
-                                                storeCreationValidation
-                                                    .storeAddress)));
-                            storeCreationValidation.changeAddress(_result);
-                          },
-                          title: 'Select Address.'),
-                    ),
-                    RichEditText(children: [
-                      EditText(
-                        hintText: 'Street Address Line 1.',
-                        borderType: BorderType.top,
-                        saved: storeCreationValidation.storeAddress.fullAddress,
-                        enabled:
-                            (widget.store.address == null) || widget.editScreen,
-                        onChanged: storeCreationValidation.changeFullAddress,
-                      ),
-                    ]),
-                    const EditTextSpacer(),
-                    RichEditText(
-                      children: [
-                        EditText(
-                          hintText: 'Street Address Line 2.',
-                          borderType: BorderType.middle,
-                          saved:
-                              storeCreationValidation.storeAddress.streetName,
-                          enabled: (widget.store.address == null) ||
-                              widget.editScreen,
-                          onChanged: storeCreationValidation.changeStreetName,
-                        ),
-                      ],
-                    ),
-                    const EditTextSpacer(),
-                    Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: normal_100),
-                      child: DropDownSelector<String>(
-                        // labelText: 'Product Category.',
-                        hintText: 'Country.',
-                        onChanged: storeCreationValidation.changeCountry,
-                        borderType: BorderType.middle,
-                        savedValue:
-                            storeCreationValidation.storeAddress.countryCode,
-                        items: countryList.entries
-                            .map((item) => DropdownItem<String>(
-                                value: item.key,
-                                child: Text(item.value,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle2!
-                                        .copyWith(
-                                            fontWeight: FontWeight.w600))))
-                            .toList(),
-                      ),
-                    ),
-                    const EditTextSpacer(),
-                    RichEditText(
-                      children: [
-                        EditText(
-                          hintText: 'Region.',
-                          borderType: BorderType.middle,
-                          saved: storeCreationValidation.storeAddress.region,
-                          enabled: (widget.store.address == null) ||
-                              widget.editScreen,
-                          onChanged: storeCreationValidation.changeRegion,
-                        ),
-                      ],
-                    ),
-                    const EditTextSpacer(),
-                    RichEditText(
-                      children: [
-                        EditText(
-                          hintText: 'City.',
-                          borderType: BorderType.middle,
-                          saved: storeCreationValidation.storeAddress.city,
-                          enabled: (widget.store.address == null) ||
-                              widget.editScreen,
-                          onChanged: storeCreationValidation.changeCity,
-                        ),
-                      ],
-                    ),
-                    RichEditText(children: [
-                      EditText(
-                        hintText: 'Postal Code.',
-                        borderType: BorderType.bottom,
-                        saved: storeCreationValidation.storeAddress.postalCode,
-                        enabled:
-                            (widget.store.address == null) || widget.editScreen,
-                        onChanged: storeCreationValidation.changePostalCode,
-                      ),
-                    ]),
-                    SectionDivider(
-                        leadIcon: ProximityIcons.policy,
-                        title: 'Store Policy.',
-                        color: redSwatch.shade500),
-                    InfoMessage(
-                        message:
-                            ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
-                    Padding(
-                      padding:
-                          const EdgeInsets.all(normal_100).copyWith(top: 0),
-                      child: Column(
-                        children: [
-                          ListToggle(
-                              title: 'keep global policy',
-                              value: storeCreationValidation.globalPolicy!,
-                              onToggle:
-                                  storeCreationValidation.toggleGlobalPolicy),
-                          !storeCreationValidation.globalPolicy!
-                              ? Padding(
-                                  padding: const EdgeInsets.all(normal_100)
-                                      .copyWith(top: 0),
-                                  child: TertiaryButton(
-                                      onPressed: () async {
-                                        Policy? storePolicy =
-                                            await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        StorePolicyScreen(
-                                                          global: false,
-                                                        )));
-                                        storeCreationValidation.setPolicy(
-                                            policyValidation.getPolicy());
-                                        // final Address _result = await
-                                        /* widget.editScreen
+                              // final Address _result = await
+                              /* widget.editScreen
                                             ? Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -451,30 +437,29 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                             Policy? storePolicy=  StorePolicyScreen(
                                                 global: false,
                                               );*/
-                                        // storeCreationValidation.changeAddress(_result);
-                                      },
-                                      title: 'Set Custom  Policy .'),
-                                )
-                              : Container(),
-                        ],
-                      ),
-                    ),
+                              // storeCreationValidation.changeAddress(_result);
+                            },
+                            title: 'Set Custom  Policy .'),
+                      )
+                    else
+                      Container(),
+                  ],
+                ),
+              ),
 
-                    /// Image Picker
-                    SectionDivider(
-                        leadIcon: ProximityIcons.picture,
-                        title: 'Store Image.',
-                        color: redSwatch.shade500),
-                    ImagePickerWidget(
-                        images: storeCreationValidation.storeImages,
-                        maxImages: 1,
-                        onImageAdded: storeCreationValidation.addStoreImage,
-                        onImageRemoved:
-                            storeCreationValidation.removeStoreImage),
+              /// Image Picker
+              SectionDivider(
+                  leadIcon: ProximityIcons.picture,
+                  title: 'Store Image.',
+                  color: redSwatch.shade500),
+              ImagePickerWidget(
+                  images: storeCreationValidation.storeImages,
+                  maxImages: 1,
+                  onImageAdded: storeCreationValidation.addStoreImage,
+                  onImageRemoved: storeCreationValidation.removeStoreImage),
 
-                    const SizedBox(height: huge_100)
-                  ]);
-                }),
+              const SizedBox(height: huge_100)
+            ]),
             BottomActionsBar(buttons: [
               PrimaryButton(
                   buttonState: storeService.formsLoading
@@ -484,12 +469,23 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                           : ButtonState.disabled,
                   onPressed: () {
                     if (widget.editScreen) {
-                      storeService.editStore(context, widget.index!,
-                          storeCreationValidation.toFormData(), []);
+                      storeService.editStore(
+                          context,
+                          widget.index!,
+                          storeCreationValidation
+                              .toFormData(policyValidation.getPolicy()),
+                          []);
                     } else {
+                      print('confirm' +
+                          policyValidation.getPolicy().toJson().toString());
+                      print('confirm' +
+                          policyValidation.shippingMaxKM.toString());
+
                       StoreDialogs.confirmStore(context, 1);
                       storeService.addStore(
-                          context, storeCreationValidation.toFormData());
+                          context,
+                          storeCreationValidation
+                              .toFormData(policyValidation.getPolicy()));
                     }
                   },
                   title: 'Confirm.')

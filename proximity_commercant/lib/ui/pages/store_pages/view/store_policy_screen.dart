@@ -9,12 +9,17 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
 
 import 'package:proximity_commercant/ui/widgets/address_picker/area_selection_screen.dart';
 
 class StorePolicyScreen extends StatefulWidget {
-  StorePolicyScreen({Key? key, this.global, this.policy}) : super(key: key);
+  StorePolicyScreen(
+      {Key? key, this.global, this.store, this.product, this.policy})
+      : super(key: key);
   bool? global;
+  bool? store;
+  bool? product;
   Policy? policy;
   @override
   State<StorePolicyScreen> createState() => _StorePolicyScreenState();
@@ -56,17 +61,29 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                         if (widget.global!) {
                           policyCreationValidation.updatePolicy(context,
                               policyCreationValidation.policytoFormData());
+                          Navigator.pop(context);
                         } else {
-                          setState(() {
-                            widget.policy =
-                                policyCreationValidation.getPolicy();
-                            storecreationValidation.setPolicy(widget.policy!);
-                            print(widget.policy!.toJson());
-                          });
+                          if (widget.store!) {
+                            setState(() {
+                              widget.policy =
+                                  policyCreationValidation.getPolicy();
+                              print('before puch' +
+                                  policyCreationValidation
+                                      .getPolicy()
+                                      .toJson()
+                                      .toString());
+
+                              storecreationValidation.setPolicy(widget.policy!);
+                              print('before puch' +
+                                  storecreationValidation.policy!
+                                      .toJson()
+                                      .toString());
+                              Navigator.pop(context);
+                            });
+                          }
 
                           /* StoreCreationValidation.setPolicy(
                               policyCreationValidation.getPolicy());*/
-                          Navigator.pop(context);
                         }
                       } else {
                         setState(() {
@@ -177,7 +194,9 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                         title: 'Delivery'),
                   ))
                 ])),
-            if (policyCreationValidation.selfPickup ?? true)
+            if (policyCreationValidation.selfPickup ??
+                true && policyCreationValidation.delivery! ??
+                false)
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
                 child: DropDownSelector<String>(
@@ -275,7 +294,6 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                   false),
                           icon: DuotoneIcon(
                               primaryLayer: Icons.euro,
-                              secondaryLayer: ProximityIcons.delivery_duotone_2,
                               color: redSwatch.shade500),
                           title: 'Fixed Price'),
                     )),
@@ -290,7 +308,6 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                               (policyCreationValidation.shippingPerKm ?? true),
                           icon: DuotoneIcon(
                               primaryLayer: Icons.place_outlined,
-                              secondaryLayer: ProximityIcons.delivery_duotone_2,
                               color: redSwatch.shade500),
                           title: ' By KM'),
                     ))
