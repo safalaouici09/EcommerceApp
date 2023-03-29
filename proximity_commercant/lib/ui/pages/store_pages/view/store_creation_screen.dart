@@ -111,9 +111,9 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
     }
   }
 
+  Policy? policyResult;
   @override
   Widget build(BuildContext context) {
-    final policyValidation = Provider.of<PolicyValidation>(context);
     final policyValidation = Provider.of<PolicyValidation>(context);
 
     /// a boolean to help fetch data ONLY if necessary
@@ -405,18 +405,14 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                             const EdgeInsets.all(normal_100).copyWith(top: 0),
                         child: TertiaryButton(
                             onPressed: () async {
-                              await Navigator.push(
+                              Policy? policyResult = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => StorePolicyScreen(
                                             global: false,
                                             store: true,
                                           )));
-                              print("after push" +
-                                  policyValidation
-                                      .getPolicy()
-                                      .toJson()
-                                      .toString());
+                              storeCreationValidation.setPolicy(policyResult!);
                               print("after push" +
                                   storeCreationValidation.policy!
                                       .toJson()
@@ -473,19 +469,19 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                           context,
                           widget.index!,
                           storeCreationValidation
-                              .toFormData(policyValidation.getPolicy()),
+                              .toFormData(storeCreationValidation.policy!),
                           []);
                     } else {
-                      print('confirm' +
+                      print('confirmVa' +
                           policyValidation.getPolicy().toJson().toString());
-                      print('confirm' +
-                          policyValidation.shippingMaxKM.toString());
+                      print('confirmCr' +
+                          storeCreationValidation.policy!.toString());
 
                       StoreDialogs.confirmStore(context, 1);
                       storeService.addStore(
                           context,
                           storeCreationValidation
-                              .toFormData(policyValidation.getPolicy()));
+                              .toFormData(storeCreationValidation.policy!));
                     }
                   },
                   title: 'Confirm.')

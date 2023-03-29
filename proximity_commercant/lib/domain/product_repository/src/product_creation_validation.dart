@@ -6,6 +6,8 @@ import 'package:proximity/config/config.dart';
 import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity_commercant/domain/product_repository/models/models.dart';
 
+import '../../store_repository/models/policy_model.dart';
+
 class ProductCreationValidation with ChangeNotifier {
   String? _id;
   String? _storeId;
@@ -14,6 +16,9 @@ class ProductCreationValidation with ChangeNotifier {
   ValidationItem _category = ValidationItem(null, null);
   double? _price;
   double? _discount;
+  bool? _storePolicy;
+  bool? _productPolicy;
+  Policy? _policy;
 
   int? _quantity;
   Map<String, Set<String>> _characteristics = {};
@@ -22,6 +27,8 @@ class ProductCreationValidation with ChangeNotifier {
 
   bool _showImagePicker = false;
   bool get showImagePicker => _showImagePicker;
+  bool? get storePolicy => _storePolicy;
+  bool? get productPolicy => _productPolicy;
   ProductCreationValidation();
 
   ProductCreationValidation.setProduct(Product product) {
@@ -59,6 +66,7 @@ class ProductCreationValidation with ChangeNotifier {
   }
 
   // Getters
+  Policy? get policy => _policy;
   ValidationItem get name => _name;
 
   ValidationItem get description => _description;
@@ -88,8 +96,6 @@ class ProductCreationValidation with ChangeNotifier {
       return [];
     } else {
       var myList = _characteristics.keys.toList();
-      print(myList);
-      print(myList);
 
       return myList;
     }
@@ -121,6 +127,23 @@ class ProductCreationValidation with ChangeNotifier {
   }
 
   // Setters
+  setPolicy(Policy policy) {
+    _policy = policy;
+    print("policyyyy " + _policy!.toJson().toString());
+  }
+
+  void toggleStorePolicy(
+    bool value,
+  ) {
+    _storePolicy = value;
+    if (value) {
+      _productPolicy = false;
+
+      //StoreDialogs.gobalPolicy(context!, 1);
+    }
+    notifyListeners();
+  }
+
   void changeName(String value) {
     if (value.isEmpty) {
       _name = ValidationItem(null, null);

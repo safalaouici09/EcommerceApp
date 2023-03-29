@@ -78,7 +78,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                   storecreationValidation.policy!
                                       .toJson()
                                       .toString());
-                              Navigator.pop(context);
+                              Navigator.pop(context,
+                                  policyCreationValidation.getPolicy());
                             });
                           }
 

@@ -85,7 +85,6 @@ class StoreCreationValidation with ChangeNotifier {
   List<String> get deletedImages => _deletedImages;
   setPolicy(Policy policy) {
     _policy = policy;
-    print("policyyyy " + _policy!.toJson().toString());
   }
 
   // checks if forms is valid and verified
@@ -320,7 +319,7 @@ class StoreCreationValidation with ChangeNotifier {
         "country": "${storeAddress.countryName ?? ""}",
         "countryCode": "FR"
       }''',
-      "policy": policy.toJson()
+      // "policy": policy.toJson()
     });
 
     // _formData.fields.add(policytoFormData);
