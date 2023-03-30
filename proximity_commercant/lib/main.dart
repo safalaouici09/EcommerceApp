@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,8 @@ void main() async {
 
   /// Credentials are to store [Access Token]
   await Hive.openBox('credentials');
+  //welcone
+  await Hive.openBox('welcome');
 
   /// Settings are to store user settings and preferences
   await Hive.openBox('settings');
@@ -34,29 +37,30 @@ void main() async {
 
   ErrorWidget.builder = (error) => CustomErrorWidget();
 
-
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => LoginValidation()),
-    ChangeNotifierProvider(create: (_) => ResetPasswordValidation()),
-    ChangeNotifierProvider(create: (_) => SignupValidation()),
-    ChangeNotifierProvider(create: (_) => OTPValidation()),
-    ChangeNotifierProvider(create: (_) => UserService()),
-    ChangeNotifierProvider(create: (_) => PolicyValidation()),
-    ChangeNotifierProvider(create: (_) => StoreCreationValidation()),
-    ChangeNotifierProvider(create: (_) => ProductCreationValidation()),
-    ChangeNotifierProxyProvider<LoginValidation, UserService>(
-        create: (_) => UserService(),
-        update: (_, __, UserService) => UserService!..getUserData()),
-    ChangeNotifierProxyProvider<OTPValidation, UserService>(
-        create: (_) => UserService(),
-        update: (_, __, UserService) => UserService!..getUserData()),
-    ChangeNotifierProvider(create: (_) => StoreService()),
-    ChangeNotifierProvider(create: (_) => ProductProxy()),
-    ChangeNotifierProxyProvider<ProductProxy, ProductService>(
-        create: (_) => ProductService(),
-        update: (_, __, productService) =>
-            productService!..reloadList(Provider.of<ProductProxy>(_))),
-    ChangeNotifierProvider(create: (_) => OrderService()),
-    ChangeNotifierProvider(create: (_) => UserSettings()),
-  ], child: const ProximityCommercantApp()));
+  runApp(Phoenix(
+    child: MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => LoginValidation()),
+      ChangeNotifierProvider(create: (_) => ResetPasswordValidation()),
+      ChangeNotifierProvider(create: (_) => SignupValidation()),
+      ChangeNotifierProvider(create: (_) => OTPValidation()),
+      ChangeNotifierProvider(create: (_) => UserService()),
+      ChangeNotifierProvider(create: (_) => PolicyValidation()),
+      ChangeNotifierProvider(create: (_) => StoreCreationValidation()),
+      ChangeNotifierProvider(create: (_) => ProductCreationValidation()),
+      ChangeNotifierProxyProvider<LoginValidation, UserService>(
+          create: (_) => UserService(),
+          update: (_, __, UserService) => UserService!..getUserData()),
+      ChangeNotifierProxyProvider<OTPValidation, UserService>(
+          create: (_) => UserService(),
+          update: (_, __, UserService) => UserService!..getUserData()),
+      ChangeNotifierProvider(create: (_) => StoreService()),
+      ChangeNotifierProvider(create: (_) => ProductProxy()),
+      ChangeNotifierProxyProvider<ProductProxy, ProductService>(
+          create: (_) => ProductService(),
+          update: (_, __, productService) =>
+              productService!..reloadList(Provider.of<ProductProxy>(_))),
+      ChangeNotifierProvider(create: (_) => OrderService()),
+      ChangeNotifierProvider(create: (_) => UserSettings()),
+    ], child: const ProximityCommercantApp()),
+  ));
 }

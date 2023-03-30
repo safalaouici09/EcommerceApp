@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/domain/store_repository/src/store_service.dart';
@@ -9,19 +10,17 @@ import 'package:proximity_commercant/domain/data_persistence/data_persistence.da
 
 class OnBoard extends StatelessWidget {
   const OnBoard({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final loginValidation = Provider.of<LoginValidation>(context);
-    
-    var credentialsBox = Boxes.getCredentials();
-    final welcome = credentialsBox.get('welcome');
 
+    var welcomeBox = Boxes.getWecome();
+    final welcome = welcomeBox.get('welcome');
 
-    return loginValidation.isLogged ? 
-              welcome == null ? 
-                  const WelcomeScreen() 
-                : const HomeScreen() 
-              : const LoginScreen();
+    return loginValidation.isLogged
+        ? welcome == null
+            ? const WelcomeScreen()
+            : const HomeScreen()
+        : const LoginScreen();
   }
 }

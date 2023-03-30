@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:hive/hive.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_commercant/proximity_commercant_app.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/authentication_pages.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
+import 'package:restart_app/restart_app.dart';
+
+import '../../../main.dart';
 
 class LoginValidation with ChangeNotifier {
   // form fields
@@ -99,6 +104,7 @@ class LoginValidation with ChangeNotifier {
 
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
+    var welcomeBox = Boxes.getWecome();
 
     /// prepare the dataForm
     final Map<String, dynamic> data = {
@@ -121,7 +127,7 @@ class LoginValidation with ChangeNotifier {
           credentialsBox.put('email', res.data["data"]['user']['email']);
           credentialsBox.put('email', _email.value);
           credentialsBox.put('username', res.data["data"]['user']['username']);
-          credentialsBox.put('welcome', res.data["data"]['user']['welcome']);
+          welcomeBox.put('welcome', res.data["data"]['user']['welcome']);
           ToastSnackbar().init(context).showToast(
               message: "${res.data["message"]}",
               type: ToastSnackbarType.success);
@@ -130,7 +136,7 @@ class LoginValidation with ChangeNotifier {
           });
 
           /// Go to [HomeScreen]
-          final welcome = credentialsBox.get('welcome');
+          final welcome = welcomeBox.get('welcome');
           //var box = await Hive.openBox('authentication');
 
           if (welcome == null) {
@@ -212,19 +218,25 @@ class LoginValidation with ChangeNotifier {
     notifyListeners();
   }
 
-  void logout() async {
+  void logout(BuildContext context) async {
     var credentialsBox = Boxes.getCredentials();
+    // credentialsBox = await Hive.openBox('credentials');
     // Delete an item
-//clear data base
-    await credentialsBox.clear();
-
+    await credentialsBox.deleteFromDisk();
+    credentialsBox =
+        await Hive.openBox('credentials'); // await credentialsBox.clear();
+    // print(credentialsBox.values);
+    //runApp(ProximityCommercantApp());
+    Phoenix.rebirth(context);
     _isLogged = false;
     notifyListeners();
   }
 
   void checkLoginStatus() {
     var credentialsBox = Boxes.getCredentials();
+
     final token = credentialsBox.get('token');
+
     //var box = await Hive.openBox('authentication');
 
     if (token != null) {

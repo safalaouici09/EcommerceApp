@@ -15,6 +15,7 @@ class OTPValidation with ChangeNotifier {
   // Getters
   ValidationItem get verificationCode => _verificationCode;
   var credentialsBox = Boxes.getCredentials();
+  var welcomeBox = Boxes.getWecome();
 
   bool get loading => _loading;
 
@@ -61,7 +62,7 @@ class OTPValidation with ChangeNotifier {
         credentialsBox.put('id', res.data["data"]['user']['id']);
         credentialsBox.put('email', res.data["data"]['user']['email']);
         credentialsBox.put('username', res.data["data"]['user']['username']);
-        credentialsBox.put('welcome', res.data["data"]['user']['welcome']);
+        welcomeBox.put('welcome', res.data["data"]['user']['welcome']);
 
         /// Save Credentials
         // credentialsBox.put('firstTime', false);

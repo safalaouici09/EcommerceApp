@@ -143,13 +143,13 @@ class SideMenu extends StatelessWidget {
                       title: 'Log out.',
                       leadIcon: Icons.logout_rounded,
                       onPressed: () {
-                        loginValidation.logout();
-                        Navigator.of(context).pushAndRemoveUntil(
+                        loginValidation.logout(context);
+                        /*   Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
                                 builder: (context) => const OnBoard()),
                             (Route<dynamic> route) => false);
                         Navigator.pushNamedAndRemoveUntil(
-                            context, "/", (r) => false);
+                            context, "/", (r) => false);*/
                       }),
                   const SizedBox(height: huge_200)
                 ]))));

@@ -48,7 +48,8 @@ class StoreService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/store/seller/' + _id);
+      //var res = await dio.get(BASE_API_URL + '/store/seller/' + _id);
+      var res = await dio.get(BASE_API_URL + '/store/seller/$_id');
       _loading = false;
       print("stores" + res.toString());
       notifyListeners();

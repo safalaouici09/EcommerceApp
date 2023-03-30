@@ -115,6 +115,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
   @override
   Widget build(BuildContext context) {
     final policyValidation = Provider.of<PolicyValidation>(context);
+    User? _user = context.watch<UserService>().user;
 
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
@@ -414,10 +415,6 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                             policy: widget.store.policy,
                                           )));
                               storeCreationValidation.setPolicy(policyResult!);
-                              print("after push" +
-                                  storeCreationValidation.policy!
-                                      .toJson()
-                                      .toString());
 
                               // final Address _result = await
                               /* widget.editScreen
@@ -465,6 +462,9 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                           ? ButtonState.enabled
                           : ButtonState.disabled,
                   onPressed: () {
+                    if (storeCreationValidation.globalPolicy!) {
+                      storeCreationValidation.setPolicy(_user!.policy!);
+                    }
                     if (widget.editScreen) {
                       storeService.editStore(
                           context,
@@ -473,11 +473,6 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                               .toFormData(storeCreationValidation.policy!),
                           []);
                     } else {
-                      print('confirmVa' +
-                          policyValidation.getPolicy().toJson().toString());
-                      print('confirmCr' +
-                          storeCreationValidation.policy!.toString());
-
                       StoreDialogs.confirmStore(context, 1);
                       storeService.addStore(
                           context,

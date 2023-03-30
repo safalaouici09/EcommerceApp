@@ -110,6 +110,7 @@ class UserService extends ChangeNotifier {
   Future welcomeValidate(BuildContext context) async {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
+    var welcomeBox = Boxes.getWecome();
     String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
@@ -123,7 +124,7 @@ class UserService extends ChangeNotifier {
         /// Save new User Data
         _user = User.fromJson(res.data);
         notifyListeners();
-        credentialsBox.put('welcome', 'true');
+        welcomeBox.put('welcome', 'true');
 
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const HomeScreen()),
