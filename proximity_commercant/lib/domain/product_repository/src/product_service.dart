@@ -112,6 +112,17 @@ class ProductService with ChangeNotifier {
     }
   }
 
+  List<Product>? getProductsWIthoutDiscount() {
+    List<Product>? _productsWIthoutDiscount = [];
+    for (Product product in _products!) {
+      if (product.discount == 0.0) {
+        _productsWIthoutDiscount!.add(product);
+      }
+    }
+
+    return _productsWIthoutDiscount;
+  }
+
   Future getProduct(String id) async {
     /*
     var box = Hive.box('mybox');
@@ -673,6 +684,7 @@ class ProductService with ChangeNotifier {
       if (res.statusCode == 200) {
         /// Save new Store Data
 
+        getStoreProducts();
         //  stores!.add(Store.fromJson(res.data));
 
         _formsLoading = false;

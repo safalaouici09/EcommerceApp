@@ -197,6 +197,8 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
       if (res.statusCode == 200) {
         //   _products = [];
         _products.addAll(Product.productsFromJsonList(res.data));
+
+        print(_products.length.toString());
         notifyListeners();
       }
     } on DioError catch (e) {

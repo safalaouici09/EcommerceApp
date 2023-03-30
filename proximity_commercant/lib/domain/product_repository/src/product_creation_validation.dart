@@ -280,7 +280,7 @@ class ProductCreationValidation with ChangeNotifier {
       // "discount": discount,
       "variantes": _variantsFormData(),
       "storeId": _storeId,
-      "policy": policy!.toJson(),
+      // "policy": policy!.toJson(),
     });
 
     if (_images.isNotEmpty) {
