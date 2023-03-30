@@ -95,7 +95,6 @@ class ProductService with ChangeNotifier {
 
       notifyListeners();
       if (res.statusCode == 200) {
-        print('prrr' + Product.productsFromJsonList(res.data).toString());
         _products = [];
         _products!.addAll(Product.productsFromJsonList(res.data));
         notifyListeners();
@@ -112,37 +111,18 @@ class ProductService with ChangeNotifier {
     }
   }
 
-  Future getProduct(String id) async {
-    /*
-    var box = Hive.box('mybox');
-    var accessToken = box.get('accessToken');
-    var refreshToken = box.get('refreshToken');
-    Product _product = _products?.firstWhere((element) => element.id == id);
-    var res = await Dio()
-        .get(SELLER_API_URL + '/seller/product',
-            queryParameters: {'_i': id, '_s': _idShop},
-            options: Options(headers: {
-              Headers.wwwAuthenticateHeader: {
-                accessToken: accessToken,
-                refreshToken: refreshToken
-              }
-            }))
-        .catchError((err) {
-      print(err);
-      throw err;
-    });
-    if (res.data['accessToken'] != null)
-      box.put('accessToken', res.data['accessToken']);
-    print(res.data['product']);
-    _product.brand = Product.fromJson(res.data['product']).brand;
-    _product.description = Product.fromJson(res.data['product']).description;
-    _product.quantity = Product.fromJson(res.data['product']).quantity;
-    _product.likes = Product.fromJson(res.data['product']).likes;
-    _product.sells = Product.fromJson(res.data['product']).sells;
-    _product.rating = Product.fromJson(res.data['product']).rating;
-    notifyListeners();
-    */
+  List<Product>? getProductsWIthoutDiscount() {
+    List<Product>? _productsWIthoutDiscount = [];
+    for (Product product in _products!) {
+      if (product.discount == 0.0) {
+        _productsWIthoutDiscount!.add(product);
+      }
+    }
 
+    return _productsWIthoutDiscount;
+  }
+
+  Future getProduct(String id) async {
     Future.delayed(const Duration(seconds: 4), () {
       notifyListeners();
     });
@@ -176,36 +156,6 @@ class ProductService with ChangeNotifier {
   }
 
   Future getProductByIndex(int index) async {
-    /*
-    var box = Hive.box('mybox');
-    var accessToken = box.get('accessToken');
-    var refreshToken = box.get('refreshToken');
-    Product _product = _products?.firstWhere((element) => element.id == id);
-    var res = await Dio()
-        .get(SELLER_API_URL + '/seller/product',
-            queryParameters: {'_i': id, '_s': _idShop},
-            options: Options(headers: {
-              Headers.wwwAuthenticateHeader: {
-                accessToken: accessToken,
-                refreshToken: refreshToken
-              }
-            }))
-        .catchError((err) {
-      print(err);
-      throw err;
-    });
-    if (res.data['accessToken'] != null)
-      box.put('accessToken', res.data['accessToken']);
-    print(res.data['product']);
-    _product.brand = Product.fromJson(res.data['product']).brand;
-    _product.description = Product.fromJson(res.data['product']).description;
-    _product.quantity = Product.fromJson(res.data['product']).quantity;
-    _product.likes = Product.fromJson(res.data['product']).likes;
-    _product.sells = Product.fromJson(res.data['product']).sells;
-    _product.rating = Product.fromJson(res.data['product']).rating;
-    notifyListeners();
-    */
-
     Future.delayed(const Duration(seconds: 4), () {
       notifyListeners();
     });
@@ -221,32 +171,6 @@ class ProductService with ChangeNotifier {
           Product.products.where((product) => product.storeId == _idStore));
       notifyListeners();
     });
-    /*var box = Hive.box('mybox');
-    var accessToken = box.get('accessToken');
-    var refreshToken = box.get('refreshToken');
-    var res = await Dio()
-        .get(SELLER_API_URL + '/seller/product',
-            queryParameters: {'_i': 0, '_s': _idShop, '_p': _currentPage},
-            options: Options(headers: {
-              Headers.wwwAuthenticateHeader: {
-                accessToken: accessToken,
-                refreshToken: refreshToken
-              }
-            }))
-        .catchError((err) {
-      print(err);
-      throw err;
-    });
-    if (res.data['accessToken'] != null)
-      box.put('accessToken', res.data['accessToken']);
-    if (res.data['type'] == 'OK') {
-      _currentPage++;
-      if (res.data['more'] == false) _fetchMore = false;
-      _products.addAll(res.data['products']
-          .map<Product>((product) => Product.fromJson(product))
-          .toList());
-    }
-    notifyListeners();*/
   }
 
   Future addProduct(BuildContext context, FormData formData) async {
@@ -320,7 +244,6 @@ class ProductService with ChangeNotifier {
 
       formData.fields.add(MapEntry("sellerId", _id));
       formData.fields.add(MapEntry("storeId", idStore!));
-      print("form " + formData.fields.toString());
 
       var res = await dio.put(BASE_API_URL + '/product/${_products![index].id}',
           data: formData);
@@ -366,8 +289,7 @@ class ProductService with ChangeNotifier {
       formData.fields.add(MapEntry("sellerId", _id));
       var res = await dio.put(BASE_API_URL + '/product/${_products![index].id}',
           data: formData);
-      print("form " + formData.toString());
-      print("res" + res.statusCode.toString());
+
       if (res.statusCode == 200) {
         /// Save new Store Data
         _products!.add(Product.fromJson(res.data));
@@ -537,12 +459,9 @@ class ProductService with ChangeNotifier {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
 
-      print("res1");
-      print(formData.fields);
       var res = await dio.put(BASE_API_URL + '/offer/update/$_offerId',
           data: formData);
-      print('res2');
-      print(res.statusCode);
+
       if (res.statusCode == 200) {
         /// Save new Store Data
 
@@ -551,9 +470,6 @@ class ProductService with ChangeNotifier {
         _formsLoading = false;
         notifyListeners();
 
-        /// Display Results Message
-        //  ToastSnackbar().init(context).showToast(
-        //      message: "${res.statusMessage}", type: ToastSnackbarType.success);
         Future.delayed(largeAnimationDuration, () {
           notifyListeners();
         });
@@ -564,18 +480,8 @@ class ProductService with ChangeNotifier {
       if (e.response != null) {
         print('errr');
         print(e.response);
-
-        /// Display Error Response
-        /* ToastSnackbar()
-            .init(context)
-            .showToast(message: "${e.response}", type: ToastSnackbarType.error);*/
       } else {
         print('errr');
-
-        /// Display Error Message
-        /* ToastSnackbar()
-            .init(context)
-            .showToast(message: e.message, type: ToastSnackbarType.error);*/
       }
     }
     _formsLoading = false;
@@ -601,22 +507,14 @@ class ProductService with ChangeNotifier {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
 
-      print("res1");
-      print(_offerId);
       var res = await dio.delete(BASE_API_URL + '/offer/delete/$_offerId');
-      print('res2');
-      print(res.statusCode);
+
       if (res.statusCode == 200) {
         /// Save new Store Data
-
-        //  stores!.add(Store.fromJson(res.data));
 
         _formsLoading = false;
         notifyListeners();
 
-        /// Display Results Message
-        //  ToastSnackbar().init(context).showToast(
-        //      message: "${res.statusMessage}", type: ToastSnackbarType.success);
         Future.delayed(largeAnimationDuration, () {
           notifyListeners();
         });
@@ -625,20 +523,11 @@ class ProductService with ChangeNotifier {
       }
     } on DioError catch (e) {
       if (e.response != null) {
-        print('errr');
         print(e.response);
-
-        /// Display Error Response
-        /* ToastSnackbar()
-            .init(context)
-            .showToast(message: "${e.response}", type: ToastSnackbarType.error);*/
       } else {
         print('errr');
 
-        /// Display Error Message
-        /* ToastSnackbar()
-            .init(context)
-            .showToast(message: e.message, type: ToastSnackbarType.error);*/
+        // Display Error Message
       }
     }
     _formsLoading = false;
@@ -673,6 +562,7 @@ class ProductService with ChangeNotifier {
       if (res.statusCode == 200) {
         /// Save new Store Data
 
+        getStoreProducts();
         //  stores!.add(Store.fromJson(res.data));
 
         _formsLoading = false;

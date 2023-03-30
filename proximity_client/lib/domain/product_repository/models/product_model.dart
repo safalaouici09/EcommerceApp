@@ -1,3 +1,5 @@
+import 'package:proximity_client/domain/product_repository/models/policy_model.dart';
+
 import 'product_variant_model.dart';
 import 'package:proximity/config/backend.dart';
 
@@ -15,6 +17,7 @@ class Product {
   List<dynamic>? tags;
   String? storeId;
   String? sellerId;
+  Policy? policy;
 
   Product(
       {this.id,
@@ -28,6 +31,7 @@ class Product {
       this.categoryId,
       this.categoryName,
       // this.tags,
+      this.policy,
       this.storeId,
       this.sellerId});
 
@@ -37,14 +41,18 @@ class Product {
         description = parsedJson['description'],
         price = parsedJson['price'].toDouble(),
         categoryId = parsedJson['categoryId'],
-        images = parsedJson['images'].map((el) => BASE_IMG_URL + '/' + el).toList() ,
+        images =
+            parsedJson['images'].map((el) => BASE_IMG_URL + '/' + el).toList(),
         tags = parsedJson['tags'],
         variants =
             ProductVariant.productVariantsFromJsonList(parsedJson['variants']),
         storeId = parsedJson['storeId'],
         sellerId = parsedJson['sellerId'],
         discount = parsedJson['discount'].toDouble(),
-        discountEndDate = DateTime.parse(parsedJson['discountExpiration']);
+        discountEndDate = DateTime.parse(parsedJson['discountExpiration']),
+        policy = parsedJson['policy'] == null
+            ? null
+            : Policy.fromJson(parsedJson['policy']);
 
   static List<Product> productsFromJsonList(List<dynamic> parsedJson) {
     List<Product> _list = [];

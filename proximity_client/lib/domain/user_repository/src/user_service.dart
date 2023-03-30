@@ -21,9 +21,7 @@ class UserService extends ChangeNotifier {
     notifyListeners();
   }
 
-
   bool? get isVerified => (_user == null) ? null : (_user!.isVerified!);
-
 
   UserService() {
     getUserData();
@@ -33,6 +31,7 @@ class UserService extends ChangeNotifier {
   Future updateUser(BuildContext context, Map<String, dynamic> data) async {
     _loading = true;
     notifyListeners();
+
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
@@ -76,7 +75,7 @@ class UserService extends ChangeNotifier {
   /// GET methods
   Future getUserData() async {
     /// open hive box
-    var credentialsBox = Boxes.getCredentials();
+    /*var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
@@ -100,7 +99,7 @@ class UserService extends ChangeNotifier {
         print('Error sending request!');
         print(e.message);
       }
-    }
+    }*/
     notifyListeners();
   }
 
@@ -139,4 +138,3 @@ class UserService extends ChangeNotifier {
     notifyListeners();
   }
 }
-

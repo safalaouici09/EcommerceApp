@@ -18,7 +18,7 @@ class ProductCreationValidation with ChangeNotifier {
   double? _discount;
   bool? _storePolicy = true;
   bool? _productPolicy;
-  Policy? _policy = null ;
+  Policy? _policy = null;
 
   int? _quantity;
   Map<String, Set<String>> _characteristics = {};
@@ -303,7 +303,7 @@ class ProductCreationValidation with ChangeNotifier {
         }
       }
     }
-    print(_formData) ;
+    print(_formData);
     return _formData;
   }
 }

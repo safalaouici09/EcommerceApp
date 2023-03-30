@@ -125,7 +125,7 @@ class CartService with ChangeNotifier {
   /// Order a Cart
   Future order(BuildContext context, String? storeId) async {
     /// get total price
-    if(storeId != null) {
+    if (storeId != null) {
       final double _totalPrice = getTotalPrice(storeId);
 
       /// get Store Policy
@@ -150,50 +150,50 @@ class CartService with ChangeNotifier {
   }
 
   Future addToCart(BuildContext context, Product product,
-      ProductVariant productVariant, Store? store, int quantity , {int noredirection = 0} ) async {
+      ProductVariant productVariant, Store? store, int quantity,
+      {int noredirection = 0}) async {
+    if (store != null) {
+      // start the loading animation
+      _loadingAdd = true;
+      notifyListeners();
 
-        if(store != null) {
-            // start the loading animation
-            _loadingAdd = true;
-            notifyListeners();
+      /// if store already exists, add order
+      if (cartItemsBox.containsKey(productVariant.id)) {
+        final CartItem _cartItem = cartItemsBox.get(productVariant.id);
+        _cartItem.orderedQuantity++;
+        _cartItem.save();
+      } else {
+        /// the cartItem that will be modified or inserted
+        final CartItem _cartItem =
+            CartItem.fromProduct(product, productVariant, quantity, true);
+        cartItemsBox.put(productVariant.id, _cartItem);
 
-            /// if store already exists, add order
-            if (cartItemsBox.containsKey(productVariant.id)) {
-              final CartItem _cartItem = cartItemsBox.get(productVariant.id);
-              _cartItem.orderedQuantity++;
-              _cartItem.save();
-            } else {
-              /// the cartItem that will be modified or inserted
-              final CartItem _cartItem =
-                  CartItem.fromProduct(product, productVariant, quantity, true);
-              cartItemsBox.put(productVariant.id, _cartItem);
+        /// if store exists, add [CartItem.key] to the existing [CartOrder]
+        /// otherwise, creates a new [CartOrder]
+        if (cartBox.containsKey(store.id)) {
+          Cart _cart = cartBox.get(store.id);
+          _cart.cartItemsKeys!.add(productVariant.id!);
+          _cart.save();
+        } else {
+          // the cart that will be modified or inserted
+          final Cart _cart = Cart(
+            storeId: store.id,
+            storeName: store.name,
+            cartItemsKeys: [productVariant.id!],
+          );
+          cartBox.put(store.id, _cart);
+        }
+      }
 
-              /// if store exists, add [CartItem.key] to the existing [CartOrder]
-              /// otherwise, creates a new [CartOrder]
-              if (cartBox.containsKey(store.id)) {
-                Cart _cart = cartBox.get(store.id);
-                _cart.cartItemsKeys!.add(productVariant.id!);
-                _cart.save();
-              } else {
-                // the cart that will be modified or inserted
-                final Cart _cart = Cart(
-                  storeId: store.id,
-                  storeName: store.name,
-                  cartItemsKeys: [productVariant.id!],
-                );
-                cartBox.put(store.id, _cart);
-              }
-            }
+      /// open hive box
+      /* var credentialsBox = Boxes.getCredentials();
+      String _id = credentialsBox.get('id');
+      String _token = credentialsBox.get('token');*/
 
-            /// open hive box
-            var credentialsBox = Boxes.getCredentials();
-            String _id = credentialsBox.get('id');
-            String _token = credentialsBox.get('token');
+      /// dataForm is already a parameter
 
-            /// dataForm is already a parameter
-
-            /// post the dataForm via dio call
-            try {
+      /// post the dataForm via dio call
+      /* try {
               Dio dio = Dio();
               dio.options.headers["token"] = "Bearer $_token";
               var res = await dio.post(BASE_API_URL + '/cart/add/', data: {
@@ -228,9 +228,18 @@ class CartService with ChangeNotifier {
                     .init(context)
                     .showToast(message: e.message, type: ToastSnackbarType.error);
               }
-            }
+            }*/
+    }
 
-        }
+    /// Display Results Message
+    ToastSnackbar().init(context).showToast(
+        message: "Product Successfully added to Cart!",
+        type: ToastSnackbarType.success);
+    if (noredirection == 0) {
+      Navigator.pop(context);
+    } else {
+      order(context, store!.id);
+    }
   }
 
   Future deleteOrderFromCart(String key) async {
