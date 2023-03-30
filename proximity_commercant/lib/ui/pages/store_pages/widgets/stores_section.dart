@@ -115,7 +115,7 @@ class _StoresSectionState extends State<StoresSection> {
                       leadIcon: ProximityIcons.remove,
                       onPressed: () {
                         StoreDialogs.deleteStore(
-                            context, storeService.stores![_selectedShop].id!);
+                            context, _selectedShop);
                       }),
                   // if (!storeService.stores![_selectedShop].frozen ?? false) ...[
                   //   const SizedBox(height: normal_100),

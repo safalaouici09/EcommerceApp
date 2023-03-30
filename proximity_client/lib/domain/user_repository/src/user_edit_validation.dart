@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:proximity/config/backend.dart';
 import 'package:proximity/config/values.dart';
@@ -117,10 +118,7 @@ class UserEditValidation with ChangeNotifier {
   }
 
   /// image Picker
-  void editProfileImage(List<dynamic> imageList) async {
-    _profileImage.addAll(imageList);
-    notifyListeners();
-
+  void editProfileImage(File imageList) async {
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
@@ -128,23 +126,26 @@ class UserEditValidation with ChangeNotifier {
     /* final Map<String, dynamic> data = {
       "image": await MultipartFile.fromFile(imageList[0].path,
           filename: imageList[0].path.split('/').last)*/
-    final Map<String, dynamic> data = {
-      "image": MultipartFile.fromFileSync(_profileImage.first.path)
-    };
+
+    FormData _formData = FormData.fromMap({});
+    _formData.files
+        .add(MapEntry('image', MultipartFile.fromFileSync(imageList.path)));
+
     /*  final Map<String, dynamic> data =
         MapEntry('image', MultipartFile.fromFileSync(_profileImage.first.path));*/
     print("res.statusCode");
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res =
-          await dio.put(BASE_API_URL + '/user/update_image/$_id', data: data);
+      var res = await dio.put(BASE_API_URL + '/user/update_image/$_id',
+          data: _formData);
       //_loading = false;
       print(res.statusCode);
       notifyListeners();
       if (res.statusCode == 200) {
         /// Save new User Data
-
+        var user = User.fromJson(res.data);
+        _profileImage = user.profileImage != null ? [user.profileImage] : [];
         notifyListeners();
 
         /// Display Results Message
@@ -153,6 +154,7 @@ class UserEditValidation with ChangeNotifier {
         Navigator.pop(context);*/
       }
     } on DioError catch (e) {
+      print(e);
       if (e.response != null) {
         /// Display Error Response
         /* ToastSnackbar().init(context).showToast(

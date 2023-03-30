@@ -69,7 +69,7 @@ class StoreDialogs {
                       ])))));
 
   /// A method to display the delete dialog
-  static void deleteStore(BuildContext context, String id, {int? popCount}) =>
+  static void deleteStore(BuildContext context, int index, {int? popCount}) =>
       showDialogPopup(
           context: context,
           pageBuilder: (ctx, anim1, anim2) => StatefulBuilder(
@@ -115,7 +115,8 @@ class StoreDialogs {
                                                     int count = 0;
                                                     bool _bool =
                                                         await storeService
-                                                            .deleteStore(id);
+                                                            .deleteStore(
+                                                                context, index);
                                                     if (_bool) {
                                                       Navigator.popUntil(
                                                           context, (route) {

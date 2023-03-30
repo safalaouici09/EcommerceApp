@@ -328,8 +328,44 @@ class StoreService with ChangeNotifier {
     return false;
   }
 
-  Future<bool> deleteStore(String id) async {
-    return true;
+  Future<bool> deleteStore(BuildContext context, int index) async { /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      var res = await dio.delete(BASE_API_URL + '/store/${stores![index].id}');
+      if (res.statusCode == 200) {
+        /// Save new Store Data
+        
+        _stores?.removeWhere((item) => item.id == stores![index].id );
+        notifyListeners();
+
+        /// Display Results Message
+        ToastSnackbar().init(context).showToast(
+            message: "${res.statusMessage}", type: ToastSnackbarType.success);
+        return true;
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Display Error Response
+        ToastSnackbar()
+            .init(context)
+            .showToast(message: "${e.response}", type: ToastSnackbarType.error);
+        return false;
+      } else {
+        /// Display Error Message
+        ToastSnackbar()
+            .init(context)
+            .showToast(message: e.message, type: ToastSnackbarType.error);
+        return false;
+      }
+    }
+    return false;
   }
 
   /// Categories Methods

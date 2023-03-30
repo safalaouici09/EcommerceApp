@@ -203,7 +203,7 @@ class PolicyValidation with ChangeNotifier {
             policy.deliveryPolicy!.zone!.centerPoint!.latitude;
         _deliveryCenter.lng =
             policy.deliveryPolicy!.zone!.centerPoint!.longitude;
-        //  _shippingMaxKM = policy.deliveryPolicy!.zone!.radius!;
+         _shippingMaxKM = policy.deliveryPolicy!.zone!.radius!;
         if (policy.deliveryPolicy!.pricing!.fixedPrice != null) {
           _shippingFixedPrice = true;
           _shippingFixedPriceTax = policy.deliveryPolicy!.pricing!.fixedPrice;
