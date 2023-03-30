@@ -215,7 +215,9 @@ class LoginValidation with ChangeNotifier {
   void logout() async {
     var credentialsBox = Boxes.getCredentials();
     // Delete an item
-    await credentialsBox.delete('token');
+//clear data base
+    await credentialsBox.clear();
+
     _isLogged = false;
     notifyListeners();
   }

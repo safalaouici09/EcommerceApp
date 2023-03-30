@@ -21,7 +21,7 @@ class ProductScreen extends StatelessWidget {
     bool didFetch = true;
     var credentialsBox = Boxes.getCredentials();
     String? _token = credentialsBox.get('token');
-    
+
     final cartService = Provider.of<CartService>(context);
     final storeService = Provider.of<StoreService>(context);
 
@@ -64,32 +64,89 @@ class ProductScreen extends StatelessWidget {
               title: 'policy de livraison et de retours .',
               color: Theme.of(context).primaryColor),
           // MasonryGrid(
-          PolicyCard(
-            leadIcon: ProximityIcons.shipping,
-            title: "Shipping",
-            subTitle:
-                "Estimated delivery time is [X] days. Shipping fees will apply and will be calculated at checkout based on your location",
-          ),
+          //delivery policy
+          product.policy!.deliveryPolicy != null
+              ? product.policy!.deliveryPolicy!.pricing!.fixedPrice != null
+                  ? PolicyCard(
+                      leadIcon: ProximityIcons.shipping,
+                      title: "Shipping",
+                      subTitle:
+                          "Estimated delivery time is  days. Shipping fees are ${product.policy!.deliveryPolicy!.pricing!.fixedPrice} for this product",
+                    )
+                  : PolicyCard(
+                      leadIcon: ProximityIcons.shipping,
+                      title: "Shipping",
+                      subTitle:
+                          "Estimated delivery time is ${product.policy!.pickupPolicy!.timeLimit} days. Shipping fees will apply and will be calculated at checkout based on your location",
+                    )
+              : Container(),
 
-          PolicyCard(
-            leadIcon: ProximityIcons.self_pickup,
-            title: "Pick UP",
-            subTitle:
-                "You're just [X] days away from getting your hands on it. Remember to pick up your order from our store within [X] days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
-          ),
-          PolicyCard(
-            leadIcon: Icons.book_online,
-            title: "Reservation",
-            subTitle:
-                "A deposit of [X] may be required to secure your reservation.Once your reservation is confirmed, you may pick up your item at our store on the date specified in your reservation confirmation.",
-          ),
-
-          PolicyCard(
-            leadIcon: Icons.settings_backup_restore,
-            title: "Return and Refund  ",
-            subTitle:
-                "You may return your item within [X] days of receipt for a refund, provided that the item is in its original condition and with all tags attached. Please note that all sales are final for items marked as 'final sale. ",
-          ),
+          // pickup policy
+          product.policy!.pickupPolicy!.timeLimit != null
+              ? PolicyCard(
+                  leadIcon: ProximityIcons.self_pickup,
+                  title: "Pick UP",
+                  subTitle:
+                      "Remember to pick up your order from our store within ${product.policy!.pickupPolicy!.timeLimit} days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
+                )
+              : Container(),
+          // reservation policy
+          product.policy!.reservationPolicy != null
+              ? product.policy!.reservationPolicy!.payment!.free!
+                  ? PolicyCard(
+                      leadIcon: Icons.book_online,
+                      title: "Reservation",
+                      subTitle:
+                          "Once your reservation is confirmed, you may pick up your item from our store within ${product.policy!.reservationPolicy!.duration} days",
+                    )
+                  : product.policy!.reservationPolicy!.payment!.partial != null
+                      ? PolicyCard(
+                          leadIcon: Icons.book_online,
+                          title: "Reservation",
+                          subTitle:
+                              "A deposit of ${product.policy!.reservationPolicy!.payment.partial!.fixe} may be required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${product.policy!.reservationPolicy!.duration} days.",
+                        )
+                      : product.policy!.reservationPolicy!.payment!.free!
+                          ? product.policy!.reservationPolicy!.payment!.total!
+                              ? PolicyCard(
+                                  leadIcon: Icons.book_online,
+                                  title: "Reservation",
+                                  subTitle:
+                                      "a full price payement is  required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${product.policy!.reservationPolicy!.duration} days.",
+                                )
+                              : Container()
+                          : Container()
+              : Container(),
+// Return  Policy
+          product.policy!.returnPolicy != null
+              ? product.policy!.returnPolicy!.refund!.shipping != null &&
+                      product.policy!.returnPolicy!.refund!.order != null
+                  ? PolicyCard(
+                      leadIcon: Icons.settings_backup_restore,
+                      title: "Return and Refund  ",
+                      subTitle:
+                          "You may return your item within${product.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${product.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees and ${product.policy!.returnPolicy!.refund!.order.fixe} % of the price  ",
+                    )
+                  : product.policy!.returnPolicy!.refund!.shipping == null &&
+                          product.policy!.returnPolicy!.refund!.order != null
+                      ? PolicyCard(
+                          leadIcon: Icons.settings_backup_restore,
+                          title: "Return and Refund  ",
+                          subTitle:
+                              "You may return your item within${product.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${product.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund ${product.policy!.returnPolicy!.refund!.order.fixe} % of the price , shipping fees are not refunded ",
+                        )
+                      : product.policy!.returnPolicy!.refund!.shipping !=
+                                  null &&
+                              product.policy!.returnPolicy!.refund!.order ==
+                                  null
+                          ? PolicyCard(
+                              leadIcon: Icons.settings_backup_restore,
+                              title: "Return and Refund  ",
+                              subTitle:
+                                  "You may return your item within${product.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${product.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees ",
+                            )
+                          : Container()
+              : Container(),
 
           /// Store Section
 
@@ -122,26 +179,24 @@ class ProductScreen extends StatelessWidget {
               onPressed: () => showProductModal(context, product.id!),
               title: 'Add to Cart.'),
           SecondaryButton(
-              onPressed: () =>{
-                  if(_token != null) {
-                    if(storeService.store != null) {
-                        cartService.addToCart(
-                                      context,
-                                      product,
-                                      product.variants![0],
-                                      storeService.store,
-                                      1 , 
-                                      noredirection: 1 )  
-                    } 
-
-
-                  }else {
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => SignupScreen()),
-                          (Route<dynamic> route) => true) 
-                  }
-                }
-                  ,
+              onPressed: () => {
+                    if (_token != null)
+                      {
+                        if (storeService.store != null)
+                          {
+                            cartService.addToCart(context, product,
+                                product.variants![0], storeService.store, 1,
+                                noredirection: 1)
+                          }
+                      }
+                    else
+                      {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => SignupScreen()),
+                            (Route<dynamic> route) => true)
+                      }
+                  },
               title: 'Buy Now.')
         ])
       ]));

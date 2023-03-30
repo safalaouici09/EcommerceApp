@@ -26,6 +26,10 @@ dependencies:
   hive: ^2.0.4
   hive_flutter: ^1.1.0
   cupertino_icons: ^1.0.2
+  pay: ^1.0.10
+  mask_text_input_formatter: ^2.4.0
+  flutter_credit_card: ^3.0.6
+  
 
 dev_dependencies:
   flutter_test:
@@ -73,3 +77,5 @@ flutter:
     - assets/img/ads/ad_4.png
     - assets/img/ads/ad_5.png
     - assets/img/welcome.png
+    - assets/apple-pay.png
+    - assets/google-pay.png

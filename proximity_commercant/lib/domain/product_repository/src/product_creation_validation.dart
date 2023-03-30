@@ -18,7 +18,7 @@ class ProductCreationValidation with ChangeNotifier {
   double? _discount;
   bool? _storePolicy = true;
   bool? _productPolicy;
-  Policy? _policy;
+  Policy? _policy = null;
 
   int? _quantity;
   Map<String, Set<String>> _characteristics = {};
@@ -280,7 +280,7 @@ class ProductCreationValidation with ChangeNotifier {
       // "discount": discount,
       "variantes": _variantsFormData(),
       "storeId": _storeId,
-      // "policy": policy!.toJson(),
+      "policy": policy == null ? null : policy!.toJson(),
     });
 
     if (_images.isNotEmpty) {
@@ -303,6 +303,7 @@ class ProductCreationValidation with ChangeNotifier {
         }
       }
     }
+    print(_formData);
     return _formData;
   }
 }

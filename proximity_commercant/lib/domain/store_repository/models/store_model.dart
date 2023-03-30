@@ -47,9 +47,7 @@ class Store {
         //isVerified = parsedJson[' isVerified'],
         followers = parsedJson['followers'],
         isActive = parsedJson['isActive'],
-        policy = parsedJson['policy'] == null
-            ? null
-            : Policy.fromJson(parsedJson['policy']),
+        policy = parsedJson['policy'] == null ? null : Policy.fromJson(parsedJson['policy']),
         /*   policy = Policy(
           shippingMethods: [
             if (parsedJson['policies']['delivery'] ?? false)

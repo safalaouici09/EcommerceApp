@@ -11,6 +11,7 @@ import 'package:proximity_commercant/domain/product_repository/product_repositor
 import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
+import 'package:proximity_commercant/CustomErrorWidget.dart';
 
 import 'proximity_commercant_app.dart';
 
@@ -30,6 +31,9 @@ void main() async {
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
+
+  ErrorWidget.builder = (error) => CustomErrorWidget();
+
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => LoginValidation()),

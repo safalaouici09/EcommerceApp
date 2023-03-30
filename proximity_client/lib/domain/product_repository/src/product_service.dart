@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_client/domain/product_repository/models/policy_model.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
 
 class ProductService with ChangeNotifier {
@@ -37,6 +38,19 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
         discount: 0.1,
         discountEndDate: DateTime.now()
             .add(const Duration(days: 31, hours: 23, minutes: 48, seconds: 3)),
+        policy: Policy(
+            pickupPolicy: PickupPolicy(timeLimit: 2),
+            deliveryPolicy: DeliveryPolicy(
+                zone: Zone(
+                    centerPoint: CenterPoint(latitude: 0.2, longitude: 0.2),
+                    radius: 20),
+                pricing: Pricing(fixedPrice: 12)),
+            reservationPolicy: ReservationPolicy(
+                payment: ReservationPayment(
+                  free: true,
+                  total: false,
+                ),
+                cancelation: ReservationCancelation())),
         images: [
           'https://i.ibb.co/nL0M1L7/product-0-0.png',
           'https://i.ibb.co/6mjY1WD/product-0-1.png',
