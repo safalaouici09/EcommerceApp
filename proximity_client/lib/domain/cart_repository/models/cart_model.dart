@@ -16,12 +16,10 @@ class Cart extends HiveObject {
   @HiveField(4)
   bool checked;
   @HiveField(5)
-
-  Cart({
-    this.storeId,
-    this.storeName,
-    this.storeImage,
-    this.cartItemsKeys,
-    this.checked = true
-  });
+  Cart(
+      {this.storeId,
+      this.storeName,
+      this.storeImage,
+      this.cartItemsKeys,
+      this.checked = true});
 }

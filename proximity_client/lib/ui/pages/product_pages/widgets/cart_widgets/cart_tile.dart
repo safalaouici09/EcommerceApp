@@ -102,32 +102,23 @@ class CartTile extends StatelessWidget {
               child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Expanded(
                     child: RichText(
-                        text: TextSpan(
-                            children: [
-                              TextSpan(
-                                  text: '€ ',
-                                  style: Theme.of(
-                                      context)
-                                      .textTheme
-                                      .bodyText1),
-                              TextSpan(
-                                  text:
-                                  '${cartService.getTotalPrice(cart.storeId!)}',
-                                  style: Theme.of(
-                                      context)
-                                      .textTheme
-                                      .headline4)
-                            ]))),
+                        text: TextSpan(children: [
+                  TextSpan(
+                      text: '€ ', style: Theme.of(context).textTheme.bodyText1),
+                  TextSpan(
+                      text: '${cartService.getTotalPrice(cart.storeId!)}',
+                      style: Theme.of(context).textTheme.headline4)
+                ]))),
                 PrimaryButton(
-                    // onPressed: cartService.valid(cart.storeId!)
-                    //     ? () => cartService.order(context, cart.storeId!)
-                    //     : null,
-                    onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>  CartSliderScreen()));
-                    } ,
+                    onPressed: cartService.valid(cart.storeId!)
+                        ? () => cartService.order(context, cart.storeId!)
+                        : null,
+                    // onPressed: () {
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) =>  CartSliderScreen()));
+                    // } ,
                     title:
                         'Order(${cartService.getTotalQuantity(cart.storeId!)})')
               ]))

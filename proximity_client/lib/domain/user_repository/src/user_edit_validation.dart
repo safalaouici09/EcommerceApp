@@ -7,6 +7,7 @@ import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_client/domain/user_repository/models/models.dart';
+import 'package:proximity_client/domain/user_repository/src/user_service.dart';
 
 class UserEditValidation with ChangeNotifier {
   late ValidationItem _userName;
@@ -118,7 +119,7 @@ class UserEditValidation with ChangeNotifier {
   }
 
   /// image Picker
-  void editProfileImage(File imageList) async {
+  void editProfileImage(File imageList, UserService userService) async {
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
@@ -145,8 +146,13 @@ class UserEditValidation with ChangeNotifier {
       if (res.statusCode == 200) {
         /// Save new User Data
         var user = User.fromJson(res.data);
-        _profileImage = user.profileImage != null ? [user.profileImage] : [];
+        if (_profileImage.isNotEmpty) {
+          _profileImage.removeAt(0);
+        }
+        _profileImage.add(user.profileImage);
         notifyListeners();
+
+        userService.getUserData();
 
         /// Display Results Message
         /* ToastSnackbar().init(context).showToast(

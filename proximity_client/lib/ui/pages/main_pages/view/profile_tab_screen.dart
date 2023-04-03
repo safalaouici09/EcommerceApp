@@ -15,9 +15,12 @@ class ProfileTabScreen extends StatelessWidget {
 
     String? _token = credentialsBox.get('token');
 
-    
     final loginValidation = Provider.of<LoginValidation>(context);
     final userService = Provider.of<UserService>(context);
+
+    if (_token != null && userService.user == null) {
+      userService.getUserData();
+    }
 
     return (_token == null)
         ? Padding(
@@ -76,28 +79,29 @@ class ProfileTabScreen extends StatelessWidget {
                   leadIcon: ProximityIcons.settings,
                   color: redSwatch.shade500),
               ListButton(
-                    title: 'Edit Profile.',
-                    leadIcon: ProximityIcons.edit,
-                    onPressed: (userService.user! == null)
-                        ? null
-                        : () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditProfileScreen()));
-                          }),
+                  title: 'Edit Profile.',
+                  leadIcon: ProximityIcons.edit,
+                  onPressed: (userService.user == null)
+                      ? null
+                      : () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EditProfileScreen()));
+                        }),
               ListButton(
-                    title: 'Preferences.',
-                    leadIcon: ProximityIcons.preferences,
-                    onPressed: (userService.user! == null)
-                        ? null
-                        : () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PreferencesScreen(
-                                        user: userService.user!)));
-                          }),
+                  title: 'Preferences.',
+                  leadIcon: ProximityIcons.preferences,
+                  onPressed: (userService.user == null)
+                      ? null
+                      : () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PreferencesScreen(
+                                      user: userService.user!)));
+                        }),
               const ListButton(
                   title: 'Payment Methods.',
                   leadIcon: ProximityIcons.credit_card,

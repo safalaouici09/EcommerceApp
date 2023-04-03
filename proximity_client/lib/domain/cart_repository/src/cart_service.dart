@@ -4,10 +4,14 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/domain/order_repository/models/models.dart';
+import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/domain/order_repository/src/order_confirmation.dart';
 import 'package:proximity_client/domain/product_repository/models/models.dart';
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
+import 'package:proximity_client/ui/pages/main_pages/view/cart_slider_screen.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
+import 'dart:convert';
+import 'package:proximity/config/backend.dart';
 
 class CartService with ChangeNotifier {
   // Hive box
@@ -124,28 +128,140 @@ class CartService with ChangeNotifier {
   /// POST methods
   /// Order a Cart
   Future order(BuildContext context, String? storeId) async {
-    /// get total price
-    if (storeId != null) {
-      final double _totalPrice = getTotalPrice(storeId);
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String? _id = credentialsBox.get('id');
+    String? _token = credentialsBox.get('token');
 
-      /// get Store Policy
-      final Policy _policy = Policy.policy;
+    if (_token != null) {
+      var preOrder = {
+        "cartId": null,
+        "storeId": storeId,
+        "clientId": _id,
+        "items":
+            "" //check and return with policies and current price + current discount
+      };
 
-      /// convert [List<CartItem>] into [List<OrderItem>]
-      final List<OrderItem> _orderItems = [];
-      cartItemsBox.values.forEach((item) {
-        if (item.storeId == storeId) {
-          _orderItems.add(OrderItem.fromCartItem(item));
+      /// get total price
+      if (storeId != null) {
+        final double _totalPrice = getTotalPrice(storeId);
+
+        /// get Store Policy
+        final Policy _policy = Policy.policy;
+
+        /// convert [List<CartItem>] into [List<OrderItem>]
+        final List<OrderItem> _orderItems = [];
+        final List<Map<String, dynamic>> _preOrderItems = [];
+        cartItemsBox.values.forEach((item) {
+          preOrder["cartId"] = item?.id;
+          if (item.storeId == storeId) {
+            var preOrderItem = {
+              "variantId": item.variantId,
+              "orderQuantity": item.orderedQuantity,
+            };
+            _preOrderItems.add(preOrderItem);
+            _orderItems.add(OrderItem.fromCartItem(item));
+          }
+        });
+        preOrder["items"] = json.encode(_preOrderItems);
+        print(preOrder);
+
+        // _loadingOrder = true;
+        // notifyListeners();
+
+        //get pre order item from backend (current values) ;
+        try {
+          Dio dio = Dio();
+          dio.options.headers["token"] = "Bearer $_token";
+          var res =
+              await dio.post(BASE_API_URL + '/order/preOrder/', data: preOrder);
+          if (res.statusCode == 200) {
+            // stop the loading animation
+
+            List<ProductCart> preOrderProducts = [];
+            if (res.data["items"] != null) {
+              var products = json.decode(res.data["items"]);
+              for (var prod in products) {
+                if (prod["error"] == null) {
+                  String prodName = prod["name"] + " ( ";
+                  List<Map<String, String>> preOrderItemCharac = [];
+                  prod["characterstics"].forEach((item) {
+                    prodName += item["value"].toString() + " , ";
+                    preOrderItemCharac.add({
+                      "name": item["name"].toString(),
+                      "value": item["value"].toString()
+                    });
+                  });
+
+                  var prodInsert = ProductCart(
+                    id: prod["id"],
+                    productId: prod["productId"],
+                    variantId: prod["variantId"],
+                    name: prodName.substring(0, prodName.length - 2) + ")",
+                    characteristics: preOrderItemCharac,
+                    image: prod["image"],
+                    price: double.parse(prod["price"].toString()),
+                    quantity: prod["quantity"],
+                    discount: prod["discount"],
+                    reservationPolicy: prod["reservationPolicy"] != null,
+                    deliveryPolicy: prod["deliveryPolicy"] != null,
+                    pickupPolicy: prod["pickupPolicy"] != null,
+                    reservationP: double.parse(prod["reservationP"].toString()),
+                    deliveryP: double.parse(prod["deliveryP"].toString()),
+                    reservation: prod["reservation"] == true ||
+                        prod["reservation"] == 'true',
+                    delivery:
+                        prod["delivery"] == true || prod["delivery"] == 'true',
+                    pickup: prod["pickup"] == true || prod["pickup"] == 'true',
+                  );
+                  print(prod["characterstics"]);
+                  print(prodInsert.characteristics);
+                  preOrderProducts.add(prodInsert);
+                }
+              }
+            }
+
+            _loadingOrder = false;
+            notifyListeners();
+
+            /// Display Results Message
+            ToastSnackbar().init(context).showToast(
+                message: "Loading Order Validation with success",
+                type: ToastSnackbarType.success);
+
+            if (preOrderProducts.length > 0) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CartSliderScreen(
+                            products: preOrderProducts,
+                            cartId: res.data["cartId"],
+                            storeId: res.data["storeId"],
+                          )));
+            }
+          } else {
+            ToastSnackbar().init(context).showToast(
+                message: "Try again !", type: ToastSnackbarType.error);
+          }
+
+          _loadingOrder = false;
+          notifyListeners();
+        } on DioError catch (e) {
+          _loadingOrder = false;
+          notifyListeners();
+
+          if (e.response != null) {
+            /// Display Error Response
+            ToastSnackbar().init(context).showToast(
+                message: "${e.response}", type: ToastSnackbarType.error);
+          } else {
+            /// Display Error Message
+            ToastSnackbar()
+                .init(context)
+                .showToast(message: e.message, type: ToastSnackbarType.error);
+          }
         }
-      });
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => OrderConfirmationScreen(
-                    orderItems: _orderItems,
-                    totalPrice: _totalPrice,
-                    policy: _policy,
-                  )));
+      }
     }
   }
 
@@ -186,49 +302,50 @@ class CartService with ChangeNotifier {
       }
 
       /// open hive box
-      /* var credentialsBox = Boxes.getCredentials();
-      String _id = credentialsBox.get('id');
-      String _token = credentialsBox.get('token');*/
+      var credentialsBox = Boxes.getCredentials();
+      String? _id = credentialsBox.get('id');
+      String? _token = credentialsBox.get('token');
 
       /// dataForm is already a parameter
 
       /// post the dataForm via dio call
-      /* try {
-              Dio dio = Dio();
-              dio.options.headers["token"] = "Bearer $_token";
-              var res = await dio.post(BASE_API_URL + '/cart/add/', data: {
-                "productId": product.id,
-                "quantity": quantity,
-                "variantId": productVariant.id
-              });
-              if (res.statusCode == 200) {
-                // stop the loading animation
-                _loadingAdd = false;
-                notifyListeners();
+      if (_token != null) {
+        try {
+          Dio dio = Dio();
+          dio.options.headers["token"] = "Bearer $_token";
+          var res = await dio.post(BASE_API_URL + '/cart/add/', data: {
+            "productId": product.id,
+            "quantity": quantity,
+            "variantId": productVariant.id
+          });
+          if (res.statusCode == 200) {
+            // stop the loading animation
+            _loadingAdd = false;
+            notifyListeners();
 
-                /// Display Results Message
-                ToastSnackbar().init(context).showToast(
-                    message: "Product Successfully added to Cart!",
-                    type: ToastSnackbarType.success);
-                    if(noredirection == 0) {
-                        Navigator.pop(context);
-                    }else {
-                        order(context , store.id) ; 
-                    }
-              }
-            } on DioError catch (e) {
-              if (e.response != null) {
-                /// Display Error Response
-                ToastSnackbar()
-                    .init(context)
-                    .showToast(message: "${e.response}", type: ToastSnackbarType.error);
-              } else {
-                /// Display Error Message
-                ToastSnackbar()
-                    .init(context)
-                    .showToast(message: e.message, type: ToastSnackbarType.error);
-              }
-            }*/
+            /// Display Results Message
+            ToastSnackbar().init(context).showToast(
+                message: "Product Successfully added to Cart!",
+                type: ToastSnackbarType.success);
+            if (noredirection == 0) {
+              Navigator.pop(context);
+            } else {
+              order(context, store.id);
+            }
+          }
+        } on DioError catch (e) {
+          if (e.response != null) {
+            /// Display Error Response
+            ToastSnackbar().init(context).showToast(
+                message: "${e.response}", type: ToastSnackbarType.error);
+          } else {
+            /// Display Error Message
+            ToastSnackbar()
+                .init(context)
+                .showToast(message: e.message, type: ToastSnackbarType.error);
+          }
+        }
+      }
     }
 
     /// Display Results Message

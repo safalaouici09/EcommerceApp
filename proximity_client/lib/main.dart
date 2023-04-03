@@ -41,7 +41,7 @@ void main() async {
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
-  ErrorWidget.builder = (error) => CustomErrorWidget();
+  ErrorWidget.builder = (error) => const CustomErrorWidget();
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => LoginValidation()),
@@ -65,5 +65,5 @@ void main() async {
     ChangeNotifierProvider(create: (context) => CartService()),
     ChangeNotifierProvider(create: (_) => WishlistService()),
     ChangeNotifierProvider(create: (context) => UserSettings()),
-  ], child: ProximityApp()));
+  ], child: const ProximityApp()));
 }

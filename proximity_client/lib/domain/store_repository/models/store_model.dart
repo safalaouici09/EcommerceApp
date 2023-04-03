@@ -63,8 +63,8 @@ class Store {
             openTime: parsedJson['policies']['openTime'] ?? false,
             closeTime: parsedJson['policies']['closeTime'] ?? false),*/
         address = Address(
-          lat: (parsedJson['location']['coordinates'][0] ?? 0).toDouble(),
-          lng: (parsedJson['location']['coordinates'][1] ?? 0).toDouble(),
+          lat: (parsedJson['location']['coordinates'][1] ?? 0).toDouble(),
+          lng: (parsedJson['location']['coordinates'][0] ?? 0).toDouble(),
           city: parsedJson['address']['city'],
           streetName: parsedJson['address']['streetName'],
           postalCode: parsedJson['address']['postalCode'],

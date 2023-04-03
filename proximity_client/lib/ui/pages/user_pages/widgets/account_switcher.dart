@@ -13,7 +13,7 @@ class AccountSwitcher extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<UserService>(
       builder: (_, userService, __) {
-        return userService.user! != null
+        return userService.user != null
             ? Padding(
                 padding: const EdgeInsets.all(normal_100),
                 child: Row(children: [
@@ -29,21 +29,22 @@ class AccountSwitcher extends StatelessWidget {
                   //             image: NetworkImage(
                   //                 userService.user!.profileImage!.first!)))),
                   SizedBox(
-                        height: large_150,
-                        width: large_150,
-                        child: Stack(alignment: Alignment.topRight, children: [
-                          Positioned.fill(
-                              child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(normalRadius),
-                                  child: FittedBox(
-                                      fit: BoxFit.cover,
-                                      child: 
-                                      // (userService.user!.profileImage! != null )  
-                                      //     ?  Image.network(userService.user!.profileImage!.first!)
-                                      //     : 
-                                          Image.network("https://cdn-icons-png.flaticon.com/512/5853/5853761.png")
-                                          ))),
-                  ])) ,
+                      height: large_150,
+                      width: large_150,
+                      child: Stack(alignment: Alignment.topRight, children: [
+                        Positioned.fill(
+                            child: ClipRRect(
+                                borderRadius:
+                                    const BorderRadius.all(normalRadius),
+                                child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: (userService.user!.profileImage !=
+                                            null)
+                                        ? Image.network(userService
+                                            .user!.profileImage!.first!)
+                                        : Image.network(
+                                            "https://cdn-icons-png.flaticon.com/512/5853/5853761.png")))),
+                      ])),
                   const SizedBox(width: normal_100),
                   Expanded(
                       child: Column(

@@ -245,7 +245,7 @@ class ProductCreationValidation with ChangeNotifier {
         if (c is MapEntry<String, dynamic>) {
           _formData += '''{
           "name": "${c.key}",
-          "value": "${c.key}"
+          "value": "${c.value}"
         },''';
         } else {
           _formData += '''{

@@ -6,7 +6,10 @@ import 'package:proximity/config/themes/google_map_theme.dart';
 import 'package:location/location.dart';
 import 'package:geocoding/geocoding.dart' as geocoder;
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/ui/pages/main_pages/view/main_screen.dart';
+import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
+import 'dart:convert';
 
 class AddressSelectionScreen extends StatefulWidget {
   const AddressSelectionScreen(
@@ -182,6 +185,23 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                         if (widget.navigation == null) {
                           Navigator.pop(context, selectedAddress);
                         } else {
+                          print(selectedAddress);
+                          var addresse = {
+                            "lat": selectedAddress!.lat,
+                            "lng": selectedAddress!.lng,
+                            "streetName": selectedAddress!.streetName,
+                            "city": selectedAddress!.city,
+                            "postalCode": selectedAddress!.postalCode,
+                            "countryCode": selectedAddress!.countryCode,
+                            "countryName": selectedAddress!.countryName,
+                            "fullAddress": selectedAddress!.fullAddress,
+                            "locality": selectedAddress!.locality,
+                            "region": selectedAddress!.region
+                          };
+                          print(addresse);
+                          print(json.encode(addresse));
+                          var credentialsBox = Boxes.getCredentials();
+                          credentialsBox.put('address', json.encode(addresse));
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                 builder: (context) => MainScreen(),

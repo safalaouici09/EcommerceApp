@@ -28,9 +28,9 @@ class SmallProductCard extends StatelessWidget {
             onPressed: () {
               storeProxy.idStore = product.storeId!;
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProductScreen(id: product.id!)));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProductScreen(id: product.id!)));
             },
             margin: const EdgeInsets.symmetric(horizontal: small_100),
             child:
@@ -40,24 +40,24 @@ class SmallProductCard extends StatelessWidget {
                       const BorderRadius.horizontal(left: smallRadius),
                   child: (product.images!.first is File)
                       ? Image.file(product.images!.first,
-                      height: huge_100 - small_50, width: huge_100 - small_50,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter)
-                      : Image.network(BASE_IMG_URL+'/'+product.images!.first,
-                      height: huge_100 - small_50, width: huge_100 - small_50,
-                      fit: BoxFit.cover,
-                      alignment: Alignment.topCenter,
-                      errorBuilder: (
+                          height: huge_100 - small_50,
+                          width: huge_100 - small_50,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter)
+                      : Image.network(product.images!.first,
+                          height: huge_100 - small_50,
+                          width: huge_100 - small_50,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter, errorBuilder: (
                           BuildContext context,
                           Object error,
                           StackTrace? stackTrace,
-                          ) {
-                        return const AspectRatio(
-                            aspectRatio: 1.0,
-                            child: SizedBox(
-                                width: large_100,
-                                height: large_100));
-                      })),
+                        ) {
+                          return const AspectRatio(
+                              aspectRatio: 1.0,
+                              child: SizedBox(
+                                  width: large_100, height: large_100));
+                        })),
               const VerticalDivider(width: tiny_50, thickness: tiny_50),
               Expanded(
                   child: Padding(

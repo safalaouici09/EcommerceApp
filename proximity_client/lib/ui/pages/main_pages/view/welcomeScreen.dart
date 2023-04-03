@@ -11,6 +11,7 @@ import 'package:proximity_client/domain/user_repository/models/address_item_mode
 import 'package:proximity_client/ui/pages/authentication_pages/widgets/onboarding_carousel.dart';
 import 'package:proximity_client/ui/pages/main_pages/view/main_screen.dart';
 import 'package:proximity_client/ui/widgets/address_picker/address_selection_screen.dart';
+import 'dart:convert';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -60,9 +61,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                             currentAddress: Address(),
                                             navigation: true,
                                           )));
+                              print(_result);
+                              print(AddressItem.fromAdress(_result));
+                              print(
+                                  json.encode(AddressItem.fromAdress(_result)));
                               var credentialsBox = Boxes.getCredentials();
-                              credentialsBox.put(
-                                  'address', AddressItem.fromAdress(_result));
+                              credentialsBox.put('address',
+                                  json.encode(AddressItem.fromAdress(_result)));
                               credentialsBox.put('first_time', false);
 
                               // storeCreationValidation.changeAddress(_result);

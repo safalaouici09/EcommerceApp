@@ -43,31 +43,17 @@ class OrderService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.post(BASE_API_URL + '/order/', data: formData
-      // {
-      //   "storeId": "62ea7dceb54f5844e0278dfa",
-      //   "email": "hm_merabet@esi.dz",
-      //   "way": "partial",
-      //   "billingAdress": {
-      //     "name": "Mohamed malih merabet",
-      //     "street2": "75 avenue Fliche Augustin ",
-      //     "street1": "Cité U Triolet D21 ",
-      //     "phone": "0749140358",
-      //     "postalCode": "34000",
-      //     "city": "Montpellier"
-      //   },
-      //   "cardNumber": "4242 4242 4242 4242",
-      //   "cvc": "345",
-      //   "expMonth": "12",
-      //   "expYear": "2024"
-      // }
-      );
+      var res = await dio.post(BASE_API_URL + '/order/', data: formData);
       notifyListeners();
       if (res.statusCode == 200) {
         /// Display Results Message
         ToastSnackbar().init(context).showToast(
-            message: "Order successfully paid!", type: ToastSnackbarType.success);
-        Navigator.pop(context);
+            message: "Order successfully paid!",
+            type: ToastSnackbarType.success);
+
+        _loading = false;
+        notifyListeners();
+        return true;
       }
     } on DioError catch (e) {
       if (e.response != null) {
@@ -75,7 +61,6 @@ class OrderService with ChangeNotifier {
         ToastSnackbar()
             .init(context)
             .showToast(message: "${e.response}", type: ToastSnackbarType.error);
-        Navigator.pop(context);
       } else {
         /// Display Error Message
         ToastSnackbar()
@@ -85,6 +70,7 @@ class OrderService with ChangeNotifier {
     }
     _loading = false;
     notifyListeners();
+    return false;
   }
 
   /// GET methods

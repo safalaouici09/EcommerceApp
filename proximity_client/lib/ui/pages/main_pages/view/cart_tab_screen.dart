@@ -5,13 +5,25 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
+import 'package:flutter/scheduler.dart';
 
 class CartTabScreen extends StatelessWidget {
   const CartTabScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey loadingKay = GlobalKey();
+
     return Consumer<CartService>(builder: (context, cartService, child) {
+      if (cartService.loadingOrder) {
+        SchedulerBinding.instance.addPostFrameCallback((_) => showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return Dialog(child: LoadingPreOrderItems(key: loadingKay));
+              },
+            ));
+      }
       return Column(
         children: [
           const SizedBox(height: large_100),
@@ -57,21 +69,25 @@ class CartTabScreen extends StatelessWidget {
                         : ListView.builder(
                             itemCount: cart.length,
                             itemBuilder: (context, i) => Dismissible(
+
                                 /// Each Dismissible must contain a Key. Keys allow Flutter to
                                 /// uniquely identify widgets.
                                 key: Key(cart[i].storeId!),
+
                                 /// Provide a function that tells the app
                                 /// what to do after an item has been swiped away.
                                 onDismissed: (direction) {
                                   /// Remove the item from the data source.
                                   cartService
                                       .deleteOrderFromCart(cart[i].storeId!);
+
                                   /// Then show a snackbar.
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text(
                                               'Order Deleted Successfully')));
                                 },
+
                                 /// Show a red background as the item is swiped away.
                                 background: Container(
                                     color: Theme.of(context)
@@ -81,6 +97,30 @@ class CartTabScreen extends StatelessWidget {
           const SizedBox(height: large_200)
         ],
       );
+    });
+  }
+}
+
+class LoadingPreOrderItems extends StatelessWidget {
+  const LoadingPreOrderItems({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CartService>(builder: (context, cartService, child) {
+      if (!cartService.loadingOrder) {
+        Navigator.pop(context);
+      }
+      return Padding(
+          padding: const EdgeInsets.all(normal_100),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: Color(0xFF136DA5)),
+              SizedBox(width: 16.0),
+              Text("Loading...",
+                  style: TextStyle(fontSize: 20.0, color: Color(0xFF136DA5))),
+            ],
+          ));
     });
   }
 }

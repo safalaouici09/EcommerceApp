@@ -47,7 +47,9 @@ class Store {
         //isVerified = parsedJson[' isVerified'],
         followers = parsedJson['followers'],
         isActive = parsedJson['isActive'],
-        policy = parsedJson['policy'] == null ? null : Policy.fromJson(parsedJson['policy']),
+        policy = parsedJson['policy'] == null
+            ? null
+            : Policy.fromJson(parsedJson['policy']),
         /*   policy = Policy(
           shippingMethods: [
             if (parsedJson['policies']['delivery'] ?? false)
@@ -72,8 +74,8 @@ class Store {
             */
         ),*/
         address = Address(
-          lat: (parsedJson['location']['coordinates'][0] ?? 0).toDouble(),
-          lng: (parsedJson['location']['coordinates'][1] ?? 0).toDouble(),
+          lat: (parsedJson['location']['coordinates'][1] ?? 0).toDouble(),
+          lng: (parsedJson['location']['coordinates'][0] ?? 0).toDouble(),
           city: parsedJson['address']['city'],
           streetName: parsedJson['address']['streetName'],
           postalCode: parsedJson['address']['postalCode'],

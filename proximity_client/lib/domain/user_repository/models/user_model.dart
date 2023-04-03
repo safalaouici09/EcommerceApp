@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:proximity/domain_repository/models/address_model.dart';
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:path_provider/path_provider.dart';
+import 'package:proximity/config/backend.dart';
 
 class User {
   String? id;
@@ -63,5 +64,7 @@ class User {
         ),
         isVerified = parsedJson['isVerified'] ?? false,
         welcome = parsedJson['welcome'] ?? false,
-        profileImage = parsedJson['profileImage']  ;
+        profileImage = parsedJson['profileImage'] == null
+            ? null
+            : [BASE_IMG_URL + '/' + parsedJson['profileImage']];
 }

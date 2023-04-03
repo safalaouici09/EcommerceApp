@@ -49,6 +49,7 @@ class UserService extends ChangeNotifier {
       if (res.statusCode == 200) {
         /// Save new User Data
         _user = User.fromJson(res.data);
+        print(_user);
         notifyListeners();
 
         /// Display Results Message
@@ -75,7 +76,7 @@ class UserService extends ChangeNotifier {
   /// GET methods
   Future getUserData() async {
     /// open hive box
-    /*var credentialsBox = Boxes.getCredentials();
+    var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
@@ -99,7 +100,7 @@ class UserService extends ChangeNotifier {
         print('Error sending request!');
         print(e.message);
       }
-    }*/
+    }
     notifyListeners();
   }
 
