@@ -210,8 +210,8 @@ class CardItem extends StatelessWidget {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
                     (product.discount != 0.0)
-                        ? '€ ${double.parse((product.price! * (product.quantity) * (1 - (product.reservation ? (product.reservationP) : 0)) * (1 - product.discount)).toStringAsFixed(2))}'
-                        : '€ ${double.parse((product.price! * (product.quantity) * (1 - (product.reservation ? (product.reservationP) : 0)) * (1)).toStringAsFixed(2))}',
+                        ? '€ ${double.parse((product.price! * (product.quantity) * ((product.reservation ? (product.reservationP) : 1)) * (1 - product.discount)).toStringAsFixed(2))}'
+                        : '€ ${double.parse((product.price! * (product.quantity) * ((product.reservation ? (product.reservationP) : 1)) * (1)).toStringAsFixed(2))}',
                     style: TextStyle(
                         fontFamily: 'Nunito',
                         color: Color(0xFF136DA5),

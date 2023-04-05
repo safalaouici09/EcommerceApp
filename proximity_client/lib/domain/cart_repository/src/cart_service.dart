@@ -237,6 +237,28 @@ class CartService with ChangeNotifier {
                             products: preOrderProducts,
                             cartId: res.data["cartId"],
                             storeId: res.data["storeId"],
+                            storeAddress: Address(
+                              lat: (res.data['storeAdresse']['coordinates']
+                                          [1] ??
+                                      0)
+                                  .toDouble(),
+                              lng: (res.data['storeAdresse']['coordinates']
+                                          [0] ??
+                                      0)
+                                  .toDouble(),
+                              city: "",
+                              streetName: "",
+                              postalCode: "",
+                              countryCode: "",
+                              countryName: "",
+                              fullAddress: "",
+                              locality: "",
+                              region: "",
+                            ),
+                            maxDeliveryFixe:
+                                (res.data['maxDeliveryFixe'] ?? 0).toDouble(),
+                            maxDeliveryKm:
+                                (res.data['maxDeliveryKm'] ?? 0).toDouble(),
                           )));
             }
           } else {

@@ -1,5 +1,6 @@
 import 'package:proximity/domain_repository/models/address_model.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/order_repository/models/bill_model.dart';
 import 'package:proximity_client/domain/store_repository/models/models.dart';
 import 'package:proximity_client/domain/user_repository/models/models.dart';
 
@@ -9,39 +10,89 @@ enum OrderStatus { pending, succeeded, delivered, cancelled }
 
 class Order {
   String? id;
-  OrderStatus? orderStatus;
-  String? currency;
-  double? totalPrice;
-  DateTime? orderDate;
-  DateTime? deliveryDate;
-  List<OrderItem>? items;
-  Address? storeAddress;
-  Address? shippingAddress;
+  String? clientId;
+
   String? storeId;
   String? storeName;
   String? storePhone;
+  Address? storeAddress;
+
+  Map<String, String>? pickupPerson;
+  Address? shippingAddress;
+
+  Bill? paymentInfo;
+  String? currency;
+
+  double? totalPrice;
+  DateTime? orderDate;
+
+  bool? reservation;
+  bool? delivery;
+  bool? pickup;
+
+  DateTime? deliveryDate;
+  DateTime? timeLimit;
+  List<OrderItem>? items;
+
+  OrderStatus? orderStatus;
 
   Order(
       {this.id,
-      this.orderStatus,
+      this.clientId,
+      this.storeId,
+      this.storeName,
+      this.storeAddress,
+      this.storePhone,
+      this.pickupPerson,
+      this.shippingAddress,
+      this.paymentInfo,
       this.currency,
       this.totalPrice,
       this.orderDate,
+      this.reservation,
+      this.delivery,
+      this.pickup,
       this.deliveryDate,
+      this.timeLimit,
       this.items,
-      this.storeAddress,
-      this.shippingAddress,
-      this.storeId,
-      this.storeName,
-      this.storePhone});
+      this.orderStatus});
 
   Order.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
+        clientId = parsedJson['clientId'],
         storeId = parsedJson['storeId'],
-        totalPrice = parsedJson['total'].toDouble(),
+        storeName = parsedJson['store']['name'],
+        storePhone = parsedJson['seller']['phone'],
+        storeAddress = Address(
+            city: parsedJson['store']['address']['city'],
+            fullAddress: parsedJson['store']['address']['fullAdress'],
+            streetName: parsedJson['store']['address']['streetName'],
+            countryName: "France",
+            postalCode: parsedJson['store']['postalCode']),
+        pickupPerson = parsedJson['pickupPerson'] != null
+            ? {
+                "name": parsedJson['pickupPerson']["name"],
+                "nif": parsedJson['pickupPerson']["nif"]
+              }
+            : null,
+        totalPrice = parsedJson['paymentInfos']['totalAmount'].toDouble(),
+        currency = '€',
+        orderDate = DateTime.now(),
+        deliveryDate = DateTime.now(),
+        items = OrderItem.orderItemsFromJsonList(parsedJson['items']),
+        paymentInfo = Bill.fromJson(parsedJson['paymentInfos']),
+        shippingAddress = Address(
+            city: parsedJson['paymentInfos']['card']['address_city'],
+            countryName: "France",
+            postalCode: parsedJson['paymentInfos']['card']['postalCode'],
+            fullAddress: parsedJson['paymentInfos']['card']['address_line2'],
+            streetName: parsedJson['paymentInfos']['card']['address_line1']),
+        delivery = parsedJson['delivery'],
+        pickup = parsedJson['pickUp'],
+        reservation = parsedJson['reservation'],
         orderStatus = (() {
-          switch(parsedJson['status']) {
-            case "pending":
+          switch (parsedJson['status']) {
+            case "Pending":
               return OrderStatus.pending;
             case "succeeded":
               return OrderStatus.succeeded;
@@ -52,25 +103,7 @@ class Order {
             default:
               return OrderStatus.pending;
           }
-        } ()),
-        currency = '€',
-        orderDate = DateTime.now(),
-        deliveryDate = DateTime.now(),
-        items = OrderItem.orderItemsFromJsonList(parsedJson['items']),
-        storeAddress = Address(
-            city: parsedJson['origin']['city'],
-            countryName: "France",
-            postalCode: parsedJson['origin']['postalCode']
-        ),
-        shippingAddress = Address(
-            city: parsedJson['billingAdress']['city'],
-            countryName: "France",
-            postalCode: parsedJson['billingAdress']['postalCode'],
-            fullAddress: parsedJson['billingAdress']['street1'],
-            streetName: parsedJson['billingAdress']['street2']
-        ),
-        storeName = Store.stores[4].name,
-        storePhone = Store.stores[4].phoneNumber;
+        }());
 
   static List<Order> ordersFromJsonList(List<dynamic> parsedJson) {
     List<Order> _list = [];
@@ -79,5 +112,4 @@ class Order {
     }
     return _list;
   }
-
 }

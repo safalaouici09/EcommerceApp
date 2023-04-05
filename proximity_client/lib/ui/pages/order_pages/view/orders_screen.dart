@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
+
+import 'package:provider/provider.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({Key? key, this.page}) : super(key: key);
@@ -17,11 +20,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
-    _index = widget.page?? 0;
+    _index = widget.page ?? 0;
   }
 
   @override
   Widget build(BuildContext context) {
+    final ordersService = Provider.of<OrderService>(context);
     return Scaffold(
         body: SafeArea(
             child: Column(children: [
@@ -42,9 +46,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   children: [
                     Expanded(
                         child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 0;
-                      }),
+                      onTap: () {
+                        ordersService.getPickUpOrders();
+                        setState(() {
+                          _index = 0;
+                        });
+                      },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -108,6 +115,38 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     Expanded(
                         child: InkWell(
                       onTap: () => setState(() {
+                        _index = 3;
+                      }),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_index == 3) ...[
+                              DuotoneIcon(
+                                primaryLayer: ProximityIcons.history_duotone_1,
+                                secondaryLayer:
+                                    ProximityIcons.history_duotone_2,
+                                color: redSwatch.shade500,
+                              ),
+                              Text('Reservation',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(height: 0.9)),
+                              const SizedBox(height: tiny_50),
+                              Container(
+                                  height: tiny_50,
+                                  width: normal_150,
+                                  decoration: BoxDecoration(
+                                      color: redSwatch.shade500,
+                                      borderRadius:
+                                          const BorderRadius.all(tinyRadius)))
+                            ] else
+                              const Icon(ProximityIcons.history),
+                          ]),
+                    )),
+                    Expanded(
+                        child: InkWell(
+                      onTap: () => setState(() {
                         _index = 2;
                       }),
                       child: Column(
@@ -135,38 +174,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                           const BorderRadius.all(tinyRadius)))
                             ] else
                               const Icon(ProximityIcons.rejected),
-                          ]),
-                    )),
-                    Expanded(
-                        child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 3;
-                      }),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_index == 3) ...[
-                              DuotoneIcon(
-                                primaryLayer: ProximityIcons.history_duotone_1,
-                                secondaryLayer:
-                                    ProximityIcons.history_duotone_2,
-                                color: redSwatch.shade500,
-                              ),
-                              Text('History',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(height: 0.9)),
-                              const SizedBox(height: tiny_50),
-                              Container(
-                                  height: tiny_50,
-                                  width: normal_150,
-                                  decoration: BoxDecoration(
-                                      color: redSwatch.shade500,
-                                      borderRadius:
-                                          const BorderRadius.all(tinyRadius)))
-                            ] else
-                              const Icon(ProximityIcons.history),
                           ]),
                     )),
                   ]))),

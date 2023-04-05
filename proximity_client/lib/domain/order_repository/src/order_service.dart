@@ -7,6 +7,7 @@ import 'package:proximity_client/domain/order_repository/order_repository.dart';
 class OrderService with ChangeNotifier {
   List<Order>? _selfPickupOrders;
   List<Order>? _deliveryOrders;
+  List<Order>? _reservationOrders;
   List<Order>? _canceledOrders;
   List<Order>? _history;
 
@@ -16,6 +17,8 @@ class OrderService with ChangeNotifier {
   List<Order>? get selfPickupOrders => _selfPickupOrders;
 
   List<Order>? get deliveryOrders => _deliveryOrders;
+
+  List<Order>? get reservationOrders => _reservationOrders;
 
   List<Order>? get canceledOrders => _canceledOrders;
 
@@ -74,7 +77,9 @@ class OrderService with ChangeNotifier {
   }
 
   /// GET methods
-  Future getUnpaidOrders() async {
+  Future getPickUpOrders() async {
+    print("ws lanched");
+
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     // String _id = credentialsBox.get('id');
@@ -86,9 +91,10 @@ class OrderService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/status/pending');
+      var res = await dio.get(BASE_API_URL + '/order/pickup/status/Pending');
       notifyListeners();
       if (res.statusCode == 200) {
+        print(res);
         _selfPickupOrders = [];
         _selfPickupOrders!.addAll(Order.ordersFromJsonList(res.data));
         notifyListeners();
@@ -115,11 +121,41 @@ class OrderService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/status/succeeded');
+      var res = await dio.get(BASE_API_URL + '/order/delivery/status/Pending');
       notifyListeners();
       if (res.statusCode == 200) {
         _deliveryOrders = [];
         _deliveryOrders!.addAll(Order.ordersFromJsonList(res.data));
+        notifyListeners();
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
+  Future getReservationOrders() async {
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    // String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      var res =
+          await dio.get(BASE_API_URL + '/order/reservation/status/Pending');
+      notifyListeners();
+      if (res.statusCode == 200) {
+        _reservationOrders = [];
+        _reservationOrders!.addAll(Order.ordersFromJsonList(res.data));
         notifyListeners();
       }
     } on DioError catch (e) {

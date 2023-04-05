@@ -16,7 +16,7 @@ class OrderTile extends StatelessWidget {
     final Locale _locale = Localizations.localeOf(context);
 
     return Container(
-        margin: const EdgeInsets.symmetric(horizontal: normal_100),
+        margin: const EdgeInsets.all(normal_100),
         decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: const BorderRadius.all(normalRadius),
@@ -55,13 +55,49 @@ class OrderTile extends StatelessWidget {
                         _locale.languageCode + '_' + _locale.countryCode!)
                     .format(order.orderDate!)
                 : '--:--:----',
-            'Delivery Date': (order.deliveryDate != null)
-                ? DateFormat.yMMMEd(
-                        _locale.languageCode + '_' + _locale.countryCode!)
-                    .format(order.deliveryDate!)
-                : '--:--:----',
-            'Shipping Address': order.shippingAddress!.getAddressLine,
           }),
+          if (order.delivery == true)
+            OrderDetails(details: {
+              'Delivery Date': (order.deliveryDate != null)
+                  ? DateFormat.yMMMEd(
+                          _locale.languageCode + '_' + _locale.countryCode!)
+                      .format(order.deliveryDate!)
+                  : '--:--:----',
+              'Shipping Address': order.shippingAddress!.getAddressLine,
+            }),
+
+          if (order.pickup == true)
+            OrderDetails(details: {
+              'Pickup By': (order.pickupPerson != null &&
+                      order.pickupPerson?["name"] != null)
+                  ? order.pickupPerson!["name"] ?? ""
+                  : '',
+              'NIF': (order.pickupPerson != null &&
+                      order.pickupPerson?["nif"] != null)
+                  ? order.pickupPerson!["nif"] ?? ""
+                  : '',
+            }),
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            Container(
+              width: 150,
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Colors.deepOrange,
+                  borderRadius: BorderRadius.only(
+                      topLeft: normalRadius, bottomLeft: normalRadius)),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text(
+                  'Pending',
+                  style: TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFEFEFEF)),
+                ),
+              ]),
+            ),
+          ]),
 
           /// Order Items (Ordered Products)
           ...List.generate(order.items!.length,
@@ -69,13 +105,15 @@ class OrderTile extends StatelessWidget {
           const Divider(height: tiny_50, thickness: tiny_50),
           Padding(
               padding: const EdgeInsets.all(small_100),
-              child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                const SizedBox(width: huge_100 + small_100),
-                Text('Total:', style: Theme.of(context).textTheme.bodyText2),
-                const Spacer(),
-                Text(' € ${order.totalPrice}',
-                    style: Theme.of(context).textTheme.headline3)
-              ]))
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total:',
+                        style: Theme.of(context).textTheme.headline3),
+                    Text(' € ${order.totalPrice}',
+                        style: Theme.of(context).textTheme.headline3)
+                  ]))
         ]));
   }
 }

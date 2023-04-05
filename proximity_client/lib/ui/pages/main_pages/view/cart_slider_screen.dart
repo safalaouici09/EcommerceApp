@@ -11,14 +11,24 @@ import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/domain/product_repository/models/models.dart';
 import 'package:proximity_client/ui/pages/product_pages/widgets/widgets.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
+import 'package:proximity_client/ui/widgets/address_picker/area_selection_screen.dart';
 
 class CartSliderScreen extends StatefulWidget {
   CartSliderScreen(
-      {Key? key, required this.products, this.cartId, this.storeId})
+      {Key? key,
+      required this.products,
+      this.cartId,
+      this.storeId,
+      this.storeAddress,
+      this.maxDeliveryFixe,
+      this.maxDeliveryKm})
       : super(key: key);
   List<ProductCart> products;
   String? cartId;
   String? storeId;
+  Address? storeAddress;
+  double? maxDeliveryFixe;
+  double? maxDeliveryKm;
 
   @override
   State<CartSliderScreen> createState() => _CartSliderScreenState();
@@ -39,7 +49,12 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
     return ChangeNotifierProvider<OrderSliderValidation>(
         // create: (context) => orderSliderValidation.setStore(store),
         create: (context) => OrderSliderValidation.initProducts(
-            widget.products, widget.cartId, widget.storeId),
+            widget.products,
+            widget.cartId,
+            widget.storeId,
+            widget.storeAddress,
+            widget.maxDeliveryFixe,
+            widget.maxDeliveryKm),
         child: Consumer2<OrderSliderValidation, OrderService>(
             builder: (context, orderSliderValidation, orderService, child) {
           return Scaffold(
@@ -61,13 +76,37 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                         currentStep: _currentStep,
                         type: StepperType.horizontal,
                         onStepContinue: () {
-                          _currentStep == 2
-                              ? null
-                              : _currentStep == 3
-                                  ? Navigator.pop(context)
-                                  : setState(() {
-                                      _currentStep = _currentStep + 1;
-                                    });
+                          if (_currentStep == 0) {
+                            bool pickup =
+                                orderSliderValidation.getPickupItemsTotal() !=
+                                    0.0;
+                            bool delivery =
+                                orderSliderValidation.getDeliveryItemsTotal() !=
+                                    0.0;
+
+                            bool pickupValidation =
+                                orderSliderValidation.pickupName != null &&
+                                    orderSliderValidation.pickupName != "" &&
+                                    orderSliderValidation.pickupNif != null &&
+                                    orderSliderValidation.pickupNif != "";
+                            bool deliveryValidation =
+                                orderSliderValidation.deliveryAdresse != null;
+
+                            if (!((pickup && !pickupValidation) ||
+                                (delivery && !deliveryValidation))) {
+                              setState(() {
+                                _currentStep = _currentStep + 1;
+                              });
+                            }
+                          } else {
+                            _currentStep == 2
+                                ? null
+                                : _currentStep == 3
+                                    ? Navigator.pop(context)
+                                    : setState(() {
+                                        _currentStep = _currentStep + 1;
+                                      });
+                          }
                         },
                         onStepCancel: () {
                           _currentStep == 0
@@ -84,7 +123,9 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                               mainAxisAlignment:
                                   _currentStep != 0 && _currentStep != 3
                                       ? MainAxisAlignment.spaceBetween
-                                      : MainAxisAlignment.end,
+                                      : _currentStep == 3
+                                          ? MainAxisAlignment.center
+                                          : MainAxisAlignment.end,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 if (_currentStep != 0 && _currentStep < 3)
@@ -124,8 +165,8 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
   Step getOrderItemsStep(
       OrderSliderValidation orderSliderValidation, BuildContext context) {
     print(orderSliderValidation.products);
-    double productDeliveryTotal = orderSliderValidation.getDeliveryItemsTotal();
     double productPickupTotal = orderSliderValidation.getPickupItemsTotal();
+    int deliveryProducts = orderSliderValidation.getDeliveryItems().length;
     return Step(
         isActive: _currentStep >= 0,
         title: Text("Items"),
@@ -136,24 +177,9 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                 CardItem(
                     product: item,
                     orderSliderValidation: orderSliderValidation),
-              if (productDeliveryTotal != 0.0)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SectionDivider(
-                        leadIcon: ProximityIcons.delivery,
-                        title: 'Delivery Infos.',
-                        color: blueSwatch.shade500),
-                    SizedBox(height: 16),
-                    Padding(
-                      padding:
-                          const EdgeInsets.all(normal_100).copyWith(top: 0),
-                      child: TertiaryButton(
-                          onPressed: () {}, title: 'Set Delivery Area.'),
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                ),
+              if (deliveryProducts > 0)
+                ShippingAddressOrderScreen(
+                    orderSliderValidation: orderSliderValidation),
               if (productPickupTotal != 0.0)
                 PickupPersonScreen(
                     orderSliderValidation: orderSliderValidation),
@@ -226,13 +252,10 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
   Step getDoneStep(
       OrderSliderValidation orderSliderValidation, BuildContext context) {
     return Step(
-        isActive: _currentStep >= 1,
+        isActive: _currentStep >= 3,
         title: Text("Done"),
         content: Column(
           children: [
-            const InfoMessage(
-                message:
-                    'Your order has been made successfully, we will inform you once it will be validated'),
             Column(children: [
               BillItem(
                   orderSliderValidation: orderSliderValidation,
@@ -240,7 +263,18 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                   deliveryBill: false,
                   pickupBill: false,
                   payment: true),
+              Icon(ProximityIcons.check_filled,
+                  size: huge_200, color: Colors.green),
+
+              // FittedBox(
+              //   child: Image.asset("assets/img/welcome.png"),
+              //   fit: BoxFit.fill,
+              // ),
             ]),
+            const InfoMessage(
+                message:
+                    'Your order has been made successfully, we will inform you once it will be validated'),
+            SizedBox(height: 40),
           ],
         ));
   }

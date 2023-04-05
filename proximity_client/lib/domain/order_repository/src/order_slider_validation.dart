@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:math' show cos, sqrt, asin, sin, pi;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/store_repository/models/models.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
@@ -29,6 +31,13 @@ class OrderSliderValidation with ChangeNotifier {
   String? _pickupName;
   String? _pickupNif;
 
+  Address? _deliveryAdresse;
+  double? _maxDeliveryFixe;
+  double? _maxDeliveryKm;
+  double? _distance;
+  double? _totalDelivery = 0.0;
+  Address? _storeAdresse;
+
   String? get cartId => _cartId;
   String? get storeId => _storeId;
 
@@ -41,17 +50,46 @@ class OrderSliderValidation with ChangeNotifier {
   String? get street => _street;
   String? get street2 => _street2;
   String? get postalCode => _postalCode;
+  Address? get deliveryAdresse => _deliveryAdresse;
+  double? get maxDeliveryFixe => _maxDeliveryFixe;
+  double? get maxDeliveryKm => _maxDeliveryKm;
+  double? get distance => _distance;
+  double? get totalDelivery => _totalDelivery;
+  Address? get storeAdresse => _storeAdresse;
 
   String? get pickupName => _pickupName;
   String? get pickupNif => _pickupNif;
 
   OrderSliderValidation.initProducts(
-      List<ProductCart> new_products, String? newCartId, String? newStoreId) {
+      List<ProductCart> new_products,
+      String? newCartId,
+      String? newStoreId,
+      Address? newStoreAddress,
+      double? newMaxDeliveryFixe,
+      double? newMaxDeliveryKm) {
     _products.addAll(new_products);
     _cartId = newCartId;
     _storeId = newStoreId;
+    _storeAdresse = newStoreAddress;
+    _maxDeliveryFixe = newMaxDeliveryFixe;
+    _maxDeliveryKm = newMaxDeliveryKm;
+    if (newMaxDeliveryFixe != 0.0) {
+      _totalDelivery = newMaxDeliveryFixe;
+    }
     notifyListeners();
     if (products.isNotEmpty) print(_products[0].characteristics);
+  }
+
+  void changeDeliveryAddress(Address value) {
+    _deliveryAdresse = value;
+    notifyListeners();
+    if (_storeAdresse != null) {
+      _distance = distanceBetween(_storeAdresse!.lat ?? 0.0,
+          _storeAdresse!.lng ?? 0.0, value.lat ?? 0.0, value.lng ?? 0.0);
+    }
+    if (_maxDeliveryFixe == 0.0 && _maxDeliveryKm != 0.0 && _distance != 0.0) {
+      _totalDelivery = (_maxDeliveryKm ?? 1) * (_distance ?? 1);
+    }
   }
 
   void changecardNumber(String value) {
@@ -187,7 +225,7 @@ class OrderSliderValidation with ChangeNotifier {
             {
               total += item.price! *
                   (item.quantity) *
-                  (1 - item.reservationP) *
+                  (item.reservationP) *
                   (1 - item.discount)
             }
         });
@@ -202,15 +240,10 @@ class OrderSliderValidation with ChangeNotifier {
   }
 
   double getDeliveryItemsTotal() {
-    double total = 0.0;
+    double total = (_totalDelivery ?? 0.0);
     _products.forEach((item) => {
           if (item.reservation != true && item.delivery == true)
-            {
-              total += item.price! *
-                  (item.quantity) *
-                  (1 + item.deliveryP) *
-                  (1 - item.discount)
-            }
+            {total += item.price! * (item.quantity) * (1 - item.discount)}
         });
     return total;
   }
@@ -234,59 +267,194 @@ class OrderSliderValidation with ChangeNotifier {
   FormData toFormData() {
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
-    Map<String, dynamic> paymentInfos = {
-      "deliveryAmount": 0.0,
-      "reservationAmount": 0.0,
-      "totalAmount": getDeliveryItemsTotal() +
-          getPickupItemsTotal() +
-          getReservationItemsTotal(),
-      "paymentMethodeId": 1,
-      "card": {
-        "cardNumber": _cardNumber ?? "",
-        "ccv": _cvc ?? "",
-        "expdate": _expdate ?? "",
-        "name": _name ?? "",
-        "address_city": _city ?? "",
-        "address_line1": _street ?? "",
-        "address_line2": _street2 ?? "",
-        "postalCode": _postalCode ?? ""
-      },
+
+    Map<String, dynamic> card = {
+      "cardNumber": _cardNumber ?? "",
+      "ccv": _cvc ?? "",
+      "expdate": _expdate ?? "",
+      "name": _name ?? "",
+      "address_city": _city ?? "",
+      "address_line1": _street ?? "",
+      "address_line2": _street2 ?? "",
+      "postalCode": _postalCode ?? ""
     };
 
-    List<Map<String, dynamic>> itemsOrder = [];
+    List<dynamic> orders = [];
 
-    List<ProductCart> currentItems = getPickupItems();
+    List<ProductCart> currentPickupItems = getPickupItems();
+    List<ProductCart> currentDeliveryItems = getDeliveryItems();
+    List<ProductCart> currentReservationItems = getReservationItems();
 
-    currentItems.forEach((element) {
-      itemsOrder.add({
-        "productId": element.productId ?? "",
-        "variantId": element.variantId ?? "",
-        "name": element.name ?? "",
-        "image": element.image ?? "",
-        "price": element.price ?? "",
-        "discount": element.discount ?? 0.0,
-        "quantity": element.quantity ?? 0.0,
-        "policy": null,
+    if (currentPickupItems.isNotEmpty) {
+      Map<String, dynamic> pickUpPaymentInfos = {
+        "deliveryAmount": 0.0,
+        "reservationAmount": 0.0,
+        "totalAmount": getPickupItemsTotal(),
+        "paymentMethodeId": 1,
+        "card": card,
+      };
+      Map<String, dynamic> pickupPerson = {
+        "name": _pickupName ?? "",
+        "nif": _pickupNif ?? ""
+      };
+      List<Map<String, dynamic>> itemsPickUpOrder = [];
+
+      currentPickupItems.forEach((element) {
+        itemsPickUpOrder.add({
+          "productId": element.productId ?? "",
+          "variantId": element.variantId ?? "",
+          "name": element.name ?? "",
+          "image": element.image ?? "",
+          "price": element.price ?? "",
+          "discount": element.discount ?? 0.0,
+          "quantity": element.quantity ?? 0.0,
+          "policy": null,
+        });
       });
-    });
 
-    FormData _formData = FormData.fromMap({
-      "clientId": _id,
-      "storeId": _storeId,
-      "cartId": _cartId,
-      "pickupPerson": {"name": _pickupName ?? "", "nif": _pickupNif ?? ""},
-      "deliveryAddresse": null,
-      "distance": null,
-      "paymentInfos": json.encode(paymentInfos),
-      "items": json.encode(itemsOrder),
-      "reservation": false,
-      "pickUp": true,
-      "delivery": false,
-      "timeLimit": null,
-    });
+      Map<String, dynamic> pickupOrder = {
+        "clientId": _id,
+        "storeId": _storeId,
+        "cartId": _cartId,
+        "pickupPerson": pickupPerson,
+        "deliveryAddresse": null,
+        "distance": null,
+        "paymentInfos": pickUpPaymentInfos,
+        "items": itemsPickUpOrder,
+        "reservation": false,
+        "pickUp": true,
+        "delivery": false,
+        "timeLimit": null,
+      };
+
+      orders.add(pickupOrder);
+    }
+
+    if (currentDeliveryItems.isNotEmpty) {
+      Map<String, dynamic> deliveryPaymentInfos = {
+        "deliveryAmount": _totalDelivery,
+        "reservationAmount": 0.0,
+        "totalAmount": getDeliveryItemsTotal(),
+        "paymentMethodeId": 1,
+        "card": card,
+      };
+
+      Map<String, dynamic> shippingAddress = {
+        "city": deliveryAdresse?.city ?? "",
+        "streetName": deliveryAdresse?.streetName ?? "",
+        "postalCode": deliveryAdresse?.postalCode ?? "",
+        "fullAdress": deliveryAdresse?.fullAddress ?? "",
+        "region": deliveryAdresse?.region ?? "",
+        "country": deliveryAdresse?.countryName ?? "",
+        "countryCode": "FR"
+      };
+
+      Map<String, dynamic> allShippingAddress = {
+        "coordinates": [
+          deliveryAdresse?.lat ?? 0.0,
+          deliveryAdresse?.lng ?? 0.0
+        ],
+        "address": shippingAddress,
+      };
+      List<Map<String, dynamic>> itemsDeliveryOrder = [];
+
+      currentDeliveryItems.forEach((element) {
+        itemsDeliveryOrder.add({
+          "productId": element.productId ?? "",
+          "variantId": element.variantId ?? "",
+          "name": element.name ?? "",
+          "image": element.image ?? "",
+          "price": element.price ?? "",
+          "discount": element.discount ?? 0.0,
+          "quantity": element.quantity ?? 0.0,
+          "policy": null,
+        });
+      });
+
+      Map<String, dynamic> deliveryOrder = {
+        "clientId": _id,
+        "storeId": _storeId,
+        "cartId": _cartId,
+        "pickupPerson": null,
+        "deliveryAddresse": allShippingAddress,
+        "distance": _distance,
+        "paymentInfos": deliveryPaymentInfos,
+        "items": itemsDeliveryOrder,
+        "reservation": false,
+        "pickUp": false,
+        "delivery": true,
+        "timeLimit": null,
+      };
+
+      orders.add(deliveryOrder);
+    }
+
+    if (currentReservationItems.isNotEmpty) {
+      Map<String, dynamic> reservationPaymentInfos = {
+        "deliveryAmount": 0.0,
+        "reservationAmount": getReservationItemsTotal(),
+        "totalAmount": getReservationItemsTotal(),
+        "paymentMethodeId": 1,
+        "card": card,
+      };
+
+      List<Map<String, dynamic>> itemsReservationOrder = [];
+
+      currentReservationItems.forEach((element) {
+        itemsReservationOrder.add({
+          "productId": element.productId ?? "",
+          "variantId": element.variantId ?? "",
+          "name": element.name ?? "",
+          "image": element.image ?? "",
+          "price": element.price ?? "",
+          "discount": element.discount ?? 0.0,
+          "quantity": element.quantity ?? 0.0,
+          "reservation": element.reservationP ?? 0.0,
+          "policy": null,
+        });
+      });
+
+      Map<String, dynamic> deliveryOrder = {
+        "clientId": _id,
+        "storeId": _storeId,
+        "cartId": _cartId,
+        "pickupPerson": null,
+        "deliveryAddresse": null,
+        "distance": _distance,
+        "paymentInfos": reservationPaymentInfos,
+        "items": itemsReservationOrder,
+        "reservation": true,
+        "pickUp": false,
+        "delivery": false,
+        "timeLimit": null,
+      };
+
+      orders.add(deliveryOrder);
+    }
+    print(orders);
+
+    FormData _formData = FormData.fromMap({"orders": json.encode(orders)});
 
     return _formData;
   }
 
   OrderSliderValidation();
+
+  static const earthRadiusKm = 6372.8;
+
+  static double distanceBetween(
+      double lat1, double lon1, double lat2, double lon2) {
+    final latDistance = _toRadians(lat2 - lat1);
+    final lonDistance = _toRadians(lon2 - lon1);
+    final sinLat = sin(latDistance / 2);
+    final sinLon = sin(lonDistance / 2);
+    final a = sinLat * sinLat +
+        (cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * sinLon * sinLon);
+    final c = 2 * asin(sqrt(a));
+    return earthRadiusKm * c;
+  }
+
+  static double _toRadians(double degree) {
+    return degree * pi / 180;
+  }
 }

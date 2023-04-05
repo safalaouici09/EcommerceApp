@@ -85,16 +85,45 @@ class ProductTile extends StatelessWidget {
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .subtitle2),
-                                                    TextSpan(
-                                                        text:
-                                                            '${productVariant.variantName}',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .caption)
+                                                    if (product.reservation !=
+                                                        0.0)
+                                                      TextSpan(
+                                                          text:
+                                                              'Reservation : ${((product.reservation ?? 0.0) * 100).toInt()}% ',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .caption),
                                                   ]),
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 2)),
+                                          if (product.discount != 0.0)
+                                            Container(
+                                                padding: const EdgeInsets.all(
+                                                    tiny_50),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: small_100),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            tinyRadius),
+                                                    color: redSwatch.shade500),
+                                                child: Text(
+                                                  '-${(product.discount * 100).toInt()}%',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .caption!
+                                                      .copyWith(
+                                                          color:
+                                                              primaryTextDarkColor,
+                                                          fontWeight:
+                                                              FontWeight.w800),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                )),
                                           if (rightChild != null) rightChild!
                                         ])),
                                         SizedBox(
@@ -108,20 +137,40 @@ class ProductTile extends StatelessWidget {
                                                       child: RichText(
                                                           text: TextSpan(
                                                               children: [
-                                                                TextSpan(
-                                                                    text: '€ ',
-                                                                    style: Theme.of(
-                                                                        context)
-                                                                        .textTheme
-                                                                        .bodyText1),
-                                                                TextSpan(
-                                                                    text:
-                                                                    '${product.getPrice()}',
-                                                                    style: Theme.of(
-                                                                        context)
-                                                                        .textTheme
-                                                                        .headline4)
-                                                              ]))),
+                                                        if (product.discount !=
+                                                                0.0 ||
+                                                            product.reservation !=
+                                                                0.0)
+                                                          TextSpan(
+                                                              text:
+                                                                  '€ ${product.price}\n',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption!
+                                                                  .copyWith(
+                                                                      decoration:
+                                                                          TextDecoration
+                                                                              .lineThrough,
+                                                                      decorationThickness:
+                                                                          small_50,
+                                                                      decorationColor:
+                                                                          redSwatch
+                                                                              .shade500)),
+                                                        TextSpan(
+                                                            text: '€ ',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyText1),
+                                                        TextSpan(
+                                                            text:
+                                                                '${product.getPrice()}',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline4)
+                                                      ]))),
                                                   if (bottomRightChild != null)
                                                     bottomRightChild!
                                                 ]))
