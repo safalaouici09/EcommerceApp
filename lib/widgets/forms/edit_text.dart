@@ -254,6 +254,7 @@ import 'border_type.dart';
 class EditText extends StatefulWidget {
   const EditText({
     Key? key,
+    this.controller,
     this.enabled = true,
     this.saved,
     this.prefixIcon,
@@ -270,7 +271,7 @@ class EditText extends StatefulWidget {
     this.validator,
     this.obscureText = false,
   }) : super(key: key);
-
+  final TextEditingController? controller;
   final bool enabled;
   final String hintText;
   final String? saved;
@@ -328,6 +329,7 @@ class _EditTextState extends State<EditText> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
+            controller: widget.controller,
             initialValue: widget.saved,
             focusNode: _focus,
             cursorColor: (widget.errorText != null)

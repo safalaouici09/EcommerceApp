@@ -189,9 +189,10 @@ class PolicyValidation with ChangeNotifier {
   PolicyValidation();
 
 //setter
+//to do : re set
   PolicyValidation.setPolicy(Policy? policy) {
     if (policy != null) {
-      //set policy
+      /* //set policy
       if (policy.pickupPolicy!.timeLimit != null) {
         _selfPickup = true;
         _selfPickUpMaxDays = policy.pickupPolicy!.timeLimit;
@@ -280,11 +281,11 @@ class PolicyValidation with ChangeNotifier {
       _notifSms = policy.orderPolicy!.notification!.sendMode!.sms!;
       _notifInPlateforme =
           policy.orderPolicy!.notification!.sendMode!.vibration!;
+    */
     } else {
       return;
     }
   }
-
   void toggleReturnShippingFee(bool value) {
     _returnShippingFee = value;
 

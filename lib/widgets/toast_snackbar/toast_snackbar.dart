@@ -149,15 +149,12 @@ class ToastSnackbar {
   /// based on the gravity  [ToastGravity] provided by the user in
   /// [showToast]
   _getPositionWidgetBasedOnGravity(Widget child) {
-    if (MediaQuery.of(context!).viewInsets.bottom != 0) {
+    /* if (MediaQuery.of(context!).viewInsets.bottom != 0) {
       return Positioned(top: 50.0, bottom: 50.0, right: 24.0, child: child);
-    } else {
-      return Positioned(
-          bottom: normal_100,
-          left: normal_100,
-          right: normal_100,
-          child: child);
-    }
+    } else{*/
+    return Positioned(
+        bottom: normal_100, left: normal_100, right: normal_100, child: child);
+    //}
     // switch (gravity) {
     //   case ToastGravity.TOP:
     //     return Positioned(top: 100.0, left: 24.0, right: 24.0, child: child);

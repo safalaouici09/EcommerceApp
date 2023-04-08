@@ -60,7 +60,7 @@ class _ProductCardState extends State<ProductCard> {
                         RichText(
                             textAlign: TextAlign.end,
                             text: TextSpan(children: [
-                              if (widget.product.discount != 0.0)
+                              if (widget.product.discount != 0)
                                 TextSpan(
                                     text: '€ ${widget.product.price}\n',
                                     style: Theme.of(context)
@@ -73,8 +73,8 @@ class _ProductCardState extends State<ProductCard> {
                                             decorationColor:
                                                 redSwatch.shade500)),
                               TextSpan(
-                                  text: (widget.product.discount != 0.0)
-                                      ? '€ ${double.parse((widget.product.price! * (1 - widget.product.discount)).toStringAsFixed(2))}'
+                                  text: (widget.product.discount != 0)
+                                      ? '€ ${double.parse((widget.product.price! * (1 - widget.product.discount / 100)).toStringAsFixed(2))}'
                                       : '€ ${widget.product.price}',
                                   style: Theme.of(context)
                                       .textTheme
@@ -145,7 +145,7 @@ class _ProductCardDiscountState extends State<ProductCardDiscount> {
                         RichText(
                             textAlign: TextAlign.end,
                             text: TextSpan(children: [
-                              if (widget.product.discount != 0.0)
+                              if (widget.product.discount != 0)
                                 TextSpan(
                                     text: '€ ${widget.product.price}\n',
                                     style: Theme.of(context)
@@ -158,8 +158,8 @@ class _ProductCardDiscountState extends State<ProductCardDiscount> {
                                             decorationColor:
                                                 redSwatch.shade500)),
                               TextSpan(
-                                  text: (widget.product.discount != 0.0)
-                                      ? '€ ${double.parse((widget.product.price! * (1 - widget.product.discount)).toStringAsFixed(2))}'
+                                  text: (widget.product.discount != 0)
+                                      ? '€ ${double.parse((widget.product.price! * (1 - widget.product.discount / 100)).toStringAsFixed(2))}'
                                       : '€ ${widget.product.price}',
                                   style: Theme.of(context)
                                       .textTheme
@@ -170,7 +170,7 @@ class _ProductCardDiscountState extends State<ProductCardDiscount> {
                       ]))
             ]));
 
-    return (widget.product.discount != 0.0)
+    return (widget.product.discount != 0)
         ? Stack(children: [
             _productCard,
             Container(
@@ -179,7 +179,7 @@ class _ProductCardDiscountState extends State<ProductCardDiscount> {
                 decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(tinyRadius),
                     color: redSwatch.shade500),
-                child: Text('-${(widget.product.discount * 100).toInt()}%',
+                child: Text('-${(widget.product.discount).toInt()}%',
                     style: Theme.of(context).textTheme.caption!.copyWith(
                         color: primaryTextDarkColor,
                         fontWeight: FontWeight.w800),

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_commercant/domain/product_repository/models/offer_model.dart';
@@ -11,12 +12,14 @@ class ProductService with ChangeNotifier {
   late int _currentPage;
   late bool _fetchMore;
   String? _idStore;
-
+  DateTime _selectedDate = DateTime.now();
+  String? _formattedDate;
   String? _discountType = 'amount';
-  double? _discountAmount;
+  int? _discountAmount;
   int? _discountPercentage;
   int? _offerStock;
-  List<Offer>? _storeOffers;
+  String? _discountAmountPercentage;
+
   bool? _isPercentage;
 
   // essential values for the UI
@@ -34,13 +37,14 @@ class ProductService with ChangeNotifier {
   bool get loading => _loading;
   bool get formsLoading => _formsLoading;
   String? get discountType => _discountType;
-  double? get discountAmount => _discountAmount;
+  int? get discountAmount => _discountAmount;
   int? get discountPercentage => _discountPercentage;
   int? get offerStock => _offerStock;
   Offer? _productOffer;
   Offer? get productOffer => _productOffer;
-  List<Offer>? get storeOffers => _storeOffers;
-
+  DateTime get selectedDate => _selectedDate;
+  String? get formattedDate => _formattedDate;
+  String? get discountAmountPercentage => _discountAmountPercentage;
   // setters
   set idStore(String? idStore) {
     _idStore = idStore;
@@ -61,7 +65,6 @@ class ProductService with ChangeNotifier {
     _formsLoading = false;
     _isPercentage = _discountType == 'amount' ? false : true;
     getStoreProducts();
-    // getStoreOffers();
   }
 
   reloadList(ProductProxy productProxy) {
@@ -145,8 +148,10 @@ class ProductService with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeDiscountAmount(String value) {
-    _discountAmount = double.tryParse(value);
+  void changeDiscountAmount(String value, int index) {
+    _discountAmount = int.parse(value);
+    _discountAmountPercentage = percentageValues[_discountAmount.toString()];
+
     notifyListeners();
   }
 
@@ -218,15 +223,23 @@ class ProductService with ChangeNotifier {
   }
 
   Future editProductDiscount(
-      BuildContext context, int index, double? discount) async {
+      BuildContext context, int index, int? discount) async {
     _formsLoading = true;
-    _discountAmount = _discountAmount! / 100;
+    // _discountAmount = _discountAmount!;
     // discount = discount! / 100;
+    FormData formData;
     notifyListeners();
+    if (discount != null) {
+      formData = FormData.fromMap({
+        "discount": discount,
+      });
+    } else {
+      formData = FormData.fromMap({
+        "discount": _discountAmount,
+      });
+    }
 
-    FormData formData = FormData.fromMap({
-      "discount": _discountAmount,
-    }); //"discountType": discountType});
+    //"discountType": discountType});
 
     print('form data' + formData.fields.toString());
 
@@ -251,6 +264,8 @@ class ProductService with ChangeNotifier {
       print("res" + res.statusCode.toString());
       if (res.statusCode == 200) {
         /// Save new Store Data
+        var id = _products![index].id;
+        _products!.removeWhere((person) => person.id == id);
         _products!.add(Product.fromJson(res.data));
 
         notifyListeners();
@@ -349,11 +364,18 @@ class ProductService with ChangeNotifier {
     return false;
   }
 
+  void setSelectedDate(DateTime date) {
+    _selectedDate = date;
+    _formattedDate == DateFormat('yyyy-MM-dd').format(_selectedDate);
+    notifyListeners();
+  }
+
   FormData toFormData() {
     FormData _formData = FormData.fromMap({
       'discountType': _discountType,
-      'offerDiscount': _discountAmount,
-      'offerStock': _offerStock
+      'offerDiscount': _offerStock,
+      'offerStock': _offerStock,
+      'offerExpiration': _selectedDate
     });
     return _formData;
   }
@@ -382,49 +404,24 @@ class ProductService with ChangeNotifier {
 
         _productOffer = Offer.fromJson(res.data);
         if (_productOffer != null) {
-          _offerId = _productOffer!.id;
-          _discountAmount = _productOffer!.offerDiscount;
-          _discountType = _productOffer!.discountType;
-          _offerStock = _productOffer!.offerStock;
+          if (!_productOffer!.offerDeleted!) {
+            _offerId = _productOffer!.id;
+            _discountAmount = _productOffer!.offerDiscount;
+            _discountType = _productOffer!.discountType;
+            _offerStock = _productOffer!.offerStock;
+            _formattedDate = DateFormat('yyyy-MM-dd')
+                .format(_productOffer!.offerExpiration!);
+
+            _discountAmountPercentage =
+                percentageValues[_discountAmount.toString()];
+          }
+
+          //print("ds" + _discountAmountPercentage!);
         }
 
-        notifyListeners();
-      }
-    } on DioError catch (e) {
-      if (e.response != null) {
-        /// Toast Message to print the message
-        print('${e.response!}');
-      } else {
-        /// Error due to setting up or sending the request
-        print('Error sending request!');
-        print(e.message);
-      }
-    }
-  }
-
-  getStoreOffers() async {
-    /// open hive box
-    var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
-
-    /// dataForm is already a parameter
-
-    /// post the dataForm via dio call
-    try {
-      Dio dio = Dio();
-
-      dio.options.headers["token"] = "Bearer $_token";
-      // var res = await dio.get(BASE_API_URL + '/offer/all/$idStore');
-      var res = await dio.get(BASE_API_URL + '/offer/all/$_idStore');
-
-      _loading = false;
-
-      notifyListeners();
-      if (res.statusCode == 200) {
-        print("store offers : " + res.data);
-        _storeOffers = [];
-        _storeOffers?.addAll(Offer.productsFromJsonList(res.data));
+        print('get offer' + _discountAmount.toString());
+        print('get offer' + _formattedDate.toString());
+        print('get offer' + percentageValues['10']!);
 
         notifyListeners();
       }
@@ -488,7 +485,7 @@ class ProductService with ChangeNotifier {
     notifyListeners();
   }
 
-  archiveOffer() async {
+  archiveOffer(String offerId) async {
     /// open hive box
     _formsLoading = true;
     notifyListeners();
@@ -502,13 +499,13 @@ class ProductService with ChangeNotifier {
 
     /// post the dataForm via dio call
     try {
-      debugPrint("Offer archive form");
+      debugPrint('offerid' + offerId.toString());
 
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-
-      var res = await dio.delete(BASE_API_URL + '/offer/delete/$_offerId');
-
+      print('offerarchive' + offerId.toString());
+      var res = await dio.delete(BASE_API_URL + '/offer/delete/$offerId');
+      print('offerarchive' + res.statusCode.toString());
       if (res.statusCode == 200) {
         /// Save new Store Data
 
@@ -547,23 +544,21 @@ class ProductService with ChangeNotifier {
 
     /// post the dataForm via dio call
     try {
-      debugPrint("Offer form");
-
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
       /* formData.fields.add(MapEntry("sellerId", _id));
       formData.fields.add(MapEntry("storeId", _idStore!));*/
       formData.fields.add(MapEntry("productId", id));
 
-      print("res1");
       var res = await dio.post(BASE_API_URL + '/offer/create', data: formData);
 
-      print(res.statusCode);
       if (res.statusCode == 200) {
         /// Save new Store Data
 
-        getStoreProducts();
+        // getStoreProducts();
+        print("res2");
         //  stores!.add(Store.fromJson(res.data));
+        //   await editProductDiscount(context, index, _discountAmount);
 
         _formsLoading = false;
         notifyListeners();
@@ -579,7 +574,6 @@ class ProductService with ChangeNotifier {
       }
     } on DioError catch (e) {
       if (e.response != null) {
-        print('errr');
         print(e.response);
 
         /// Display Error Response
