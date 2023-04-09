@@ -397,7 +397,8 @@ class StoreService with ChangeNotifier {
 
       dio.options.headers["token"] = "Bearer $_token";
       // var res = await dio.get(BASE_API_URL + '/offer/all/$idStore');
-
+      print('store id' + _idStore);
+      print('res1');
       //var res = await dio.get(BASE_API_URL + '/offer/all/$_idStore');
       var res = await dio.get(BASE_API_URL + '/offer/all/$_idStore');
 
@@ -406,6 +407,7 @@ class StoreService with ChangeNotifier {
       notifyListeners();
 
       if (res.statusCode == 200) {
+        print('res2');
         _storeOffers = [];
         _storeOffers?.addAll(Offer.productsFromJsonList(res.data));
 
