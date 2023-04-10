@@ -36,6 +36,7 @@ class OrdersDashboard extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         DuotoneIcon(
+                                            size: 25,
                                             primaryLayer:
                                                 ProximityIcons.unpaid_duotone_1,
                                             secondaryLayer:
@@ -45,7 +46,8 @@ class OrdersDashboard extends StatelessWidget {
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
-                                                .copyWith(height: 0.9))
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
                                       ]))),
                           Expanded(
                               child: InkWell(
@@ -59,16 +61,20 @@ class OrdersDashboard extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         DuotoneIcon(
+                                            size: 25,
                                             primaryLayer: ProximityIcons
-                                                .not_shipped_duotone_1,
+                                                .self_pickup_duotone_1,
                                             secondaryLayer: ProximityIcons
-                                                .not_shipped_duotone_2,
+                                                .self_pickup_duotone_2,
                                             color: redSwatch.shade500),
-                                        Text('Confirmed',
+                                        Text('Self Pickup',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
-                                                .copyWith(height: 0.9))
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
                                       ]))),
                           Expanded(
                               child: InkWell(
@@ -82,16 +88,20 @@ class OrdersDashboard extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         DuotoneIcon(
+                                            size: 25,
                                             primaryLayer: ProximityIcons
                                                 .delivery_duotone_1,
                                             secondaryLayer: ProximityIcons
                                                 .delivery_duotone_2,
                                             color: redSwatch.shade500),
-                                        Text('Delivered',
+                                        Text('Delivery',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
-                                                .copyWith(height: 0.9))
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
                                       ]))),
                           Expanded(
                               child: InkWell(
@@ -105,6 +115,112 @@ class OrdersDashboard extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         DuotoneIcon(
+                                            size: 25,
+                                            primaryLayer: ProximityIcons
+                                                .history_duotone_1,
+                                            secondaryLayer: ProximityIcons
+                                                .history_duotone_2,
+                                            color: redSwatch.shade500),
+                                        Text('Reservation',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
+                                      ]))),
+                          Expanded(
+                              child: InkWell(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const OrdersScreen(page: 5))),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(height: 2),
+                                        SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: Stack(
+                                                alignment: Alignment.topRight,
+                                                children: [
+                                                  Positioned.fill(
+                                                      child: ClipRRect(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                      .all(
+                                                                  normalRadius),
+                                                          child: FittedBox(
+                                                              fit: BoxFit.cover,
+                                                              child: Image.asset(
+                                                                  "assets/img/return_icon2.png")))),
+                                                ])),
+                                        SizedBox(height: 3),
+                                        Text('Return',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
+                                      ]))),
+                          Expanded(
+                              child: InkWell(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const OrdersScreen(page: 6))),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(height: 2),
+                                        SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: Stack(
+                                                alignment: Alignment.topRight,
+                                                children: [
+                                                  Positioned.fill(
+                                                      child: ClipRRect(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                      .all(
+                                                                  normalRadius),
+                                                          child: FittedBox(
+                                                              fit: BoxFit.cover,
+                                                              child: Image.asset(
+                                                                  "assets/img/refund_icon.png")))),
+                                                ])),
+                                        SizedBox(height: 3),
+                                        Text('Refund',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
+                                      ]))),
+                          Expanded(
+                              child: InkWell(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const OrdersScreen(page: 4))),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        DuotoneIcon(
+                                            size: 25,
                                             primaryLayer: ProximityIcons
                                                 .rejected_duotone_1,
                                             secondaryLayer: ProximityIcons
@@ -114,7 +230,8 @@ class OrdersDashboard extends StatelessWidget {
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
-                                                .copyWith(height: 0.9))
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
                                       ])))
                         ])))));
   }

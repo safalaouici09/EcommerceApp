@@ -79,3 +79,7 @@ flutter:
     - assets/img/welcome.png
     - assets/apple-pay.png
     - assets/google-pay.png
+    - assets/img/return_icon.png
+    - assets/img/return_icon2.png
+    - assets/img/refund_icon.png
+    - assets/img/refund_icon2.png

@@ -23,7 +23,7 @@ class PickupPersonScreen extends StatelessWidget {
         ),
         SizedBox(height: 16),
         EditText(
-          hintText: "Person NIF",
+          hintText: "Person NIN",
           keyboardType: TextInputType.number,
           onChanged: orderSliderValidation.changepickupNif,
         ),

@@ -15,6 +15,7 @@ class Order {
   String? storeId;
   String? storeName;
   String? storePhone;
+  String? storeImage;
   Address? storeAddress;
 
   Map<String, String>? pickupPerson;
@@ -43,6 +44,7 @@ class Order {
       this.storeName,
       this.storeAddress,
       this.storePhone,
+      this.storeImage,
       this.pickupPerson,
       this.shippingAddress,
       this.paymentInfo,
@@ -63,6 +65,10 @@ class Order {
         storeId = parsedJson['storeId'],
         storeName = parsedJson['store']['name'],
         storePhone = parsedJson['seller']['phone'],
+        storeImage =
+            parsedJson['store'] != null && parsedJson['store']["image"] != null
+                ? BASE_IMG_URL + '/' + parsedJson['store']["image"]
+                : "",
         storeAddress = Address(
             city: parsedJson['store']['address']['city'],
             fullAddress: parsedJson['store']['address']['fullAdress'],
@@ -82,11 +88,27 @@ class Order {
         items = OrderItem.orderItemsFromJsonList(parsedJson['items']),
         paymentInfo = Bill.fromJson(parsedJson['paymentInfos']),
         shippingAddress = Address(
-            city: parsedJson['paymentInfos']['card']['address_city'],
+            city: parsedJson['deliveryAddresse'] != null &&
+                    parsedJson['deliveryAddresse']["city"] != null
+                ? parsedJson['deliveryAddresse']["city"]
+                : "",
             countryName: "France",
-            postalCode: parsedJson['paymentInfos']['card']['postalCode'],
-            fullAddress: parsedJson['paymentInfos']['card']['address_line2'],
-            streetName: parsedJson['paymentInfos']['card']['address_line1']),
+            postalCode: parsedJson['deliveryAddresse'] != null &&
+                    parsedJson['deliveryAddresse']["postalCode"] != null
+                ? parsedJson['deliveryAddresse']["postalCode"]
+                : "",
+            fullAddress: parsedJson['deliveryAddresse'] != null &&
+                    parsedJson['deliveryAddresse']["fullAdress"] != null
+                ? parsedJson['deliveryAddresse']["fullAdress"]
+                : "",
+            streetName: parsedJson['deliveryAddresse'] != null &&
+                    parsedJson['deliveryAddresse']["streetName"] != null
+                ? parsedJson['deliveryAddresse']["streetName"]
+                : "",
+            region: parsedJson['deliveryAddresse'] != null &&
+                    parsedJson['deliveryAddresse']["region"] != null
+                ? parsedJson['deliveryAddresse']["region"]
+                : ""),
         delivery = parsedJson['delivery'],
         pickup = parsedJson['pickUp'],
         reservation = parsedJson['reservation'],

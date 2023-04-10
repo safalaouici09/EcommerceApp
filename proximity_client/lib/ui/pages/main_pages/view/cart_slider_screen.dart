@@ -80,9 +80,9 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                             bool pickup =
                                 orderSliderValidation.getPickupItemsTotal() !=
                                     0.0;
-                            bool delivery =
-                                orderSliderValidation.getDeliveryItemsTotal() !=
-                                    0.0;
+                            bool delivery = orderSliderValidation
+                                .getDeliveryItems()
+                                .isNotEmpty;
 
                             bool pickupValidation =
                                 orderSliderValidation.pickupName != null &&
@@ -192,7 +192,8 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
       OrderSliderValidation orderSliderValidation, BuildContext context) {
     double productReservationTotal =
         orderSliderValidation.getReservationItemsTotal();
-    double productDeliveryTotal = orderSliderValidation.getDeliveryItemsTotal();
+    bool productDeliveryTotal =
+        orderSliderValidation.getDeliveryItems().isNotEmpty;
     double productPickupTotal = orderSliderValidation.getPickupItemsTotal();
     return Step(
         isActive: _currentStep >= 1,
@@ -207,7 +208,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                     deliveryBill: false,
                     pickupBill: false,
                     payment: false),
-              if (productDeliveryTotal != 0.0)
+              if (productDeliveryTotal)
                 BillItem(
                     orderSliderValidation: orderSliderValidation,
                     reservationBill: false,

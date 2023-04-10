@@ -129,6 +129,8 @@ class CartService with ChangeNotifier {
   /// Order a Cart
   Future order(BuildContext context, String? storeId) async {
     /// open hive box
+    ///
+    print("order");
     var credentialsBox = Boxes.getCredentials();
     String? _id = credentialsBox.get('id');
     String? _token = credentialsBox.get('token');
@@ -202,7 +204,7 @@ class CartService with ChangeNotifier {
                     image: prod["image"],
                     price: double.parse(prod["price"].toString()),
                     quantity: prod["quantity"],
-                    discount: prod["discount"],
+                    discount: prod["discount"].toDouble(),
                     reservationPolicy: prod["reservationPolicy"] != null,
                     deliveryPolicy: prod["deliveryPolicy"] != null,
                     pickupPolicy: prod["pickupPolicy"] != null,
@@ -214,8 +216,6 @@ class CartService with ChangeNotifier {
                         prod["delivery"] == true || prod["delivery"] == 'true',
                     pickup: prod["pickup"] == true || prod["pickup"] == 'true',
                   );
-                  print(prod["characterstics"]);
-                  print(prodInsert.characteristics);
                   preOrderProducts.add(prodInsert);
                 }
               }
@@ -229,7 +229,7 @@ class CartService with ChangeNotifier {
                 message: "Loading Order Validation with success",
                 type: ToastSnackbarType.success);
 
-            if (preOrderProducts.length > 0) {
+            if (preOrderProducts.isNotEmpty) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -284,12 +284,17 @@ class CartService with ChangeNotifier {
           }
         }
       }
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => SignupScreen()),
+          (Route<dynamic> route) => true);
     }
   }
 
   Future addToCart(BuildContext context, Product product,
       ProductVariant productVariant, Store? store, int quantity,
       {int noredirection = 0}) async {
+    // Get all items in the box
     if (store != null) {
       // start the loading animation
       _loadingAdd = true;
@@ -350,8 +355,9 @@ class CartService with ChangeNotifier {
                 message: "Product Successfully added to Cart!",
                 type: ToastSnackbarType.success);
             if (noredirection == 0) {
-              Navigator.pop(context);
+              // Navigator.pop(context);
             } else {
+              print("add to cart order");
               order(context, store.id);
             }
           }
@@ -367,17 +373,17 @@ class CartService with ChangeNotifier {
                 .showToast(message: e.message, type: ToastSnackbarType.error);
           }
         }
+      } else {
+        /// Display Results Message
+        ToastSnackbar().init(context).showToast(
+            message: "Product Successfully added to Cart!",
+            type: ToastSnackbarType.success);
+        if (noredirection == 0) {
+          Navigator.pop(context);
+        } else {
+          order(context, store!.id);
+        }
       }
-    }
-
-    /// Display Results Message
-    ToastSnackbar().init(context).showToast(
-        message: "Product Successfully added to Cart!",
-        type: ToastSnackbarType.success);
-    if (noredirection == 0) {
-      Navigator.pop(context);
-    } else {
-      order(context, store!.id);
     }
   }
 

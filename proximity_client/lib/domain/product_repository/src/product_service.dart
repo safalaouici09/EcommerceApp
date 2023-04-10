@@ -101,9 +101,12 @@ class ProductService with ChangeNotifier {
       var res = await dio.get(BASE_API_URL +
           '/search/product/?radius=${radius.toString()}&latitude=${latitude.toString()}&langitude=${langitude.toString()}');
       if (res.statusCode == 200) {
-        //   _products = [];
+        _products = [];
         _products.addAll(Product.productsFromJsonList(res.data));
 
+        _todayDeals = [];
+        _todayDeals
+            .addAll(_products.where((element) => (element.discount != 0)));
         print(_products.length.toString());
         notifyListeners();
       }
@@ -120,7 +123,8 @@ class ProductService with ChangeNotifier {
   }
 
   Future getTodayDeals() async {
-    Future.delayed(const Duration(milliseconds: 6200), () {
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      _todayDeals = [];
       _todayDeals.addAll(_products.where((element) => (element.discount != 0)));
       notifyListeners();
     });
@@ -174,7 +178,7 @@ class ProductService with ChangeNotifier {
     //     res.data['products'].map<Product>((product) => Product.fromJson(product)).toList();
     // notifyListeners();
 
-    Future.delayed(const Duration(milliseconds: 3200), () {
+    Future.delayed(const Duration(milliseconds: 1000), () {
       _ads.addAll([
         'assets/img/ads/ad_1.png',
         'assets/img/ads/ad_2.png',

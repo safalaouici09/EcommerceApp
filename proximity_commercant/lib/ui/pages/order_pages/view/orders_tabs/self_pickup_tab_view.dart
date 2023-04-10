@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
-import 'package:proximity_client/domain/order_repository/order_repository.dart';
-import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
+import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
+import 'package:proximity_commercant/ui/pages/order_pages/order_pages.dart';
 
-class DeliveryTabView extends StatefulWidget {
-  const DeliveryTabView({Key? key, this.page}) : super(key: key);
+class SelfPickupTabView extends StatefulWidget {
+  const SelfPickupTabView({Key? key, this.page}) : super(key: key);
 
   final int? page;
 
   @override
-  State<DeliveryTabView> createState() => _DeliveryTabViewState();
+  State<SelfPickupTabView> createState() => _SelfPickupTabViewState();
 }
 
-class _DeliveryTabViewState extends State<DeliveryTabView> {
+class _SelfPickupTabViewState extends State<SelfPickupTabView> {
   int _index = 0;
 
   @override
@@ -25,8 +25,8 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.deliveryOrders == null && _index == 0) {
-      ordersService.getDeliveryOrders();
+    if (ordersService.selfPickupOrders == null && _index == 0) {
+      ordersService.getPickUpOrders();
     }
     return Column(children: [
       Material(
@@ -41,7 +41,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getDeliveryOrders();
+                    ordersService.getPickUpOrders();
                     setState(() {
                       _index = 0;
                     });
@@ -73,7 +73,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getDeliveryOrders();
+                    ordersService.getPickUpOrders();
                     setState(() {
                       _index = 1;
                     });
@@ -142,7 +142,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 3) ...[
-                              Text('On the way',
+                              Text('Awaiting Recovery',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -150,7 +150,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('On the way',
+                              Text('Awaiting Recovery',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -171,7 +171,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 4) ...[
-                              Text('Delivered',
+                              Text('Recovered',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -179,7 +179,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Delivered',
+                              Text('Recovered',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -193,66 +193,66 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
       Expanded(child: () {
         switch (_index) {
           case 0:
-            return (ordersService.deliveryOrders == null)
+            return (ordersService.selfPickupOrders == null)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
+                : (ordersService.selfPickupOrders!.isEmpty)
                     ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
+                        icon: ProximityIcons.self_pickup_duotone_1,
+                        message: 'There are no Self Pickup Orders.')
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
+                        itemCount: ordersService.selfPickupOrders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
+                          order: ordersService.selfPickupOrders![i],
                         ),
                       );
           case 1:
-            return (ordersService.deliveryOrders == null)
+            return (ordersService.selfPickupOrders == null)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
+                : (ordersService.selfPickupOrders!.isEmpty)
                     ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
+                        icon: ProximityIcons.self_pickup_duotone_1,
+                        message: 'There are no Self Pickup Orders.')
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
+                        itemCount: ordersService.selfPickupOrders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
+                          order: ordersService.selfPickupOrders![i],
                         ),
                       );
           case 2:
             return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
+                icon: ProximityIcons.self_pickup_duotone_1,
                 message: 'There are no In Preparation Orders.');
           case 3:
             return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
-                message: 'There are no  On the way Orders.');
+                icon: ProximityIcons.self_pickup_duotone_1,
+                message: 'There are no Awaiting Recovery Orders.');
           case 4:
             return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
-                message: 'There are no  delivered Orders.');
+                icon: ProximityIcons.self_pickup_duotone_1,
+                message: 'There are no Recovered Orders.');
           default:
-            return (ordersService.deliveryOrders == null)
+            return (ordersService.selfPickupOrders == null)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
+                : (ordersService.selfPickupOrders!.isEmpty)
                     ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
+                        icon: ProximityIcons.self_pickup_duotone_1,
+                        message: 'There are no Self Pickup Orders.')
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
+                        itemCount: ordersService.selfPickupOrders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
+                          order: ordersService.selfPickupOrders![i],
                         ),
                       );
         }

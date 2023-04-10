@@ -34,10 +34,32 @@ class OrderTile extends StatelessWidget {
                       child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SmallIconButton(
-                                onPressed: () {},
-                                icon: Icon(ProximityIcons.store,
-                                    color: Theme.of(context).primaryColor)),
+                            if (order.storeImage != null)
+                              SizedBox(
+                                  height: large_150,
+                                  width: large_150,
+                                  child: Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        Positioned.fill(
+                                            child: ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        normalRadius),
+                                                child: FittedBox(
+                                                    fit: BoxFit.cover,
+                                                    child: (order.storeImage !=
+                                                            null)
+                                                        ? Image.network(
+                                                            order.storeImage!)
+                                                        : Image.network(
+                                                            "https://cdn-icons-png.flaticon.com/512/5853/5853761.png")))),
+                                      ])),
+                            if (order.storeImage == null)
+                              SmallIconButton(
+                                  onPressed: () {},
+                                  icon: Icon(ProximityIcons.store,
+                                      color: Theme.of(context).primaryColor)),
                             const SizedBox(width: small_100),
                             Expanded(
                                 child: Text('${order.storeName}',
@@ -72,7 +94,7 @@ class OrderTile extends StatelessWidget {
                       order.pickupPerson?["name"] != null)
                   ? order.pickupPerson!["name"] ?? ""
                   : '',
-              'NIF': (order.pickupPerson != null &&
+              'NIN': (order.pickupPerson != null &&
                       order.pickupPerson?["nif"] != null)
                   ? order.pickupPerson!["nif"] ?? ""
                   : '',
@@ -103,17 +125,108 @@ class OrderTile extends StatelessWidget {
           ...List.generate(order.items!.length,
               (index) => OrderItemTile(orderItem: order.items![index])),
           const Divider(height: tiny_50, thickness: tiny_50),
-          Padding(
-              padding: const EdgeInsets.all(small_100),
-              child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Total:',
-                        style: Theme.of(context).textTheme.headline3),
-                    Text(' € ${order.totalPrice}',
-                        style: Theme.of(context).textTheme.headline3)
-                  ]))
+          if (order.delivery == true)
+            Padding(
+                padding: const EdgeInsets.all(small_100),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Delivery:',
+                          textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.bodyText2),
+                      const Spacer(),
+                      Text(
+                          ' € ${(order.paymentInfo!.deliveryAmount ?? 0.0).toStringAsFixed(2)}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3!
+                              .copyWith(fontSize: 16))
+                    ])),
+
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 10, top: 10),
+                padding: const EdgeInsets.all(10),
+                decoration:
+                    BoxDecoration(color: Theme.of(context).dividerColor),
+                child: Padding(
+                    padding: const EdgeInsets.all(small_100),
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(tinyRadius),
+                                color: Color(0xFF104D72)),
+                            child: InkWell(
+                                onTap: () => {
+                                      PaymentDialogs.showInfos(
+                                          context, order.paymentInfo!.card!)
+                                    },
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Image.network(
+                                          'https://i.ibb.co/zmn2F5b/Vector-Visa-Credit-Card.png',
+                                          width: 20.0,
+                                          height: 20.0),
+                                      SizedBox(width: 12.0),
+                                      Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '***${order.paymentInfo!.card!.cardNumber!.substring(order.paymentInfo!.card!.cardNumber!.length - 4, order.paymentInfo!.card!.cardNumber!.length)}',
+                                              style: TextStyle(
+                                                  fontSize: 7.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFFEFEFEF)),
+                                            ),
+                                            Text(
+                                              '${order.paymentInfo!.card!.expdate}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: 5.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFFEFEFEF)),
+                                            ),
+                                          ])
+                                    ])),
+                          ),
+                          const Spacer(),
+                          Text(
+                              ' € ${(order.totalPrice ?? 0.0).toStringAsFixed(2)}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(color: Colors.black, fontSize: 17))
+                        ])),
+              ),
+            ),
+          ]),
+          if (order.orderStatus != OrderStatus.cancelled)
+            Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (order.orderStatus == OrderStatus.pending) ...[
+                        Expanded(
+                            child: TertiaryButton(
+                                onPressed: () => {
+                                      PaymentDialogs.cancelOrder(
+                                          context, order.id)
+                                    },
+                                title: "Cancel.")),
+                      ]
+                    ]))
         ]));
   }
 }

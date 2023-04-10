@@ -46,9 +46,9 @@ class CartTile extends StatelessWidget {
                                 child: Text('${cart.storeName}',
                                     style:
                                         Theme.of(context).textTheme.headline4)),
-                            Icon(cart.checked
-                                ? ProximityIcons.check_filled
-                                : ProximityIcons.check),
+                            // Icon(cart.checked
+                            //     ? ProximityIcons.check_filled
+                            //     : ProximityIcons.check),
                           ])))),
           (() {
             return ValueListenableBuilder<Box<CartItem>>(
@@ -119,8 +119,7 @@ class CartTile extends StatelessWidget {
                     //     MaterialPageRoute(
                     //         builder: (context) =>  CartSliderScreen()));
                     // } ,
-                    title:
-                        'Order(${cartService.getTotalQuantity(cart.storeId!)})')
+                    title: 'Order')
               ]))
         ]));
   }

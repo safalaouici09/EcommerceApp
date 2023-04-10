@@ -12,23 +12,23 @@ class CartProductTile extends ProductTile {
     VoidCallback? increase,
     VoidCallback? decrease,
   }) : super(
-      key: key,
-      product: cartItem.toProduct(),
-      productVariant: ProductVariant(
-          id: cartItem.variantId,
-          variantName: cartItem.variantName,
-          characteristics: cartItem.characteristics,
-          image: cartItem.image),
-      onPressed: onPressed,
-      // leftChild: Icon(cartItem.checked
-      //     ? Icons.check_box_rounded
-      //     : Icons.check_box_outline_blank_outlined),
-      rightChild: Icon(cartItem.checked
-          ? ProximityIcons.check_filled
-          : ProximityIcons.check),
-      bottomRightChild: QuantitySelector(
-          quantity: cartItem.orderedQuantity,
-          // maxQuantity: cartItem.quantity,
-          increaseQuantity: increase,
-          decreaseQuantity: decrease));
+            key: key,
+            product: cartItem.toProduct(),
+            productVariant: ProductVariant(
+                id: cartItem.variantId,
+                variantName: cartItem.variantName,
+                characteristics: cartItem.characteristics,
+                image: cartItem.image),
+            // onPressed: onPressed,
+            // leftChild: Icon(cartItem.checked
+            //     ? Icons.check_box_rounded
+            //     : Icons.check_box_outline_blank_outlined),
+            // rightChild: Icon(cartItem.checked
+            //     ? ProximityIcons.check_filled
+            //     : ProximityIcons.check),
+            bottomRightChild: QuantitySelector(
+                quantity: cartItem.orderedQuantity,
+                // maxQuantity: cartItem.quantity,
+                increaseQuantity: increase,
+                decreaseQuantity: decrease));
 }

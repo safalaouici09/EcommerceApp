@@ -4,16 +4,16 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
 
-class HistoryTabView extends StatefulWidget {
-  const HistoryTabView({Key? key, this.page}) : super(key: key);
+class ReservationTabView extends StatefulWidget {
+  const ReservationTabView({Key? key, this.page}) : super(key: key);
 
   final int? page;
 
   @override
-  State<HistoryTabView> createState() => _HistoryTabViewState();
+  State<ReservationTabView> createState() => _ReservationTabViewState();
 }
 
-class _HistoryTabViewState extends State<HistoryTabView> {
+class _ReservationTabViewState extends State<ReservationTabView> {
   int _index = 0;
 
   @override

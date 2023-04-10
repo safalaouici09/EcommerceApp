@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
-import 'package:proximity_client/domain/order_repository/order_repository.dart';
-import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
+import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
+import 'package:proximity_commercant/ui/pages/order_pages/order_pages.dart';
 
-class DeliveryTabView extends StatefulWidget {
-  const DeliveryTabView({Key? key, this.page}) : super(key: key);
+class ReservationTabView extends StatefulWidget {
+  const ReservationTabView({Key? key, this.page}) : super(key: key);
 
   final int? page;
 
   @override
-  State<DeliveryTabView> createState() => _DeliveryTabViewState();
+  State<ReservationTabView> createState() => _ReservationTabViewState();
 }
 
-class _DeliveryTabViewState extends State<DeliveryTabView> {
+class _ReservationTabViewState extends State<ReservationTabView> {
   int _index = 0;
 
   @override
@@ -25,8 +25,8 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.deliveryOrders == null && _index == 0) {
-      ordersService.getDeliveryOrders();
+    if (ordersService.reservationOrders == null && _index == 0) {
+      ordersService.getReservationOrders();
     }
     return Column(children: [
       Material(
@@ -41,7 +41,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getDeliveryOrders();
+                    ordersService.getReservationOrders();
                     setState(() {
                       _index = 0;
                     });
@@ -73,7 +73,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getDeliveryOrders();
+                    ordersService.getReservationOrders();
                     setState(() {
                       _index = 1;
                     });
@@ -113,7 +113,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 2) ...[
-                              Text('In preparation',
+                              Text('Reserved',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -121,65 +121,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('In preparation',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          height: 0.9,
-                                          color: Color.fromARGB(
-                                              255, 150, 150, 150))),
-                          ])),
-                )),
-                Expanded(
-                    child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 3;
-                  }),
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: normal_100),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_index == 3) ...[
-                              Text('On the way',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          height: 0.9,
-                                          color: redSwatch.shade500)),
-                            ] else
-                              Text('On the way',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          height: 0.9,
-                                          color: Color.fromARGB(
-                                              255, 150, 150, 150))),
-                          ])),
-                )),
-                Expanded(
-                    child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 4;
-                  }),
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: normal_100),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_index == 4) ...[
-                              Text('Delivered',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          height: 0.9,
-                                          color: redSwatch.shade500)),
-                            ] else
-                              Text('Delivered',
+                              Text('Reserved',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -193,66 +135,58 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
       Expanded(child: () {
         switch (_index) {
           case 0:
-            return (ordersService.deliveryOrders == null)
+            return (ordersService.reservationOrders == null)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
+                : (ordersService.reservationOrders!.isEmpty)
                     ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
+                        icon: ProximityIcons.history_duotone_1,
+                        message: 'There are no Reservation Orders.')
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
+                        itemCount: ordersService.reservationOrders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
+                          order: ordersService.reservationOrders![i],
                         ),
                       );
           case 1:
-            return (ordersService.deliveryOrders == null)
+            return (ordersService.reservationOrders == null)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
+                : (ordersService.reservationOrders!.isEmpty)
                     ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
+                        icon: ProximityIcons.history_duotone_1,
+                        message: 'There are no Reservation Orders.')
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
+                        itemCount: ordersService.reservationOrders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
+                          order: ordersService.reservationOrders![i],
                         ),
                       );
           case 2:
             return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
-                message: 'There are no In Preparation Orders.');
-          case 3:
-            return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
-                message: 'There are no  On the way Orders.');
-          case 4:
-            return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
-                message: 'There are no  delivered Orders.');
+                icon: ProximityIcons.history_duotone_1,
+                message: 'There are no Reservation In Preparation Orders.');
           default:
-            return (ordersService.deliveryOrders == null)
+            return (ordersService.reservationOrders == null)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
+                : (ordersService.reservationOrders!.isEmpty)
                     ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
+                        icon: ProximityIcons.history_duotone_1,
+                        message: 'There are no Reservation Orders.')
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
+                        itemCount: ordersService.reservationOrders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
+                          order: ordersService.reservationOrders![i],
                         ),
                       );
         }

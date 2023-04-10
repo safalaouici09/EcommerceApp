@@ -10,7 +10,9 @@ class PendingTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    ordersService.getPendingOrders();
+    if (ordersService.pendingOrders == null) {
+      ordersService.getPendingOrders();
+    }
 
     return (ordersService.pendingOrders == null)
         ? const Center(child: CircularProgressIndicator())

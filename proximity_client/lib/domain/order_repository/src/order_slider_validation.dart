@@ -318,6 +318,7 @@ class OrderSliderValidation with ChangeNotifier {
         "cartId": _cartId,
         "pickupPerson": pickupPerson,
         "deliveryAddresse": null,
+        "deliveryLocation": null,
         "distance": null,
         "paymentInfos": pickUpPaymentInfos,
         "items": itemsPickUpOrder,
@@ -349,12 +350,11 @@ class OrderSliderValidation with ChangeNotifier {
         "countryCode": "FR"
       };
 
-      Map<String, dynamic> allShippingAddress = {
+      Map<String, dynamic> ShippingLocation = {
         "coordinates": [
           deliveryAdresse?.lat ?? 0.0,
           deliveryAdresse?.lng ?? 0.0
         ],
-        "address": shippingAddress,
       };
       List<Map<String, dynamic>> itemsDeliveryOrder = [];
 
@@ -376,7 +376,8 @@ class OrderSliderValidation with ChangeNotifier {
         "storeId": _storeId,
         "cartId": _cartId,
         "pickupPerson": null,
-        "deliveryAddresse": allShippingAddress,
+        "deliveryAddresse": shippingAddress,
+        "deliveryLocation": ShippingLocation,
         "distance": _distance,
         "paymentInfos": deliveryPaymentInfos,
         "items": itemsDeliveryOrder,
@@ -420,6 +421,7 @@ class OrderSliderValidation with ChangeNotifier {
         "cartId": _cartId,
         "pickupPerson": null,
         "deliveryAddresse": null,
+        "deliveryLocation": null,
         "distance": _distance,
         "paymentInfos": reservationPaymentInfos,
         "items": itemsReservationOrder,

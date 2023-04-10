@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import 'package:proximity_client/ui/pages/authentication_pages/view/otp_screen.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/ui/pages/authentication_pages/view/otp_screen.dart';
@@ -170,6 +173,20 @@ class SignupValidation with ChangeNotifier {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
 
+    var cartItemsBox = Boxes.getCartItemsBox();
+    var cartItems = [];
+
+    Iterable<CartItem> allItems = cartItemsBox.values;
+
+// Print each item in the box
+    for (CartItem item in allItems) {
+      cartItems.add({
+        "productId": item.id,
+        "quantity": item.orderedQuantity,
+        "variantId": item.variantId
+      });
+    }
+
     /// prepare the dataForm
     final Map<String, dynamic> data = _phone.value != null
         ? _email.value != null
@@ -179,21 +196,24 @@ class SignupValidation with ChangeNotifier {
                 "phone": _phone.value,
                 "password": _password.value,
                 "password_confirmation": _passwordConfirm.value,
-                "role": "user"
+                "role": "user",
+                "cart": jsonEncode(cartItems)
               }
             : {
                 "username": _userName.value,
                 "phone": _phone.value,
                 "password": _password.value,
                 "password_confirmation": _passwordConfirm.value,
-                "role": "user"
+                "role": "user",
+                "cart": jsonEncode(cartItems)
               }
         : {
             "username": _userName.value,
             "email": _email.value,
             "password": _password.value,
             "password_confirmation": _passwordConfirm.value,
-            "role": "user"
+            "role": "user",
+            "cart": jsonEncode(cartItems)
           };
 
     /// post the dataForm via dio call

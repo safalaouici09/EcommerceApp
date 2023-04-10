@@ -5,14 +5,19 @@ import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 
 class OrderService with ChangeNotifier {
+  List<Order>? _pendingOrders;
   List<Order>? _selfPickupOrders;
   List<Order>? _deliveryOrders;
   List<Order>? _reservationOrders;
   List<Order>? _canceledOrders;
   List<Order>? _history;
+  List<Order>? _returnOrders = [];
+  List<Order>? _refundOrders = [];
 
   // essential values for the UI
   late bool _loading;
+
+  List<Order>? get pendingOrders => _pendingOrders;
 
   List<Order>? get selfPickupOrders => _selfPickupOrders;
 
@@ -23,6 +28,10 @@ class OrderService with ChangeNotifier {
   List<Order>? get canceledOrders => _canceledOrders;
 
   List<Order>? get history => _history;
+
+  List<Order>? get refundOrders => _refundOrders;
+
+  List<Order>? get returnOrders => _returnOrders;
 
   bool get loading => _loading;
 
@@ -37,7 +46,7 @@ class OrderService with ChangeNotifier {
 
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
@@ -77,12 +86,12 @@ class OrderService with ChangeNotifier {
   }
 
   /// GET methods
-  Future getPickUpOrders() async {
+  Future getPendingOrders() async {
     print("ws lanched");
 
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
@@ -91,7 +100,43 @@ class OrderService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/pickup/status/Pending');
+      var res = await dio.get(BASE_API_URL + '/order/$_id/status/Pending');
+      notifyListeners();
+      if (res.statusCode == 200) {
+        print(res);
+        _pendingOrders = [];
+        _pendingOrders!.addAll(Order.ordersFromJsonList(res.data));
+        notifyListeners();
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
+  /// GET methods
+  Future getPickUpOrders() async {
+    print("ws lanched");
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      var res =
+          await dio.get(BASE_API_URL + '/order/pickup/$_id/status/Pending');
       notifyListeners();
       if (res.statusCode == 200) {
         print(res);
@@ -114,14 +159,15 @@ class OrderService with ChangeNotifier {
   Future getDeliveryOrders() async {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/delivery/status/Pending');
+      var res =
+          await dio.get(BASE_API_URL + '/order/delivery/$_id/status/Pending');
       notifyListeners();
       if (res.statusCode == 200) {
         _deliveryOrders = [];
@@ -143,15 +189,15 @@ class OrderService with ChangeNotifier {
   Future getReservationOrders() async {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res =
-          await dio.get(BASE_API_URL + '/order/reservation/status/Pending');
+      var res = await dio
+          .get(BASE_API_URL + '/order/reservation/$_id/status/Pending');
       notifyListeners();
       if (res.statusCode == 200) {
         _reservationOrders = [];
@@ -173,7 +219,7 @@ class OrderService with ChangeNotifier {
   Future getCanceledOrders() async {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
@@ -182,7 +228,7 @@ class OrderService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/status/delivered');
+      var res = await dio.get(BASE_API_URL + '/order/$_id/status/delivered');
       notifyListeners();
       if (res.statusCode == 200) {
         _canceledOrders = [];
@@ -204,7 +250,7 @@ class OrderService with ChangeNotifier {
   Future getReviewedOrders() async {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
@@ -213,7 +259,7 @@ class OrderService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/status/cancelled');
+      var res = await dio.get(BASE_API_URL + '/order/$_id/status/cancelled');
       notifyListeners();
       if (res.statusCode == 200) {
         _history = [];

@@ -118,7 +118,7 @@ class BillItem extends StatelessWidget {
                   padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                   child: OrderDetails(details: {
                     'Name': orderSliderValidation.pickupName ?? "",
-                    'NIF': orderSliderValidation.pickupNif ?? "",
+                    'NIN': orderSliderValidation.pickupNif ?? "",
                   }),
                 ),
               SizedBox(height: 16.0),

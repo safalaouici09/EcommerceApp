@@ -51,13 +51,13 @@ class EditProfileScreen extends StatelessWidget {
                   ),
                 ),*/
                 ImageProfile(
-                    images: userEditValidation.profileImage.first,
+                    images: userEditValidation.profileImage,
                     maxImages: 1,
                     centered: true,
                     onImageAdded: (File file) {
                       userEditValidation.editProfileImage(file, userService);
                     },
-                    onImageRemoved: userEditValidation.removeProfileImage)
+                    onImageRemoved: userEditValidation.removeProfileImage),
                 /*userEditValidation.profileImage == null
                     ? ImagePickerWidget(
                         images: userEditValidation.profileImage,
@@ -77,7 +77,6 @@ class EditProfileScreen extends StatelessWidget {
                       },
                       title: 'Modifier la photo de profile'),
                 ),*/
-                ,
                 SectionDivider(
                     leadIcon: ProximityIcons.user,
                     title: 'Personal Info.',

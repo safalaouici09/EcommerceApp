@@ -10,7 +10,7 @@ class Address {
   String? locality;
   String? region;
 
-  String get getAddressLine => '$fullAddress, $streetName, $city, $countryName';
+  String get getAddressLine => '$fullAddress, $region, $city, $countryName';
 
   void changeLatLng(double lat, double lng) {
     this.lat = lat;

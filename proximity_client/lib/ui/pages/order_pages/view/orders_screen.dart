@@ -46,6 +46,37 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   children: [
                     Expanded(
                         child: InkWell(
+                      onTap: () => setState(() {
+                        _index = 4;
+                      }),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_index == 4) ...[
+                              DuotoneIcon(
+                                primaryLayer: ProximityIcons.unpaid_duotone_1,
+                                secondaryLayer: ProximityIcons.unpaid_duotone_1,
+                                color: redSwatch.shade500,
+                              ),
+                              Text('Pending',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(height: 0.9, fontSize: 7)),
+                              const SizedBox(height: tiny_50),
+                              Container(
+                                  height: tiny_50,
+                                  width: normal_150,
+                                  decoration: BoxDecoration(
+                                      color: redSwatch.shade500,
+                                      borderRadius:
+                                          const BorderRadius.all(tinyRadius)))
+                            ] else
+                              const Icon(ProximityIcons.credit_card),
+                          ]),
+                    )),
+                    Expanded(
+                        child: InkWell(
                       onTap: () {
                         ordersService.getPickUpOrders();
                         setState(() {
@@ -67,7 +98,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
-                                      .copyWith(height: 0.9)),
+                                      .copyWith(height: 0.9, fontSize: 7)),
                               const SizedBox(height: tiny_50),
                               Container(
                                   height: tiny_50,
@@ -82,9 +113,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 1;
-                      }),
+                      onTap: () {
+                        ordersService.getDeliveryOrders();
+                        setState(() {
+                          _index = 1;
+                        });
+                      },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -99,7 +133,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
-                                      .copyWith(height: 0.9)),
+                                      .copyWith(height: 0.9, fontSize: 7)),
                               const SizedBox(height: tiny_50),
                               Container(
                                   height: tiny_50,
@@ -114,9 +148,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 3;
-                      }),
+                      onTap: () {
+                        ordersService.getReservationOrders();
+                        setState(() {
+                          _index = 3;
+                        });
+                      },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -131,7 +168,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
-                                      .copyWith(height: 0.9)),
+                                      .copyWith(height: 0.9, fontSize: 7)),
                               const SizedBox(height: tiny_50),
                               Container(
                                   height: tiny_50,
@@ -142,6 +179,120 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                           const BorderRadius.all(tinyRadius)))
                             ] else
                               const Icon(ProximityIcons.history),
+                          ]),
+                    )),
+                    Expanded(
+                        child: InkWell(
+                      onTap: () => setState(() {
+                        _index = 5;
+                      }),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_index == 5) ...[
+                              SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        Positioned.fill(
+                                            child: ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        normalRadius),
+                                                child: FittedBox(
+                                                    fit: BoxFit.cover,
+                                                    child: Image.asset(
+                                                        "assets/img/return_icon2.png")))),
+                                      ])),
+                              Text('Return',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(height: 0.9, fontSize: 7)),
+                              const SizedBox(height: tiny_50),
+                              Container(
+                                  height: tiny_50,
+                                  width: normal_150,
+                                  decoration: BoxDecoration(
+                                      color: redSwatch.shade500,
+                                      borderRadius:
+                                          const BorderRadius.all(tinyRadius)))
+                            ] else
+                              SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        Positioned.fill(
+                                            child: ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        normalRadius),
+                                                child: FittedBox(
+                                                    fit: BoxFit.cover,
+                                                    child: Image.asset(
+                                                        "assets/img/return_icon.png")))),
+                                      ])),
+                          ]),
+                    )),
+                    Expanded(
+                        child: InkWell(
+                      onTap: () => setState(() {
+                        _index = 6;
+                      }),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_index == 6) ...[
+                              SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        Positioned.fill(
+                                            child: ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        normalRadius),
+                                                child: FittedBox(
+                                                    fit: BoxFit.cover,
+                                                    child: Image.asset(
+                                                        "assets/img/refund_icon.png")))),
+                                      ])),
+                              Text('Refund',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(height: 0.9, fontSize: 7)),
+                              const SizedBox(height: tiny_50),
+                              Container(
+                                  height: tiny_50,
+                                  width: normal_150,
+                                  decoration: BoxDecoration(
+                                      color: redSwatch.shade500,
+                                      borderRadius:
+                                          const BorderRadius.all(tinyRadius)))
+                            ] else
+                              SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        Positioned.fill(
+                                            child: ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        normalRadius),
+                                                child: FittedBox(
+                                                    fit: BoxFit.cover,
+                                                    child: Image.asset(
+                                                        "assets/img/refund_icon2.png")))),
+                                      ])),
                           ]),
                     )),
                     Expanded(
@@ -163,7 +314,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
-                                      .copyWith(height: 0.9)),
+                                      .copyWith(height: 0.9, fontSize: 7)),
                               const SizedBox(height: tiny_50),
                               Container(
                                   height: tiny_50,
@@ -179,14 +330,20 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   ]))),
       Expanded(child: () {
         switch (_index) {
+          case 4:
+            return const PendingView();
           case 0:
             return const SelfPickupTabView();
           case 1:
             return const DeliveryTabView();
+          case 3:
+            return const ReservationTabView();
           case 2:
             return const RejectedTabView();
-          case 3:
-            return const HistoryTabView();
+          case 5:
+            return const ReturnTabView();
+          case 6:
+            return const RefundTabView();
           default:
             return const SelfPickupTabView();
         }
