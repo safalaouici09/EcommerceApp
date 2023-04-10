@@ -11,6 +11,10 @@ class DeliveryTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
     ordersService.getDeliveryOrders();
+    print('os' + ordersService.deliveryOrders!.length.toString());
+    print(
+      ordersService.deliveryOrders!.length,
+    );
 
     return (ordersService.deliveryOrders == null)
         ? const Center(child: CircularProgressIndicator())

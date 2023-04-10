@@ -17,6 +17,17 @@ class _DateInputState extends State<DateInput> {
   DateTime? _selectedDate;
 
   @override
+  void initState() {
+    super.initState();
+    var formattedDate = Provider.of<ProductService>(context, listen: false)
+        .formattedDate
+        .toString();
+    if (formattedDate != null) {
+      _controller.text = formattedDate;
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -41,13 +52,6 @@ class _DateInputState extends State<DateInput> {
 
   @override
   Widget build(BuildContext context) {
-    var formattedDate = Provider.of<ProductService>(context, listen: true)
-        .formattedDate
-        .toString();
-    if (formattedDate != null) {
-      _controller.text = formattedDate;
-    }
-
     return ChangeNotifierProvider<ProductService>(
         // create: (context) => orderSliderValidation.setStore(store),
         create: (context) => ProductService(),
@@ -60,17 +64,10 @@ class _DateInputState extends State<DateInput> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      // initialValue:
-                      //    Provider.of<ProductService>(context, listen: false)
-                      //      .formattedDate,
                       controller: _controller,
-                      //initialValue: ,
-                      //  focusNode: _focus,
-
                       style: Theme.of(context).textTheme.subtitle2!.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
-
                       decoration: InputDecoration(
                           filled: true,
                           fillColor: Theme.of(context).cardColor,
@@ -123,16 +120,3 @@ class _DateInputState extends State<DateInput> {
         }));
   }
 }
-    /* TextFormField(
-      controller: _controller,
-      decoration: InputDecoration(
-        hintText: 'yyyy-MM-dd',
-        labelText: 'Date',
-        suffixIcon: IconButton(
-          icon: Icon(Icons.calendar_today),
-          onPressed: () => _selectDate(context),
-        ),
-      ),
-      onTap: () => _selectDate(context),
-      keyboardType: TextInputType.datetime,
-    )*/

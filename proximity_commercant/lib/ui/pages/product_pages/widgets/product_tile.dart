@@ -7,12 +7,12 @@ import 'package:proximity_commercant/domain/product_repository/product_repositor
 class ProductTile extends StatelessWidget {
   const ProductTile(
       {Key? key,
-        this.onPressed,
-        required this.product,
-        required this.productVariant,
-        this.rightChild,
-        this.leftChild,
-        this.bottomRightChild})
+      this.onPressed,
+      required this.product,
+      required this.productVariant,
+      this.rightChild,
+      this.leftChild,
+      this.bottomRightChild})
       : super(key: key);
 
   final VoidCallback? onPressed;
@@ -29,9 +29,9 @@ class ProductTile extends StatelessWidget {
             color: Theme.of(context).cardColor,
             border: Border(
                 top: BorderSide(
-                  width: tiny_50,
-                  color: Theme.of(context).dividerColor,
-                ))),
+              width: tiny_50,
+              color: Theme.of(context).dividerColor,
+            ))),
         child: Material(
             color: Colors.transparent,
             child: InkWell(
@@ -45,7 +45,7 @@ class ProductTile extends StatelessWidget {
                             leftChild!,
                             const SizedBox(width: small_100)
                           ],
-                          (productVariant.image! is File)
+                          /*  (productVariant.image! is File)
                               ? Image.file(productVariant.image!,
                               fit: BoxFit.cover,
                               width: huge_100,
@@ -62,7 +62,7 @@ class ProductTile extends StatelessWidget {
                                     aspectRatio: 1.0,
                                     child: SizedBox(
                                         width: large_100, height: large_100));
-                              }),
+                              }),*/
                           const VerticalDivider(width: tiny_50),
                           const SizedBox(width: small_100),
                           Expanded(
@@ -72,56 +72,56 @@ class ProductTile extends StatelessWidget {
                                   child: Column(
                                       mainAxisSize: MainAxisSize.max,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
+                                          CrossAxisAlignment.stretch,
                                       children: [
                                         Expanded(
                                             child: Row(children: [
-                                              Expanded(
-                                                  child: RichText(
-                                                      text: TextSpan(children: [
-                                                        TextSpan(
-                                                            text:
+                                          Expanded(
+                                              child: RichText(
+                                                  text: TextSpan(children: [
+                                                    TextSpan(
+                                                        text:
                                                             '${product.name}\n',
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .subtitle2),
-                                                        TextSpan(
-                                                            text:
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .subtitle2),
+                                                    TextSpan(
+                                                        text:
                                                             '${productVariant.variantName}',
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .caption)
-                                                      ]),
-                                                      overflow:
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption)
+                                                  ]),
+                                                  overflow:
                                                       TextOverflow.ellipsis,
-                                                      maxLines: 2)),
-                                              if (rightChild != null) rightChild!
-                                            ])),
+                                                  maxLines: 2)),
+                                          if (rightChild != null) rightChild!
+                                        ])),
                                         SizedBox(
                                             height: normal_225,
                                             child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.end,
+                                                    CrossAxisAlignment.end,
                                                 children: [
                                                   Expanded(
                                                       child: RichText(
                                                           text: TextSpan(
                                                               children: [
-                                                                TextSpan(
-                                                                    text: '€ ',
-                                                                    style: Theme.of(
-                                                                        context)
-                                                                        .textTheme
-                                                                        .bodyText1),
-                                                                TextSpan(
-                                                                    text:
-                                                                    '${product.getPrice()}',
-                                                                    style: Theme.of(
-                                                                        context)
-                                                                        .textTheme
-                                                                        .headline4)
-                                                              ]))),
+                                                        TextSpan(
+                                                            text: '€ ',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyText1),
+                                                        TextSpan(
+                                                            text:
+                                                                '${product.getPrice()}',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline4)
+                                                      ]))),
                                                   if (bottomRightChild != null)
                                                     bottomRightChild!
                                                 ]))

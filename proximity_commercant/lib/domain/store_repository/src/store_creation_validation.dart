@@ -319,7 +319,7 @@ class StoreCreationValidation with ChangeNotifier {
         "country": "${storeAddress.countryName ?? ""}",
         "countryCode": "FR"
       }''',
-      // "policy": policy.toJson()
+      "policy": policy.toJson()
     });
 
     // _formData.fields.add(policytoFormData);

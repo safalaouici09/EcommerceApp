@@ -508,6 +508,8 @@ class ProductService with ChangeNotifier {
       print('offerarchive' + res.statusCode.toString());
       if (res.statusCode == 200) {
         /// Save new Store Data
+        _discountAmount = null;
+        _offerStock = null;
 
         _formsLoading = false;
         notifyListeners();
