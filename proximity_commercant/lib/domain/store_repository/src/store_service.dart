@@ -4,11 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_commercant/domain/product_repository/models/offer_model.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
 
 class StoreService with ChangeNotifier {
   List<Store>? _stores;
+  List<Offer>? _storeOffers;
 
   // essential values for the UI
   late bool _loading;
@@ -18,6 +20,7 @@ class StoreService with ChangeNotifier {
 
   bool get loading => _loading;
   bool get formsLoading => _formsLoading;
+  List<Offer>? get storeOffers => _storeOffers;
 
   set stores(List<Store>? stores) {
     _stores = stores;
@@ -402,6 +405,48 @@ class StoreService with ChangeNotifier {
               // }
               return _list;
             }()));
+        notifyListeners();
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
+  getStoreOffers(String _idStore) async {
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    // String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+
+      dio.options.headers["token"] = "Bearer $_token";
+      // var res = await dio.get(BASE_API_URL + '/offer/all/$idStore');
+      print('store id' + _idStore);
+      print('res1');
+      //var res = await dio.get(BASE_API_URL + '/offer/all/$_idStore');
+      var res = await dio.get(BASE_API_URL + '/offer/all/$_idStore');
+
+      _loading = false;
+
+      notifyListeners();
+
+      if (res.statusCode == 200) {
+        print('res2');
+        _storeOffers = [];
+        _storeOffers?.addAll(Offer.productsFromJsonList(res.data));
+
         notifyListeners();
       }
     } on DioError catch (e) {

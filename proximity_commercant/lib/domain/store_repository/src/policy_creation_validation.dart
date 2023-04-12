@@ -189,73 +189,84 @@ class PolicyValidation with ChangeNotifier {
   PolicyValidation();
 
 //setter
+//to do : re set
   PolicyValidation.setPolicy(Policy? policy) {
     if (policy != null) {
       //set policy
-      if (policy.pickupPolicy!.timeLimit != null) {
-        _selfPickup = true;
-        _selfPickUpMaxDays = policy.pickupPolicy!.timeLimit;
-      } //set delivery
-
-      if (policy.deliveryPolicy!.zone!.radius != null) {
-        _delivery = true;
-        _deliveryCenter.lat =
-            policy.deliveryPolicy!.zone!.centerPoint!.latitude;
-        _deliveryCenter.lng =
-            policy.deliveryPolicy!.zone!.centerPoint!.longitude;
-         _shippingMaxKM = policy.deliveryPolicy!.zone!.radius!;
-        if (policy.deliveryPolicy!.pricing!.fixedPrice != null) {
-          _shippingFixedPrice = true;
-          _shippingFixedPriceTax = policy.deliveryPolicy!.pricing!.fixedPrice;
+      if (policy.pickupPolicy != null) {
+        if (policy.pickupPolicy!.timeLimit != null) {
+          _selfPickup = true;
+          _selfPickUpMaxDays = policy.pickupPolicy!.timeLimit;
         }
-        if (policy.deliveryPolicy!.pricing!.kmPrice != null) {
-          _shippingPerKm = true;
-          _shippingPerKmTax = policy.deliveryPolicy!.pricing!.kmPrice;
+      }
+//set delivery
+
+      if (policy.deliveryPolicy != null) {
+        if (policy.deliveryPolicy!.zone!.radius != null) {
+          _delivery = true;
+          _deliveryCenter.lat =
+              policy.deliveryPolicy!.zone!.centerPoint!.latitude;
+          _deliveryCenter.lng =
+              policy.deliveryPolicy!.zone!.centerPoint!.longitude;
+          //  _shippingMaxKM = policy.deliveryPolicy!.zone!.radius!;
+          if (policy.deliveryPolicy!.pricing!.fixedPrice != null) {
+            _shippingFixedPrice = true;
+            _shippingFixedPriceTax = policy.deliveryPolicy!.pricing!.fixedPrice;
+          }
+          if (policy.deliveryPolicy!.pricing!.kmPrice != null) {
+            _shippingPerKm = true;
+            _shippingPerKmTax = policy.deliveryPolicy!.pricing!.kmPrice;
+          }
         }
       }
       //set reservation
-      if (policy.reservationPolicy!.duration != null) {
-        _reservationAccept = true;
-        if (policy.reservationPolicy!.payment.free != null) {
-          _reservationFree = policy.reservationPolicy!.payment.free!;
-          _reservationTotal = false;
-          _reservationPartial = false;
-        }
-        if (policy.reservationPolicy!.payment.total != null) {
-          _reservationTotal = true;
-          _reservationFree = false;
+      if (policy.reservationPolicy != null) {
+        if (policy.reservationPolicy!.duration != null) {
+          _reservationAccept = true;
+          if (policy.reservationPolicy!.payment.free != null) {
+            _reservationFree = policy.reservationPolicy!.payment.free!;
+            _reservationTotal = false;
+            _reservationPartial = false;
+          }
+          if (policy.reservationPolicy!.payment.total != null) {
+            _reservationTotal = true;
+            _reservationFree = false;
 
-          _reservationPartial = false;
-        }
+            _reservationPartial = false;
+          }
 
-        if (policy.reservationPolicy!.payment.partial!.fixe != null) {
-          _reservationPartial = true;
-          _reservationtax = policy.reservationPolicy!.payment.partial!.fixe!;
-        }
-        if (policy.reservationPolicy!.cancelation!.restrictions!.fix == null) {
-          _reservationConcelationFree = true;
-        } else {
-          if (policy.reservationPolicy!.cancelation!.restrictions!.fix !=
+          if (policy.reservationPolicy!.payment.partial!.fixe != null) {
+            _reservationPartial = true;
+            _reservationtax = policy.reservationPolicy!.payment.partial!.fixe!;
+          }
+          if (policy.reservationPolicy!.cancelation!.restrictions!.fix ==
               null) {
-            _reservationConcelationPartial = true;
-            _reservationcancelationtax =
-                policy.reservationPolicy!.cancelation!.restrictions!.fix!;
+            _reservationConcelationFree = true;
+          } else {
+            if (policy.reservationPolicy!.cancelation!.restrictions!.fix !=
+                null) {
+              _reservationConcelationPartial = true;
+              _reservationcancelationtax =
+                  policy.reservationPolicy!.cancelation!.restrictions!.fix!;
+            }
           }
         }
       }
       //set return
-      if (policy.returnPolicy!.duration != null) {
-        _returnAccept = true;
-        _returnMaxDays = policy.returnPolicy!.duration;
-        _returnCondition = policy.returnPolicy!.productStatus;
-        _returnMethode = policy.returnPolicy!.returnMethod;
-        if (policy.returnPolicy!.refund.shipping!.fixe != null) {
-          _returnShippingFee = true;
-        }
-        if (policy.returnPolicy!.refund!.order.fixe != null) {
-          _returnPartialFee = true;
+      if (policy.returnPolicy != null) {
+        if (policy.returnPolicy!.duration != null) {
+          _returnAccept = true;
+          _returnMaxDays = policy.returnPolicy!.duration;
+          _returnCondition = policy.returnPolicy!.productStatus;
+          _returnMethode = policy.returnPolicy!.returnMethod;
+          if (policy.returnPolicy!.refund.shipping!.fixe != null) {
+            _returnShippingFee = true;
+          }
+          if (policy.returnPolicy!.refund!.order.fixe != null) {
+            _returnPartialFee = true;
 
-          _returnPerFee = policy.returnPolicy!.refund!.order.fixe;
+            _returnPerFee = policy.returnPolicy!.refund!.order.fixe;
+          }
         }
       }
 
@@ -284,7 +295,6 @@ class PolicyValidation with ChangeNotifier {
       return;
     }
   }
-
   void toggleReturnShippingFee(bool value) {
     _returnShippingFee = value;
 

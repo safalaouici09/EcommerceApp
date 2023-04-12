@@ -7,6 +7,8 @@ import 'package:proximity_commercant/domain/store_repository/store_repository.da
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
 import 'dart:developer';
 
+import 'package:proximity_commercant/ui/pages/store_pages/view/store_offers_screen.dart';
+
 class StoreScreen extends StatefulWidget {
   const StoreScreen({Key? key, required this.id}) : super(key: key);
 
@@ -44,20 +46,27 @@ class _StoreScreenState extends State<StoreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /*todo :  final storeService = Provider.of<StoreService>(context);
+    if (storeService.storeOffers == null) {
+      storeService.getStoreOffers(widget.id);
+    }*/
+
     return Consumer<StoreService>(builder: (context, storeService, child) {
       Store store =
           storeService.stores!.firstWhere((element) => element.id == widget.id);
       int index =
           storeService.stores!.indexWhere((element) => element.id == widget.id);
+      // storeService.getStoreOffers(store.id!);
 
       /// Do a getShop if necessary
       didFetch = store.allFetched();
       if (!didFetch) {
-        storeService.getStoreById(widget.id);
+        // storeService.getStoreById(widget.id);
         store = storeService.stores!
             .firstWhere((element) => element.id == widget.id);
       }
       log('data store: ' + store.image.toString());
+
       return Scaffold(
           body: ListView(children: [
         StoreMap(address: store.address!),
@@ -82,13 +91,13 @@ class _StoreScreenState extends State<StoreScreen> {
           const SizedBox(width: normal_100),
           Expanded(
               child: SecondaryButton(
-                  title: 'Promote.',
+                  title: 'Discounts.',
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                StoreEditScreen(index: index, store: store)));
+                                StoreOffersScreen(storeId: widget.id)));
                   })),
           const SizedBox(width: normal_100),
         ]),

@@ -39,7 +39,7 @@ class ProductDetailsSection extends StatelessWidget {
                                     decorationColor: redSwatch.shade500)),
                       TextSpan(
                           text: (discount != 0.0)
-                              ? '€ ${double.parse((price * (1 - discount)).toStringAsFixed(2))}'
+                              ? '€ ${double.parse((price * (1 - discount / 100)).toStringAsFixed(2))}'
                               : '€ $price',
                           style: Theme.of(context)
                               .textTheme
@@ -55,7 +55,7 @@ class ProductDetailsSection extends StatelessWidget {
                       borderRadius: const BorderRadius.all(tinyRadius),
                       color: redSwatch.shade500),
                   child: Text(
-                    '-${(discount * 100).toInt()}%',
+                    '-${(discount).toInt()}%',
                     style: Theme.of(context).textTheme.caption!.copyWith(
                         color: primaryTextDarkColor,
                         fontWeight: FontWeight.w800),

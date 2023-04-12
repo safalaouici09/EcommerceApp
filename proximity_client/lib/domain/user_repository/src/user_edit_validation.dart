@@ -27,7 +27,7 @@ class UserEditValidation with ChangeNotifier {
     _password = ValidationItem(null, null);
     _phone = ValidationItem(user.phone, null);
     _birthdate = user.birthdate!;
-    _profileImage = user.profileImage != null ? [user.profileImage] : [];
+    _profileImage = user.profileImage ?? [null];
     _address = user.address ?? Address();
     notifyListeners();
   }
@@ -149,7 +149,7 @@ class UserEditValidation with ChangeNotifier {
         if (_profileImage.isNotEmpty) {
           _profileImage.removeAt(0);
         }
-        _profileImage.add(user.profileImage);
+        _profileImage.add(user.profileImage!.first);
         notifyListeners();
 
         userService.getUserData();

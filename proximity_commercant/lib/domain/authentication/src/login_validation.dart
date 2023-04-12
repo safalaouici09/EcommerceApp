@@ -140,10 +140,16 @@ class LoginValidation with ChangeNotifier {
           //var box = await Hive.openBox('authentication');
 
           if (welcome == null) {
+            Future.delayed(largeAnimationDuration, () {
+              notifyListeners();
+            });
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const WelcomeScreen()),
                 (Route<dynamic> route) => false);
           } else {
+            Future.delayed(largeAnimationDuration, () {
+              notifyListeners();
+            });
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const HomeScreen()),
                 (Route<dynamic> route) => false);

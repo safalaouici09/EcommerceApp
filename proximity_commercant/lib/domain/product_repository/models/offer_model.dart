@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 class Offer {
   String? id;
   String? productId;
-  double? offerDiscount;
+  int? offerDiscount;
   int? offerStock;
-  //final DateTime offerExpiration;
-
+  final DateTime? offerExpiration;
+  String? offerStatus;
   bool? offerDeleted;
   //final String offerName;
   //final String offerImage;
@@ -17,8 +17,8 @@ class Offer {
     this.id,
     this.offerDiscount,
     this.offerStock,
-    // @required this.offerExpiration,
-    //  @required this.offerStatus,
+    this.offerExpiration,
+    this.offerStatus,
     this.offerDeleted,
     this.productId,
     /* @required this.offerName,
@@ -28,18 +28,20 @@ class Offer {
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) {
+    print('ox' + DateTime.parse(json['offerExpiration']).toString());
     return Offer(
       id: json['_id'],
-      offerDiscount: json['offerDiscount'].toDouble(),
+      offerDiscount: json['offerDiscount'].toInt(),
       offerStock: json['offerStock'],
       offerDeleted: json['offerDeleted'],
       discountType: json['discountType'],
-      //offerExpiration: DateTime.parse(json['offerExpiration']),
-      //offerStatus: json['offerStatus'],
 
-      /* offerName: json['offerName'],
-      offerImage: json['offerImage'],
-      offerDescription: json['offerDescription'],*/
+      offerExpiration: DateTime.parse(json['offerExpiration']),
+      offerStatus: json['offerStatus'],
+
+      // offerName: json['offerName'],
+      //  offerImage: json['offerImage'],
+      //offerDescription: json['offerDescription'],*/
     );
   }
   static List<Offer> productsFromJsonList(List<dynamic> parsedJson) {

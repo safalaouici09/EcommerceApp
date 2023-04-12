@@ -25,7 +25,7 @@ class StoreCreationValidation with ChangeNotifier {
   Address _storeAddress = Address();
   List<dynamic> _storeImages = [];
   List<String> _deletedImages = [];
-  Policy? _policy = null ;
+  Policy? _policy = null;
 
   StoreCreationValidation();
 
@@ -86,10 +86,11 @@ class StoreCreationValidation with ChangeNotifier {
   setPolicy(Policy policy) {
     _policy = policy;
     _policy?.workingTimePolicy = WorkingTime(
-      openTime :'${openTime?.hour.toString().padLeft(2, '0')}:${openTime?.minute.toString().padLeft(2, '0')}',
-      closeTime : '${closeTime?.hour.toString().padLeft(2, '0')}:${closeTime?.minute.toString().padLeft(2, '0')}' 
-      ) ;
-    print(_policy!.toJson()) ;
+        openTime:
+            '${openTime?.hour.toString().padLeft(2, '0')}:${openTime?.minute.toString().padLeft(2, '0')}',
+        closeTime:
+            '${closeTime?.hour.toString().padLeft(2, '0')}:${closeTime?.minute.toString().padLeft(2, '0')}');
+    print(_policy!.toJson());
     notifyListeners();
   }
 
@@ -334,7 +335,7 @@ class StoreCreationValidation with ChangeNotifier {
             'image', MultipartFile.fromFileSync(_storeImages.first.path)));
       }
     }
-    print("ff" + _formData.toString());
+    print("ff" + _formData.fields.toString());
     return _formData;
   }
 }

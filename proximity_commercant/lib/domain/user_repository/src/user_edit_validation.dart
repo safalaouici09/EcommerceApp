@@ -28,7 +28,7 @@ class UserEditValidation with ChangeNotifier {
     _password = ValidationItem(null, null);
     _phone = ValidationItem(user.phone, null);
     _birthdate = user.birthdate!;
-    _profileImage = user.profileImage != null ? [user.profileImage] : [];
+    _profileImage = user.profileImage ?? [null];
     _address = user.address ?? Address();
     notifyListeners();
   }
@@ -147,9 +147,10 @@ class UserEditValidation with ChangeNotifier {
       if (res.statusCode == 200) {
         /// Save new User Data
         var user = User.fromJson(res.data);
-
-        _profileImage.removeAt(0);
-        _profileImage.add(user.profileImage);
+        if (_profileImage.isNotEmpty) {
+          _profileImage.removeAt(0);
+        }
+        _profileImage.add(user.profileImage!.first);
         notifyListeners();
 
         userService.getUserData();

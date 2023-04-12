@@ -52,7 +52,7 @@ class EditProfileScreen extends StatelessWidget {
                   ),
                 ),*/
                 ImageProfile(
-                    images: userEditValidation.profileImage.first ?? "",
+                    images: userEditValidation.profileImage,
                     maxImages: 1,
                     centered: true,
                     onImageAdded: (File file) {
