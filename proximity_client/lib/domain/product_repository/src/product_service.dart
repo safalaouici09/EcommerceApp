@@ -100,6 +100,7 @@ class ProductService with ChangeNotifier {
 
       var res = await dio.get(BASE_API_URL +
           '/search/product/?radius=${radius.toString()}&latitude=${latitude.toString()}&langitude=${langitude.toString()}');
+
       if (res.statusCode == 200) {
         _products = [];
         _products.addAll(Product.productsFromJsonList(res.data));
