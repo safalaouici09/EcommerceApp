@@ -21,6 +21,7 @@ class Product {
   String? offer_id;
   Policy? policy;
   double? reservation;
+  Map<String, Set<String>>? characteristics;
 
   Product(
       {this.id,
@@ -37,6 +38,7 @@ class Product {
       this.policy,
       this.storeId,
       this.offer_id,
+      this.characteristics,
       this.reservation = 0.0});
 
   Product.fromJson(Map<String, dynamic> parsedJson)

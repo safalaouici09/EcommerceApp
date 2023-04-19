@@ -19,6 +19,7 @@ class Product {
   String? sellerId;
   Policy? policy;
   double? reservation;
+  Map<String, Set<String>>? characteristics;
 
   Product(
       {this.id,
@@ -31,6 +32,7 @@ class Product {
       this.variants,
       this.categoryId,
       this.categoryName,
+      this.characteristics,
       // this.tags,
       this.policy,
       this.storeId,
@@ -88,7 +90,8 @@ class Product {
         id: '0',
         name:
             'Xiaomi Cleargrass -compatible Alarm Clock smart Control Temperature Humidity Display LCD Screen Adjustable Nightlight - gray',
-        description: '''Main Features
+        description:
+            '''Main Features
 
 Description :
 
@@ -122,6 +125,10 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
           'https://i.ibb.co/ZNP8nJd/product-0-3.png',
         ],
         storeId: '0',
+        characteristics: {
+          "Color": {"Beige", "Mint Green", "Peach"},
+          "Language": {"Français", "English"}
+        },
         variants: [
           ProductVariant(
               id: '0-0',
