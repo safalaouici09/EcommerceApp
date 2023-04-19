@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/ui/pages/pages.dart';
-import 'package:provider/provider.dart';
-import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({Key? key, this.page}) : super(key: key);
@@ -19,12 +17,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
-    _index = widget.page ?? 0;
+    _index = widget.page?? 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    final ordersService = Provider.of<OrderService>(context);
     return Scaffold(
         body: SafeArea(
             child: Column(children: [
@@ -53,15 +50,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           children: [
                             if (_index == 0) ...[
                               DuotoneIcon(
-                                primaryLayer: ProximityIcons.unpaid_duotone_1,
-                                secondaryLayer: ProximityIcons.unpaid_duotone_1,
+                                primaryLayer:
+                                    ProximityIcons.unpaid_duotone_1,
+                                secondaryLayer:
+                                    ProximityIcons.unpaid_duotone_1,
                                 color: redSwatch.shade500,
                               ),
                               Text('Pending',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
-                                      .copyWith(height: 0.9, fontSize: 7)),
+                                      .copyWith(height: 0.9)),
                               const SizedBox(height: tiny_50),
                               Container(
                                   height: tiny_50,
@@ -76,28 +75,24 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () {
-                        ordersService.getPickUpOrders();
-                        setState(() {
-                          _index = 1;
-                        });
-                      },
+                      onTap: () => setState(() {
+                        _index = 1;
+                      }),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 1) ...[
                               DuotoneIcon(
-                                primaryLayer:
-                                    ProximityIcons.self_pickup_duotone_1,
+                                primaryLayer: ProximityIcons.not_shipped_duotone_1,
                                 secondaryLayer:
-                                    ProximityIcons.self_pickup_duotone_2,
+                                    ProximityIcons.not_shipped_duotone_2,
                                 color: redSwatch.shade500,
                               ),
-                              Text('Self Pickup',
+                              Text('Confirmed',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
-                                      .copyWith(height: 0.9, fontSize: 7)),
+                                      .copyWith(height: 0.9)),
                               const SizedBox(height: tiny_50),
                               Container(
                                   height: tiny_50,
@@ -107,17 +102,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                       borderRadius:
                                           const BorderRadius.all(tinyRadius)))
                             ] else
-                              const Icon(ProximityIcons.self_pickup),
+                              const Icon(ProximityIcons.product),
                           ]),
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () {
-                        ordersService.getDeliveryOrders();
-                        setState(() {
-                          _index = 2;
-                        });
-                      },
+                      onTap: () => setState(() {
+                        _index = 2;
+                      }),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -128,11 +120,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     ProximityIcons.delivery_duotone_2,
                                 color: redSwatch.shade500,
                               ),
-                              Text('Delivery',
+                              Text('Delivered',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
-                                      .copyWith(height: 0.9, fontSize: 7)),
+                                      .copyWith(height: 0.9)),
                               const SizedBox(height: tiny_50),
                               Container(
                                   height: tiny_50,
@@ -147,173 +139,24 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () {
-                        ordersService.getReservationOrders();
-                        setState(() {
-                          _index = 3;
-                        });
-                      },
+                      onTap: () => setState(() {
+                        _index = 3;
+                      }),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 3) ...[
                               DuotoneIcon(
-                                primaryLayer: ProximityIcons.history_duotone_1,
-                                secondaryLayer:
-                                    ProximityIcons.history_duotone_2,
-                                color: redSwatch.shade500,
-                              ),
-                              Text('Reservation',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(height: 0.9, fontSize: 7)),
-                              const SizedBox(height: tiny_50),
-                              Container(
-                                  height: tiny_50,
-                                  width: normal_150,
-                                  decoration: BoxDecoration(
-                                      color: redSwatch.shade500,
-                                      borderRadius:
-                                          const BorderRadius.all(tinyRadius)))
-                            ] else
-                              const Icon(ProximityIcons.history),
-                          ]),
-                    )),
-                    Expanded(
-                        child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 5;
-                      }),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_index == 5) ...[
-                              SizedBox(
-                                  height: 25,
-                                  width: 25,
-                                  child: Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        Positioned.fill(
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        normalRadius),
-                                                child: FittedBox(
-                                                    fit: BoxFit.cover,
-                                                    child: Image.asset(
-                                                        "assets/img/return_icon2.png")))),
-                                      ])),
-                              Text('Return',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(height: 0.9, fontSize: 7)),
-                              const SizedBox(height: tiny_50),
-                              Container(
-                                  height: tiny_50,
-                                  width: normal_150,
-                                  decoration: BoxDecoration(
-                                      color: redSwatch.shade500,
-                                      borderRadius:
-                                          const BorderRadius.all(tinyRadius)))
-                            ] else
-                              SizedBox(
-                                  height: 25,
-                                  width: 25,
-                                  child: Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        Positioned.fill(
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        normalRadius),
-                                                child: FittedBox(
-                                                    fit: BoxFit.cover,
-                                                    child: Image.asset(
-                                                        "assets/img/return_icon.png")))),
-                                      ])),
-                          ]),
-                    )),
-                    Expanded(
-                        child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 6;
-                      }),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_index == 6) ...[
-                              SizedBox(
-                                  height: 25,
-                                  width: 25,
-                                  child: Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        Positioned.fill(
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        normalRadius),
-                                                child: FittedBox(
-                                                    fit: BoxFit.cover,
-                                                    child: Image.asset(
-                                                        "assets/img/refund_icon.png")))),
-                                      ])),
-                              Text('Refund',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(height: 0.9, fontSize: 7)),
-                              const SizedBox(height: tiny_50),
-                              Container(
-                                  height: tiny_50,
-                                  width: normal_150,
-                                  decoration: BoxDecoration(
-                                      color: redSwatch.shade500,
-                                      borderRadius:
-                                          const BorderRadius.all(tinyRadius)))
-                            ] else
-                              SizedBox(
-                                  height: 25,
-                                  width: 25,
-                                  child: Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        Positioned.fill(
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        normalRadius),
-                                                child: FittedBox(
-                                                    fit: BoxFit.cover,
-                                                    child: Image.asset(
-                                                        "assets/img/refund_icon2.png")))),
-                                      ])),
-                          ]),
-                    )),
-                    Expanded(
-                        child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 4;
-                      }),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_index == 4) ...[
-                              DuotoneIcon(
                                 primaryLayer: ProximityIcons.rejected_duotone_1,
                                 secondaryLayer:
                                     ProximityIcons.rejected_duotone_2,
-                                color: Color(0xFFFC185A),
+                                color: redSwatch.shade500,
                               ),
                               Text('Rejected',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
-                                      .copyWith(height: 0.9, fontSize: 7)),
+                                      .copyWith(height: 0.9)),
                               const SizedBox(height: tiny_50),
                               Container(
                                   height: tiny_50,
@@ -332,17 +175,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
           case 0:
             return const PendingTabView();
           case 1:
-            return const SelfPickupTabView();
+            return const ConfirmedTabView();
           case 2:
-            return const DeliveryTabView();
+            return const DeliveredTabView();
           case 3:
-            return const ReservationTabView();
-          case 4:
-            return const RejectedTabView();
-          case 5:
-            return const ReturnTabView();
-          case 6:
-            return const RefundTabView();
+            return const RejectedView();
           default:
             return const PendingTabView();
         }

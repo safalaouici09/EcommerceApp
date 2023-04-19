@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
@@ -54,10 +53,8 @@ class EditProfileScreen extends StatelessWidget {
                     images: userEditValidation.profileImage,
                     maxImages: 1,
                     centered: true,
-                    onImageAdded: (File file) {
-                      userEditValidation.editProfileImage(file, userService);
-                    },
-                    onImageRemoved: userEditValidation.removeProfileImage),
+                    onImageAdded: userEditValidation.editProfileImage,
+                    onImageRemoved: userEditValidation.removeProfileImage)
                 /*userEditValidation.profileImage == null
                     ? ImagePickerWidget(
                         images: userEditValidation.profileImage,
@@ -77,6 +74,7 @@ class EditProfileScreen extends StatelessWidget {
                       },
                       title: 'Modifier la photo de profile'),
                 ),*/
+                ,
                 SectionDivider(
                     leadIcon: ProximityIcons.user,
                     title: 'Personal Info.',

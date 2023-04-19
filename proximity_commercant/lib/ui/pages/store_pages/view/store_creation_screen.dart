@@ -136,9 +136,6 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
             didFetch = storeService.stores![widget.index!].allFetched();
 
             if (!didFetch) storeService.getStoreByIndex(widget.index!);
-          } else if (storeCreationValidation.policy == null) {
-            User? _user = context.watch<UserService>().user;
-            storeCreationValidation.setPolicy((_user!.policy ?? Policy()));
           }
           return Scaffold(
               body: SafeArea(
@@ -379,7 +376,6 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                   ),
                 ],
               ),
-              const EditTextSpacer(),
               RichEditText(children: [
                 EditText(
                   hintText: 'Postal Code.',
@@ -395,7 +391,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                   color: redSwatch.shade500),
               InfoMessage(
                   message:
-                      ' Keep  global policy ensures fair and transparent transactions.\n When creating a new store, you can keep this policy for all your stores or create a custom policy for each store.\n Review the policy and create custom policies to build trust with your customers'),
+                      ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Column(
@@ -470,12 +466,18 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                       storeCreationValidation.setPolicy(_user!.policy!);
                     }
                     if (widget.editScreen) {
-                      storeService.editStore(context, widget.index!,
-                          storeCreationValidation.toFormData(), []);
+                      storeService.editStore(
+                          context,
+                          widget.index!,
+                          storeCreationValidation
+                              .toFormData(storeCreationValidation.policy!),
+                          []);
                     } else {
                       StoreDialogs.confirmStore(context, 1);
                       storeService.addStore(
-                          context, storeCreationValidation.toFormData());
+                          context,
+                          storeCreationValidation
+                              .toFormData(storeCreationValidation.policy!));
                     }
                   },
                   title: 'Confirm.')

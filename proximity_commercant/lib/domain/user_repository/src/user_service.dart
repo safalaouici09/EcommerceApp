@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
@@ -28,56 +27,6 @@ class UserService extends ChangeNotifier {
 
   UserService() {
     getUserData();
-  }
-
-  /// image Picker
-  void editProfileImage(File imageList) async {
-    var credentialsBox = Boxes.getCredentials();
-    String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
-
-    /* final Map<String, dynamic> data = {
-      "image": await MultipartFile.fromFile(imageList[0].path,
-          filename: imageList[0].path.split('/').last)*/
-
-    FormData _formData = FormData.fromMap({});
-    _formData.files
-        .add(MapEntry('image', MultipartFile.fromFileSync(imageList.path)));
-
-    /*  final Map<String, dynamic> data =
-        MapEntry('image', MultipartFile.fromFileSync(_profileImage.first.path));*/
-    print("res.statusCode");
-    try {
-      Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.put(BASE_API_URL + '/user/update_image/$_id',
-          data: _formData);
-      //_loading = false;
-      print(res.statusCode);
-      notifyListeners();
-      if (res.statusCode == 200) {
-        /// Save new User Data
-        _user = User.fromJson(res.data);
-        notifyListeners();
-
-        /// Display Results Message
-        /* ToastSnackbar().init(context).showToast(
-            message: "${res.statusMessage}", type: ToastSnackbarType.success);
-        Navigator.pop(context);*/
-      }
-    } on DioError catch (e) {
-      print(e);
-      if (e.response != null) {
-        /// Display Error Response
-        /* ToastSnackbar().init(context).showToast(
-            message: "${e.response!.data}", type: ToastSnackbarType.error);*/
-      } else {
-        /// Display Error Message
-        /*   ToastSnackbar()
-            .init(context)
-            .showToast(message: e.message, type: ToastSnackbarType.error);*/
-      }
-    }
   }
 
   /// PUT Methods

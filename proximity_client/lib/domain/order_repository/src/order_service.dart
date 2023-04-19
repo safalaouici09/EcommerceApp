@@ -50,7 +50,6 @@ class OrderService with ChangeNotifier {
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
-
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
@@ -95,7 +94,6 @@ class OrderService with ChangeNotifier {
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
-
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
@@ -130,7 +128,6 @@ class OrderService with ChangeNotifier {
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
-
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
@@ -223,7 +220,6 @@ class OrderService with ChangeNotifier {
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
-
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
@@ -254,7 +250,6 @@ class OrderService with ChangeNotifier {
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
-
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();

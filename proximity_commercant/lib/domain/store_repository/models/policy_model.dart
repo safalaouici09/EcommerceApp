@@ -12,15 +12,13 @@ class Policy {
 
   Policy({
     //  this.shippingMethods,
-    this.workingTimePolicy = null ,
-    this.pickupPolicy = null ,
-    this.deliveryPolicy = null ,
-    this.reservationPolicy = null ,
-    this.returnPolicy = null ,
-    this.orderPolicy = null ,
+    this.workingTimePolicy,
+    this.pickupPolicy,
+    this.deliveryPolicy,
+    this.reservationPolicy,
+    this.returnPolicy,
+    this.orderPolicy,
   });
-
-  
 
   Policy.fromJson(Map<String, dynamic> json) {
     workingTimePolicy = json['workingTime'] == null ? null :  WorkingTime.fromJson(json['workingTime']);

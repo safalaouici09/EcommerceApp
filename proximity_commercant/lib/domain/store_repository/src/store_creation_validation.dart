@@ -85,13 +85,6 @@ class StoreCreationValidation with ChangeNotifier {
   List<String> get deletedImages => _deletedImages;
   setPolicy(Policy policy) {
     _policy = policy;
-    _policy?.workingTimePolicy = WorkingTime(
-        openTime:
-            '${openTime?.hour.toString().padLeft(2, '0')}:${openTime?.minute.toString().padLeft(2, '0')}',
-        closeTime:
-            '${closeTime?.hour.toString().padLeft(2, '0')}:${closeTime?.minute.toString().padLeft(2, '0')}');
-    print(_policy!.toJson());
-    notifyListeners();
   }
 
   // checks if forms is valid and verified
@@ -307,7 +300,8 @@ class StoreCreationValidation with ChangeNotifier {
     };*/
 
   /// A method to convert this form validator into a Store object
-  FormData toFormData() {
+  FormData toFormData(Policy policy) {
+    print('tfd' + policy.toJson().toString());
     FormData _formData = FormData.fromMap({
       "name": storeName.value,
       "description": storeDescription.value,
@@ -325,7 +319,7 @@ class StoreCreationValidation with ChangeNotifier {
         "country": "${storeAddress.countryName ?? ""}",
         "countryCode": "FR"
       }''',
-      "policy": _policy!.toJson()
+      "policy": policy.toJson()
     });
 
     // _formData.fields.add(policytoFormData);

@@ -8,18 +8,15 @@ class ProductVariant {
   double? price;
   int? quantity;
   String? variantName;
-  double? discount;
-  double? reservation;
 
-  ProductVariant(
-      {this.id,
-      this.variantName,
-      this.characteristics,
-      this.image,
-      this.available = true,
-      this.quantity,
-      this.discount = 0.0,
-      this.reservation = 0.0});
+  ProductVariant({
+    this.id,
+    this.variantName,
+    this.characteristics,
+    this.image,
+    this.available = true,
+    this.quantity,
+  });
 
   ProductVariant.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
@@ -34,7 +31,7 @@ class ProductVariant {
       List<dynamic> parsedJson) {
     List<ProductVariant> _list = [];
     for (int i = 0; i < parsedJson.length; i++) {
-      _list.add(ProductVariant.fromJson(parsedJson[i]));
+        _list.add(ProductVariant.fromJson(parsedJson[i]));
     }
     return _list;
   }

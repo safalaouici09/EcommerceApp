@@ -20,8 +20,6 @@ class Product {
   String? storeId;
   String? offer_id;
   Policy? policy;
-  double? reservation;
-  Map<String, Set<String>>? characteristics;
 
   Product(
       {this.id,
@@ -37,9 +35,7 @@ class Product {
       this.categoryName,
       this.policy,
       this.storeId,
-      this.offer_id,
-      this.characteristics,
-      this.reservation = 0.0});
+      this.offer_id});
 
   Product.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
@@ -82,10 +78,7 @@ class Product {
   }
 
   double getPrice() {
-    return double.parse((price! *
-            (1 - discount) *
-            (reservation != 0.0 ? (reservation ?? 1.0) : 1.0))
-        .toStringAsFixed(2));
+    return double.parse((price! * (1 - discount)).toStringAsFixed(2));
   }
 
   static List<Product> products = [
