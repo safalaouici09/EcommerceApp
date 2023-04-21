@@ -10,7 +10,8 @@ class PendingTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    ordersService.getPendingOrders();
+    return Container();
+    /* ordersService.getPendingOrders();
 
     return (ordersService.pendingOrders == null)
         ? const Center(child: CircularProgressIndicator())
@@ -31,6 +32,6 @@ class PendingTabView extends StatelessWidget {
                   },
                   secondaryAction: () {},
                 ),
-              );
+              );*/
   }
 }

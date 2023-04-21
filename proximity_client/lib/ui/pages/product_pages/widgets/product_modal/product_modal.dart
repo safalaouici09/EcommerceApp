@@ -58,8 +58,10 @@ class _ProductModalState extends State<ProductModal> {
                             child: RichText(
                                 text: TextSpan(children: [
                           TextSpan(
-                              text: (productModalController.productVariantId == null)
-                                  ? '€--' : '€ ${_selectedVariant!.getPrice(_product.discount)} ',
+                              text: (productModalController.productVariantId ==
+                                      null)
+                                  ? '€--'
+                                  : '€ ${_selectedVariant!.getPrice(_product.discount)} ',
                               style: Theme.of(context).textTheme.headline4),
                           TextSpan(
                               text: '/ Piece',
@@ -70,10 +72,11 @@ class _ProductModalState extends State<ProductModal> {
                             icon: const Icon(ProximityIcons.remove))
                       ])),
               const SizedBox(height: small_100),
-              (productModalController.productVariantId == null)
+              /*(productModalController.productVariantId == null)
                   ? const SizedBox()
-                  : ProductVariantCharacteristics(
-                      characteristics: _selectedVariant!.characteristics!),
+                  :*/
+              ProductVariantCharacteristics(
+                  characteristics: _product.characteristics!),
               const SizedBox(height: small_100),
               GridView(
                   physics: const NeverScrollableScrollPhysics(),
@@ -85,25 +88,41 @@ class _ProductModalState extends State<ProductModal> {
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: normal_100),
                   children: List.generate(
-                      _product.variants!.length,
+                      productService.filterVariants(_product.variants!).length,
+                      // _product.variants!.length,
+                      (index) => ProductVariantCard(
+                          selected: productService
+                                  .filterVariants(_product.variants!)![index]
+                                  .id ==
+                              productModalController.productVariantId,
+                          onChanged: () => productModalController.selectVariant(
+                              productService
+                                  .filterVariants(_product.variants!)![index]
+                                  .id!),
+                          image: productService
+                              .filterVariants(_product.variants!)![index]
+                              .image!))),
+              /* List.generate(
+                    productService.filterVariants( _product.variants!).length,
+                     // _product.variants!.length,
                       (index) => ProductVariantCard(
                           selected: _product.variants![index].id ==
                               productModalController.productVariantId,
                           onChanged: () => productModalController
                               .selectVariant(_product.variants![index].id!),
-                          image: _product.variants![index].image!))),
+                          image: _product.variants![index].image!))),*/
 
               /// Quantity Section
               SectionDivider(
                   leadIcon: ProximityIcons.quantity,
                   title: 'Quantity.',
-                  color: Theme.of(context).primaryColor),                
+                  color: Theme.of(context).primaryColor),
               if (productModalController.productVariantId != null)
                 QuantitySelector(
-                  quantity: productModalController.quantity,
-                  maxQuantity: _selectedVariant!.quantity,
-                  increaseQuantity: productModalController.increaseQuantity,
-                  decreaseQuantity: productModalController.decreaseQuantity),
+                    quantity: productModalController.quantity,
+                    maxQuantity: _selectedVariant!.quantity,
+                    increaseQuantity: productModalController.increaseQuantity,
+                    decreaseQuantity: productModalController.decreaseQuantity),
 
               /// Store Policy Section
               Consumer<StoreService>(
@@ -111,68 +130,80 @@ class _ProductModalState extends State<ProductModal> {
                   return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                    /// Store Policy Section
-                    if (storeService.store != null)
-                      if (storeService.store!.policy != null) ...[
-                        SectionDivider(
-                            leadIcon: ProximityIcons.policy,
-                            title: 'Store Policy.',
-                            color: Theme.of(context).primaryColor),
-                        if (storeService.store!.policy!.shippingMethods!
-                            .contains(ShippingMethod.delivery))
-                          Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: small_100),
-                              child: Row(children: [
-                                Text('-',
-                                    style: Theme.of(context).textTheme.bodyText1),
-                                const Icon(ProximityIcons.delivery),
-                                Text(
-                                    'Delivery Option with a ${storeService.store!.policy!.tax} € fee.',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1)
-                              ])),
-                        if (storeService.store!.policy!.shippingMethods!
-                            .contains(ShippingMethod.selfPickupTotal))
-                          Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: small_100),
-                              child: Row(children: [
-                                Text('-',
-                                    style: Theme.of(context).textTheme.bodyText1),
-                                const Icon(ProximityIcons.self_pickup),
-                                Text(
-                                    'SelfPickup Option with a ${storeService.store!.policy!.selfPickUpPrice} € fee.',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1)
-                              ]))
-                        else if (storeService.store!.policy!.shippingMethods!
-                            .contains(ShippingMethod.selfPickupPartial))
-                          Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: small_100),
-                              child: Row(children: [
-                                Text('-',
-                                    style: Theme.of(context).textTheme.bodyText1),
-                                const Icon(ProximityIcons.self_pickup),
-                                Text(
-                                    'SelfPickup Option with a ${storeService.store!.policy!.selfPickUpPrice} € fee.',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1)
-                              ]))
-                        else if (storeService.store!.policy!.shippingMethods!
-                            .contains(ShippingMethod.selfPickupTotal))
-                          Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: small_100),
-                              child: Row(children: [
-                                const Icon(ProximityIcons.self_pickup),
-                                Text('SelfPickup Option with no tax.',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1)
-                              ]))
-                      ]
-                  ]);
+                        /// Store Policy Section
+                        if (storeService.store != null)
+                          if (storeService.store!.policy != null) ...[
+                            SectionDivider(
+                                leadIcon: ProximityIcons.policy,
+                                title: 'Store Policy.',
+                                color: Theme.of(context).primaryColor),
+                            if (storeService.store!.policy!.shippingMethods!
+                                .contains(ShippingMethod.delivery))
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: small_100),
+                                  child: Row(children: [
+                                    Text('-',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1),
+                                    const Icon(ProximityIcons.delivery),
+                                    Text(
+                                        'Delivery Option with a ${storeService.store!.policy!.tax} € fee.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1)
+                                  ])),
+                            if (storeService.store!.policy!.shippingMethods!
+                                .contains(ShippingMethod.selfPickupTotal))
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: small_100),
+                                  child: Row(children: [
+                                    Text('-',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1),
+                                    const Icon(ProximityIcons.self_pickup),
+                                    Text(
+                                        'SelfPickup Option with a ${storeService.store!.policy!.selfPickUpPrice} € fee.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1)
+                                  ]))
+                            else if (storeService
+                                .store!.policy!.shippingMethods!
+                                .contains(ShippingMethod.selfPickupPartial))
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: small_100),
+                                  child: Row(children: [
+                                    Text('-',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1),
+                                    const Icon(ProximityIcons.self_pickup),
+                                    Text(
+                                        'SelfPickup Option with a ${storeService.store!.policy!.selfPickUpPrice} € fee.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1)
+                                  ]))
+                            else if (storeService
+                                .store!.policy!.shippingMethods!
+                                .contains(ShippingMethod.selfPickupTotal))
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: small_100),
+                                  child: Row(children: [
+                                    const Icon(ProximityIcons.self_pickup),
+                                    Text('SelfPickup Option with no tax.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1)
+                                  ]))
+                          ]
+                      ]);
                 },
               )
             ])),

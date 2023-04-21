@@ -19,7 +19,7 @@ class Product {
   String? sellerId;
   Policy? policy;
   double? reservation;
-  Map<String, Set<String>>? characteristics;
+  Map<String, List<String>>? characteristics;
 
   Product(
       {this.id,

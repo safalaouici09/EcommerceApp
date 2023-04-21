@@ -75,8 +75,9 @@ class UserService extends ChangeNotifier {
 
   /// GET methods
   Future getUserData() async {
+    //to do : fix this
     /// open hive box
-    var credentialsBox = Boxes.getCredentials();
+    /*var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
@@ -101,7 +102,7 @@ class UserService extends ChangeNotifier {
         print(e.message);
       }
     }
-    notifyListeners();
+    notifyListeners();*/
   }
 
   Future welcomeValidate(BuildContext context) async {

@@ -19,7 +19,8 @@ class ProductVariant {
       this.available = true,
       this.quantity,
       this.discount = 0.0,
-      this.reservation = 0.0});
+      this.reservation = 0.0,
+      this.price});
 
   ProductVariant.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],

@@ -10,7 +10,8 @@ class RejectedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    ordersService.getRejectedOrders();
+    return Container();
+    /* ordersService.getRejectedOrders();
 
     return (ordersService.rejectedOrders == null)
         ? const Center(child: CircularProgressIndicator())
@@ -26,6 +27,6 @@ class RejectedView extends StatelessWidget {
                 itemBuilder: (_, i) => OrderTile(
                   order: ordersService.rejectedOrders![i],
                 ),
-              );
+              );*/
   }
 }

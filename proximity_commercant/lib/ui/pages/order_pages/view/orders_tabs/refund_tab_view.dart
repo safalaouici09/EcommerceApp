@@ -25,7 +25,7 @@ class _RefundTabViewState extends State<RefundTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.refundOrders == null && _index == 0) {
+    /*if (ordersService.refundOrders == null && _index == 0) {
       // ordersService.getRefundOrders();
     }
     return Column(children: [
@@ -316,6 +316,7 @@ class _RefundTabViewState extends State<RefundTabView> {
                       );
         }
       }())
-    ]);
+    ]);*/
+    return Container();
   }
 }

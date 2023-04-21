@@ -10,7 +10,8 @@ class DeliveredTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    ordersService.getDeliveredOrders();
+    return Container();
+    /* ordersService.getDeliveredOrders();
 
     return (ordersService.deliveredOrders == null)
         ? const Center(child: CircularProgressIndicator())
@@ -26,6 +27,6 @@ class DeliveredTabView extends StatelessWidget {
                 itemBuilder: (_, i) => OrderTile(
                   order: ordersService.deliveredOrders![i],
                 ),
-              );
+              );*/
   }
 }

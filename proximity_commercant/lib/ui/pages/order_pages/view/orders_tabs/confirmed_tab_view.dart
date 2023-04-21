@@ -10,7 +10,8 @@ class ConfirmedTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    ordersService.getConfirmedOrders();
+    return Container();
+    /* ordersService.getConfirmedOrders();
 
     return (ordersService.confirmedOrders == null)
         ? const Center(child: CircularProgressIndicator())
@@ -30,6 +31,6 @@ class ConfirmedTabView extends StatelessWidget {
                         context, ordersService.confirmedOrders![i].id!);
                   },
                 ),
-              );
+              );*/
   }
 }

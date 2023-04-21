@@ -25,7 +25,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.returnOrders == null && _index == 0) {
+    /* if (ordersService.returnOrders == null && _index == 0) {
       // ordersService.getReturnOrders();
     }
     return Column(children: [
@@ -316,6 +316,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                       );
         }
       }())
-    ]);
+    ]);*/
+    return Container();
   }
 }
