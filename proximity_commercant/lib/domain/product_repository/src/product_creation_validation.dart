@@ -11,16 +11,20 @@ import '../../store_repository/models/policy_model.dart';
 class ProductCreationValidation with ChangeNotifier {
   String? _id;
   String? _storeId;
+
   ValidationItem _name = ValidationItem(null, null);
   ValidationItem _description = ValidationItem(null, null);
   ValidationItem _category = ValidationItem(null, null);
-  double? _price;
+  ValidationItem _price = ValidationItem(null, null);
+  ValidationItem _quantity = ValidationItem(null, null);
+  // double? _price;
   double? _discount;
   bool? _storePolicy = true;
+  bool? _hasVariants = false;
   bool? _productPolicy;
   Policy? _policy = null;
 
-  int? _quantity;
+  // int? _quantity;
   Map<String, Set<String>> _characteristics = {};
   List<ProductVariant> _variants = [];
   List<dynamic> _images = [];
@@ -28,6 +32,8 @@ class ProductCreationValidation with ChangeNotifier {
   bool _showImagePicker = false;
   bool get showImagePicker => _showImagePicker;
   bool? get storePolicy => _storePolicy;
+  bool? get hasVariants => _hasVariants;
+
   bool? get productPolicy => _productPolicy;
   ProductCreationValidation();
 
@@ -37,8 +43,10 @@ class ProductCreationValidation with ChangeNotifier {
     _name = ValidationItem(product.name, null);
     _description = ValidationItem(product.description, null);
     _category = ValidationItem(product.categoryId, null);
-    _price = product.price ?? 0.00;
-    _quantity = product.quantity ?? 0;
+    _category = ValidationItem(product.price.toString(), null);
+    //_price = product.price ?? 0.00;
+    _quantity = ValidationItem(product.quantity.toString(), null);
+    //  _quantity = product.quantity ?? 0;
 
     /// Setting up Characteristics
     if (product.variants != null) {
@@ -73,11 +81,13 @@ class ProductCreationValidation with ChangeNotifier {
 
   ValidationItem get category => _category;
 
-  double? get price => _price;
+  ValidationItem? get price => _price;
 
   double? get discount => _discount;
 
-  int? get quantity => _quantity;
+  //int? get quantity => _quantity;
+  ValidationItem? get quantity => _quantity;
+  //
 
   Map<String, Set<String>> get characteristics => _characteristics;
 
@@ -144,6 +154,18 @@ class ProductCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleVariants(
+    bool value,
+  ) {
+    _hasVariants = value;
+    if (value) {
+      //  _productPolicy = false;
+
+      //StoreDialogs.gobalPolicy(context!, 1);
+    }
+    notifyListeners();
+  }
+
   void changeName(String value) {
     if (value.isEmpty) {
       _name = ValidationItem(null, null);
@@ -181,8 +203,20 @@ class ProductCreationValidation with ChangeNotifier {
   }
 
   void changePrice(String value) {
-    _price = double.parse(value);
-    notifyListeners();
+    if (value == '') {
+      // _price = ValidationItem(null, null);
+    } else {
+      bool _priceValid = RegExp(r'^\d+(\.\d{1,3})?$').hasMatch(value);
+      if (_priceValid) {
+        _price = ValidationItem(value, null);
+      } else {
+        _price = ValidationItem(null, "● Enter a valid price (e.g., 12.99).");
+      }
+    }
+
+    Future.delayed(largeAnimationDuration, () {
+      notifyListeners();
+    });
   }
 
   void changeDiscount(double value) {
@@ -190,9 +224,26 @@ class ProductCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
-  void changeQuantity(String value) {
+  /* void changeQuantity(String value) {
     _quantity = int.tryParse(value);
     notifyListeners();
+  }*/
+  void changeQuantity(String value) {
+    if (value == '') {
+      _quantity = ValidationItem(null, null);
+      notifyListeners();
+    } else {
+      int? quantity = int.tryParse(value);
+      if (quantity != null && quantity > 0) {
+        _quantity = ValidationItem(value, null);
+        notifyListeners();
+      } else {
+        _quantity = ValidationItem(null, "Enter a valid quantity.");
+      }
+    }
+    Future.delayed(largeAnimationDuration, () {
+      notifyListeners();
+    });
   }
 
   void changeCharacteristics(Map<String, Set<String>> newCharacteristics) {

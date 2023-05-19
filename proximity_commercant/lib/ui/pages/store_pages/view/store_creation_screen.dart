@@ -10,6 +10,7 @@ import 'package:proximity_commercant/domain/store_repository/store_repository.da
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/view/home_screen.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
+import 'package:proximity_commercant/ui/pages/store_pages/widgets/store_workingtTme.dart';
 import 'package:proximity_commercant/ui/widgets/address_picker/address_picker.dart';
 
 import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
@@ -285,6 +286,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                               ),
                             ))),
                   ])),
+              //  TimeRangeUI(),
 
               /// Address
               SectionDivider(
