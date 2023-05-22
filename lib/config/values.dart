@@ -331,3 +331,13 @@ Map<String, String> percentageValues = {
   '80': '80%',
   '90': '90%',
 };
+
+enum Day {
+  Monday,
+  Tuesday,
+  Wednesday,
+  Thursday,
+  Friday,
+  Saturday,
+  Sunday,
+}

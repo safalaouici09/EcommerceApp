@@ -663,8 +663,8 @@ class PolicyValidation with ChangeNotifier {
     DeliveryPolicy? deliveryPolicy;
     ReservationPolicy? reservationPolicy;
 
-    WorkingTime workingTime = WorkingTime(
-        openTime: _openTime.toString(), closeTime: _closeTime.toString());
+    WorkingTime workingTime =
+        WorkingTime(openTime: _openTime, closeTime: _closeTime);
     if (_selfPickup) {
       pickupPolicy = PickupPolicy(timeLimit: selfPickUplMaxDays);
     }
@@ -740,8 +740,8 @@ class PolicyValidation with ChangeNotifier {
     DeliveryPolicy? deliveryPolicy;
     ReservationPolicy? reservationPolicy;
 
-    WorkingTime workingTime = WorkingTime(
-        openTime: _openTime.toString(), closeTime: _closeTime.toString());
+    WorkingTime workingTime =
+        WorkingTime(openTime: _openTime, closeTime: _closeTime);
     if (_selfPickup) {
       pickupPolicy = PickupPolicy(timeLimit: selfPickUplMaxDays);
     }

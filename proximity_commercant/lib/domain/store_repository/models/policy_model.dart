@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 class Policy {
   // List<ShippingMethod>? shippingMethods;
 
@@ -21,30 +23,41 @@ class Policy {
   });
 
   Policy.fromJson(Map<String, dynamic> json) {
-    workingTimePolicy = json['workingTime'] == null ? null :  WorkingTime.fromJson(json['workingTime']);
-    pickupPolicy = json['pickup'] == null ? null :  PickupPolicy.fromJson(json['pickup']);
-    deliveryPolicy = json['delivery'] == null ? null :  DeliveryPolicy.fromJson(json['delivery']);
-    returnPolicy = json['return'] == null ? null :  ReturnPolicy.fromJson(json['return']);
-    reservationPolicy = json['reservation'] == null ? null :  ReservationPolicy.fromJson(json['reservation']);
-    orderPolicy = json['order'] == null ? null :  OrderPolicy.fromJson(json['order']);
+    workingTimePolicy = json['workingTime'] == null
+        ? null
+        : WorkingTime.fromJson(json['workingTime']);
+    pickupPolicy =
+        json['pickup'] == null ? null : PickupPolicy.fromJson(json['pickup']);
+    deliveryPolicy = json['delivery'] == null
+        ? null
+        : DeliveryPolicy.fromJson(json['delivery']);
+    returnPolicy =
+        json['return'] == null ? null : ReturnPolicy.fromJson(json['return']);
+    reservationPolicy = json['reservation'] == null
+        ? null
+        : ReservationPolicy.fromJson(json['reservation']);
+    orderPolicy =
+        json['order'] == null ? null : OrderPolicy.fromJson(json['order']);
   }
 
   String toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    
-    data['workingTime'] = workingTimePolicy == null ? null :  workingTimePolicy!.toJson();
-    
-    data['pickup'] = pickupPolicy == null ? null :  pickupPolicy!.toJson();
 
-    data['delivery'] = deliveryPolicy == null ? null :  deliveryPolicy!.toJson();
+    data['workingTime'] =
+        workingTimePolicy == null ? null : workingTimePolicy!.toJson();
 
-    data['reservation'] = reservationPolicy == null ? null : this.reservationPolicy!.toJson();
+    data['pickup'] = pickupPolicy == null ? null : pickupPolicy!.toJson();
 
-    data['return'] = returnPolicy == null ? null :   returnPolicy!.toJson();
-    
-    data['order'] = orderPolicy == null ? null :   orderPolicy!.toJson();
+    data['delivery'] = deliveryPolicy == null ? null : deliveryPolicy!.toJson();
 
-    print(json.encode(data)) ;
+    data['reservation'] =
+        reservationPolicy == null ? null : this.reservationPolicy!.toJson();
+
+    data['return'] = returnPolicy == null ? null : returnPolicy!.toJson();
+
+    data['order'] = orderPolicy == null ? null : orderPolicy!.toJson();
+
+    print(json.encode(data));
     return json.encode(data);
   }
 }
@@ -383,13 +396,13 @@ class ShippingRefund {
 }
 
 class WorkingTime {
-  String? openTime;
-  String? closeTime;
+  TimeOfDay? openTime; // Initialize with default values
+  TimeOfDay? closeTime; // Initialize with default values
 
-  WorkingTime({
-    this.openTime,
-    this.closeTime,
-  });
+  WorkingTime({TimeOfDay? openTime, TimeOfDay? closeTime}) {
+    this.openTime = openTime ?? TimeOfDay(hour: 0, minute: 0);
+    this.closeTime = closeTime ?? TimeOfDay(hour: 0, minute: 0);
+  }
 
   factory WorkingTime.fromJson(Map<String, dynamic> json) {
     return WorkingTime(

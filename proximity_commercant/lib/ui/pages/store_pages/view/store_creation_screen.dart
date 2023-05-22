@@ -112,6 +112,78 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
     }
   }
 
+  List<Day> selectedDays = [];
+  Map<Day, List<WorkingTime>> dayWorkingTimes = {};
+  //final storeCreation= Provider.of<StoreCreationValidation>(context);
+
+  Widget buildOpenDayList() {
+    return Column(
+      children: Day.values.map((day) {
+        final dayName = day.toString().split('.').last;
+        return Column(
+          children: [
+            CheckboxListTile(
+              title: Text(dayName),
+              value: selectedDays.contains(day),
+              onChanged: (value) {
+                setState(() {
+                  if (value!) {
+                    selectedDays.add(day);
+                    dayWorkingTimes[day] = [];
+                  } else {
+                    selectedDays.remove(day);
+                    dayWorkingTimes.remove(day);
+                  }
+                });
+              },
+            ),
+            if (selectedDays.contains(day))
+              /* Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: dayWorkingTimes[day]?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    WorkingTime workingTime = dayWorkingTimes[day]![index];
+                    return getTimeRange(
+                        storeCreation, context, workingTime);
+                  },
+                ),
+              ),*/
+              if (selectedDays.contains(day))
+                Padding(
+                  padding: const EdgeInsets.all(normal_100),
+                  child: TertiaryButton(
+                    onPressed: () {
+                      setState(() {
+                        dayWorkingTimes[day]
+                            ?.add(WorkingTime(openTime: null, closeTime: null));
+                      });
+                    },
+                    title: "Add working time",
+                  ),
+                ),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+  Widget buildOpenDaysAndWorkingTimesWidget() {
+    return Column(
+      children: [
+        buildOpenDayList(),
+      ],
+    );
+  }
+
+  List<WorkingTime> workingTimes = [];
+  Map<String, String> workingTimesOptions = {
+    "1": "Fixed Daily Schedule",
+    "2": "Customized Working Hours"
+  };
+
   Policy? policyResult;
   @override
   Widget build(BuildContext context) {
@@ -206,7 +278,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
               const SizedBox(height: normal_100),
 
-              SectionDivider(
+              /* SectionDivider(
                   leadIcon: Icons.timer_outlined,
                   title: 'Working time.',
                   color: redSwatch.shade500),
@@ -286,7 +358,190 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                               ),
                             ))),
                   ])),
-              //  TimeRangeUI(),
+              //  TimeRangeUI(),*/
+              SectionDivider(
+                  leadIcon: Icons.timer_outlined,
+                  title: 'Working time.',
+                  color: redSwatch.shade500),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                  child: /* Selector<StoreService, List<Category>?>(
+                    selector: (_, storeService) =>
+                        storeService.getStoreById(product.storeId!).categories,
+                    builder: (context, categories, child) {
+                      return */
+                      DropDownSelector<String>(
+                          hintText: 'Select working time option.',
+                          savedValue: storeCreationValidation.workingTimeOption,
+                          onChanged:
+                              storeCreationValidation.changeWorkingTimeOption,
+                          items: workingTimesOptions!.entries
+                              .map((item) => DropdownItem<String>(
+                                  value: item.key,
+                                  child: Text("${item.value}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w600))))
+                              .toList())
+                  // }),
+                  ),
+              storeCreationValidation.workingTimeOption == "1"
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: normal_100),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: normal_100),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: workingTimes.length,
+                              itemBuilder: (context, index) {
+                                WorkingTime workingTime = workingTimes[index];
+                                return getTimeRange(storeCreationValidation,
+                                    context, workingTime);
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(normal_100),
+                            child: TertiaryButton(
+                              onPressed: () {
+                                setState(() {
+                                  workingTimes.add(WorkingTime(
+                                      openTime: null, closeTime: null));
+                                });
+                              },
+                              title: "Add working time",
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  : Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: normal_100),
+                      child: Column(
+                        children: [
+                          Column(
+                            children: Day.values.map((day) {
+                              final dayName = day.toString().split('.').last;
+                              return Column(
+                                children: [
+                                  CheckboxListTile(
+                                    activeColor:
+                                        Color(0xFF2196F3), // bluewatch color
+                                    checkColor: Colors
+                                        .white, // contrasting color (white)
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: normal_150),
+                                    controlAffinity:
+                                        ListTileControlAffinity.trailing,
+                                    title: Text(
+                                      dayName,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: selectedDays.contains(day)
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: selectedDays.contains(day)
+                                            ? Colors.black
+                                            : Colors.grey,
+                                      ),
+                                      /*Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),*/
+                                    ),
+                                    value: selectedDays.contains(day),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        if (value!) {
+                                          selectedDays.add(day);
+                                          dayWorkingTimes[day] = [];
+                                        } else {
+                                          selectedDays.remove(day);
+                                          dayWorkingTimes.remove(day);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  if (selectedDays.contains(day))
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: normal_100),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount:
+                                            dayWorkingTimes[day]?.length ?? 0,
+                                        itemBuilder: (context, index) {
+                                          WorkingTime workingTime =
+                                              dayWorkingTimes[day]![index];
+                                          return getTimeRange(
+                                              storeCreationValidation,
+                                              context,
+                                              workingTime);
+                                        },
+                                      ),
+                                    ),
+                                  if (selectedDays.contains(day))
+                                    Padding(
+                                      padding: const EdgeInsets.all(normal_100),
+                                      child: TertiaryButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            dayWorkingTimes[day]?.add(
+                                                WorkingTime(
+                                                    openTime: null,
+                                                    closeTime: null));
+                                          });
+                                        },
+                                        title: "Add working time",
+                                      ),
+                                    ),
+                                ],
+                              );
+                            }).toList(),
+                          )
+                        ],
+                      ),
+                    ), //buildOpenDaysAndWorkingTimesWidget(),
+              // to do : delete that
+              /*   Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: workingTimes.length,
+                  itemBuilder: (context, index) {
+                    WorkingTime workingTime = workingTimes[index];
+                    return getTimeRange(
+                        storeCreationValidation, context, workingTime);
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(normal_100),
+                child: TertiaryButton(
+                  onPressed: () {
+                    setState(() {
+                      workingTimes
+                          .add(WorkingTime(openTime: null, closeTime: null));
+                    });
+                  },
+                  title: "Add working time",
+                ),
+              ),*/
 
               /// Address
               SectionDivider(
@@ -487,7 +742,90 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           ])));
         }));
   }
+
+  Padding getTimeRange(StoreCreationValidation storeCreationValidation,
+      BuildContext context, WorkingTime workingTime) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: normal_100, vertical: small_100),
+      child: Row(children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: small_100),
+            child: TimeButton(
+              onPressed: (() async {
+                TimeOfDay? selectedTime = await storeCreationValidation
+                    .getStartTime(context, storeCreationValidation.openTime);
+                setState(() {
+                  workingTime.openTime = selectedTime;
+                });
+              }),
+              text: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${workingTime.openTime?.hour.toString().padLeft(2, '0')}:${workingTime.openTime?.minute.toString().padLeft(2, '0')}',
+                      style: const TextStyle(fontSize: 15),
+                      textAlign: TextAlign.center,
+                    ),
+                    Icon(
+                      Icons.timer_outlined,
+                      size: normal_200,
+                      color: redSwatch.shade500,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: small_100),
+          child: Text(
+            'To',
+            style: const TextStyle(fontSize: 15),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: small_100),
+            child: TimeButton(
+              onPressed: (() async {
+                TimeOfDay? selectedTime = await storeCreationValidation
+                    .getClosingTime(context, storeCreationValidation.closeTime);
+                setState(() {
+                  workingTime.closeTime = selectedTime;
+                });
+              }),
+              text: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${workingTime.closeTime?.hour.toString().padLeft(2, '0')}:${workingTime.closeTime?.minute.toString().padLeft(2, '0')}',
+                      style: const TextStyle(fontSize: 15),
+                      textAlign: TextAlign.center,
+                    ),
+                    Icon(
+                      Icons.timer_outlined,
+                      size: normal_200,
+                      color: redSwatch.shade500,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
 }
+
 
 /*
 import 'package:flutter/material.dart';

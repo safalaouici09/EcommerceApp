@@ -22,7 +22,9 @@ class StoreCreationValidation with ChangeNotifier {
 
   TimeOfDay? _openTime = TimeOfDay(hour: 09, minute: 00);
   TimeOfDay? _closeTime = TimeOfDay(hour: 18, minute: 00);
+  List<WorkingTime> _storeWorkingTimes = [];
   Address _storeAddress = Address();
+  String? _workingTimeOption;
   List<dynamic> _storeImages = [];
   List<String> _deletedImages = [];
   Policy? _policy = null;
@@ -64,6 +66,7 @@ class StoreCreationValidation with ChangeNotifier {
 
   // Getters
   ValidationItem get storeName => _storeName;
+  String? get workingTimeOption => _workingTimeOption;
 
   ValidationItem get storeCategory => _storeCategory;
 
@@ -206,30 +209,37 @@ class StoreCreationValidation with ChangeNotifier {
     notifyListeners();
   }
 
-  getStartTime(BuildContext context, TimeOfDay? initTime) async {
+  void changeWorkingTimeOption(String value, int index) {
+    _workingTimeOption = value;
+    notifyListeners();
+  }
+
+  Future<TimeOfDay?>? getStartTime(
+      BuildContext context, TimeOfDay? initTime) async {
     var newOpenTime = await showTimePicker(
       context: context,
       initialTime: initTime!,
     );
     if (newOpenTime == null) {
-      return;
+      return initTime;
     } else {
-      _openTime = newOpenTime;
+      return newOpenTime;
     }
-    notifyListeners();
+    //notifyListeners();
   }
 
-  getClosingTime(BuildContext context, TimeOfDay? initTime) async {
+  Future<TimeOfDay?> getClosingTime(
+      BuildContext context, TimeOfDay? initTime) async {
     var newCloseTime =
         await showTimePicker(context: context, initialTime: initTime!);
     // notifyListeners();
 
     if (newCloseTime == null) {
-      return;
+      return initTime;
     } else {
-      _closeTime = newCloseTime;
+      return newCloseTime;
     }
-    notifyListeners();
+    // notifyListeners();
   }
 
   /*  if (selfPickUplMaxDays != null) {
