@@ -25,8 +25,8 @@ class _RejectedTabViewState extends State<RejectedTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.canceledOrders == null && _index == 0) {
-      ordersService.getCanceledOrders();
+    if (ordersService.orders == null && _index == 0) {
+      ordersService.getOrders("all", "Canceled");
     }
     return Column(children: [
       Material(
@@ -41,7 +41,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getCanceledOrders();
+                    ordersService.getOrders("all", "Canceled");
                     setState(() {
                       _index = 0;
                     });
@@ -73,7 +73,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getCanceledOrders();
+                    ordersService.getOrders("pickup", "Canceled");
                     setState(() {
                       _index = 1;
                     });
@@ -104,9 +104,12 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 2;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("delivery", "Canceled");
+                    setState(() {
+                      _index = 2;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -133,9 +136,12 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 3;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("reservation", "Canceled");
+                    setState(() {
+                      _index = 3;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -222,9 +228,9 @@ class _RejectedTabViewState extends State<RejectedTabView> {
       Expanded(child: () {
         switch (_index) {
           case 0:
-            return (ordersService.canceledOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.canceledOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? const NoResults(
                         icon: ProximityIcons.rejected,
                         message: 'There are no Rejected Orders.')
@@ -233,15 +239,31 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.canceledOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.canceledOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
           case 1:
-            return (ordersService.canceledOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.canceledOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? const NoResults(
                         icon: ProximityIcons.rejected,
                         message: 'There are no Rejected Orders.')
@@ -250,19 +272,31 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.canceledOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.canceledOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
           case 2:
-            return const NoResults(
-                icon: ProximityIcons.rejected,
-                message: 'There are no Rejected In Preparation Orders.');
-          default:
-            return (ordersService.canceledOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.canceledOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? const NoResults(
                         icon: ProximityIcons.rejected,
                         message: 'There are no Rejected Orders.')
@@ -271,9 +305,58 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.canceledOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.canceledOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
+                        ),
+                      );
+          default:
+            return (ordersService.loadingOrders)
+                ? const Center(child: CircularProgressIndicator())
+                : (ordersService.orders!.isEmpty)
+                    ? const NoResults(
+                        icon: ProximityIcons.rejected,
+                        message: 'There are no Rejected Orders.')
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: normal_100),
+                        itemCount: ordersService.orders!.length,
+                        itemBuilder: (_, i) => OrderTile(
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
         }

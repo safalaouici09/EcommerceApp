@@ -259,6 +259,7 @@ class CartService with ChangeNotifier {
                                 (res.data['maxDeliveryFixe'] ?? 0).toDouble(),
                             maxDeliveryKm:
                                 (res.data['maxDeliveryKm'] ?? 0).toDouble(),
+                            reservation: false,
                           )));
             }
           } else {
@@ -403,5 +404,137 @@ class CartService with ChangeNotifier {
     if (_cart.cartItemsKeys!.isEmpty) cartBox.delete(_cart.storeId);
     cartItemsBox.delete(key);
     notifyListeners();
+  }
+
+  Future reservation(BuildContext context, String? orderId) async {
+    /// open hive box
+    ///
+    print("reservation");
+    var credentialsBox = Boxes.getCredentials();
+    String? _id = credentialsBox.get('id');
+    String? _token = credentialsBox.get('token');
+
+    if (_token != null) {
+      // _loadingOrder = true;
+      // notifyListeners();
+
+      //get pre order item from backend (current values) ;
+      try {
+        Dio dio = Dio();
+        dio.options.headers["token"] = "Bearer $_token";
+        var res = await dio.post(BASE_API_URL + '/order/preReeservation',
+            data: {"orderId": orderId});
+        if (res.statusCode == 200) {
+          List<ProductCart> preOrderProducts = [];
+          if (res.data["items"] != null) {
+            var products = json.decode(res.data["items"]);
+            for (var prod in products) {
+              if (prod["error"] == null) {
+                String prodName = prod["name"] + " ( ";
+                List<Map<String, String>> preOrderItemCharac = [];
+                prod["characterstics"].forEach((item) {
+                  prodName += item["value"].toString() + " , ";
+                  preOrderItemCharac.add({
+                    "name": item["name"].toString(),
+                    "value": item["value"].toString()
+                  });
+                });
+
+                var prodInsert = ProductCart(
+                  id: prod["id"],
+                  productId: prod["productId"],
+                  variantId: prod["variantId"],
+                  name: prodName.substring(0, prodName.length - 2) + ")",
+                  characteristics: preOrderItemCharac,
+                  image: prod["image"],
+                  price: double.parse(prod["price"].toString()),
+                  quantity: prod["quantity"],
+                  discount: prod["discount"].toDouble(),
+                  reservationPolicy: prod["reservationPolicy"] != null,
+                  deliveryPolicy: prod["deliveryPolicy"] != null,
+                  pickupPolicy: prod["pickupPolicy"] != null,
+                  reservationP: double.parse(prod["reservationP"].toString()),
+                  deliveryP: double.parse(prod["deliveryP"].toString()),
+                  reservation: prod["reservation"] == true ||
+                      prod["reservation"] == 'true',
+                  delivery:
+                      prod["delivery"] == true || prod["delivery"] == 'true',
+                  pickup: prod["pickup"] == true || prod["pickup"] == 'true',
+                );
+                preOrderProducts.add(prodInsert);
+              }
+            }
+          }
+
+          _loadingOrder = false;
+          notifyListeners();
+
+          /// Display Results Message
+          ToastSnackbar().init(context).showToast(
+              message: "Loading Order Validation with success",
+              type: ToastSnackbarType.success);
+
+          if (preOrderProducts.isNotEmpty) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CartSliderScreen(
+                        products: preOrderProducts,
+                        cartId: res.data["cartId"],
+                        storeId: res.data["storeId"],
+                        orderId: orderId,
+                        storeAddress: Address(
+                          lat: (res.data['storeAdresse']['coordinates'][1] ?? 0)
+                              .toDouble(),
+                          lng: (res.data['storeAdresse']['coordinates'][0] ?? 0)
+                              .toDouble(),
+                          city: "",
+                          streetName: "",
+                          postalCode: "",
+                          countryCode: "",
+                          countryName: "",
+                          fullAddress: "",
+                          locality: "",
+                          region: "",
+                        ),
+                        maxDeliveryFixe:
+                            (res.data['maxDeliveryFixe'] ?? 0).toDouble(),
+                        maxDeliveryKm:
+                            (res.data['maxDeliveryKm'] ?? 0).toDouble(),
+                        reservation: true)));
+          }
+        } else {
+          ToastSnackbar()
+              .init(context)
+              .showToast(message: "Try again !", type: ToastSnackbarType.error);
+        }
+
+        _loadingOrder = false;
+        notifyListeners();
+      } on DioError catch (e) {
+        _loadingOrder = false;
+        notifyListeners();
+
+        if (e.response != null) {
+          /// Display Error Response
+          ///
+          // stop the loading animation
+          print(e.response);
+          ToastSnackbar().init(context).showToast(
+              message: "${e.response}", type: ToastSnackbarType.error);
+        } else {
+          print(e.message);
+
+          /// Display Error Message
+          ToastSnackbar()
+              .init(context)
+              .showToast(message: e.message, type: ToastSnackbarType.error);
+        }
+      }
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => SignupScreen()),
+          (Route<dynamic> route) => true);
+    }
   }
 }

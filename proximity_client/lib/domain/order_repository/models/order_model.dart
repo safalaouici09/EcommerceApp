@@ -6,8 +6,6 @@ import 'package:proximity_client/domain/user_repository/models/models.dart';
 
 import 'order_item_model.dart';
 
-enum OrderStatus { pending, succeeded, delivered, cancelled }
-
 class Order {
   String? id;
   String? clientId;
@@ -30,12 +28,18 @@ class Order {
   bool? reservation;
   bool? delivery;
   bool? pickup;
+  bool? canceled;
+  Map<String, String>? canceledBy;
 
   DateTime? deliveryDate;
   DateTime? timeLimit;
   List<OrderItem>? items;
 
-  OrderStatus? orderStatus;
+  bool? returnOrder;
+  List<OrderItem>? returnedItems;
+  String? returnMotif;
+
+  String? orderStatus;
 
   Order(
       {this.id,
@@ -57,7 +61,9 @@ class Order {
       this.deliveryDate,
       this.timeLimit,
       this.items,
-      this.orderStatus});
+      this.orderStatus,
+      this.canceled,
+      this.canceledBy});
 
   Order.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
@@ -86,6 +92,9 @@ class Order {
         orderDate = DateTime.now(),
         deliveryDate = DateTime.now(),
         items = OrderItem.orderItemsFromJsonList(parsedJson['items']),
+        returnedItems = parsedJson['returnItems'] != null
+            ? OrderItem.orderItemsFromJsonList(parsedJson['returnItems'])
+            : null,
         paymentInfo = Bill.fromJson(parsedJson['paymentInfos']),
         shippingAddress = Address(
             city: parsedJson['deliveryAddresse'] != null &&
@@ -112,20 +121,19 @@ class Order {
         delivery = parsedJson['delivery'],
         pickup = parsedJson['pickUp'],
         reservation = parsedJson['reservation'],
-        orderStatus = (() {
-          switch (parsedJson['status']) {
-            case "Pending":
-              return OrderStatus.pending;
-            case "succeeded":
-              return OrderStatus.succeeded;
-            case "cancelled":
-              return OrderStatus.cancelled;
-            case "delivered":
-              return OrderStatus.delivered;
-            default:
-              return OrderStatus.pending;
-          }
-        }());
+        returnOrder = parsedJson['return'],
+        returnMotif = parsedJson['returnMotif'],
+        canceled = parsedJson['canceled'] ?? false,
+        canceledBy = parsedJson['canceledBy'] != null &&
+                parsedJson['canceledBy']["userId"] != null
+            ? {
+                "userId": parsedJson['canceledBy']["userId"],
+                "name": parsedJson['canceledBy']["name"],
+                "image": BASE_IMG_URL + '/' + parsedJson['canceledBy']["image"],
+                "motif": parsedJson['canceledBy']["motif"],
+              }
+            : null,
+        orderStatus = parsedJson['status'];
 
   static List<Order> ordersFromJsonList(List<dynamic> parsedJson) {
     List<Order> _list = [];

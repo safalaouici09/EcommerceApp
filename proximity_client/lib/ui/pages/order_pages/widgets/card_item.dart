@@ -16,12 +16,14 @@ class CardItem extends StatelessWidget {
       {Key? key,
       required this.product,
       required this.orderSliderValidation,
-      this.shrinkWidth = true})
+      this.shrinkWidth = true,
+      this.reservation})
       : super(key: key);
 
   final ProductCart product;
   final bool shrinkWidth;
   final OrderSliderValidation orderSliderValidation;
+  final bool? reservation;
 
   @override
   Widget build(BuildContext context) {
@@ -128,26 +130,37 @@ class CardItem extends StatelessWidget {
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  QuantitySelector(
-                                      quantity: product.quantity ?? 0,
-                                      // maxQuantity: cartItem.quantity,
-                                      increaseQuantity: () => {
-                                            orderSliderValidation
-                                                .changeQuantity(
-                                                    (product.quantity ?? 0) + 1,
-                                                    product.id)
-                                          },
-                                      decreaseQuantity: () => {
-                                            if ((product.quantity ?? 0) > 1)
-                                              {
-                                                orderSliderValidation
-                                                    .changeQuantity(
-                                                        (product.quantity ??
-                                                                0) -
-                                                            1,
-                                                        product.id)
-                                              }
-                                          }),
+                                  if (reservation!)
+                                    Text("${product.quantity}",
+                                        style: TextStyle(
+                                            fontFamily: 'Nunito',
+                                            color: Color(0xFF136DA5),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis),
+                                  if (!reservation!)
+                                    QuantitySelector(
+                                        quantity: product.quantity ?? 0,
+                                        // maxQuantity: cartItem.quantity,
+                                        increaseQuantity: () => {
+                                              orderSliderValidation
+                                                  .changeQuantity(
+                                                      (product.quantity ?? 0) +
+                                                          1,
+                                                      product.id)
+                                            },
+                                        decreaseQuantity: () => {
+                                              if ((product.quantity ?? 0) > 1)
+                                                {
+                                                  orderSliderValidation
+                                                      .changeQuantity(
+                                                          (product.quantity ??
+                                                                  0) -
+                                                              1,
+                                                          product.id)
+                                                }
+                                            }),
                                 ]),
                           ]))),
             ])));
@@ -183,7 +196,7 @@ class CardItem extends StatelessWidget {
                           ))
                     ])
                   : _productCard,
-              if (product.reservationPolicy == true)
+              if (product.reservationPolicy == true && !reservation!)
                 ListToggle(
                     title: 'Reservation',
                     value: product.reservation,
@@ -209,19 +222,78 @@ class CardItem extends StatelessWidget {
                     toggleId: product.id,
                     leadIcon: ProximityIcons.info,
                     importantMessage: ''),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(
-                    (product.discount != 0.0)
-                        ? '€ ${double.parse((product.price! * (product.quantity) * ((product.reservation ? (product.reservationP) : 1)) * (1 - product.discount)).toStringAsFixed(2))}'
-                        : '€ ${double.parse((product.price! * (product.quantity) * ((product.reservation ? (product.reservationP) : 1)) * (1)).toStringAsFixed(2))}',
-                    style: TextStyle(
-                        fontFamily: 'Nunito',
-                        color: Color(0xFF136DA5),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis),
-              ]),
+              if (!reservation!)
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                      (product.discount != 0.0)
+                          ? '€ ${double.parse((product.price! * (product.quantity) * ((product.reservation ? (product.reservationP) : 1)) * (((reservation!) ? (1 - product.reservationP) : 1)) * (1 - product.discount)).toStringAsFixed(2))}'
+                          : '€ ${double.parse((product.price! * (product.quantity) * ((product.reservation ? (product.reservationP) : 1)) * (((reservation!) ? (1 - product.reservationP) : 1)) * (1)).toStringAsFixed(2))}',
+                      style: TextStyle(
+                          fontFamily: 'Nunito',
+                          color: Color(0xFF136DA5),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
+                ]),
+              if (reservation!)
+                SizedBox(
+                  height: 20,
+                ),
+              if (reservation!)
+                Container(
+                    // decoration: BoxDecoration(
+                    //   color: Color(0xFF136DA5),
+                    // ),
+                    child: Padding(
+                  padding: const EdgeInsets.all(small_100),
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            child: Column(
+                          children: [
+                            Text(
+                              'Left to pay',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Colors.black),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '${((1 - product.reservationP) * 100).toInt()}%',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(color: Color(0xFF136DA5)),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    (product.discount != 0.0)
+                                        ? '€ ${double.parse((product.price! * (product.quantity) * ((product.reservation ? (product.reservationP) : 1)) * (((reservation!) ? (1 - product.reservationP) : 1)) * (1 - product.discount)).toStringAsFixed(2))}'
+                                        : '€ ${double.parse((product.price! * (product.quantity) * ((product.reservation ? (product.reservationP) : 1)) * (((reservation!) ? (1 - product.reservationP) : 1)) * (1)).toStringAsFixed(2))}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .copyWith(color: Color(0xFF136DA5)),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        )),
+                      ]),
+                ))
             ])));
   }
 }

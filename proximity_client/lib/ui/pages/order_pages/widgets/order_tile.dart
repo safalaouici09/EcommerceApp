@@ -6,15 +6,25 @@ import 'package:proximity_client/ui/pages/pages.dart';
 import 'package:intl/intl.dart';
 
 class OrderTile extends StatelessWidget {
-  const OrderTile({Key? key, required this.order}) : super(key: key);
+  const OrderTile(
+      {Key? key,
+      required this.order,
+      this.action,
+      this.actionCancel,
+      this.actionReturn})
+      : super(key: key);
 
   final Order order;
+  final VoidCallback? action;
+  final Function? actionCancel;
+  final Function? actionReturn;
 
   @override
   Widget build(BuildContext context) {
     /// get Locale
     final Locale _locale = Localizations.localeOf(context);
-
+    final ordersService = Provider.of<OrderService>(context);
+    final orderId = order.id;
     return Container(
         margin: const EdgeInsets.all(normal_100),
         decoration: BoxDecoration(
@@ -105,13 +115,31 @@ class OrderTile extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                  color: Colors.deepOrange,
+                  color: order.canceled == true
+                      ? Colors.red
+                      : order.orderStatus == "InPreparation"
+                          ? Colors.cyan
+                          : order.orderStatus == "AwaitingRecovery" ||
+                                  order.orderStatus == "OnTheWay"
+                              ? Colors.deepPurple
+                              : order.orderStatus == "Recovered" ||
+                                      order.orderStatus == "Delivered" ||
+                                      order.orderStatus == "Reserved"
+                                  ? Colors.green
+                                  : Colors.deepOrange,
                   borderRadius: BorderRadius.only(
                       topLeft: normalRadius, bottomLeft: normalRadius)),
               child:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
-                  'Pending',
+                  () {
+                    RegExp regExp = RegExp(r"([A-Z])");
+                    String replaced = order.orderStatus!.replaceAllMapped(
+                        regExp, (match) => " " + (match.group(0) ?? ""));
+                    return order.canceled == true
+                        ? "Canceled [ $replaced ]"
+                        : replaced;
+                  }(),
                   style: TextStyle(
                       fontSize: 12.0,
                       fontWeight: FontWeight.bold,
@@ -211,22 +239,175 @@ class OrderTile extends StatelessWidget {
               ),
             ),
           ]),
-          if (order.orderStatus != OrderStatus.cancelled)
+          if (order.returnOrder == true)
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Expanded(
+                child: Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Return",
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFEFEFEF)),
+                              ),
+                            ]),
+                      ],
+                    )),
+              )
+            ]),
+
+          if (order.returnOrder == true)
+            ...List.generate(
+                order.returnedItems!.length,
+                (index) => OrderItemTile(
+                      orderItem: order.items![index],
+                      returnedItem: true,
+                    )),
+          const Divider(height: tiny_50, thickness: tiny_50),
+
+          if (order.orderStatus != 'Canceled')
             Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (order.orderStatus == OrderStatus.pending) ...[
+                      if (["Recovered", "Delivered"].indexWhere(
+                                  (item) => item == order.orderStatus) !=
+                              -1 &&
+                          order.returnOrder == false) ...[
                         Expanded(
                             child: TertiaryButton(
-                                onPressed: () => {
-                                      PaymentDialogs.cancelOrder(
-                                          context, order.id)
-                                    },
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ReturnOrderScreen(
+                                                order: order,
+                                                actionReturn: actionReturn,
+                                              )));
+                                },
+                                title: "Ask for Return")),
+                      ],
+                      if ([
+                            "Reserved"
+                          ].indexWhere((item) => item == order.orderStatus) !=
+                          -1) ...[
+                        Expanded(
+                            child: TertiaryButton(
+                                onPressed: () {
+                                  action!.call();
+                                  // PaymentDialogs.cancelOrder(
+                                  //     context, order.id)
+                                },
+                                title: "finalize your reservation")),
+                      ],
+                      if ([
+                                "Recovered",
+                                "Delivered",
+                                "Reserved",
+                              ].indexWhere(
+                                  (item) => item == order.orderStatus) ==
+                              -1 &&
+                          order.canceled != true) ...[
+                        Expanded(
+                            child: TertiaryButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CancelOrderScreen(
+                                                orderId: orderId,
+                                                actionCancel: actionCancel,
+                                              )));
+                                },
                                 title: "Cancel.")),
-                      ]
-                    ]))
+                        // Expanded(
+                        //     child: TertiaryButton(
+                        //         onPressed: () => {action!.call()},
+                        //         title: order.orderStatus == "Pending"
+                        //             ? "Approve."
+                        //             : "Next")),
+                      ],
+                    ])),
+          if (order.canceled == true) ...[
+            Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: normalRadius, bottomRight: normalRadius),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(small_100),
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (order.canceledBy!["image"] != null)
+                          SizedBox(
+                              height: large_150,
+                              width: large_150,
+                              child: Stack(
+                                  alignment: Alignment.topRight,
+                                  children: [
+                                    Positioned.fill(
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    normalRadius),
+                                            child: FittedBox(
+                                                fit: BoxFit.cover,
+                                                child: (order.canceledBy![
+                                                            "image"] !=
+                                                        null)
+                                                    ? Image.network(order
+                                                        .canceledBy!["image"]!)
+                                                    : Image.network(
+                                                        "https://cdn-icons-png.flaticon.com/512/5853/5853761.png")))),
+                                  ])),
+                        if (order.canceledBy!["image"] == null)
+                          SmallIconButton(
+                              onPressed: () {},
+                              icon: Icon(ProximityIcons.store,
+                                  color: Theme.of(context).primaryColor)),
+                        const SizedBox(width: small_100),
+                        Expanded(
+                            child: Column(
+                          children: [
+                            Text(
+                              '${order.canceledBy!["name"]}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              height: small_100,
+                            ),
+                            Text(
+                              '${order.canceledBy!["motif"]}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            )
+                          ],
+                        )),
+                      ]),
+                ))
+          ]
         ]));
   }
 }

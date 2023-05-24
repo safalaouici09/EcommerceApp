@@ -155,7 +155,7 @@ class StoreDialogs {
                                 left: normal_100,
                                 right: normal_100),
                             child: Text(
-                                'Thank you for your interest in creating a store on our platform./n Before we can activate your store, we need to verify its information to ensure that it complies with our policies./n we will get back to you as soon as possible.',
+                                'Thank you for your interest in creating a store on our platform.\n Before we can activate your store, we need to verify its information to ensure that it complies with our policies.\n we will get back to you as soon as possible.',
                                 style: Theme.of(context).textTheme.subtitle2,
                                 textAlign: TextAlign.center)),
                         Padding(

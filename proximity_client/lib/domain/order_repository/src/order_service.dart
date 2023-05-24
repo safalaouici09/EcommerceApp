@@ -5,35 +5,17 @@ import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 
 class OrderService with ChangeNotifier {
-  List<Order>? _pendingOrders;
-  List<Order>? _selfPickupOrders;
-  List<Order>? _deliveryOrders;
-  List<Order>? _reservationOrders;
-  List<Order>? _canceledOrders;
-  List<Order>? _history;
-  List<Order>? _returnOrders = [];
-  List<Order>? _refundOrders = [];
-
   // essential values for the UI
   late bool _loading;
+  late bool _loadingOrders;
+  late bool _loadingCancel;
+  List<Order>? _orders = [];
 
-  List<Order>? get pendingOrders => _pendingOrders;
-
-  List<Order>? get selfPickupOrders => _selfPickupOrders;
-
-  List<Order>? get deliveryOrders => _deliveryOrders;
-
-  List<Order>? get reservationOrders => _reservationOrders;
-
-  List<Order>? get canceledOrders => _canceledOrders;
-
-  List<Order>? get history => _history;
-
-  List<Order>? get refundOrders => _refundOrders;
-
-  List<Order>? get returnOrders => _returnOrders;
+  List<Order>? get orders => _orders;
 
   bool get loading => _loading;
+  bool get loadingOrders => _loadingOrders;
+  bool get loadingCancel => _loadingCancel;
 
   OrderService() {
     _loading = false;
@@ -85,44 +67,11 @@ class OrderService with ChangeNotifier {
     return false;
   }
 
-  /// GET methods
-  Future getPendingOrders() async {
-    print("ws lanched");
-
-    /// open hive box
-    var credentialsBox = Boxes.getCredentials();
-    String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
-
-    /// dataForm is already a parameter
-
-    /// post the dataForm via dio call
-    try {
-      Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/$_id/status/Pending');
-      notifyListeners();
-      if (res.statusCode == 200) {
-        print(res);
-        _pendingOrders = [];
-        _pendingOrders!.addAll(Order.ordersFromJsonList(res.data));
-        notifyListeners();
-      }
-    } on DioError catch (e) {
-      if (e.response != null) {
-        /// Toast Message to print the message
-        print('${e.response!}');
-      } else {
-        /// Error due to setting up or sending the request
-        print('Error sending request!');
-        print(e.message);
-      }
-    }
-  }
-
-  /// GET methods
-  Future getPickUpOrders() async {
-    print("ws lanched");
+  Future getOrders(String orderType, String status) async {
+    print("ws lanched : $orderType [ $status ]");
+    _orders = [];
+    _loadingOrders = true;
+    notifyListeners();
 
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
@@ -136,15 +85,19 @@ class OrderService with ChangeNotifier {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
       var res =
-          await dio.get(BASE_API_URL + '/order/pickup/$_id/status/Pending');
+          await dio.get(BASE_API_URL + '/order/$orderType/$_id/status/$status');
       notifyListeners();
       if (res.statusCode == 200) {
-        print(res);
-        _selfPickupOrders = [];
-        _selfPickupOrders!.addAll(Order.ordersFromJsonList(res.data));
+        print(res.data.length);
+        _orders = [];
+        _orders!.addAll(Order.ordersFromJsonList(res.data));
         notifyListeners();
       }
+      _loadingOrders = false;
+      notifyListeners();
     } on DioError catch (e) {
+      _loadingOrders = false;
+      notifyListeners();
       if (e.response != null) {
         /// Toast Message to print the message
         print('${e.response!}');
@@ -156,25 +109,43 @@ class OrderService with ChangeNotifier {
     }
   }
 
-  Future getDeliveryOrders() async {
+  Future updateStatus(String orderId, String status, String? type,
+      String? oldStatus, bool? reload) async {
+    print("ws lanched : $orderId [ $status ]");
+
+    // _loadingOrders = true;
+    // notifyListeners();
+
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
+    /// dataForm is already a parameter
+
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
+      FormData _formData =
+          FormData.fromMap({"status": status, "orderId": orderId});
       var res =
-          await dio.get(BASE_API_URL + '/order/delivery/$_id/status/Pending');
+          await dio.post(BASE_API_URL + '/order/update/$_id', data: _formData);
       notifyListeners();
       if (res.statusCode == 200) {
-        _deliveryOrders = [];
-        _deliveryOrders!.addAll(Order.ordersFromJsonList(res.data));
-        notifyListeners();
+        // print(res.data.length);
+        if (reload == true) {
+          getOrders(type ?? "", oldStatus ?? "");
+        } else {
+          _orders!.removeWhere((item) => item.id == orderId);
+          notifyListeners();
+        }
       }
+      // _loadingOrders = false;
+      // notifyListeners();
     } on DioError catch (e) {
+      // _loadingOrders = false;
+      // notifyListeners();
       if (e.response != null) {
         /// Toast Message to print the message
         print('${e.response!}');
@@ -186,37 +157,13 @@ class OrderService with ChangeNotifier {
     }
   }
 
-  Future getReservationOrders() async {
-    /// open hive box
-    var credentialsBox = Boxes.getCredentials();
-    String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
+  Future cancelOrder(BuildContext context, String orderId, String motif,
+      String? type, String? oldStatus, bool? reload) async {
+    print("ws lanched : $orderId [ $motif ]");
 
-    /// post the dataForm via dio call
-    try {
-      Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio
-          .get(BASE_API_URL + '/order/reservation/$_id/status/Pending');
-      notifyListeners();
-      if (res.statusCode == 200) {
-        _reservationOrders = [];
-        _reservationOrders!.addAll(Order.ordersFromJsonList(res.data));
-        notifyListeners();
-      }
-    } on DioError catch (e) {
-      if (e.response != null) {
-        /// Toast Message to print the message
-        print('${e.response!}');
-      } else {
-        /// Error due to setting up or sending the request
-        print('Error sending request!');
-        print(e.message);
-      }
-    }
-  }
+    _loadingCancel = true;
+    notifyListeners();
 
-  Future getCanceledOrders() async {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
@@ -228,14 +175,24 @@ class OrderService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/$_id/status/delivered');
+      FormData _formData =
+          FormData.fromMap({"userId": _id, "orderId": orderId, "motif": motif});
+      var res = await dio.post(BASE_API_URL + '/order/cancel', data: _formData);
       notifyListeners();
       if (res.statusCode == 200) {
-        _canceledOrders = [];
-        _canceledOrders!.addAll(Order.ordersFromJsonList(res.data));
-        notifyListeners();
+        // print(res.data.length);
+        if (reload == true) {
+          getOrders(type ?? "", oldStatus ?? "");
+        } else {
+          _orders!.removeWhere((item) => item.id == orderId);
+          notifyListeners();
+        }
       }
+      _loadingCancel = false;
+      notifyListeners();
     } on DioError catch (e) {
+      _loadingCancel = false;
+      notifyListeners();
       if (e.response != null) {
         /// Toast Message to print the message
         print('${e.response!}');
@@ -245,9 +202,17 @@ class OrderService with ChangeNotifier {
         print(e.message);
       }
     }
+
+    Navigator.pop(context, true);
   }
 
-  Future getReviewedOrders() async {
+  Future returnOrder(BuildContext context, String orderId, String motif,
+      String returnItems, String? type, String? oldStatus, bool? reload) async {
+    print("ws return lanched : $orderId [ $motif ] [ $returnItems ]");
+
+    _loadingCancel = true;
+    notifyListeners();
+
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
@@ -259,14 +224,28 @@ class OrderService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res = await dio.get(BASE_API_URL + '/order/$_id/status/cancelled');
+      FormData _formData = FormData.fromMap({
+        "userId": _id,
+        "orderId": orderId,
+        "motif": motif,
+        "returnItems": returnItems
+      });
+      var res = await dio.post(BASE_API_URL + '/order/return', data: _formData);
       notifyListeners();
       if (res.statusCode == 200) {
-        _history = [];
-        _history!.addAll(Order.ordersFromJsonList(res.data));
-        notifyListeners();
+        // print(res.data.length);
+        if (reload == true) {
+          getOrders(type ?? "", oldStatus ?? "");
+        } else {
+          _orders!.removeWhere((item) => item.id == orderId);
+          notifyListeners();
+        }
       }
+      _loadingCancel = false;
+      notifyListeners();
     } on DioError catch (e) {
+      _loadingCancel = false;
+      notifyListeners();
       if (e.response != null) {
         /// Toast Message to print the message
         print('${e.response!}');
@@ -276,5 +255,7 @@ class OrderService with ChangeNotifier {
         print(e.message);
       }
     }
+
+    Navigator.pop(context, true);
   }
 }

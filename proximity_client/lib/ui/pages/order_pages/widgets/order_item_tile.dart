@@ -7,6 +7,7 @@ class OrderItemTile extends ProductTile {
   OrderItemTile({
     Key? key,
     required OrderItem orderItem,
+    bool? returnedItem,
   }) : super(
             key: key,
             product: orderItem.toProduct(),
@@ -17,5 +18,6 @@ class OrderItemTile extends ProductTile {
                 image: orderItem.image,
                 discount: orderItem.discount,
                 reservation: orderItem.reservation),
-            bottomRightChild: Text('x${orderItem.orderedQuantity}'));
+            bottomRightChild: Text(
+                'x${returnedItem == true ? orderItem.returnQuantity : orderItem.orderedQuantity}'));
 }

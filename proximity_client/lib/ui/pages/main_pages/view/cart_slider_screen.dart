@@ -21,14 +21,18 @@ class CartSliderScreen extends StatefulWidget {
       this.storeId,
       this.storeAddress,
       this.maxDeliveryFixe,
-      this.maxDeliveryKm})
+      this.maxDeliveryKm,
+      this.reservation,
+      this.orderId})
       : super(key: key);
   List<ProductCart> products;
   String? cartId;
   String? storeId;
+  String? orderId;
   Address? storeAddress;
   double? maxDeliveryFixe;
   double? maxDeliveryKm;
+  bool? reservation;
 
   @override
   State<CartSliderScreen> createState() => _CartSliderScreenState();
@@ -54,14 +58,17 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
             widget.storeId,
             widget.storeAddress,
             widget.maxDeliveryFixe,
-            widget.maxDeliveryKm),
+            widget.maxDeliveryKm,
+            widget.orderId),
         child: Consumer2<OrderSliderValidation, OrderService>(
             builder: (context, orderSliderValidation, orderService, child) {
           return Scaffold(
               appBar: AppBar(
                 title: Align(
                   alignment: Alignment.centerLeft,
-                  child: TopBar(title: "Order Validation"),
+                  child: TopBar(
+                      title:
+                          widget.reservation == true ? "Reservation" : "Order"),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0.0,
@@ -102,7 +109,11 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                             _currentStep == 2
                                 ? null
                                 : _currentStep == 3
-                                    ? Navigator.pop(context)
+                                    ? () {
+                                        orderService.getOrders(
+                                            "reservation", "all");
+                                        Navigator.pop(context);
+                                      }()
                                     : setState(() {
                                         _currentStep = _currentStep + 1;
                                       });
@@ -175,8 +186,10 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
             Column(children: [
               for (var item in orderSliderValidation.products)
                 CardItem(
-                    product: item,
-                    orderSliderValidation: orderSliderValidation),
+                  product: item,
+                  orderSliderValidation: orderSliderValidation,
+                  reservation: widget.reservation!,
+                ),
               if (deliveryProducts > 0)
                 ShippingAddressOrderScreen(
                     orderSliderValidation: orderSliderValidation),
@@ -201,7 +214,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
         content: Column(
           children: [
             Column(children: [
-              if (productReservationTotal != 0.0)
+              if (productReservationTotal != 0.0 && !widget.reservation!)
                 BillItem(
                     orderSliderValidation: orderSliderValidation,
                     reservationBill: true,
@@ -210,24 +223,30 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                     payment: false),
               if (productDeliveryTotal)
                 BillItem(
-                    orderSliderValidation: orderSliderValidation,
-                    reservationBill: false,
-                    deliveryBill: true,
-                    pickupBill: false,
-                    payment: false),
+                  orderSliderValidation: orderSliderValidation,
+                  reservationBill: false,
+                  deliveryBill: true,
+                  pickupBill: false,
+                  payment: false,
+                  reservation: widget.reservation ?? false,
+                ),
               if (productPickupTotal != 0.0)
                 BillItem(
-                    orderSliderValidation: orderSliderValidation,
-                    reservationBill: false,
-                    deliveryBill: false,
-                    pickupBill: true,
-                    payment: false),
-              BillItem(
                   orderSliderValidation: orderSliderValidation,
                   reservationBill: false,
                   deliveryBill: false,
-                  pickupBill: false,
-                  payment: false),
+                  pickupBill: true,
+                  payment: false,
+                  reservation: widget.reservation ?? false,
+                ),
+              BillItem(
+                orderSliderValidation: orderSliderValidation,
+                reservationBill: false,
+                deliveryBill: false,
+                pickupBill: false,
+                payment: false,
+                reservation: widget.reservation ?? false,
+              ),
             ]),
           ],
         ));

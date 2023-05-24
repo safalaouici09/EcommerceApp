@@ -11,6 +11,7 @@ class OrderItem {
   double? price;
   double discount;
   int orderedQuantity;
+  int? returnQuantity;
   double? reservation;
 
   OrderItem(
@@ -21,6 +22,7 @@ class OrderItem {
       this.price,
       this.discount = 0.0,
       this.orderedQuantity = 1,
+      this.returnQuantity = 0,
       this.reservation = 0.0});
 
   OrderItem.fromJson(Map<String, dynamic> parsedJson)
@@ -28,7 +30,10 @@ class OrderItem {
         name = parsedJson['name'],
         productId = parsedJson['productId'],
         variantId = parsedJson['variantId'],
-        orderedQuantity = parsedJson['quantity'],
+        orderedQuantity =
+            parsedJson['orderedQuantity'] ?? parsedJson['quantity'],
+        returnQuantity =
+            parsedJson['orderedQuantity'] != null ? parsedJson['quantity'] : 0,
         price = parsedJson['price'].toDouble(),
         discount = parsedJson['discount'].toDouble(),
         reservation = (parsedJson['reservation'] ?? 0.0).toDouble(),

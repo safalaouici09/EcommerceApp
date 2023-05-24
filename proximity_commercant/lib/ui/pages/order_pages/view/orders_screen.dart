@@ -45,9 +45,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   children: [
                     Expanded(
                         child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 0;
-                      }),
+                      onTap: () {
+                        ordersService.getOrders("all", "Pending");
+                        setState(() {
+                          _index = 0;
+                        });
+                      },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -77,7 +80,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     Expanded(
                         child: InkWell(
                       onTap: () {
-                        ordersService.getPickUpOrders();
+                        ordersService.getOrders("pickup", "all");
                         setState(() {
                           _index = 1;
                         });
@@ -113,7 +116,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     Expanded(
                         child: InkWell(
                       onTap: () {
-                        ordersService.getDeliveryOrders();
+                        ordersService.getOrders("delivery", "all");
                         setState(() {
                           _index = 2;
                         });
@@ -148,7 +151,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     Expanded(
                         child: InkWell(
                       onTap: () {
-                        ordersService.getReservationOrders();
+                        ordersService.getOrders("reservation", "all");
                         setState(() {
                           _index = 3;
                         });
@@ -182,9 +185,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 5;
-                      }),
+                      onTap: () {
+                        ordersService.getOrders("return", "all");
+                        setState(() {
+                          _index = 5;
+                        });
+                      },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -239,9 +245,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 6;
-                      }),
+                      onTap: () {
+                        ordersService.getOrders("refund", "all");
+                        setState(() {
+                          _index = 6;
+                        });
+                      },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -296,9 +305,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     )),
                     Expanded(
                         child: InkWell(
-                      onTap: () => setState(() {
-                        _index = 4;
-                      }),
+                      onTap: () {
+                        ordersService.getOrders("all", "Canceled");
+                        setState(() {
+                          _index = 4;
+                        });
+                      },
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

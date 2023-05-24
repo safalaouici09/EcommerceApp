@@ -13,6 +13,7 @@ class OrderSliderValidation with ChangeNotifier {
   List<ProductCart> _products = [];
   String? _cartId;
   String? _storeId;
+  String? _orderId;
 
   // Getters
   ShippingMethod? get shippingMethod => _shippingMethod;
@@ -40,6 +41,7 @@ class OrderSliderValidation with ChangeNotifier {
 
   String? get cartId => _cartId;
   String? get storeId => _storeId;
+  String? get orderId => _orderId;
 
   String? get cardNumber => _cardNumber;
   String? get expdate => _expdate;
@@ -66,10 +68,12 @@ class OrderSliderValidation with ChangeNotifier {
       String? newStoreId,
       Address? newStoreAddress,
       double? newMaxDeliveryFixe,
-      double? newMaxDeliveryKm) {
+      double? newMaxDeliveryKm,
+      String? newOrderId) {
     _products.addAll(new_products);
     _cartId = newCartId;
     _storeId = newStoreId;
+    _orderId = newOrderId;
     _storeAdresse = newStoreAddress;
     _maxDeliveryFixe = newMaxDeliveryFixe;
     _maxDeliveryKm = newMaxDeliveryKm;
@@ -228,6 +232,17 @@ class OrderSliderValidation with ChangeNotifier {
                   (item.reservationP) *
                   (1 - item.discount)
             }
+        });
+    return total;
+  }
+
+  double getReservationFinalizeItemsTotal() {
+    double total = 0.0;
+    _products.forEach((item) => {
+          total += item.price! *
+              (item.quantity) *
+              (1 - item.reservationP) *
+              (1 - item.discount)
         });
     return total;
   }
@@ -435,7 +450,8 @@ class OrderSliderValidation with ChangeNotifier {
     }
     print(orders);
 
-    FormData _formData = FormData.fromMap({"orders": json.encode(orders)});
+    FormData _formData =
+        FormData.fromMap({"orders": json.encode(orders), "orderId": _orderId});
 
     return _formData;
   }

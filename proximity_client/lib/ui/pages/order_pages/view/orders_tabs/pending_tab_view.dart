@@ -17,14 +17,14 @@ class _PendingViewState extends State<PendingView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.pendingOrders == null) {
-      ordersService.getPendingOrders();
+    if (ordersService.orders == null) {
+      ordersService.getOrders("all", "Pending");
     }
     return Column(children: [
       Expanded(
-          child: (ordersService.pendingOrders == null)
+          child: (ordersService.orders == null)
               ? const Center(child: CircularProgressIndicator())
-              : (ordersService.pendingOrders!.isEmpty)
+              : (ordersService.orders!.isEmpty)
                   ? const NoResults(
                       icon: ProximityIcons.self_pickup_duotone_1,
                       message: 'There are no Pending Orders.')
@@ -32,9 +32,25 @@ class _PendingViewState extends State<PendingView> {
                       shrinkWrap: true,
                       physics: const ClampingScrollPhysics(),
                       padding: const EdgeInsets.symmetric(vertical: normal_100),
-                      itemCount: ordersService.pendingOrders!.length,
+                      itemCount: ordersService.orders!.length,
                       itemBuilder: (_, i) => OrderTile(
-                        order: ordersService.pendingOrders![i],
+                        order: ordersService.orders![i],
+                        actionCancel:
+                            (String motif, BuildContext contextCancel) async {
+                          // final bool _result = await PaymentDialogs.cancelOrder(
+                          //     context,
+                          //     ordersService.orders![i].id,
+                          //     ordersService);
+                          // if (_result == true) {
+                          ordersService.cancelOrder(
+                              contextCancel,
+                              ordersService.orders![i].id ?? "",
+                              motif,
+                              null,
+                              null,
+                              false);
+                          // }
+                        },
                       ),
                     ))
     ]);

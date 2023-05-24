@@ -10,13 +10,13 @@ class PendingTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.pendingOrders == null) {
-      ordersService.getPendingOrders();
+    if (ordersService.loadingOrders) {
+      ordersService.getOrders("all", "Pending");
     }
 
-    return (ordersService.pendingOrders == null)
+    return (ordersService.loadingOrders)
         ? const Center(child: CircularProgressIndicator())
-        : (ordersService.pendingOrders!.isEmpty)
+        : (ordersService.orders!.isEmpty)
             ? const NoResults(
                 icon: ProximityIcons.product,
                 message: 'There are no Pending Orders.')
@@ -24,12 +24,38 @@ class PendingTabView extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const ClampingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(vertical: normal_100),
-                itemCount: ordersService.pendingOrders!.length,
+                itemCount: ordersService.orders!.length,
                 itemBuilder: (_, i) => OrderTile(
-                  order: ordersService.pendingOrders![i],
+                  order: ordersService.orders![i],
+                  actionCancel:
+                      (String motif, BuildContext contextCancel) async {
+                    // final bool _result = await PaymentDialogs.cancelOrder(
+                    //     context,
+                    //     ordersService.orders![i].id,
+                    //     ordersService);
+                    // if (_result == true) {
+                    ordersService.cancelOrder(
+                        contextCancel,
+                        ordersService.orders![i].id ?? "",
+                        motif,
+                        null,
+                        null,
+                        false);
+                    // }
+                  },
                   action: () {
-                    ordersService.confirmOrder(
-                        context, ordersService.pendingOrders![i].id!);
+                    ordersService.updateStatus(
+                        ordersService.orders![i].id ?? "",
+                        ordersService.orders![i].pickup == true
+                            ? "InPreparation"
+                            : ordersService.orders![i].delivery == true
+                                ? "InPreparation"
+                                : ordersService.orders![i].reservation == true
+                                    ? "Reserved"
+                                    : "",
+                        "all",
+                        "Pending",
+                        true);
                   },
                   secondaryAction: () {},
                 ),

@@ -25,7 +25,7 @@ class _RefundTabViewState extends State<RefundTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.refundOrders == null && _index == 0) {
+    if (ordersService.orders == null && _index == 0) {
       // ordersService.getRefundOrders();
     }
     return Column(children: [
@@ -135,9 +135,9 @@ class _RefundTabViewState extends State<RefundTabView> {
       Expanded(child: () {
         switch (_index) {
           case 0:
-            return (ordersService.refundOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.refundOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: large_200, horizontal: large_100),
@@ -178,15 +178,31 @@ class _RefundTabViewState extends State<RefundTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.refundOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.refundOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
           case 1:
-            return (ordersService.refundOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.refundOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: large_200, horizontal: large_100),
@@ -227,9 +243,25 @@ class _RefundTabViewState extends State<RefundTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.refundOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.refundOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
           case 2:
@@ -266,9 +298,9 @@ class _RefundTabViewState extends State<RefundTabView> {
             );
 
           default:
-            return (ordersService.refundOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.refundOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: large_200, horizontal: large_100),
@@ -309,9 +341,25 @@ class _RefundTabViewState extends State<RefundTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.refundOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.refundOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
         }

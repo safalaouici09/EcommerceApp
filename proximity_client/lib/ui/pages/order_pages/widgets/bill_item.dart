@@ -20,7 +20,8 @@ class BillItem extends StatelessWidget {
       this.reservationBill = false,
       this.deliveryBill = false,
       this.pickupBill = false,
-      this.payment = false})
+      this.payment = false,
+      this.reservation})
       : super(key: key);
 
   final OrderSliderValidation orderSliderValidation;
@@ -28,6 +29,7 @@ class BillItem extends StatelessWidget {
   final bool deliveryBill;
   final bool pickupBill;
   final bool payment;
+  final bool? reservation;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,8 @@ class BillItem extends StatelessWidget {
     List<ProductCart> productPickup = orderSliderValidation.getPickupItems();
     double productReservationTotal =
         orderSliderValidation.getReservationItemsTotal();
+    double productFinalizeReservationTotal =
+        orderSliderValidation.getReservationFinalizeItemsTotal();
     double productDeliveryTotal = orderSliderValidation.getDeliveryItemsTotal();
     double productPickupTotal = orderSliderValidation.getPickupItemsTotal();
     String cardNumber = orderSliderValidation.cardNumber ?? "";
@@ -306,7 +310,7 @@ class BillItem extends StatelessWidget {
                                 Expanded(
                                   flex: 2,
                                   child: Text(
-                                      '€ ${double.parse((item.price! * (item.quantity) * ((item.reservation ? (item.reservationP) : 1)) * (1 - item.discount)).toStringAsFixed(2))}',
+                                      '€ ${double.parse((item.price! * (item.quantity) * (((item.reservation) ? (item.reservationP) : 1)) * (1 - item.discount)).toStringAsFixed(2))}',
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -318,6 +322,34 @@ class BillItem extends StatelessWidget {
                                               : Color(0xFF000000))),
                                 ),
                               ])),
+                  if (reservation!)
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Left to pay",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  ?.copyWith(
+                                      color: Color(0xFF136DA5),
+                                      fontWeight: FontWeight.bold)),
+                          const SizedBox(width: small_100),
+                          Expanded(
+                              child: Text(
+                            '€ ${(productFinalizeReservationTotal).toStringAsFixed(2)}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                ?.copyWith(
+                                    color: Color(0xFF136DA5),
+                                    fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.end,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                        ]),
+                  if (reservation!) SizedBox(height: 20),
                   if (deliveryBill &&
                       orderSliderValidation.maxDeliveryFixe != null &&
                       orderSliderValidation.maxDeliveryFixe != 0.0)
@@ -354,91 +386,87 @@ class BillItem extends StatelessWidget {
                   else if (deliveryBill &&
                       orderSliderValidation.distance != null &&
                       orderSliderValidation.distance != 0.0)
-                    Padding(
-                      padding: const EdgeInsets.all(normal_100)
-                          .copyWith(top: 0, bottom: 0),
-                      child: Column(children: [
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Distance ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      ?.copyWith(
-                                          color: Color(0xFF136DA5),
-                                          fontWeight: FontWeight.bold)),
-                              const SizedBox(width: small_100),
-                              Expanded(
-                                  child: Text(
-                                '${(orderSliderValidation.distance ?? 1.0).toStringAsFixed(2)} Km ',
+                    Column(children: [
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Distance ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText2
                                     ?.copyWith(
                                         color: Color(0xFF136DA5),
-                                        fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.end,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                            ]),
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Km Price ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      ?.copyWith(
-                                          color: Color(0xFF136DA5),
-                                          fontWeight: FontWeight.bold)),
-                              const SizedBox(width: small_100),
-                              Expanded(
-                                  child: Text(
-                                '${(orderSliderValidation.maxDeliveryKm ?? 1.0).toStringAsFixed(2)} Km ',
+                                        fontWeight: FontWeight.bold)),
+                            const SizedBox(width: small_100),
+                            Expanded(
+                                child: Text(
+                              '${(orderSliderValidation.distance ?? 1.0).toStringAsFixed(2)} Km ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  ?.copyWith(
+                                      color: Color(0xFF136DA5),
+                                      fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.end,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                          ]),
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Km Price ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText2
                                     ?.copyWith(
                                         color: Color(0xFF136DA5),
-                                        fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.end,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                            ]),
-                        SizedBox(height: 20),
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Delivery Price ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      ?.copyWith(
-                                          color: Color(0xFF136DA5),
-                                          fontWeight: FontWeight.bold)),
-                              const SizedBox(width: small_100),
-                              Expanded(
-                                  child: Text(
-                                ' € ${(orderSliderValidation.totalDelivery ?? 0.0).toStringAsFixed(2)}',
+                                        fontWeight: FontWeight.bold)),
+                            const SizedBox(width: small_100),
+                            Expanded(
+                                child: Text(
+                              '${(orderSliderValidation.maxDeliveryKm ?? 1.0).toStringAsFixed(2)} Km ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  ?.copyWith(
+                                      color: Color(0xFF136DA5),
+                                      fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.end,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                          ]),
+                      SizedBox(height: 20),
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Delivery Price ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText2
                                     ?.copyWith(
                                         color: Color(0xFF136DA5),
-                                        fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.end,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                            ])
-                      ]),
-                    ),
+                                        fontWeight: FontWeight.bold)),
+                            const SizedBox(width: small_100),
+                            Expanded(
+                                child: Text(
+                              ' € ${(orderSliderValidation.totalDelivery ?? 0.0).toStringAsFixed(2)}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  ?.copyWith(
+                                      color: Color(0xFF136DA5),
+                                      fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.end,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                          ])
+                    ]),
                   if (!(reservationBill || deliveryBill || pickupBill) &&
                       productReservationTotal != 0.0)
                     Padding(
@@ -497,7 +525,9 @@ class BillItem extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                    '€ ${productDeliveryTotal.toStringAsFixed(2)}',
+                                    reservation!
+                                        ? '€ ${(productFinalizeReservationTotal + (orderSliderValidation.totalDelivery ?? 0.0)).toStringAsFixed(2)}'
+                                        : '€ ${productDeliveryTotal.toStringAsFixed(2)}',
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
@@ -532,7 +562,9 @@ class BillItem extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                    '€ ${productPickupTotal.toStringAsFixed(2)}',
+                                    reservation!
+                                        ? '€ ${(productFinalizeReservationTotal).toStringAsFixed(2)}'
+                                        : '€ ${productPickupTotal.toStringAsFixed(2)}',
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
@@ -559,13 +591,15 @@ class BillItem extends StatelessWidget {
                                   ? Color(0xFFEFEFEF)
                                   : Color(0xFF000000))),
                   Text(
-                      reservationBill
-                          ? '€ ${productReservationTotal.toStringAsFixed(2)}'
-                          : deliveryBill
-                              ? '€ ${productDeliveryTotal.toStringAsFixed(2)}'
-                              : pickupBill
-                                  ? '€ ${productPickupTotal.toStringAsFixed(2)}'
-                                  : '€ ${(productReservationTotal + productDeliveryTotal + productPickupTotal).toStringAsFixed(2)}',
+                      reservation!
+                          ? '€ ${(productFinalizeReservationTotal + (orderSliderValidation.totalDelivery ?? 0.0)).toStringAsFixed(2)}'
+                          : reservationBill
+                              ? '€ ${productReservationTotal.toStringAsFixed(2)}'
+                              : deliveryBill
+                                  ? '€ ${productDeliveryTotal.toStringAsFixed(2)}'
+                                  : pickupBill
+                                      ? '€ ${productPickupTotal.toStringAsFixed(2)}'
+                                      : '€ ${(productReservationTotal + productDeliveryTotal + productPickupTotal).toStringAsFixed(2)}',
                       style: TextStyle(
                           fontSize: 20.0,
                           color:

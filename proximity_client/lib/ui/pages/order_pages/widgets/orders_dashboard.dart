@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
+import 'package:provider/provider.dart';
+import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
 
 class OrdersDashboard extends StatelessWidget {
@@ -7,6 +9,7 @@ class OrdersDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ordersService = Provider.of<OrderService>(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: normal_150),
       decoration: BoxDecoration(
@@ -41,11 +44,14 @@ class OrdersDashboard extends StatelessWidget {
                     children: [
                       Expanded(
                           child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OrdersScreen(page: 4))),
+                              onTap: () {
+                                ordersService.getOrders("all", "Pending");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OrdersScreen(page: 4)));
+                              },
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -64,11 +70,14 @@ class OrdersDashboard extends StatelessWidget {
                                   ]))),
                       Expanded(
                           child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OrdersScreen(page: 0))),
+                              onTap: () {
+                                ordersService.getOrders("pickup", "all");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OrdersScreen(page: 0)));
+                              },
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -87,11 +96,14 @@ class OrdersDashboard extends StatelessWidget {
                                   ]))),
                       Expanded(
                           child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OrdersScreen(page: 1))),
+                              onTap: () {
+                                ordersService.getOrders("delivery", "all");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OrdersScreen(page: 1)));
+                              },
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -110,11 +122,14 @@ class OrdersDashboard extends StatelessWidget {
                                   ]))),
                       Expanded(
                           child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OrdersScreen(page: 3))),
+                              onTap: () {
+                                ordersService.getOrders("reservation", "all");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OrdersScreen(page: 3)));
+                              },
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -133,11 +148,14 @@ class OrdersDashboard extends StatelessWidget {
                                   ]))),
                       Expanded(
                           child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OrdersScreen(page: 5))),
+                              onTap: () {
+                                ordersService.getOrders("return", "all");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OrdersScreen(page: 5)));
+                              },
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -170,11 +188,14 @@ class OrdersDashboard extends StatelessWidget {
                                   ]))),
                       Expanded(
                           child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OrdersScreen(page: 6))),
+                              onTap: () {
+                                ordersService.getOrders("refund", "all");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OrdersScreen(page: 6)));
+                              },
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -207,11 +228,14 @@ class OrdersDashboard extends StatelessWidget {
                                   ]))),
                       Expanded(
                           child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OrdersScreen(page: 2))),
+                              onTap: () {
+                                ordersService.getOrders("all", "Canceled");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OrdersScreen(page: 2)));
+                              },
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [

@@ -6,11 +6,9 @@ import 'package:proximity_commercant/domain/user_repository/models/models.dart';
 
 import 'order_item_model.dart';
 
-enum OrderStatus { pending, succeeded, delivered, cancelled }
-
 class Order {
   String? id;
-  OrderStatus? orderStatus;
+  String? orderStatus;
   String? currency;
   double? totalPrice;
   DateTime? orderDate;
@@ -29,6 +27,10 @@ class Order {
   bool? reservation;
   bool? delivery;
   bool? pickup;
+  bool? returnOrder;
+  bool? refund;
+  bool? canceled;
+  Map<String, String>? canceledBy;
 
   String? storeName;
   String? storePhone;
@@ -104,20 +106,19 @@ class Order {
         delivery = parsedJson['delivery'],
         pickup = parsedJson['pickUp'],
         reservation = parsedJson['reservation'],
-        orderStatus = (() {
-          switch (parsedJson['status']) {
-            case "Pending":
-              return OrderStatus.pending;
-            case "succeeded":
-              return OrderStatus.succeeded;
-            case "cancelled":
-              return OrderStatus.cancelled;
-            case "delivered":
-              return OrderStatus.delivered;
-            default:
-              return OrderStatus.pending;
-          }
-        })(),
+        returnOrder = parsedJson['return'],
+        refund = parsedJson['refund'],
+        orderStatus = parsedJson['status'],
+        canceled = parsedJson['canceled'] ?? false,
+        canceledBy = parsedJson['canceledBy'] != null &&
+                parsedJson['canceledBy']["userId"] != null
+            ? {
+                "userId": parsedJson['canceledBy']["userId"],
+                "name": parsedJson['canceledBy']["name"],
+                "image": BASE_IMG_URL + '/' + parsedJson['canceledBy']["image"],
+                "motif": parsedJson['canceledBy']["motif"],
+              }
+            : null,
         userName =
             parsedJson['user'] != null && parsedJson['user']["username"] != null
                 ? parsedJson['user']["username"]

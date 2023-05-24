@@ -8,3 +8,4 @@ export 'orders_dashboard.dart';
 export 'pay_now_bottom_bar.dart';
 export 'card_item.dart';
 export 'bill_item.dart';
+export 'return_item.dart';

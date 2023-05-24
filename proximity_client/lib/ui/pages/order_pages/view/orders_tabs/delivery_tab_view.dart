@@ -25,8 +25,8 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.deliveryOrders == null && _index == 0) {
-      ordersService.getDeliveryOrders();
+    if (ordersService.orders == null && _index == 0) {
+      ordersService.getOrders("delivery", "all");
     }
     return Column(children: [
       Material(
@@ -41,7 +41,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getDeliveryOrders();
+                    ordersService.getOrders("delivery", "all");
                     setState(() {
                       _index = 0;
                     });
@@ -73,7 +73,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getDeliveryOrders();
+                    ordersService.getOrders("delivery", "Pending");
                     setState(() {
                       _index = 1;
                     });
@@ -104,9 +104,12 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 2;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("delivery", "InPreparation");
+                    setState(() {
+                      _index = 2;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -133,9 +136,12 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 3;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("delivery", "OnTheWay");
+                    setState(() {
+                      _index = 3;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -162,9 +168,12 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 4;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("delivery", "Delivered");
+                    setState(() {
+                      _index = 1;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -190,73 +199,64 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           ])),
                 )),
               ]))),
-      Expanded(child: () {
-        switch (_index) {
-          case 0:
-            return (ordersService.deliveryOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
-                        ),
-                      );
-          case 1:
-            return (ordersService.deliveryOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
-                        ),
-                      );
-          case 2:
-            return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
-                message: 'There are no In Preparation Orders.');
-          case 3:
-            return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
-                message: 'There are no  On the way Orders.');
-          case 4:
-            return const NoResults(
-                icon: ProximityIcons.delivery_duotone_1,
-                message: 'There are no  delivered Orders.');
-          default:
-            return (ordersService.deliveryOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.deliveryOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.delivery_duotone_1,
-                        message: 'There are no Delivery Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.deliveryOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.deliveryOrders![i],
-                        ),
-                      );
-        }
-      }())
+      Expanded(
+        child: (ordersService.loadingOrders)
+            ? const Center(child: CircularProgressIndicator())
+            : (ordersService.orders!.isEmpty)
+                ? NoResults(
+                    icon: ProximityIcons.delivery_duotone_1,
+                    message: _index == 2
+                        ? 'There are no In Preparation Orders.'
+                        : _index == 3
+                            ? 'There are no  On the way Orders.'
+                            : _index == 4
+                                ? 'There are no  delivered Orders.'
+                                : "There are no Delivery Orders.")
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(vertical: normal_100),
+                    itemCount: ordersService.orders!.length,
+                    itemBuilder: (_, i) => OrderTile(
+                      order: ordersService.orders![i],
+                      actionCancel:
+                          (String motif, BuildContext contextCancel) async {
+                        // final bool _result = await PaymentDialogs.cancelOrder(
+                        //     context,
+                        //     ordersService.orders![i].id,
+                        //     ordersService);
+                        // if (_result == true) {
+                        ordersService.cancelOrder(
+                            contextCancel,
+                            ordersService.orders![i].id ?? "",
+                            motif,
+                            null,
+                            null,
+                            false);
+                        // }
+                      },
+                      actionReturn: (String motif, String items,
+                          BuildContext contextReturn) async {
+                        // final bool _result = await PaymentDialogs.cancelOrder(
+                        //     context,
+                        //     ordersService.orders![i].id,
+                        //     ordersService);
+                        // if (_result == true) {
+                        ordersService.returnOrder(
+                            contextReturn,
+                            ordersService.orders![i].id ?? "",
+                            motif,
+                            items,
+                            null,
+                            null,
+                            false);
+                        // }
+                      },
+                      action: () {} // index 4
+                      ,
+                    ),
+                  ),
+      )
     ]);
   }
 }

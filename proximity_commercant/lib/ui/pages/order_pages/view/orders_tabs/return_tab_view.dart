@@ -25,8 +25,8 @@ class _ReturnTabViewState extends State<ReturnTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.returnOrders == null && _index == 0) {
-      // ordersService.getReturnOrders();
+    if (ordersService.orders == null && _index == 0) {
+      ordersService.getOrders("all", "Returned");
     }
     return Column(children: [
       Material(
@@ -135,9 +135,9 @@ class _ReturnTabViewState extends State<ReturnTabView> {
       Expanded(child: () {
         switch (_index) {
           case 0:
-            return (ordersService.returnOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.returnOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: large_200, horizontal: large_100),
@@ -178,15 +178,31 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.returnOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.returnOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
           case 1:
-            return (ordersService.returnOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.returnOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: large_200, horizontal: large_100),
@@ -227,9 +243,25 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.returnOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.returnOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
           case 2:
@@ -266,9 +298,9 @@ class _ReturnTabViewState extends State<ReturnTabView> {
             );
 
           default:
-            return (ordersService.returnOrders == null)
+            return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
-                : (ordersService.returnOrders!.isEmpty)
+                : (ordersService.orders!.isEmpty)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: large_200, horizontal: large_100),
@@ -309,9 +341,25 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                         physics: const ClampingScrollPhysics(),
                         padding:
                             const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.returnOrders!.length,
+                        itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.returnOrders![i],
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
                         ),
                       );
         }

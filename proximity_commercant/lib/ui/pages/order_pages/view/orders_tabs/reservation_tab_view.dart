@@ -25,8 +25,8 @@ class _ReservationTabViewState extends State<ReservationTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.reservationOrders == null && _index == 0) {
-      ordersService.getReservationOrders();
+    if (ordersService.orders == null && _index == 0) {
+      ordersService.getOrders("reservation", "all");
     }
     return Column(children: [
       Material(
@@ -41,7 +41,7 @@ class _ReservationTabViewState extends State<ReservationTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getReservationOrders();
+                    ordersService.getOrders("reservation", "all");
                     setState(() {
                       _index = 0;
                     });
@@ -73,7 +73,7 @@ class _ReservationTabViewState extends State<ReservationTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getReservationOrders();
+                    ordersService.getOrders("reservation", "Pending");
                     setState(() {
                       _index = 1;
                     });
@@ -104,9 +104,12 @@ class _ReservationTabViewState extends State<ReservationTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 2;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("reservation", "Reserved");
+                    setState(() {
+                      _index = 2;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -132,65 +135,60 @@ class _ReservationTabViewState extends State<ReservationTabView> {
                           ])),
                 )),
               ]))),
-      Expanded(child: () {
-        switch (_index) {
-          case 0:
-            return (ordersService.reservationOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.reservationOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.history_duotone_1,
-                        message: 'There are no Reservation Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.reservationOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.reservationOrders![i],
-                        ),
-                      );
-          case 1:
-            return (ordersService.reservationOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.reservationOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.history_duotone_1,
-                        message: 'There are no Reservation Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.reservationOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.reservationOrders![i],
-                        ),
-                      );
-          case 2:
-            return const NoResults(
-                icon: ProximityIcons.history_duotone_1,
-                message: 'There are no Reservation In Preparation Orders.');
-          default:
-            return (ordersService.reservationOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.reservationOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.history_duotone_1,
-                        message: 'There are no Reservation Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.reservationOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.reservationOrders![i],
-                        ),
-                      );
-        }
-      }())
+      Expanded(
+          child: (ordersService.loadingOrders)
+              ? const Center(child: CircularProgressIndicator())
+              : (ordersService.orders!.isEmpty)
+                  ? const NoResults(
+                      icon: ProximityIcons.history_duotone_1,
+                      message: "There are no Reserved Orders.")
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: normal_100),
+                      itemCount: ordersService.orders!.length,
+                      itemBuilder: (_, i) => OrderTile(
+                          order: ordersService.orders![i],
+                          actionCancel:
+                              (String motif, BuildContext contextCancel) async {
+                            // final bool _result = await PaymentDialogs.cancelOrder(
+                            //     context,
+                            //     ordersService.orders![i].id,
+                            //     ordersService);
+                            // if (_result == true) {
+                            ordersService.cancelOrder(
+                                contextCancel,
+                                ordersService.orders![i].id ?? "",
+                                motif,
+                                null,
+                                null,
+                                false);
+                            // }
+                          },
+                          action: _index == 0
+                              ? () {
+                                  ordersService.updateStatus(
+                                      ordersService.orders![i].id ?? "",
+                                      ordersService.orders![i].orderStatus ==
+                                              "Pending"
+                                          ? "Reserved"
+                                          : "",
+                                      "reservation",
+                                      "all",
+                                      true);
+                                }
+                              : _index == 1
+                                  ? () {
+                                      ordersService.updateStatus(
+                                          ordersService.orders![i].id ?? "",
+                                          "Reserved",
+                                          null,
+                                          null,
+                                          null);
+                                    }
+                                  : () {} // index 2
+
+                          )))
     ]);
   }
 }

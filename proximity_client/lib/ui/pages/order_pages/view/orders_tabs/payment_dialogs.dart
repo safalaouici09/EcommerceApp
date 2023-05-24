@@ -253,7 +253,8 @@ class PaymentDialogs {
                                 ])))))));
   }
 
-  static void cancelOrder(BuildContext context, String? orderId) =>
+  static Future cancelOrder(
+          BuildContext context, String? orderId, OrderService? ordersService) =>
       showDialogPopup(
           context: context,
           pageBuilder: (ctx, anim1, anim2) => StatefulBuilder(
@@ -281,6 +282,12 @@ class PaymentDialogs {
                                 'Are you really want cancel the order ?',
                                 style: Theme.of(context).textTheme.subtitle2,
                                 textAlign: TextAlign.center)),
+                        EditText(
+                          hintText: 'Motif.',
+                          borderType: BorderType.bottom,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                        ),
                         Padding(
                             padding: const EdgeInsets.all(normal_100),
                             child:
@@ -288,7 +295,8 @@ class PaymentDialogs {
                               Expanded(
                                   child: SecondaryButton(
                                       title: 'Cancel.',
-                                      onPressed: () => Navigator.pop(context))),
+                                      onPressed: () =>
+                                          Navigator.pop(context, false))),
                               const SizedBox(width: normal_100),
                               Expanded(
                                   child: Consumer<StoreService>(
@@ -296,20 +304,9 @@ class PaymentDialogs {
                                           Expanded(
                                               child: PrimaryButton(
                                                   title: 'Confirm.',
-                                                  onPressed: () async {
-                                                    // int count = 0;
-                                                    // bool _bool =
-                                                    // await storeService
-                                                    //     .deleteStore(
-                                                    //         context, index);
-                                                    // if (_bool) {
-                                                    //   Navigator.popUntil(
-                                                    //       context, (route) {
-                                                    //     return count++ ==
-                                                    //         (popCount ?? 1);
-                                                    //   });
-                                                    // }
-                                                  }))))
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, true)))))
                             ]))
                       ])))));
 }

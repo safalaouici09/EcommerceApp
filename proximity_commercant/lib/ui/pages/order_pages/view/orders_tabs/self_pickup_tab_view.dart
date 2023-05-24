@@ -25,8 +25,8 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
-    if (ordersService.selfPickupOrders == null && _index == 0) {
-      ordersService.getPickUpOrders();
+    if (ordersService.orders == null && _index == 0) {
+      ordersService.getOrders("pickup", "all");
     }
     return Column(children: [
       Material(
@@ -41,7 +41,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getPickUpOrders();
+                    ordersService.getOrders("pickup", "all");
                     setState(() {
                       _index = 0;
                     });
@@ -73,7 +73,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                 Expanded(
                     child: InkWell(
                   onTap: () {
-                    ordersService.getPickUpOrders();
+                    ordersService.getOrders("pickup", "Pending");
                     setState(() {
                       _index = 1;
                     });
@@ -104,9 +104,12 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 2;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("pickup", "InPreparation");
+                    setState(() {
+                      _index = 2;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -133,9 +136,12 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 3;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("pickup", "AwaitingRecovery");
+                    setState(() {
+                      _index = 3;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -162,9 +168,12 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                 )),
                 Expanded(
                     child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 4;
-                  }),
+                  onTap: () {
+                    ordersService.getOrders("pickup", "Recovered");
+                    setState(() {
+                      _index = 4;
+                    });
+                  },
                   child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: normal_100),
                       child: Column(
@@ -190,73 +199,94 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           ])),
                 )),
               ]))),
-      Expanded(child: () {
-        switch (_index) {
-          case 0:
-            return (ordersService.selfPickupOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.selfPickupOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.self_pickup_duotone_1,
-                        message: 'There are no Self Pickup Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.selfPickupOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.selfPickupOrders![i],
-                        ),
-                      );
-          case 1:
-            return (ordersService.selfPickupOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.selfPickupOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.self_pickup_duotone_1,
-                        message: 'There are no Self Pickup Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.selfPickupOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.selfPickupOrders![i],
-                        ),
-                      );
-          case 2:
-            return const NoResults(
-                icon: ProximityIcons.self_pickup_duotone_1,
-                message: 'There are no In Preparation Orders.');
-          case 3:
-            return const NoResults(
-                icon: ProximityIcons.self_pickup_duotone_1,
-                message: 'There are no Awaiting Recovery Orders.');
-          case 4:
-            return const NoResults(
-                icon: ProximityIcons.self_pickup_duotone_1,
-                message: 'There are no Recovered Orders.');
-          default:
-            return (ordersService.selfPickupOrders == null)
-                ? const Center(child: CircularProgressIndicator())
-                : (ordersService.selfPickupOrders!.isEmpty)
-                    ? const NoResults(
-                        icon: ProximityIcons.self_pickup_duotone_1,
-                        message: 'There are no Self Pickup Orders.')
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const ClampingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.symmetric(vertical: normal_100),
-                        itemCount: ordersService.selfPickupOrders!.length,
-                        itemBuilder: (_, i) => OrderTile(
-                          order: ordersService.selfPickupOrders![i],
-                        ),
-                      );
-        }
-      }())
+      Expanded(
+        child: (ordersService.loadingOrders)
+            ? const Center(child: CircularProgressIndicator())
+            : (ordersService.orders!.isEmpty)
+                ? NoResults(
+                    icon: ProximityIcons.self_pickup_duotone_1,
+                    message: _index == 2
+                        ? 'There are no In Preparation Orders.'
+                        : _index == 3
+                            ? 'There are no Awaiting Recovery Orders.'
+                            : _index == 4
+                                ? 'There are no Recovered Orders.'
+                                : "There are no Self Pickup Orders.")
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(vertical: normal_100),
+                    itemCount: ordersService.orders!.length,
+                    itemBuilder: (_, i) => OrderTile(
+                      order: ordersService.orders![i],
+                      actionCancel:
+                          (String motif, BuildContext contextCancel) async {
+                        // final bool _result = await PaymentDialogs.cancelOrder(
+                        //     context,
+                        //     ordersService.orders![i].id,
+                        //     ordersService);
+                        // if (_result == true) {
+                        ordersService.cancelOrder(
+                            contextCancel,
+                            ordersService.orders![i].id ?? "",
+                            motif,
+                            null,
+                            null,
+                            false);
+                        // }
+                      },
+                      action: _index == 0
+                          ? () {
+                              print("all action");
+                              ordersService.updateStatus(
+                                  ordersService.orders![i].id ?? "",
+                                  ordersService.orders![i].orderStatus ==
+                                          "Pending"
+                                      ? "InPreparation"
+                                      : ordersService.orders![i].orderStatus ==
+                                              "InPreparation"
+                                          ? "AwaitingRecovery"
+                                          : ordersService
+                                                      .orders![i].orderStatus ==
+                                                  "AwaitingRecovery"
+                                              ? "Recovered"
+                                              : "",
+                                  "pickup",
+                                  "all",
+                                  true);
+                            }
+                          : _index == 1
+                              ? () {
+                                  ordersService.updateStatus(
+                                      ordersService.orders![i].id ?? "",
+                                      "InPreparation",
+                                      null,
+                                      null,
+                                      null);
+                                }
+                              : _index == 2
+                                  ? () {
+                                      ordersService.updateStatus(
+                                          ordersService.orders![i].id ?? "",
+                                          "AwaitingRecovery",
+                                          null,
+                                          null,
+                                          null);
+                                    }
+                                  : _index == 3
+                                      ? () {
+                                          ordersService.updateStatus(
+                                              ordersService.orders![i].id ?? "",
+                                              "Recovered",
+                                              null,
+                                              null,
+                                              null);
+                                        }
+                                      : () {} // index 4
+                      ,
+                    ),
+                  ),
+      )
     ]);
   }
 }
