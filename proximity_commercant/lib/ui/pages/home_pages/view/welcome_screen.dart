@@ -32,14 +32,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 children: <Widget>[
               Column(
                 children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.all(50),
-                    child : 
-                          FittedBox(
-                              child: Image.asset("assets/img/welcome.png"),
-                              fit: BoxFit.fill,
-                            ),
-                    ) ,
+                  SizedBox(
+                    height: huge_200,
+                    width: 100,
+                    child: FittedBox(
+                      child: Image.asset("assets/img/welcome.png"),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
                   Container(
                     padding: EdgeInsets.only(
                         left: 20, top: 20 + 20, right: 20, bottom: 20),

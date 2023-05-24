@@ -13,6 +13,7 @@ class ProductService with ChangeNotifier {
   late List<Product> _todayDeals;
   late Set<Product> _wishList;
   late List<String> _ads;
+  Map<String, String>? _selectedOptions = {};
 
   // get methods
   List<Product> get products => _products;
@@ -24,6 +25,7 @@ class ProductService with ChangeNotifier {
   List<Product> get wishList => _wishList.toList();
 
   List<String> get ads => _ads;
+  Map<String, String>? get selectedOptions => _selectedOptions;
 
   ProductService() {
     // _products = [];
@@ -31,6 +33,146 @@ class ProductService with ChangeNotifier {
     _todayDeals = [];
     _wishList = <Product>{};
     _ads = [];
+    _products = [
+      Product(
+          id: '0',
+          name:
+              'Xiaomi Cleargrass -compatible Alarm Clock smart Control Temperature Humidity Display LCD Screen Adjustable Nightlight - gray',
+          description: '''Main Features
+
+Description :
+
+ClearGrass CGD1 Bluetooth No Button Alarm Clock Mijia APP Control Temperature Humidity Display LCD Screen Adjustable Nightlight
+
+- Simple Buttonless Design
+The product can be pressed as a whole, which realizes no button function, and the operation is very interesting. The internal design of the silicone base has a comfortable pressing feel and a simple appearance design, which can be well integrated in various places in the home.
+
+- Custom Personalized Alarm Clock
+Each time you connect your phone via Bluetooth, the time is automatically synchronized and you can easily set the time. You can set 16 groups of alarm clocks, and each group of alarm clocks can be set for snooze function, which is very simple. 8 ringtones optional.
+
+- Temperature And Humidity Display
+Using Swiss Sensirion sensor, the temperature measurement accuracy is ± 0.2 ℃, the humidity measurement accuracy is ± 2% RH, and the temperature and humidity changes are sensitively sensed.
+
+- Tap To Light The Night Light
+Press the alarm clock, the backlight turns on, you can check the time clearly even at night.
+
+- Adjust The Backlight At Any Time
+The intensity of the backlight can be adjusted in different periods, and the duration of the backlight can also be adjusted, from completely off to 30 seconds.
+
+- Comfortable Smart Little Housekeeper
+Cooperate with other Mijia equipment to realize automatic adjustment of indoor temperature and humidity. For example: if the temperature is lower than 20 ℃, the heater will be turned on automatically.''',
+          price: 19.99,
+          discount: 0.1,
+          discountEndDate: DateTime.now().add(
+              const Duration(days: 31, hours: 23, minutes: 48, seconds: 3)),
+          images: [
+            'https://i.ibb.co/nL0M1L7/product-0-0.png',
+            'https://i.ibb.co/6mjY1WD/product-0-1.png',
+            'https://i.ibb.co/Sypdpj5/product-0-2.png',
+            'https://i.ibb.co/ZNP8nJd/product-0-3.png',
+          ],
+          storeId: '0',
+          characteristics: {
+            "Color": ["Beige", "Mint Green", "Peach"],
+            "Language": ["Français", "English"]
+          },
+          policy: Policy(
+            workingTimePolicy: WorkingTime(),
+            pickupPolicy: PickupPolicy(timeLimit: 30),
+            deliveryPolicy: DeliveryPolicy(
+              zone: Zone(
+                centerPoint:
+                    CenterPoint(latitude: 37.7749, longitude: -122.4194),
+                radius: 10,
+              ),
+              pricing: Pricing(fixedPrice: 5.0, kmPrice: 1.0),
+            ),
+            reservationPolicy: null,
+            returnPolicy: null,
+            orderPolicy: OrderPolicy(validation: Validation(auto: true)),
+          ),
+          variants: [
+            ProductVariant(
+                price: 19.99,
+                id: '0-0',
+                variantName: '',
+                characteristics: [
+                  {"name": "Color", "value": "Beige"},
+                  {"name": "Language", "value": "Français"}
+                ],
+                image: 'https://i.ibb.co/N2d3vP3/product-0-variant-0.png',
+                quantity: 5654),
+            ProductVariant(
+                id: '0-1',
+                variantName: '',
+                characteristics: [
+                  {"name": "Color", "value": "Beige"},
+                  {"name": "Language", "value": "English"}
+                ],
+                image: 'https://i.ibb.co/RQwZrX8/product-0-variant-1.png',
+                quantity: 5654),
+            ProductVariant(
+                price: 19.99,
+                id: '0-2',
+                variantName: '',
+                characteristics: [
+                  {"name": "Color", "value": "Mint Green"},
+                  {"name": "Language", "value": "Français"}
+                ],
+                image: 'https://i.ibb.co/g7Y7yvc/product-0-variant-2.png',
+                quantity: 5654),
+            ProductVariant(
+                price: 19.99,
+                id: '0-3',
+                variantName: '',
+                characteristics: [
+                  {"name": "Color", "value": "Mint Green"},
+                  {"name": "Language", "value": "English"}
+                ],
+                image: 'https://i.ibb.co/7bN9KJk/product-0-variant-3.png',
+                quantity: 5654),
+            ProductVariant(
+                price: 19.99,
+                id: '0-4',
+                variantName: '',
+                characteristics: [
+                  {"name": "Color", "value": "Peach"},
+                  {"name": "Language", "value": "Français"}
+                ],
+                image: 'https://i.ibb.co/0BZSLgM/product-0-variant-4.png',
+                quantity: 5654),
+            ProductVariant(
+                price: 19.99,
+                id: '0-5',
+                variantName: '',
+                characteristics: [
+                  {"name": "Color", "value": "Peach"},
+                  {"name": "Language", "value": "English"}
+                ],
+                image: 'https://i.ibb.co/CbYfPVL/product-0-variant-5.png',
+                quantity: 5654),
+            ProductVariant(
+                price: 19.99,
+                id: '0-6',
+                variantName: '',
+                characteristics: [
+                  {"name": "Color", "value": "Blue"},
+                  {"name": "Language", "value": "Français"}
+                ],
+                image: 'https://i.ibb.co/FxKnM1p/product-0-variant-6.png',
+                quantity: 5654),
+            ProductVariant(
+                price: 19.99,
+                id: '0-7',
+                variantName: '',
+                characteristics: [
+                  {"name": "Color", "value": "Blue"},
+                  {"name": "Language", "value": "English"}
+                ],
+                image: 'https://i.ibb.co/7zwP1M9/product-0-variant-7.png',
+                quantity: 5654)
+          ]),
+    ];
     getProximityProducts();
     getTodayDeals();
     getAds();
@@ -100,8 +242,10 @@ class ProductService with ChangeNotifier {
 
       var res = await dio.get(BASE_API_URL +
           '/search/product/?radius=${radius.toString()}&latitude=${latitude.toString()}&langitude=${langitude.toString()}');
+
       if (res.statusCode == 200) {
         _products = [];
+
         _products.addAll(Product.productsFromJsonList(res.data));
 
         _todayDeals = [];
@@ -188,6 +332,30 @@ class ProductService with ChangeNotifier {
       ]);
       notifyListeners();
     });
+  }
+
+//filter variants
+  List<ProductVariant> filterVariants(
+    List<ProductVariant> variants,
+  ) {
+    return variants.where((variant) {
+      if (variant.characteristics != null) {
+        for (var characteristic in variant.characteristics!) {
+          if (_selectedOptions!.containsKey(characteristic["name"]) &&
+              _selectedOptions![characteristic["name"]] ==
+                  characteristic["value"]) {
+            return true;
+          }
+        }
+        return false;
+      } else {
+        return false;
+      }
+    }).toList();
+  }
+
+  addFilter(String key, String value) {
+    _selectedOptions![key] = value;
   }
 
   Future reportProduct(BuildContext context, String id, String message) async {

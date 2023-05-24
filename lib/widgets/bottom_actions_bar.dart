@@ -16,18 +16,14 @@ class BottomActionsBar extends StatelessWidget {
             child: Container(
                 padding: const EdgeInsets.all(normal_100),
                 decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor.withOpacity(0.9),
+                  color: Theme.of(context).backgroundColor.withOpacity(0.9),
                     border: Border(
                         top: BorderSide(
                             color: Theme.of(context).dividerColor,
                             width: tiny_50))),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                        buttons.length,
-                        (index) => Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Expanded(child: buttons[index]),
-                            ))))));
+                    children: List.generate(buttons.length,
+                        (index) => Expanded(child: buttons[index]))))));
   }
 }

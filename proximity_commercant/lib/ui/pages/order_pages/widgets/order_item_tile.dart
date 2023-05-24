@@ -12,10 +12,8 @@ class OrderItemTile extends ProductTile {
             product: orderItem.toProduct(),
             productVariant: ProductVariant(
                 id: orderItem.variantId,
-                variantName: orderItem.name,
-                characteristics: [],
-                image: orderItem.image,
-                discount: orderItem.discount,
-                reservation: orderItem.reservation),
+                variantName: orderItem.variantName,
+                characteristics: orderItem.characteristics,
+                image: orderItem.image),
             bottomRightChild: Text('x${orderItem.orderedQuantity}'));
 }

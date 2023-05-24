@@ -4,23 +4,8 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 import 'package:proximity_commercant/ui/pages/order_pages/order_pages.dart';
 
-class DeliveryTabView extends StatefulWidget {
-  const DeliveryTabView({Key? key, this.page}) : super(key: key);
-
-  final int? page;
-
-  @override
-  State<DeliveryTabView> createState() => _DeliveryTabViewState();
-}
-
-class _DeliveryTabViewState extends State<DeliveryTabView> {
-  int _index = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _index = widget.page ?? 0;
-  }
+class DeliveredTabView extends StatelessWidget {
+  const DeliveredTabView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

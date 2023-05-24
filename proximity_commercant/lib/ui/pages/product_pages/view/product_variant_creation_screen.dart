@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
 
 class ProductVariantCreationScreen extends StatefulWidget {
@@ -17,6 +18,8 @@ class ProductVariantCreationScreen extends StatefulWidget {
 class _ProductVariantCreationScreenState
     extends State<ProductVariantCreationScreen> {
   late ProductVariant _variant;
+  ValidationItem _price = ValidationItem(null, null);
+  ValidationItem _quantity = ValidationItem(null, null);
 
   @override
   void initState() {
@@ -25,6 +28,36 @@ class _ProductVariantCreationScreenState
         characteristics:
             List<dynamic>.filled(widget.characteristics.length, null),
         available: true);
+  }
+
+  void changePrice(String value) {
+    if (value == '') {
+      // _price = ValidationItem(null, null);
+    } else {
+      bool _priceValid = RegExp(r'^\d+(\.\d{1,3})?$').hasMatch(value);
+      if (_priceValid) {
+        _price = ValidationItem(value, null);
+      } else {
+        _price = ValidationItem(null, "● Enter a valid price (e.g., 12.99).");
+      }
+    }
+  }
+
+  /* void changeQuantity(String value) {
+    _quantity = int.tryParse(value);
+    notifyListeners();
+  }*/
+  void changeQuantity(String value) {
+    if (value == '') {
+      _quantity = ValidationItem(null, null);
+    } else {
+      int? quantity = int.tryParse(value);
+      if (quantity != null && quantity > 0) {
+        _quantity = ValidationItem(value, null);
+      } else {
+        _quantity = ValidationItem(null, "● Enter a valid quantity.");
+      }
+    }
   }
 
   @override
@@ -41,28 +74,32 @@ class _ProductVariantCreationScreenState
             leadIcon: ProximityIcons.product,
             title: 'Variant Characteristics.',
             color: redSwatch.shade400),
-        ...((){
-          List<DropDownSelector> _list = [];
+        ...(() {
+          List<Widget> _list = [];
           for (int i = 0; i < widget.characteristics.length; i++) {
-            _list.add(DropDownSelector(
-                hintText: widget.characteristics.keys.elementAt(i),
-                padding: true,
-                // savedValue: ,
-                onChanged: (value, index) {
-                  setState(() {
-                    _variant.characteristics![i] =
-                        MapEntry(widget.characteristics.keys.elementAt(i), value);
-                  });
-                },
-                items: widget.characteristics.values.elementAt(i)
-                    .map((item) => DropdownItem<String>(
-                    value: item,
-                    child: Text(item,
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle2!
-                            .copyWith(fontWeight: FontWeight.w600))))
-                    .toList()));
+            _list.add(Padding(
+              padding: const EdgeInsets.symmetric(horizontal: normal_100),
+              child: DropDownSelector(
+                  hintText: widget.characteristics.keys.elementAt(i),
+                  padding: true,
+                  // savedValue: ,
+                  onChanged: (value, index) {
+                    setState(() {
+                      _variant.characteristics![i] = MapEntry(
+                          widget.characteristics.keys.elementAt(i), value);
+                    });
+                  },
+                  items: widget.characteristics.values
+                      .elementAt(i)
+                      .map((item) => DropdownItem<String>(
+                          value: item,
+                          child: Text(item,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(fontWeight: FontWeight.w600))))
+                      .toList()),
+            ));
           }
           return _list;
         }()),
@@ -73,23 +110,44 @@ class _ProductVariantCreationScreenState
         RichEditText(children: [
           EditText(
               hintText: 'Variant Price in €.',
-              borderType: BorderType.top,
+              borderType: BorderType.middle,
               keyboardType: TextInputType.number,
+              errorText: _price.error,
               onChanged: (value) {
                 setState(() {
-                  _variant.price = double.tryParse(value);
+                  changePrice(value);
+                  if (_price.value != null) {
+                    _variant.price = double.tryParse(value);
+                  }
+
+                  /*changePrice(value);
+                if (_price.value != null) {
+                  
+                  setState(() {
+                    _variant.price = double.tryParse(value);
+                  });
+                }*/
                 });
-              }),
-          EditText(
-              hintText: 'Variant Quantity.',
-              borderType: BorderType.bottom,
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  _variant.quantity = int.tryParse(value);
-                });
-              }),
+              })
         ]),
+        const EditTextSpacer(),
+        RichEditText(
+          children: [
+            EditText(
+                hintText: 'Variant Quantity.',
+                borderType: BorderType.middle,
+                keyboardType: TextInputType.number,
+                errorText: _quantity.error,
+                onChanged: (value) {
+                  changeQuantity(value);
+                  if (_quantity != null) {
+                    setState(() {
+                      _variant.quantity = int.tryParse(value);
+                    });
+                  }
+                }),
+          ],
+        ),
         SectionDivider(
             leadIcon: ProximityIcons.picture,
             title: 'Variant Image.',

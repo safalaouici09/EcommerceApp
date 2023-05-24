@@ -45,24 +45,24 @@ class ProductTile extends StatelessWidget {
                             leftChild!,
                             const SizedBox(width: small_100)
                           ],
-                          (productVariant.image! is File)
+                          /*  (productVariant.image! is File)
                               ? Image.file(productVariant.image!,
-                                  fit: BoxFit.cover,
-                                  width: huge_100,
-                                  height: huge_100)
+                              fit: BoxFit.cover,
+                              width: huge_100,
+                              height: huge_100)
                               : Image.network(productVariant.image!,
-                                  fit: BoxFit.cover,
-                                  width: huge_100,
-                                  height: huge_100, errorBuilder: (
+                              fit: BoxFit.cover,
+                              width: huge_100,
+                              height: huge_100, errorBuilder: (
                                   BuildContext context,
                                   Object error,
                                   StackTrace? stackTrace,
-                                ) {
-                                  return const AspectRatio(
-                                      aspectRatio: 1.0,
-                                      child: SizedBox(
-                                          width: large_100, height: large_100));
-                                }),
+                                  ) {
+                                return const AspectRatio(
+                                    aspectRatio: 1.0,
+                                    child: SizedBox(
+                                        width: large_100, height: large_100));
+                              }),*/
                           const VerticalDivider(width: tiny_50),
                           const SizedBox(width: small_100),
                           Expanded(
@@ -85,45 +85,16 @@ class ProductTile extends StatelessWidget {
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .subtitle2),
-                                                    if (product.reservation !=
-                                                        0.0)
-                                                      TextSpan(
-                                                          text:
-                                                              'Reservation : ${((product.reservation ?? 0.0) * 100).toInt()}% ',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .caption)
+                                                    TextSpan(
+                                                        text:
+                                                            '${productVariant.variantName}',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption)
                                                   ]),
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 2)),
-                                          if (product.discount != 0.0)
-                                            Container(
-                                                padding: const EdgeInsets.all(
-                                                    tiny_50),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: small_100),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            tinyRadius),
-                                                    color: redSwatch.shade500),
-                                                child: Text(
-                                                  '-${(product.discount * 100).toInt()}%',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .caption!
-                                                      .copyWith(
-                                                          color:
-                                                              primaryTextDarkColor,
-                                                          fontWeight:
-                                                              FontWeight.w800),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                )),
                                           if (rightChild != null) rightChild!
                                         ])),
                                         SizedBox(
@@ -137,26 +108,6 @@ class ProductTile extends StatelessWidget {
                                                       child: RichText(
                                                           text: TextSpan(
                                                               children: [
-                                                        if (product.discount !=
-                                                                0.0 ||
-                                                            product.reservation !=
-                                                                0.0)
-                                                          TextSpan(
-                                                              text:
-                                                                  '€ ${product.price}\n',
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .caption!
-                                                                  .copyWith(
-                                                                      decoration:
-                                                                          TextDecoration
-                                                                              .lineThrough,
-                                                                      decorationThickness:
-                                                                          small_50,
-                                                                      decorationColor:
-                                                                          redSwatch
-                                                                              .shade500)),
                                                         TextSpan(
                                                             text: '€ ',
                                                             style: Theme.of(

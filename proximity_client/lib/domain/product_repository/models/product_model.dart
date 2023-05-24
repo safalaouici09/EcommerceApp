@@ -19,6 +19,7 @@ class Product {
   String? sellerId;
   Policy? policy;
   double? reservation;
+  Map<String, List<String>>? characteristics;
 
   Product(
       {this.id,
@@ -31,6 +32,7 @@ class Product {
       this.variants,
       this.categoryId,
       this.categoryName,
+      this.characteristics,
       // this.tags,
       this.policy,
       this.storeId,

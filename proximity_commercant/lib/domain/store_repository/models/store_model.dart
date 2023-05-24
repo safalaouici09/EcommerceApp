@@ -13,6 +13,7 @@ class Store {
   Address? address;
   Policy? policy;
   List<Category>? categories;
+  List<WorkingTime>? workingTimes;
   bool? isActive;
   // bool? isVerified;
 
@@ -20,21 +21,23 @@ class Store {
   // List<Flashdeal>? flashdeals;
   List<dynamic>? followers;
 
-  Store({
-    this.id,
-    this.name,
-    this.description,
-    this.rating,
-    this.phoneNumber,
-    this.ownerPhoneNumber,
-    this.image,
-    this.address,
-    this.policy,
-    this.categories,
-    this.followers,
-    this.isActive,
-    //  this.isVerified
-  });
+  Store(
+      {this.id,
+      this.name,
+      this.description,
+      this.rating,
+      this.phoneNumber,
+      this.ownerPhoneNumber,
+      this.image,
+      this.address,
+      this.policy,
+      this.categories,
+      this.followers,
+      this.isActive,
+      this.workingTimes
+      //  this.isVerified
+      });
+  //todo : add working times
 
   Store.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],

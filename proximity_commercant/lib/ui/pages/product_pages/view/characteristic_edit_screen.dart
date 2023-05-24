@@ -143,10 +143,17 @@ class CharacteristicEditScreen extends StatelessWidget {
           builder: (context) => AlertDialog(
                 title: Text('Add a new Value.',
                     style: Theme.of(context).textTheme.subtitle2),
-                content: EditText(
-                  hintText: 'Value Name',
-                  onChanged: characteristicFormController.changeValue,
-                ),
+                content: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                  return EditText(
+                      hintText: 'Value Name',
+                      errorText: characteristicFormController.tempValue.error,
+                      onChanged: (value) {
+                        setState(() {
+                          characteristicFormController.changeValue(value);
+                        });
+                      });
+                }),
                 actions: [
                   TertiaryButton(
                       onPressed: () {
@@ -167,10 +174,19 @@ class CharacteristicEditScreen extends StatelessWidget {
           builder: (context) => AlertDialog(
                 title: Text('Add a new Option.',
                     style: Theme.of(context).textTheme.subtitle2),
-                content: EditText(
-                  hintText: 'Option Name',
-                  onChanged: characteristicFormController.changeOption,
-                ),
+                content: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                  return EditText(
+                    hintText: 'Option Name',
+                    errorText: characteristicFormController.tempOption.error,
+                    //onChanged: characteristicFormController.changeOption,
+                    onChanged: (value) {
+                      setState(() {
+                        characteristicFormController.changeOption(value);
+                      });
+                    },
+                  );
+                }),
                 actions: [
                   TertiaryButton(
                       onPressed: () {
