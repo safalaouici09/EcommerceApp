@@ -129,6 +129,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     },
                     steps: [
                       getShippingStep(policyCreationValidation, context),
+                      getReservationStep(policyCreationValidation, context),
                       getReturnStep(policyCreationValidation, context),
                       getOrdersStep(policyCreationValidation, context),
                     ],
@@ -338,6 +339,144 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     )
                   : Container(),
             ],
+          ],
+        ));
+  }
+
+  Step getReservationStep(
+      PolicyValidation policyCreationValidation, BuildContext context) {
+    return Step(
+        isActive: _currentStep >= 1,
+        title: Text("Reservation "),
+        content: Column(
+          children: [
+            ListToggle(
+                title: 'Allow Reservations',
+                value: policyCreationValidation.reservationAccept!,
+                onToggle: policyCreationValidation.toggleReservationAceept),
+            policyCreationValidation.reservationAccept!
+                ? Column(
+                    children: [
+                      SectionDivider(
+                          leadIcon: Icons.book_outlined,
+                          title: 'Reservation fee.',
+                          color: redSwatch.shade500),
+                      const InfoMessage(
+                          message:
+                              'indicate the reservation policy for your product. Include whether the reservation is free, partial or total, the maximum days for reservation, and any applicable cancellation fees.'),
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(normal_100).copyWith(right: 0),
+                        child: Column(
+                          children: [
+                            ListToggle(
+                                title: 'Free Reservation',
+                                value:
+                                    policyCreationValidation.reservationFree!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationFree),
+                            ListToggle(
+                                title: 'Partial Reservation',
+                                value: policyCreationValidation
+                                    .reservationPartial!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationPartial),
+                            ListToggle(
+                                title: 'Total Reservation',
+                                value:
+                                    policyCreationValidation.reservationTotal!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationTotal),
+                            if ((policyCreationValidation.reservationPartial ??
+                                true)) ...[
+                              const SizedBox(height: normal_100),
+                              EditText(
+                                hintText: 'Reservation Price.',
+                                keyboardType: TextInputType.number,
+                                saved: (policyCreationValidation
+                                            .reservationtax ==
+                                        null)
+                                    ? ""
+                                    : policyCreationValidation.reservationtax!
+                                        .toString(),
+                                //enabled: (store.policy == null) || editScreen,
+                                onChanged: policyCreationValidation
+                                    .changeReservationTax,
+                              )
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: normal_100),
+                      SectionDivider(
+                          leadIcon: Icons.timelapse_outlined,
+                          title: 'Reservation duration.',
+                          color: redSwatch.shade500),
+                      DropDownSelector<String>(
+                        // labelText: 'Product Category.',
+                        hintText: 'Reservation duration.',
+                        onChanged:
+                            policyCreationValidation.changeResevationDuration,
+                        borderType: BorderType.middle,
+                        savedValue: policyCreationValidation.reservationDuration
+                            .toString(),
+                        items: daysMap.entries
+                            .map((item) => DropdownItem<String>(
+                                value: item.key,
+                                child: Text(item.value,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2!
+                                        .copyWith(
+                                            fontWeight: FontWeight.w600))))
+                            .toList(),
+                      ),
+                      SectionDivider(
+                          leadIcon: Icons.cancel_outlined,
+                          title: 'Reservation cancelation.',
+                          color: redSwatch.shade500),
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(normal_100).copyWith(right: 0),
+                        child: Column(
+                          children: [
+                            ListToggle(
+                                title: 'Free Cancelation',
+                                value: policyCreationValidation
+                                    .reservationConcelationFree!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationConcelationFree),
+                            ListToggle(
+                                title: 'Chargeable Cancelation',
+                                value: policyCreationValidation
+                                    .reservationConcelationPartial!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationConcelationPartial),
+                            if ((policyCreationValidation
+                                    .reservationConcelationPartial ??
+                                true)) ...[
+                              const SizedBox(height: normal_100),
+                              EditText(
+                                hintText: 'Cancelation Fee.',
+                                keyboardType: TextInputType.number,
+                                saved: (policyCreationValidation
+                                            .reservationcancelationtax ==
+                                        null)
+                                    ? ""
+                                    : policyCreationValidation
+                                        .reservationcancelationtax
+                                        .toString(),
+                                //enabled: (store.policy == null) || editScreen,
+                                onChanged: policyCreationValidation
+                                    .changeReservationCancelationTax,
+                              )
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Container()
           ],
         ));
   }

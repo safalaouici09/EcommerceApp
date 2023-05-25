@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
-import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
-import 'package:proximity_commercant/domain/order_repository/models/order_model.dart';
+import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 
 class OrderService with ChangeNotifier {
   List<Order>? _orders = [];
@@ -27,7 +27,7 @@ class OrderService with ChangeNotifier {
 
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
@@ -74,7 +74,7 @@ class OrderService with ChangeNotifier {
 
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
@@ -117,7 +117,7 @@ class OrderService with ChangeNotifier {
 
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
+    String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter

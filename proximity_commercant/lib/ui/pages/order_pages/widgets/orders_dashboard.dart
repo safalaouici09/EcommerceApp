@@ -42,6 +42,7 @@ class OrdersDashboard extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         DuotoneIcon(
+                                            size: 25,
                                             primaryLayer:
                                                 ProximityIcons.unpaid_duotone_1,
                                             secondaryLayer:
@@ -51,7 +52,8 @@ class OrdersDashboard extends StatelessWidget {
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
-                                                .copyWith(height: 0.9))
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
                                       ]))),
                           Expanded(
                               child: InkWell(
@@ -68,16 +70,20 @@ class OrdersDashboard extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         DuotoneIcon(
+                                            size: 25,
                                             primaryLayer: ProximityIcons
-                                                .not_shipped_duotone_1,
+                                                .self_pickup_duotone_1,
                                             secondaryLayer: ProximityIcons
-                                                .not_shipped_duotone_2,
+                                                .self_pickup_duotone_2,
                                             color: redSwatch.shade500),
-                                        Text('Confirmed',
+                                        Text('Self Pickup',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
-                                                .copyWith(height: 0.9))
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
                                       ]))),
                           Expanded(
                               child: InkWell(
@@ -94,16 +100,20 @@ class OrdersDashboard extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         DuotoneIcon(
+                                            size: 25,
                                             primaryLayer: ProximityIcons
                                                 .delivery_duotone_1,
                                             secondaryLayer: ProximityIcons
                                                 .delivery_duotone_2,
                                             color: redSwatch.shade500),
-                                        Text('Delivered',
+                                        Text('Delivery',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
-                                                .copyWith(height: 0.9))
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
                                       ]))),
                           Expanded(
                               child: InkWell(
@@ -245,7 +255,8 @@ class OrdersDashboard extends StatelessWidget {
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
-                                                .copyWith(height: 0.9))
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
                                       ])))
                         ])))));
   }

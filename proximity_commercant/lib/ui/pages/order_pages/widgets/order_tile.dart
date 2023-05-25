@@ -45,10 +45,31 @@ class OrderTile extends StatelessWidget {
                       child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SmallIconButton(
-                                onPressed: () {},
-                                icon: Icon(ProximityIcons.user,
-                                    color: Theme.of(context).primaryColor)),
+                            SizedBox(
+                                height: large_150,
+                                width: large_150,
+                                child: Stack(
+                                    alignment: Alignment.topRight,
+                                    children: [
+                                      Positioned.fill(
+                                          child: ClipRRect(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      normalRadius),
+                                              child: FittedBox(
+                                                  fit: BoxFit.cover,
+                                                  child: (order
+                                                              .userProfilePic! !=
+                                                          null)
+                                                      ? Image.network(
+                                                          order.userProfilePic!)
+                                                      : Image.network(
+                                                          "https://cdn-icons-png.flaticon.com/512/5853/5853761.png")))),
+                                    ])),
+                            // SmallIconButton(
+                            //     onPressed: () {},
+                            //     icon: Icon(ProximityIcons.user,
+                            //         color: Theme.of(context).primaryColor)),
                             const SizedBox(width: small_100),
                             Expanded(
                                 child: Text('${order.userName}',
@@ -65,13 +86,7 @@ class OrderTile extends StatelessWidget {
                 ? DateFormat.yMMMEd(
                         _locale.languageCode + '_' + _locale.countryCode!)
                     .format(order.orderDate!)
-                : '--:--:----',
-            'Delivery Date': (order.deliveryDate != null)
-                ? DateFormat.yMMMEd(
-                        _locale.languageCode + '_' + _locale.countryCode!)
-                    .format(order.deliveryDate!)
-                : '--:--:----',
-            'Shipping Address': order.shippingAddress!.getAddressLine,
+                : '--:--:----'
           }),
           if (order.delivery == true)
             OrderDetails(details: {
@@ -223,7 +238,7 @@ class OrderTile extends StatelessWidget {
           ]),
           if (order.orderStatus != "Canceled")
             Padding(
-                padding: const EdgeInsets.all(normal_100),
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

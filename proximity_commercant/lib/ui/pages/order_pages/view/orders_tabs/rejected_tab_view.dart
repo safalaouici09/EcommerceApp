@@ -4,8 +4,23 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 import 'package:proximity_commercant/ui/pages/order_pages/order_pages.dart';
 
-class RejectedView extends StatelessWidget {
-  const RejectedView({Key? key}) : super(key: key);
+class RejectedTabView extends StatefulWidget {
+  const RejectedTabView({Key? key, this.page}) : super(key: key);
+
+  final int? page;
+
+  @override
+  State<RejectedTabView> createState() => _RejectedTabViewState();
+}
+
+class _RejectedTabViewState extends State<RejectedTabView> {
+  int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _index = widget.page ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {

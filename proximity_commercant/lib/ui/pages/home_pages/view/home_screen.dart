@@ -66,6 +66,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
   @override
   Widget build(BuildContext context) {
     final storeService = Provider.of<StoreService>(context);
+    // storeService.getStores();
     final userService = Provider.of<UserService>(context);
     double _screenWidth = MediaQuery.of(context).size.width;
     double _viewPortFraction = (_screenWidth - large_150 * 2) / _screenWidth;

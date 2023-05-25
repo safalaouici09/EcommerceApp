@@ -59,6 +59,6 @@ class PendingTabView extends StatelessWidget {
                   },
                   secondaryAction: () {},
                 ),
-              );*/
+              );
   }
 }

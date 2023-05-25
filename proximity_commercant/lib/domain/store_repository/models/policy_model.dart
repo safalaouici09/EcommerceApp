@@ -23,7 +23,7 @@ class Policy {
   });
 
   Policy.fromJson(Map<String, dynamic> json) {
-    workingTimePolicy = json['workingTime'] == null
+    workingTimePolicy = json['workingTime2'] == null
         ? null
         : WorkingTime.fromJson(json['workingTime']);
     pickupPolicy =

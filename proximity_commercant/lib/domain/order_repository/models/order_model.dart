@@ -1,4 +1,6 @@
 import 'package:proximity/domain_repository/models/address_model.dart';
+import 'package:proximity/proximity.dart';
+import 'package:proximity_commercant/domain/order_repository/models/bill_model.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/models/models.dart';
 
@@ -57,27 +59,33 @@ class Order {
 
   Order.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
-        totalPrice = parsedJson['total'].toDouble(),
-        orderStatus = (() {
-          switch (parsedJson['status']) {
-            case "pending":
-              return OrderStatus.pending;
-            case "succeeded":
-              return OrderStatus.succeeded;
-            case "delivered":
-              return OrderStatus.delivered;
-            case "cancelled":
-              return OrderStatus.cancelled;
-            default:
-              return OrderStatus.pending;
-          }
-        }()),
+        userId = parsedJson['clientId'],
+        storeId = parsedJson['storeId'],
+        storeName = parsedJson['store']['name'],
+        storePhone = parsedJson['seller']['phone'],
+        storeAddress = Address(
+            city: parsedJson['store']['address']['city'],
+            fullAddress: parsedJson['store']['address']['fullAdress'],
+            streetName: parsedJson['store']['address']['streetName'],
+            countryName: "France",
+            postalCode: parsedJson['store']['postalCode']),
+        pickupPerson = parsedJson['pickupPerson'] != null
+            ? {
+                "name": parsedJson['pickupPerson']["name"],
+                "nif": parsedJson['pickupPerson']["nif"]
+              }
+            : null,
+        totalPrice = parsedJson['paymentInfos']['totalAmount'].toDouble(),
         currency = '€',
         orderDate = DateTime.now(),
         deliveryDate = DateTime.now(),
         items = OrderItem.orderItemsFromJsonList(parsedJson['items']),
-        storeAddress = Address(
-            city: parsedJson['origin']['city'],
+        paymentInfo = Bill.fromJson(parsedJson['paymentInfos']),
+        shippingAddress = Address(
+            city: parsedJson['deliveryAddresse'] != null &&
+                    parsedJson['deliveryAddresse']["city"] != null
+                ? parsedJson['deliveryAddresse']["city"]
+                : "",
             countryName: "France",
             postalCode: parsedJson['deliveryAddresse'] != null &&
                     parsedJson['deliveryAddresse']["postalCode"] != null

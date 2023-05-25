@@ -13,7 +13,8 @@ import 'image_adder_card.dart';
 class ImageProfile extends StatefulWidget {
   final int maxImages;
   final List<dynamic>? images;
-  final ValueChanged<List<dynamic>> onImageAdded;
+  final ValueChanged<File> onImageAdded;
+  // final ValueChanged<List<dynamic>> onImageAdded;
   final ValueChanged<int> onImageRemoved;
   final bool centered;
 
@@ -40,9 +41,10 @@ class _ImageProfileState extends State<ImageProfile> {
     XFile? _selected = await _picker.pickImage(source: source);
     if (_selected != null) {
       setState(() {
-        _images.add(File(_selected.path));
+        widget.onImageAdded.call(File(_selected.path));
+        // _images.add(File(_selected.path));
 
-        widget.onImageAdded.call(_images);
+        // widget.onImageAdded.call(_images);
       });
     }
   }

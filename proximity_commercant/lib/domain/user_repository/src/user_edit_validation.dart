@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/config/backend.dart';
@@ -6,6 +7,8 @@ import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
 import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_commercant/domain/user_repository/models/models.dart';
+
+import 'package:proximity_commercant/domain/user_repository/src/user_service.dart';
 
 class UserEditValidation with ChangeNotifier {
   late ValidationItem _userName;
@@ -25,7 +28,7 @@ class UserEditValidation with ChangeNotifier {
     _password = ValidationItem(null, null);
     _phone = ValidationItem(user.phone, null);
     _birthdate = user.birthdate!;
-    _profileImage = user.profileImage != null ? [user.profileImage] : [];
+    _profileImage = user.profileImage ?? [null];
     _address = user.address ?? Address();
     notifyListeners();
   }
@@ -117,10 +120,7 @@ class UserEditValidation with ChangeNotifier {
   }
 
   /// image Picker
-  void editProfileImage(List<dynamic> imageList) async {
-    _profileImage.addAll(imageList);
-    notifyListeners();
-
+  void editProfileImage(File imageList, UserService userService) async {
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
     String _token = credentialsBox.get('token');
@@ -128,23 +128,32 @@ class UserEditValidation with ChangeNotifier {
     /* final Map<String, dynamic> data = {
       "image": await MultipartFile.fromFile(imageList[0].path,
           filename: imageList[0].path.split('/').last)*/
-    final Map<String, dynamic> data = {
-      "image": MultipartFile.fromFileSync(_profileImage.first.path)
-    };
+
+    FormData _formData = FormData.fromMap({});
+    _formData.files
+        .add(MapEntry('image', MultipartFile.fromFileSync(imageList.path)));
+
     /*  final Map<String, dynamic> data =
         MapEntry('image', MultipartFile.fromFileSync(_profileImage.first.path));*/
     print("res.statusCode");
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
-      var res =
-          await dio.put(BASE_API_URL + '/user/update_image/$_id', data: data);
+      var res = await dio.put(BASE_API_URL + '/user/update_image/$_id',
+          data: _formData);
       //_loading = false;
       print(res.statusCode);
       notifyListeners();
       if (res.statusCode == 200) {
         /// Save new User Data
+        var user = User.fromJson(res.data);
+        if (_profileImage.isNotEmpty) {
+          _profileImage.removeAt(0);
+        }
+        _profileImage.add(user.profileImage!.first);
+        notifyListeners();
 
+        userService.getUserData();
         notifyListeners();
 
         /// Display Results Message

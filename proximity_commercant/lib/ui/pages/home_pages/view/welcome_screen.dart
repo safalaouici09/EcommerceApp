@@ -32,9 +32,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 children: <Widget>[
               Column(
                 children: <Widget>[
-                  SizedBox(
-                    height: huge_200,
-                    width: 100,
+                  Container(
+                    padding: EdgeInsets.all(50),
                     child: FittedBox(
                       child: Image.asset("assets/img/welcome.png"),
                       fit: BoxFit.fill,
