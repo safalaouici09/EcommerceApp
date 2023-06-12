@@ -187,7 +187,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     Expanded(
                         child: InkWell(
                       onTap: () {
-                        ordersService.getOrders("all", "Returned");
+                        ordersService.getOrders("return", "all");
                         setState(() {
                           _index = 5;
                         });

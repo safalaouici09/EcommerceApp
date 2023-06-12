@@ -31,6 +31,8 @@ dependencies:
   showcaseview: 2.0.0+1
   restart_app: ^1.1.2
   flutter_phoenix: ^1.1.0
+  onesignal_flutter: ^3.5.0
+  pay: ^1.0.10
 
 dev_dependencies:
   flutter_test:

@@ -10,11 +10,13 @@ class OrderService with ChangeNotifier {
   // essential values for the UI
   late bool _loading;
   late bool _loadingOrders;
+  late bool _loadingReturn;
 
   List<Order>? get orders => _orders;
 
   bool get loading => _loading;
   bool get loadingOrders => _loadingOrders;
+  bool get loadingReturn => _loadingReturn;
 
   OrderService() {
     _loading = false;
@@ -87,6 +89,7 @@ class OrderService with ChangeNotifier {
           await dio.get(BASE_API_URL + '/order/$orderType/$_id/status/$status');
       notifyListeners();
       if (res.statusCode == 200) {
+        print("res.data.length");
         print(res.data.length);
         _orders = [];
         _orders!.addAll(Order.ordersFromJsonList(res.data));
@@ -109,6 +112,54 @@ class OrderService with ChangeNotifier {
   }
 
   Future updateStatus(String orderId, String status, String? type,
+      String? oldStatus, bool? reload) async {
+    print("ws lanched : $orderId [ $status ]");
+
+    // _loadingOrders = true;
+    // notifyListeners();
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      FormData _formData =
+          FormData.fromMap({"status": status, "orderId": orderId});
+      var res =
+          await dio.post(BASE_API_URL + '/order/update/$_id', data: _formData);
+      notifyListeners();
+      if (res.statusCode == 200) {
+        // print(res.data.length);
+        if (reload == true) {
+          getOrders(type ?? "", oldStatus ?? "");
+        } else {
+          _orders!.removeWhere((item) => item.id == orderId);
+          notifyListeners();
+        }
+      }
+      // _loadingOrders = false;
+      // notifyListeners();
+    } on DioError catch (e) {
+      // _loadingOrders = false;
+      // notifyListeners();
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
+  Future returnOrderValidate(String orderId, String status, String? type,
       String? oldStatus, bool? reload) async {
     print("ws lanched : $orderId [ $status ]");
 
@@ -276,5 +327,105 @@ class OrderService with ChangeNotifier {
     }
 
     Navigator.pop(context, true);
+  }
+
+  Future returnOrder(BuildContext context, String orderId, String motif,
+      String returnItems, String? type, String? oldStatus, bool? reload) async {
+    print("ws return lanched : $orderId [ $motif ] [ $returnItems ]");
+
+    _loadingReturn = true;
+    notifyListeners();
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      FormData _formData = FormData.fromMap({
+        "userId": _id,
+        "orderId": orderId,
+        "motif": motif,
+        "returnItems": returnItems
+      });
+      var res = await dio.post(BASE_API_URL + '/order/return', data: _formData);
+      notifyListeners();
+      if (res.statusCode == 200) {
+        // print(res.data.length);
+        if (reload == true) {
+          getOrders(type ?? "", oldStatus ?? "");
+        } else {
+          _orders!.removeWhere((item) => item.id == orderId);
+          notifyListeners();
+        }
+      }
+      _loadingReturn = false;
+      notifyListeners();
+    } on DioError catch (e) {
+      _loadingReturn = false;
+      notifyListeners();
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+
+    Navigator.pop(context, true);
+  }
+
+  Future refundOrder(BuildContext context, String orderId, String returnItems,
+      String? type, String? oldStatus, bool? reload) async {
+    print("ws return lanched : $orderId [ $returnItems ]");
+
+    _loadingReturn = true;
+    notifyListeners();
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      FormData _formData = FormData.fromMap(
+          {"userId": _id, "orderId": orderId, "returnItems": returnItems});
+      var res = await dio.post(BASE_API_URL + '/order/refund', data: _formData);
+      notifyListeners();
+      if (res.statusCode == 200) {
+        // print(res.data.length);
+        if (reload == true) {
+          getOrders(type ?? "", oldStatus ?? "");
+        } else {
+          _orders!.removeWhere((item) => item.id == orderId);
+          notifyListeners();
+        }
+
+        Navigator.pop(context, true);
+      }
+      _loadingReturn = false;
+      notifyListeners();
+    } on DioError catch (e) {
+      _loadingReturn = false;
+      notifyListeners();
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
   }
 }

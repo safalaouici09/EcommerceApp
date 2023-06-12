@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:proximity/proximity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
@@ -34,7 +35,7 @@ class ReturnScreenValidation with ChangeNotifier {
         "productId": element.productId ?? "",
         "variantId": element.variantId ?? "",
         "name": element.name ?? "",
-        "image": element.image ?? "",
+        "image": (element.image ?? "").replaceAll(BASE_IMG_URL + '/', ""),
         "price": element.price ?? "",
         "discount": element.discount ?? 0.0,
         "quantity": element.returnQuantity ?? 0,

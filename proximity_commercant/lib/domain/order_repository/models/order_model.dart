@@ -27,7 +27,14 @@ class Order {
   bool? reservation;
   bool? delivery;
   bool? pickup;
+
   bool? returnOrder;
+  List<OrderItem>? returnedItems;
+  List<OrderItem>? acceptedReturnedItems;
+  String? returnMotif;
+  bool? returned;
+  bool? waitingforReturn;
+
   bool? refund;
   bool? canceled;
   Map<String, String>? canceledBy;
@@ -36,6 +43,7 @@ class Order {
   String? storePhone;
 
   Bill? paymentInfo;
+  Bill? refundPaymentInfo;
 
   Map<String, String>? pickupPerson;
 
@@ -80,7 +88,21 @@ class Order {
         orderDate = DateTime.now(),
         deliveryDate = DateTime.now(),
         items = OrderItem.orderItemsFromJsonList(parsedJson['items']),
+        returnedItems = parsedJson['returnItems'] != null
+            ? OrderItem.orderItemsFromJsonList(parsedJson['returnItems'])
+            : null,
+        acceptedReturnedItems = parsedJson['returnedItems'] != null
+            ? OrderItem.orderItemsFromJsonList(parsedJson['returnedItems'])
+            : null,
+        returnOrder = parsedJson['return'],
+        waitingforReturn = parsedJson['waitingforReturn'],
+        returned = parsedJson['returned'],
+        returnMotif = parsedJson['returnMotif'],
         paymentInfo = Bill.fromJson(parsedJson['paymentInfos']),
+        refundPaymentInfo = parsedJson['refundPaymentInfos'] != null &&
+                parsedJson['refundPaymentInfos']["totalAmount"] != null
+            ? Bill.fromJson(parsedJson['refundPaymentInfos'])
+            : null,
         shippingAddress = Address(
             city: parsedJson['deliveryAddresse'] != null &&
                     parsedJson['deliveryAddresse']["city"] != null
@@ -106,7 +128,6 @@ class Order {
         delivery = parsedJson['delivery'],
         pickup = parsedJson['pickUp'],
         reservation = parsedJson['reservation'],
-        returnOrder = parsedJson['return'],
         refund = parsedJson['refund'],
         orderStatus = parsedJson['status'],
         canceled = parsedJson['canceled'] ?? false,

@@ -7,12 +7,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/domain/authentication/src/reset_password_validation.dart';
+import 'package:proximity_commercant/domain/notification_repository/notification_repository.dart';
 import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/CustomErrorWidget.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'proximity_commercant_app.dart';
 
@@ -36,6 +38,7 @@ void main() async {
   }
 
   ErrorWidget.builder = (error) => CustomErrorWidget();
+  //Remove this method to stop OneSignal Debugging
 
   runApp(Phoenix(
     child: MultiProvider(providers: [
@@ -61,6 +64,7 @@ void main() async {
               productService!..reloadList(Provider.of<ProductProxy>(_))),
       ChangeNotifierProvider(create: (_) => OrderService()),
       ChangeNotifierProvider(create: (_) => UserSettings()),
+      ChangeNotifierProvider(create: (_) => NotificationService()),
     ], child: const ProximityCommercantApp()),
   ));
 }

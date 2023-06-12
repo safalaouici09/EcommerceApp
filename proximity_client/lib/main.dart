@@ -13,6 +13,7 @@ import 'package:proximity_client/domain/store_repository/store_repository.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
+import 'package:proximity_client/domain/notification_repository/notification_repository.dart';
 
 import 'proximity_app.dart';
 
@@ -65,5 +66,6 @@ void main() async {
     ChangeNotifierProvider(create: (context) => CartService()),
     ChangeNotifierProvider(create: (_) => WishlistService()),
     ChangeNotifierProvider(create: (context) => UserSettings()),
+    ChangeNotifierProvider(create: (_) => NotificationService()),
   ], child: const ProximityApp()));
 }

@@ -37,9 +37,14 @@ class Order {
 
   bool? returnOrder;
   List<OrderItem>? returnedItems;
+  List<OrderItem>? acceptedReturnedItems;
   String? returnMotif;
+  bool? returned;
+  bool? waitingforReturn;
+  bool? refund;
 
   String? orderStatus;
+  Bill? refundPaymentInfo;
 
   Order(
       {this.id,
@@ -95,7 +100,18 @@ class Order {
         returnedItems = parsedJson['returnItems'] != null
             ? OrderItem.orderItemsFromJsonList(parsedJson['returnItems'])
             : null,
+        acceptedReturnedItems = parsedJson['returnedItems'] != null
+            ? OrderItem.orderItemsFromJsonList(parsedJson['returnedItems'])
+            : null,
+        returnOrder = parsedJson['return'],
+        waitingforReturn = parsedJson['waitingforReturn'],
+        returned = parsedJson['returned'],
         paymentInfo = Bill.fromJson(parsedJson['paymentInfos']),
+        refundPaymentInfo = parsedJson['refundPaymentInfos'] != null &&
+                parsedJson['refundPaymentInfos']["totalAmount"] != null
+            ? Bill.fromJson(parsedJson['refundPaymentInfos'])
+            : null,
+        refund = parsedJson['refund'],
         shippingAddress = Address(
             city: parsedJson['deliveryAddresse'] != null &&
                     parsedJson['deliveryAddresse']["city"] != null
@@ -121,7 +137,6 @@ class Order {
         delivery = parsedJson['delivery'],
         pickup = parsedJson['pickUp'],
         reservation = parsedJson['reservation'],
-        returnOrder = parsedJson['return'],
         returnMotif = parsedJson['returnMotif'],
         canceled = parsedJson['canceled'] ?? false,
         canceledBy = parsedJson['canceledBy'] != null &&

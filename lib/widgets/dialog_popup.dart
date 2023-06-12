@@ -55,6 +55,7 @@ class DialogPopup extends StatelessWidget {
 Future<T?> showDialogPopup<T extends Object>({
   required BuildContext context,
   required RoutePageBuilder pageBuilder,
+  bool barrierDismissible = true,
   bool useRootNavigator = true,
   RouteSettings? routeSettings,
 }) {
@@ -62,7 +63,7 @@ Future<T?> showDialogPopup<T extends Object>({
   return Navigator.of(context, rootNavigator: useRootNavigator)
       .push<T>(RawDialogRoute<T>(
     pageBuilder: pageBuilder,
-    barrierDismissible: true,
+    barrierDismissible: barrierDismissible,
     barrierLabel: '',
     barrierColor: Theme.of(context).shadowColor.withOpacity(1 / 3),
     transitionDuration: normalAnimationDuration,

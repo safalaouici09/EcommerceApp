@@ -194,36 +194,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                                           color: Color.fromARGB(
                                               255, 150, 150, 150))),
                           ])),
-                )),
-                Expanded(
-                    child: InkWell(
-                  onTap: () => setState(() {
-                    _index = 5;
-                  }),
-                  child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: normal_100),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (_index == 5) ...[
-                              Text('Refund',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          height: 0.9,
-                                          color: redSwatch.shade500)),
-                            ] else
-                              Text('Refund',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          height: 0.9,
-                                          color: Color.fromARGB(
-                                              255, 150, 150, 150))),
-                          ])),
-                )),
+                ))
               ]))),
       Expanded(child: () {
         switch (_index) {

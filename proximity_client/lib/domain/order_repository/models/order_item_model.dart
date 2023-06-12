@@ -1,6 +1,7 @@
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/cart_repository/models/models.dart';
 import 'package:proximity_client/domain/product_repository/models/models.dart';
+import 'package:proximity_client/domain/product_repository/models/policy_model.dart';
 
 class OrderItem {
   String? id;
@@ -13,6 +14,7 @@ class OrderItem {
   int orderedQuantity;
   int? returnQuantity;
   double? reservation;
+  Policy? policy;
 
   OrderItem(
       {this.id,
@@ -30,13 +32,15 @@ class OrderItem {
         name = parsedJson['name'],
         productId = parsedJson['productId'],
         variantId = parsedJson['variantId'],
-        orderedQuantity =
-            parsedJson['orderedQuantity'] ?? parsedJson['quantity'],
+        orderedQuantity = parsedJson['orderQuantity'] ?? parsedJson['quantity'],
         returnQuantity =
-            parsedJson['orderedQuantity'] != null ? parsedJson['quantity'] : 0,
+            parsedJson['orderQuantity'] != null ? parsedJson['quantity'] : 0,
         price = parsedJson['price'].toDouble(),
         discount = parsedJson['discount'].toDouble(),
         reservation = (parsedJson['reservation'] ?? 0.0).toDouble(),
+        policy = parsedJson['policy'] == null
+            ? null
+            : Policy.fromJson(parsedJson['policy']),
         image = BASE_IMG_URL + '/' + parsedJson['image'];
 
   OrderItem.fromCartItem(CartItem cartItem)
