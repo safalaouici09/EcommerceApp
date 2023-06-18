@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 
@@ -9,6 +7,7 @@ class StoreDetails extends StatelessWidget {
       required this.name,
       required this.rating,
       this.image,
+      required this.isNew,
       required this.followers})
       : super(key: key);
 
@@ -16,6 +15,7 @@ class StoreDetails extends StatelessWidget {
   final double rating;
   final dynamic image;
   final int followers;
+  final bool isNew;
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +43,32 @@ class StoreDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                 Text(name,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start),
-                StarRating(rating: rating)
+                Row(
+                  children: [
+                    StarRating(rating: rating),
+                    isNew
+                        ? Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: small_50, vertical: tiny_50),
+                            decoration: BoxDecoration(
+                                color: greenSwatch.shade300,
+                                borderRadius:
+                                    const BorderRadius.all(normalRadius),
+                                border:
+                                    Border.all(color: greenSwatch.shade200)),
+                            child: Text("New",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(color: greenSwatch.shade900)),
+                          )
+                        : Container()
+                  ],
+                )
               ])),
           Text(followers.toString()),
           const Icon(ProximityIcons.heart)

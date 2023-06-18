@@ -3,7 +3,7 @@ import 'dart:convert';
 class Policy {
   // List<ShippingMethod>? shippingMethods;
 
-  WorkingTime? workingTimePolicy;
+//  WorkingTime? workingTimePolicy;
   PickupPolicy? pickupPolicy;
   DeliveryPolicy? deliveryPolicy;
   ReservationPolicy? reservationPolicy;
@@ -12,7 +12,7 @@ class Policy {
 
   Policy({
     //  this.shippingMethods,
-    this.workingTimePolicy,
+    //this.workingTimePolicy,
     this.pickupPolicy,
     this.deliveryPolicy,
     this.reservationPolicy,
@@ -21,30 +21,39 @@ class Policy {
   });
 
   Policy.fromJson(Map<String, dynamic> json) {
-    workingTimePolicy = json['workingTime'] == null ? null :  WorkingTime.fromJson(json['workingTime']);
-    pickupPolicy = json['pickup'] == null ? null :  PickupPolicy.fromJson(json['pickup']);
-    deliveryPolicy = json['delivery'] == null ? null :  DeliveryPolicy.fromJson(json['delivery']);
-    returnPolicy = json['return'] == null ? null :  ReturnPolicy.fromJson(json['return']);
-    reservationPolicy = json['reservation'] == null ? null :  ReservationPolicy.fromJson(json['reservation']);
-    orderPolicy = json['order'] == null ? null :  OrderPolicy.fromJson(json['order']);
+    // workingTimePolicy = json['workingTime'] == null ? null :  WorkingTime.fromJson(json['workingTime']);
+    pickupPolicy =
+        json['pickup'] == null ? null : PickupPolicy.fromJson(json['pickup']);
+    deliveryPolicy = json['delivery'] == null
+        ? null
+        : DeliveryPolicy.fromJson(json['delivery']);
+    returnPolicy =
+        json['return'] == null ? null : ReturnPolicy.fromJson(json['return']);
+    reservationPolicy = json['reservation'] == null
+        ? null
+        : ReservationPolicy.fromJson(json['reservation']);
+    orderPolicy =
+        json['order'] == null ? null : OrderPolicy.fromJson(json['order']);
   }
 
   String toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    
-    data['workingTime'] = workingTimePolicy == null ? null :  workingTimePolicy!.toJson();
-    
-    data['pickup'] = pickupPolicy == null ? null :  pickupPolicy!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
 
-    data['delivery'] = deliveryPolicy == null ? null :  deliveryPolicy!.toJson();
+    /* data['workingTime'] =
+        workingTimePolicy == null ? null : workingTimePolicy!.toJson();*/
 
-    data['reservation'] = reservationPolicy == null ? null : this.reservationPolicy!.toJson();
+    data['pickup'] = pickupPolicy == null ? null : pickupPolicy!.toJson();
 
-    data['return'] = returnPolicy == null ? null :   returnPolicy!.toJson();
-    
-    data['order'] = orderPolicy == null ? null :   orderPolicy!.toJson();
+    data['delivery'] = deliveryPolicy == null ? null : deliveryPolicy!.toJson();
 
-    print(json.encode(data)) ;
+    data['reservation'] =
+        reservationPolicy == null ? null : reservationPolicy!.toJson();
+
+    data['return'] = returnPolicy == null ? null : returnPolicy!.toJson();
+
+    data['order'] = orderPolicy == null ? null : orderPolicy!.toJson();
+
+    print(json.encode(data));
     return json.encode(data);
   }
 }
@@ -150,7 +159,7 @@ class Pricing {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['fixe'] = fixedPrice;
     data['km'] = kmPrice;
     return data;
@@ -197,9 +206,9 @@ class ReservationCancelation {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.restrictions != null) {
-      data['restrictions'] = this.restrictions!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (restrictions != null) {
+      data['restrictions'] = restrictions!.toJson();
     }
     return data;
   }
@@ -218,7 +227,7 @@ class Restrictions {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
 
     data['fixe'] = fix;
     data['percentage'] = percentage;
@@ -242,13 +251,13 @@ class ReservationPayment {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['free'] = free;
     if (partial != null) {
       data['partial'] = partial!.toJson();
     }
 
-    data['total'] = this.total;
+    data['total'] = total;
     return data;
   }
 }
@@ -296,11 +305,11 @@ class ReturnPolicy {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['duration'] = this.duration;
-    data['productStatus'] = this.productStatus;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['duration'] = duration;
+    data['productStatus'] = productStatus;
     data['returnMethod'] = returnMethod;
-    data['refund'] = this.refund.toJson();
+    data['refund'] = refund.toJson();
     return data;
   }
 }
@@ -322,7 +331,7 @@ class Refund {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['order'] = order.toJson();
     if (shipping != null) {
       data['shipping'] = shipping!.toJson();
@@ -350,9 +359,9 @@ class OrderRefund {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fixe'] = this.fixe;
-    data['percentage'] = this.percentage;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['fixe'] = fixe;
+    data['percentage'] = percentage;
     return data;
   }
 }
@@ -375,34 +384,10 @@ class ShippingRefund {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['fixe'] = this.fixe;
-    data['percentage'] = this.percentage;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['fixe'] = fixe;
+    data['percentage'] = percentage;
     return data;
-  }
-}
-
-class WorkingTime {
-  String? openTime;
-  String? closeTime;
-
-  WorkingTime({
-    this.openTime,
-    this.closeTime,
-  });
-
-  factory WorkingTime.fromJson(Map<String, dynamic> json) {
-    return WorkingTime(
-      openTime: json['openTime'],
-      closeTime: json['closeTime'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'openTime': openTime,
-      'closeTime': closeTime,
-    };
   }
 }
 
@@ -424,7 +409,7 @@ class OrderPolicy {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (validation != null) {
       data['validation'] = validation!.toJson();
     }
@@ -449,7 +434,7 @@ class Validation {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['auto'] = auto;
     data['manual'] = manual;
     //  data['both'] = both;
@@ -477,12 +462,12 @@ class OrderNotification {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['realtime'] = this.realtime;
-    data['time'] = this.time;
-    data['perOrdersNbr'] = this.perOrdersNbr;
-    if (this.sendMode != null) {
-      data['sendMode'] = this.sendMode!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['realtime'] = realtime;
+    data['time'] = time;
+    data['perOrdersNbr'] = perOrdersNbr;
+    if (sendMode != null) {
+      data['sendMode'] = sendMode!.toJson();
     }
     return data;
   }
@@ -508,12 +493,12 @@ class SendMode {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['mail'] = this.mail;
-    data['sms'] = this.sms;
-    data['popup'] = this.popup;
-    data['vibration'] = this.vibration;
-    data['ringing'] = this.ringing;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['mail'] = mail;
+    data['sms'] = sms;
+    data['popup'] = popup;
+    data['vibration'] = vibration;
+    data['ringing'] = ringing;
     return data;
   }
 }

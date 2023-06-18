@@ -52,7 +52,11 @@ class StoreService with ChangeNotifier {
     }
   }
 
-  Future<void> getStore() async {
+  Future<void> getStore({String? storeFetchId = null}) async {
+    if (storeFetchId != null) {
+      _storeId = storeFetchId;
+      notifyListeners();
+    }
     _store = null;
     _loading = true;
     notifyListeners();
@@ -68,9 +72,12 @@ class StoreService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer ";
+      print('/store/$_storeId');
       var res = await dio.get(BASE_API_URL + '/store/$_storeId');
       if (res.statusCode == 200) {
         _store = Store.fromJson(res.data);
+        print('get store');
+        // print(_store!.workingTime!.fixedHours.toString());
         notifyListeners();
       }
     } on DioError catch (e) {

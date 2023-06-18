@@ -162,7 +162,11 @@ class ProductCreationScreen extends StatelessWidget {
                                 errorText:
                                     productCreationValidation.quantity!.error,
                                 saved: productCreationValidation.quantity!.value
-                                    .toString(),
+                                            .toString() !=
+                                        "null"
+                                    ? productCreationValidation.quantity!.value
+                                        .toString()
+                                    : "",
                                 enabled:
                                     (product.quantity == null) || editScreen,
                                 onChanged:
@@ -333,6 +337,8 @@ class ProductCreationScreen extends StatelessWidget {
                           productCreationValidation
                               .toFormData(productCreationValidation.policy));
                     } else {
+                      // productCreationValidation
+                      // .toFormData(productCreationValidation.policy);
                       productService.addProduct(
                           context,
                           productCreationValidation

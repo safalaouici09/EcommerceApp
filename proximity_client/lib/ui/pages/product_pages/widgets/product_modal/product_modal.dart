@@ -27,11 +27,13 @@ class _ProductModalState extends State<ProductModal> {
 
     final Product _product = productService.products
         .firstWhere((element) => element.id == widget.id);
-    final ProductVariant? _selectedVariant =
-        (productModalController.productVariantId == null)
-            ? null
-            : _product.variants!.firstWhere((element) =>
-                element.id == productModalController.productVariantId);
+
+    final ProductVariant? _selectedVariant;
+
+    _selectedVariant = (productModalController.productVariantId == null)
+        ? null
+        : _product.variants!.firstWhere(
+            (element) => element.id == productModalController.productVariantId);
 
     return Stack(children: [
       Container(
@@ -75,33 +77,51 @@ class _ProductModalState extends State<ProductModal> {
               /*(productModalController.productVariantId == null)
                   ? const SizedBox()
                   :*/
-              ProductVariantCharacteristics(
-                  characteristics: _product.characteristics!),
+              productService.getCharacteristics(_product) != null
+                  ? ProductVariantCharacteristics(
+                      characteristics:
+                          productService.getCharacteristics(_product)!)
+                  : Container(),
               const SizedBox(height: small_100),
-              GridView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    crossAxisSpacing: normal_100,
-                    mainAxisSpacing: normal_100,
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                  children: List.generate(
-                      productService.filterVariants(_product.variants!).length,
-                      // _product.variants!.length,
-                      (index) => ProductVariantCard(
-                          selected: productService
-                                  .filterVariants(_product.variants!)![index]
-                                  .id ==
-                              productModalController.productVariantId,
-                          onChanged: () => productModalController.selectVariant(
-                              productService
-                                  .filterVariants(_product.variants!)![index]
-                                  .id!),
-                          image: productService
-                              .filterVariants(_product.variants!)![index]
-                              .image!))),
+              Consumer<ProductService>(builder: (_, productService, __) {
+                return _product.variants != null
+                    ? GridView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: normal_100,
+                          mainAxisSpacing: normal_100,
+                        ),
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: normal_100),
+                        children: List.generate(
+                            productService
+                                .filterVariants(
+                                  _product.variants!,
+                                )
+                                .length,
+                            (index) => ProductVariantCard(
+                                selected: productService
+                                        .filterVariants(
+                                          _product.variants!,
+                                        )![index]
+                                        .id ==
+                                    productModalController.productVariantId,
+                                onChanged: () => productModalController
+                                    .selectVariant(productService
+                                        .filterVariants(
+                                          _product.variants!,
+                                        )![index]
+                                        .id!),
+                                image: productService
+                                    .filterVariants(
+                                      _product.variants!,
+                                    )![index]
+                                    .image!)))
+                    : Container();
+              }),
               /* List.generate(
                     productService.filterVariants( _product.variants!).length,
                      // _product.variants!.length,
@@ -125,87 +145,87 @@ class _ProductModalState extends State<ProductModal> {
                     decreaseQuantity: productModalController.decreaseQuantity),
 
               /// Store Policy Section
-              Consumer<StoreService>(
-                builder: (context, storeService, _) {
-                  return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// Store Policy Section
-                        if (storeService.store != null)
-                          if (storeService.store!.policy != null) ...[
-                            SectionDivider(
-                                leadIcon: ProximityIcons.policy,
-                                title: 'Store Policy.',
-                                color: Theme.of(context).primaryColor),
-                            if (storeService.store!.policy!.shippingMethods!
-                                .contains(ShippingMethod.delivery))
-                              Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: small_100),
-                                  child: Row(children: [
-                                    Text('-',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1),
-                                    const Icon(ProximityIcons.delivery),
-                                    Text(
-                                        'Delivery Option with a ${storeService.store!.policy!.tax} € fee.',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1)
-                                  ])),
-                            if (storeService.store!.policy!.shippingMethods!
-                                .contains(ShippingMethod.selfPickupTotal))
-                              Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: small_100),
-                                  child: Row(children: [
-                                    Text('-',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1),
-                                    const Icon(ProximityIcons.self_pickup),
-                                    Text(
-                                        'SelfPickup Option with a ${storeService.store!.policy!.selfPickUpPrice} € fee.',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1)
-                                  ]))
-                            else if (storeService
-                                .store!.policy!.shippingMethods!
-                                .contains(ShippingMethod.selfPickupPartial))
-                              Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: small_100),
-                                  child: Row(children: [
-                                    Text('-',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1),
-                                    const Icon(ProximityIcons.self_pickup),
-                                    Text(
-                                        'SelfPickup Option with a ${storeService.store!.policy!.selfPickUpPrice} € fee.',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1)
-                                  ]))
-                            else if (storeService
-                                .store!.policy!.shippingMethods!
-                                .contains(ShippingMethod.selfPickupTotal))
-                              Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: small_100),
-                                  child: Row(children: [
-                                    const Icon(ProximityIcons.self_pickup),
-                                    Text('SelfPickup Option with no tax.',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1)
-                                  ]))
-                          ]
-                      ]);
-                },
-              )
+              // Consumer<StoreService>(
+              //   builder: (context, storeService, _) {
+              //     return Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           /// Store Policy Section
+              //           if (storeService.store != null)
+              //             if (storeService.store!.policy != null) ...[
+              //               SectionDivider(
+              //                   leadIcon: ProximityIcons.policy,
+              //                   title: 'Store Policy.',
+              //                   color: Theme.of(context).primaryColor),
+              //               if (storeService.store!.policy!.shippingMethods!
+              //                   .contains(ShippingMethod.delivery))
+              //                 Padding(
+              //                     padding: const EdgeInsets.symmetric(
+              //                         horizontal: small_100),
+              //                     child: Row(children: [
+              //                       Text('-',
+              //                           style: Theme.of(context)
+              //                               .textTheme
+              //                               .bodyText1),
+              //                       const Icon(ProximityIcons.delivery),
+              //                       Text(
+              //                           'Delivery Option with a ${storeService.store!.policy!.tax} € fee.',
+              //                           style: Theme.of(context)
+              //                               .textTheme
+              //                               .bodyText1)
+              //                     ])),
+              //               if (storeService.store!.policy!.shippingMethods!
+              //                   .contains(ShippingMethod.selfPickupTotal))
+              //                 Padding(
+              //                     padding: const EdgeInsets.symmetric(
+              //                         horizontal: small_100),
+              //                     child: Row(children: [
+              //                       Text('-',
+              //                           style: Theme.of(context)
+              //                               .textTheme
+              //                               .bodyText1),
+              //                       const Icon(ProximityIcons.self_pickup),
+              //                       Text(
+              //                           'SelfPickup Option with a ${storeService.store!.policy!.selfPickUpPrice} € fee.',
+              //                           style: Theme.of(context)
+              //                               .textTheme
+              //                               .bodyText1)
+              //                     ]))
+              //               else if (storeService
+              //                   .store!.policy!.shippingMethods!
+              //                   .contains(ShippingMethod.selfPickupPartial))
+              //                 Padding(
+              //                     padding: const EdgeInsets.symmetric(
+              //                         horizontal: small_100),
+              //                     child: Row(children: [
+              //                       Text('-',
+              //                           style: Theme.of(context)
+              //                               .textTheme
+              //                               .bodyText1),
+              //                       const Icon(ProximityIcons.self_pickup),
+              //                       Text(
+              //                           'SelfPickup Option with a ${storeService.store!.policy!.selfPickUpPrice} € fee.',
+              //                           style: Theme.of(context)
+              //                               .textTheme
+              //                               .bodyText1)
+              //                     ]))
+              //               else if (storeService
+              //                   .store!.policy!.shippingMethods!
+              //                   .contains(ShippingMethod.selfPickupTotal))
+              //                 Padding(
+              //                     padding: const EdgeInsets.symmetric(
+              //                         horizontal: small_100),
+              //                     child: Row(children: [
+              //                       const Icon(ProximityIcons.self_pickup),
+              //                       Text('SelfPickup Option with no tax.',
+              //                           style: Theme.of(context)
+              //                               .textTheme
+              //                               .bodyText1)
+              //                     ]))
+              //             ]
+              //         ]);
+              //   },
+              // )
             ])),
             Consumer<StoreService>(
                 builder: (context, storeService, _) =>

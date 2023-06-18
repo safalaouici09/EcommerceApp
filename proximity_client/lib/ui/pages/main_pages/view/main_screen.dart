@@ -23,18 +23,33 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _index = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _index = 0;
-    initPlatform();
-  }
-
   String _debugLabelString = "";
   String notification_type = "Refund";
   Map<String, dynamic>? notification = null;
   String notification_title = "";
   String notification_body = "";
+
+  int nbr_of_notifications = 0;
+
+  NotificationService notificationServiceGlobal = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _index = 0;
+    nbr_of_notifications = (notificationServiceGlobal.notifications!
+        .where((notification) => notification.seendInList != true)).length;
+    initPlatform();
+
+    notificationServiceGlobal.addListener(_handleChange);
+  }
+
+  void _handleChange() {
+    setState(() {
+      nbr_of_notifications = (notificationServiceGlobal.notifications!
+          .where((notification) => notification.seendInList != true)).length;
+    });
+  }
 
   @override
   Widget build(BuildContext parentContext) {
@@ -209,30 +224,60 @@ class _MainScreenState extends State<MainScreen> {
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    if (_index == 3) ...[
-                                      DuotoneIcon(
-                                        primaryLayer:
-                                            ProximityIcons.user_duotone_1,
-                                        secondaryLayer:
-                                            ProximityIcons.user_duotone_2,
-                                        color: redSwatch.shade500,
-                                      ),
-                                      Text('Profile',
-                                          style: Theme.of(parentContext)
-                                              .textTheme
-                                              .bodyText1!
-                                              .copyWith(height: 0.9)),
-                                      const SizedBox(height: tiny_50),
-                                      Container(
-                                          height: tiny_50,
-                                          width: normal_150,
-                                          decoration: BoxDecoration(
+                                    Stack(children: [
+                                      if (nbr_of_notifications > 0)
+                                        Container(
+                                            padding:
+                                                const EdgeInsets.all(tiny_50),
+                                            margin: const EdgeInsets.only(
+                                                top: 2, left: 25),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        tinyRadius),
+                                                color: redSwatch.shade500),
+                                            child: Text(
+                                              '${nbr_of_notifications}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption!
+                                                  .copyWith(
+                                                      color:
+                                                          primaryTextDarkColor,
+                                                      fontWeight:
+                                                          FontWeight.w800),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            )),
+                                      if (_index == 3)
+                                        Column(
+                                          children: [
+                                            DuotoneIcon(
+                                              primaryLayer:
+                                                  ProximityIcons.user_duotone_1,
+                                              secondaryLayer:
+                                                  ProximityIcons.user_duotone_2,
                                               color: redSwatch.shade500,
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      tinyRadius)))
-                                    ] else
-                                      const Icon(ProximityIcons.user),
+                                            ),
+                                            Text('Profile',
+                                                style: Theme.of(parentContext)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .copyWith(height: 0.9)),
+                                            Container(
+                                                height: tiny_50,
+                                                width: normal_150,
+                                                decoration: BoxDecoration(
+                                                    color: redSwatch.shade500,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            tinyRadius))),
+                                            const SizedBox(height: tiny_50),
+                                          ],
+                                        ),
+                                      if (_index != 3)
+                                        const Icon(ProximityIcons.user),
+                                    ])
                                   ]),
                             )),
                           ])),
@@ -244,6 +289,7 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> initPlatform() async {
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult event) {
+      notificationServiceGlobal.getNotifications(null);
       print('BODY ${event.notification.body}');
       print('TITLE: ${event.notification.title}');
       print(
@@ -252,7 +298,8 @@ class _MainScreenState extends State<MainScreen> {
       var _id = credentialsBox.get('id');
 
       print(_id);
-      print(notification!["owner_id"]);
+      print("event.notification.additionalData 1");
+      print(event.notification.additionalData);
 
       if (_id != null &&
           _id != "" &&
@@ -271,6 +318,9 @@ class _MainScreenState extends State<MainScreen> {
 
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent event) {
+      notificationServiceGlobal.getNotifications(null);
+      print("event.notification.additionalData");
+      print(event.notification.additionalData);
       print('BODY ${event.notification.body}');
       print('TITLE: ${event.notification.title}');
       print(
@@ -279,7 +329,6 @@ class _MainScreenState extends State<MainScreen> {
       var _id = credentialsBox.get('id');
 
       print(_id);
-      print(notification!["owner_id"]);
 
       if (_id != null &&
           _id != "" &&
@@ -291,6 +340,7 @@ class _MainScreenState extends State<MainScreen> {
           notification = event.notification.additionalData;
           notification_title = event.notification.title ?? "";
           notification_body = event.notification.body ?? "";
+          nbr_of_notifications += 1;
         });
       } else {
         event.complete(null);

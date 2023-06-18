@@ -24,7 +24,8 @@ class StoreMap extends StatelessWidget {
                       latLng: LatLng(address.lat!, address.lng!)),
                   Container(
                       width: double.infinity,
-                      color: Theme.of(context).backgroundColor.withOpacity(2/3),
+                      color:
+                          Theme.of(context).backgroundColor.withOpacity(2 / 3),
                       padding: const EdgeInsets.all(small_100)
                           .copyWith(right: huge_100),
                       child: Text(address.streetName ?? '',

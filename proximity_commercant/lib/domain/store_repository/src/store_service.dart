@@ -262,6 +262,7 @@ class StoreService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
+      print(formData.toString());
       var res = await dio.put(BASE_API_URL + '/store/${stores![index].id}',
           data: formData);
       if (res.statusCode == 200) {

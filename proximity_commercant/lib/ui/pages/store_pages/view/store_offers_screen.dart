@@ -13,25 +13,40 @@ import 'package:proximity_commercant/domain/product_repository/product_repositor
 import 'package:proximity_commercant/domain/store_repository/src/store_service.dart';
 import 'package:proximity_commercant/ui/pages/product_pages/widgets/offer_item.dart';
 
-class StoreOffersScreen extends StatelessWidget {
+class StoreOffersScreen extends StatefulWidget {
   String? storeId;
   StoreOffersScreen({Key? key, this.storeId}) : super(key: key);
 
   @override
+  State<StoreOffersScreen> createState() => _StoreOffersScreenState();
+}
+
+class _StoreOffersScreenState extends State<StoreOffersScreen> {
+  /// a boolean to help fetch data ONLY if necessary
+  bool didFetch = false;
+  String? storeId = "";
+
+  @override
+  void initState() {
+    super.initState();
+    storeId = widget.storeId;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final storeService = Provider.of<StoreService>(context);
-
-    storeService.getStoreOffers(storeId!);
+    if (!didFetch) {
+      storeService.getStoreOffers(storeId!);
+      setState(() {
+        didFetch = true;
+      });
+    }
 
     return Consumer<StoreService>(builder: (context, storeService, child) {
       return Scaffold(
           body: SafeArea(
               child: ListView(children: [
         const TopBar(title: 'Discounts.'),
-        SectionDivider(
-            leadIcon: Icons.discount_outlined,
-            title: 'Active Discounts.',
-            color: Theme.of(context).primaryColor),
         if (storeService.storeOffers == null)
           const Center(child: CircularProgressIndicator())
         else
@@ -40,15 +55,32 @@ class StoreOffersScreen extends StatelessWidget {
                   vertical: normal_100, horizontal: small_100),
               column: 1,
               children: [
-                ...List.generate(
-                    storeService.storeOffers!.length!,
-                    (index) => OfferItem(
-                          offer: storeService.storeOffers![index],
-                        )),
                 SectionDivider(
                     leadIcon: Icons.discount_outlined,
                     title: 'Archived Discounts',
                     color: Theme.of(context).primaryColor),
+                ...List.generate(
+                    storeService.storeOffers!
+                        .where((element) => !element!.offerDeleted!)
+                        .length!,
+                    (index) => OfferItem(
+                          offer: storeService.storeOffers!
+                              .where((element) => !element.offerDeleted!)
+                              .toList()[index],
+                        )),
+                SectionDivider(
+                    leadIcon: Icons.discount_outlined,
+                    title: 'Archived Discounts.',
+                    color: Theme.of(context).primaryColor),
+                ...List.generate(
+                    storeService.storeOffers!
+                        .where((element) => element!.offerDeleted!)
+                        .length!,
+                    (index) => OfferItem(
+                          offer: storeService.storeOffers!
+                              .where((element) => element.offerDeleted!)
+                              .toList()[index],
+                        )),
               ])
       ])));
     });

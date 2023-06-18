@@ -107,35 +107,39 @@ class ProductScreen extends StatelessWidget {
                 height: 200,
                 child: Column(
                   children: [
-                    DropDownSelector<String>(
-                      // labelText: 'Product Category.',
-                      hintText: 'Discount .',
-                      onChanged: productService.changeDiscountAmount,
-                      borderType: BorderType.middle,
-                      savedValue: productService.discountAmount.toString(),
-                      items: percentageValues.entries
-                          .map((item) => DropdownItem<String>(
-                              value: item.key,
-                              child: Text(item.value,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(fontWeight: FontWeight.w600))))
-                          .toList(),
-                    ),
-                    EditTextSpacer(),
-                    EditText(
-                      hintText: 'Offer Stock. ',
-                      keyboardType: TextInputType.number,
-                      saved: (productService.offerStock == null)
-                          ? ""
-                          : productService.offerStock.toString(),
-                      //   enabled:
-                      // (store.policy == null) || editScreen,
-                      onChanged: productService.changeOfferStock,
-                    ),
-                    EditTextSpacer(),
-                    DateInput(),
+                    if (product.offer_id == null) ...[
+                      DropDownSelector<String>(
+                        // labelText: 'Product Category.',
+                        hintText: 'Discount .',
+                        onChanged: productService.changeDisountPercentage,
+                        borderType: BorderType.middle,
+                        savedValue:
+                            productService.discountPercentage.toString(),
+                        items: percentageValues.entries
+                            .map((item) => DropdownItem<String>(
+                                value: item.key,
+                                child: Text(item.value,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2!
+                                        .copyWith(
+                                            fontWeight: FontWeight.w600))))
+                            .toList(),
+                      ),
+                      EditTextSpacer(),
+                      EditText(
+                        hintText: 'Offer Stock. ',
+                        keyboardType: TextInputType.number,
+                        saved: (productService.offerStock == null)
+                            ? ""
+                            : productService.offerStock.toString(),
+                        //   enabled:
+                        // (store.policy == null) || editScreen,
+                        onChanged: productService.changeOfferStock,
+                      ),
+                      EditTextSpacer(),
+                      DateInput(),
+                    ],
 
                     /*   Row(
                       children: [
@@ -163,26 +167,28 @@ class ProductScreen extends StatelessWidget {
                         await productService.editProductDiscount(
                             context, index, productService.discountAmount);
                       } else {
-                        await productService.archiveOffer(product.offer_id!);
+                        await productService.archiveOffer(
+                            context, product.offer_id!, id);
                         await productService.editProductDiscount(
                             context, index, 0);
                       }
 
                       Navigator.pop(context);
                     },
-                    title: product.offer_id == null ? 'submit' : 'archive'),
+                    title:
+                        product.offer_id == null ? 'submit' : 'Stop promoting'),
                 //      title: /*product.offer_id == null ? 'Submit' : 'archiver'),
-                if (product.offer_id != null)
-                  TertiaryButton(
-                      onPressed: () async {
-                        /*  productService.updateOffer(
-                                                productService.toFormData());*/
-                        await productService.editProductDiscount(
-                            context, index, productService.discountAmount);
+                // if (product.offer_id != null)
+                //   TertiaryButton(
+                //       onPressed: () async {
+                //         /*  productService.updateOffer(
+                //                                 productService.toFormData());*/
+                //         await productService.editProductDiscount(
+                //             context, index, productService.discountAmount);
 
-                        Navigator.pop(context);
-                      },
-                      title: 'update')
+                //         Navigator.pop(context);
+                //       },
+                //       title: 'update')
               ],
             ));
   }

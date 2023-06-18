@@ -42,7 +42,9 @@ void main() async {
   if (defaultTargetPlatform == TargetPlatform.android) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
-  ErrorWidget.builder = (error) => const CustomErrorWidget();
+  ErrorWidget.builder = (error) => CustomErrorWidget(
+        error: error,
+      );
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => LoginValidation()),

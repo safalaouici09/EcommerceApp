@@ -258,14 +258,25 @@ class OrderTile extends StatelessWidget {
                 child: Column(
                   children: [
                     if (returnOrder != true)
-                      ...List.generate(
-                          order.items!.length,
-                          (index) => OrderDetails(details: {
-                                '${order.items![index].name}':
-                                    '${((order.items![index].price ?? 1) * (order.items![index].orderedQuantity ?? 1) * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0))).toString()}',
-                                '${order.items![index].price! * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0))} x${order.items![index].orderedQuantity}':
-                                    '',
-                              })
+                      ...List.generate(order.items!.length, (index) {
+                        if (order.items![index].reservation != 0.0) {
+                          return OrderDetails(details: {
+                            '${order.items![index].name}':
+                                '${((order.items![index].price ?? 1) * (order.items![index].orderedQuantity ?? 1) * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0)) * (order.items![index].reservation ?? 1.0)).toString()}',
+                            '${order.items![index].price! * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0))} x${order.items![index].orderedQuantity}':
+                                '',
+                            'Reservation : ${((order.items![index].reservation ?? 0.0) * 100).toInt()}% ':
+                                ''
+                          });
+                        }
+
+                        return OrderDetails(details: {
+                          '${order.items![index].name}':
+                              '${((order.items![index].price ?? 1) * (order.items![index].orderedQuantity ?? 1) * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0))).toString()}',
+                          '${order.items![index].price! * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0))} x${order.items![index].orderedQuantity}':
+                              '',
+                        });
+                      }
 
                           // OrderItemTile(orderItem: order.items![index])
                           ),

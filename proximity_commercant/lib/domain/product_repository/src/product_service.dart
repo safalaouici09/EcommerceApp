@@ -14,7 +14,7 @@ class ProductService with ChangeNotifier {
   String? _idStore;
   DateTime _selectedDate = DateTime.now();
   String? _formattedDate;
-  String? _discountType = 'amount';
+  String? _discountType = 'percentage';
   int? _discountAmount;
   int? _discountPercentage;
   int? _offerStock;
@@ -307,7 +307,7 @@ class ProductService with ChangeNotifier {
 
       if (res.statusCode == 200) {
         /// Save new Store Data
-        _products!.add(Product.fromJson(res.data));
+        _products![index] = Product.fromJson(res.data);
 
         notifyListeners();
 
@@ -373,7 +373,13 @@ class ProductService with ChangeNotifier {
   FormData toFormData() {
     FormData _formData = FormData.fromMap({
       'discountType': _discountType,
-      'offerDiscount': _offerStock,
+      'offerDiscount': (_discountPercentage! / 100),
+      'offerStock': _offerStock,
+      'offerExpiration': _selectedDate
+    });
+    print({
+      'discountType': _discountType,
+      'offerDiscount': (_discountPercentage! / 100),
       'offerStock': _offerStock,
       'offerExpiration': _selectedDate
     });
@@ -485,7 +491,7 @@ class ProductService with ChangeNotifier {
     notifyListeners();
   }
 
-  archiveOffer(String offerId) async {
+  archiveOffer(BuildContext context, String offerId, String id) async {
     /// open hive box
     _formsLoading = true;
     notifyListeners();
@@ -513,6 +519,9 @@ class ProductService with ChangeNotifier {
 
         _formsLoading = false;
         notifyListeners();
+        getProduct(id);
+        getStoreProducts();
+        Navigator.pop(context);
 
         Future.delayed(largeAnimationDuration, () {
           notifyListeners();
@@ -555,15 +564,11 @@ class ProductService with ChangeNotifier {
       var res = await dio.post(BASE_API_URL + '/offer/create', data: formData);
 
       if (res.statusCode == 200) {
-        /// Save new Store Data
-
-        // getStoreProducts();
-        print("res2");
-        //  stores!.add(Store.fromJson(res.data));
-        //   await editProductDiscount(context, index, _discountAmount);
-
-        _formsLoading = false;
         notifyListeners();
+        getProduct(id);
+        getStoreProducts();
+        Navigator.pop(context);
+        _formsLoading = false;
 
         /// Display Results Message
         //  ToastSnackbar().init(context).showToast(

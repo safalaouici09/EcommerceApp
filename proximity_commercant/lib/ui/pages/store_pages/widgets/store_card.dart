@@ -56,7 +56,8 @@ class StoreCard extends StatelessWidget {
                             if (!(store.isActive ?? true)) ...[
                               Container(
                                   color: Theme.of(context)
-                                      .backgroundColor
+                                      .colorScheme
+                                      .background
                                       .withOpacity(2 / 3)),
                               Center(
                                   child: Transform.rotate(
@@ -70,15 +71,17 @@ class StoreCard extends StatelessWidget {
                                                       normalRadius),
                                               border: Border.all(
                                                   color: Theme.of(context)
-                                                      .errorColor,
+                                                      .colorScheme
+                                                      .error,
                                                   width: tiny_50)),
                                           child: Text('CLOSED',
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .subtitle1!
+                                                  .titleMedium!
                                                   .copyWith(
                                                       color: Theme.of(context)
-                                                          .errorColor)))))
+                                                          .colorScheme
+                                                          .error)))))
                             ]
                           ],
                         )),
@@ -119,7 +122,7 @@ class StoreCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                               Text(store.name!,
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                   overflow: TextOverflow.ellipsis),
                               StarRating(rating: store.rating!)
                             ])),
@@ -204,7 +207,8 @@ class StoreInVerificationCard extends StatelessWidget {
                             if (!(store.isActive ?? true)) ...[
                               Container(
                                   color: Theme.of(context)
-                                      .backgroundColor
+                                      .colorScheme
+                                      .background
                                       .withOpacity(2 / 3)),
                               Center(
                                   child: Transform.rotate(
@@ -218,15 +222,17 @@ class StoreInVerificationCard extends StatelessWidget {
                                                       normalRadius),
                                               border: Border.all(
                                                   color: Theme.of(context)
-                                                      .errorColor,
+                                                      .colorScheme
+                                                      .error,
                                                   width: tiny_50)),
                                           child: Text('In Verification',
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .subtitle1!
+                                                  .titleMedium!
                                                   .copyWith(
                                                       color: Theme.of(context)
-                                                          .errorColor)))))
+                                                          .colorScheme
+                                                          .error)))))
                             ]
                           ],
                         )),
@@ -267,7 +273,7 @@ class StoreInVerificationCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                               Text(store.name!,
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                   overflow: TextOverflow.ellipsis),
                               StarRating(rating: store.rating!)
                             ])),

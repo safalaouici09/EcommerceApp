@@ -1,32 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/product_repository/product_repository.dart';
 import 'package:proximity_client/domain/product_repository/src/product_service.dart';
 
-/*class ProductVariantCharacteristics extends StatelessWidget {
-  const ProductVariantCharacteristics({Key? key, required this.characteristics})
-      : super(key: key);
-
-  final List<dynamic> characteristics;
-
-  @override
-  Widget build(BuildContext context) {
-    List<TextSpan> _list = [];
-    for (int i = 0; i < characteristics.length; i++) {
-      _list.add(
-          TextSpan(text: '${characteristics[i]["name"]} : ', style: Theme.of(context).textTheme.caption));
-      _list.add(TextSpan(
-          text: characteristics[i]["value"],
-          style: Theme.of(context).textTheme.bodyText1));
-      _list.add(
-          TextSpan(text: ' / ', style: Theme.of(context).textTheme.caption));
-    }
-    _list.removeLast();
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: normal_100),
-        child: RichText(text: TextSpan(children: _list)));
-  }
-}*/
 class ProductVariantCharacteristics extends StatelessWidget {
   const ProductVariantCharacteristics({Key? key, required this.characteristics})
       : super(key: key);
@@ -36,124 +13,94 @@ class ProductVariantCharacteristics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productService = Provider.of<ProductService>(context);
-    /*  Map<String, List<String>> characteristics = {
-      "key1": ["value1", "value2", "value3"],
-      "key2": ["value4", "value5"],
-      "key3": ["value6"],
-    };*/
+    final selectedOptions = productService.selectedOptions;
 
-    /*  List<Column> _list = [];
-    for (int i = 0; i < characteristics.length; i++) {
-      _list.add(Column(children: [
-        Text('${characteristics[i]["name"]} : ',
-            style: Theme.of(context).textTheme.caption),
-        Wrap(spacing: small_100, runSpacing: 0, children: [
-          Chip(
-            label: Text('${characteristics[i]["value"]}',
-                style: Theme.of(context).textTheme.bodyText2),
-          )
-          //  .toList(),
-          /* GestureDetector(
-                                    onTap: () {
-                                      openValueDialog(context, e.key,
-                                         */
-          /*    child: Chip(
-                                        label: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                          Icon(ProximityIcons.add,
-                                              size: normal_100,
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                          const SizedBox(width: small_100),
-                                          Text('Add new Value.',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .copyWith(
-                                                      color: Theme.of(context)
-                                                          .primaryColor))
-                                        ])))*/
-        ])
-      ]));
-      /* _list.add(TextSpan(
-          text: characteristics[i]["value"],
-          style: Theme.of(context).textTheme.bodyText1));
-      _list.add(
-          TextSpan(text: ' / ', style: Theme.of(context).textTheme.caption));*/
-    }
-    _list.removeLast();*/
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: normal_100),
-        child:
-            /* width: 200,
-            height: 200,*/
-            MasonryGrid(
-                column: 1,
-                padding: const EdgeInsets.symmetric(horizontal: small_100),
-                children: List.generate(
-                  characteristics.length,
-                  (index) {
-                    String key = characteristics.keys.elementAt(index);
-                    List<String> values =
-                        characteristics.values.elementAt(index);
+      padding: const EdgeInsets.symmetric(horizontal: normal_100),
+      child: MasonryGrid(
+        column: 1,
+        padding: const EdgeInsets.symmetric(horizontal: small_100),
+        children: List.generate(
+          characteristics.length,
+          (index) {
+            String key = characteristics.keys.elementAt(index);
+            List<String> values = characteristics.values.elementAt(index);
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(key), // Display the key in a Text widget
-                        SizedBox(height: 10), // Add some spacing
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: GroupedChoiceChip(
-                            values: values,
-                            onSelected: (selectedValue) {
-                              productService.addFilter(key, selectedValue);
-                              // Handle selected value here
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                )));
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(key), // Display the key in a Text widget
+                const SizedBox(height: 10), // Add some spacing
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: GroupedChoiceChip(
+                    values: values,
+                    selectedValue: selectedOptions![key],
+                    onSelected: (selectedValue) {
+                      productService.addFilter(key, selectedValue);
+                    },
+                    onInselected: () {
+                      productService.deleteFilter(key);
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 
-class GroupedChoiceChip extends StatefulWidget {
+class GroupedChoiceChip extends StatelessWidget {
   final List<String> values;
+  final String? selectedValue;
   final Function(String) onSelected;
+  final Function onInselected;
 
-  GroupedChoiceChip({
-    required this.values,
-    required this.onSelected,
-  });
-
-  @override
-  _GroupedChoiceChipState createState() => _GroupedChoiceChipState();
-}
-
-class _GroupedChoiceChipState extends State<GroupedChoiceChip> {
-  String? _selectedValue;
+  const GroupedChoiceChip(
+      {Key? key,
+      required this.values,
+      required this.selectedValue,
+      required this.onSelected,
+      required this.onInselected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: 8.0,
       runSpacing: 4.0,
-      children: widget.values.map((value) {
+      children: values.map((value) {
         return ChoiceChip(
-          label: Text(value),
-          selectedColor: Color(0xFF42A4F5),
-          selected: _selectedValue == value,
+          label: Text(
+            value,
+            style: TextStyle(
+              color: selectedValue == value
+                  ? primaryTextLightColor
+                  : disabledTextLightColor,
+            ),
+          ),
+          backgroundColor: Colors.white,
+          selectedColor: Colors.white,
+          selected: selectedValue == value,
           onSelected: (selected) {
-            setState(() {
-              _selectedValue = selected ? value : null;
-            });
-            widget.onSelected(_selectedValue!);
+            if (selected) {
+              onSelected(value);
+            } else {
+              onInselected();
+            }
           },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            side: BorderSide(
+              color: selectedValue == value
+                  ? Colors.blue.shade500
+                  : dividerLightColor,
+              width: selectedValue == value ? 2.5 : 1.0,
+            ),
+          ),
         );
       }).toList(),
     );

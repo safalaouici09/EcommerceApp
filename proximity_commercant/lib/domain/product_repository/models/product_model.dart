@@ -51,7 +51,9 @@ class Product {
         variants =
             ProductVariant.productVariantsFromJsonList(parsedJson['variants']),
         storeId = parsedJson['storeId'],
-        discount = parsedJson['discount'].toDouble(),
+        discount = parsedJson['discount'] != null
+            ? parsedJson['discount'].toDouble()
+            : 0.0,
         discountEndDate = DateTime.parse(parsedJson['discountExpiration']),
         offer_id = parsedJson['offer'],
         policy = parsedJson['policy'] == null

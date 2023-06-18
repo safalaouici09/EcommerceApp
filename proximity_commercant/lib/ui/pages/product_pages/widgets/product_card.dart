@@ -74,7 +74,7 @@ class _ProductCardState extends State<ProductCard> {
                                                 redSwatch.shade500)),
                               TextSpan(
                                   text: (widget.product.discount != 0)
-                                      ? '€ ${double.parse((widget.product.price! * (1 - widget.product.discount / 100)).toStringAsFixed(2))}'
+                                      ? '€ ${double.parse((widget.product.price! * (1 - widget.product.discount)).toStringAsFixed(2))}'
                                       : '€ ${widget.product.price}',
                                   style: Theme.of(context)
                                       .textTheme
@@ -159,7 +159,7 @@ class _ProductCardDiscountState extends State<ProductCardDiscount> {
                                                 redSwatch.shade500)),
                               TextSpan(
                                   text: (widget.product.discount != 0)
-                                      ? '€ ${double.parse((widget.product.price! * (1 - widget.product.discount / 100)).toStringAsFixed(2))}'
+                                      ? '€ ${double.parse((widget.product.price! * (1 - widget.product.discount)).toStringAsFixed(2))}'
                                       : '€ ${widget.product.price}',
                                   style: Theme.of(context)
                                       .textTheme
@@ -179,7 +179,7 @@ class _ProductCardDiscountState extends State<ProductCardDiscount> {
                 decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(tinyRadius),
                     color: redSwatch.shade500),
-                child: Text('-${(widget.product.discount).toInt()}%',
+                child: Text('-${(widget.product.discount * 100).toInt()}%',
                     style: Theme.of(context).textTheme.caption!.copyWith(
                         color: primaryTextDarkColor,
                         fontWeight: FontWeight.w800),

@@ -1,15 +1,9 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
-import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
 
 import 'package:proximity_commercant/ui/widgets/address_picker/area_selection_screen.dart';
 
@@ -30,6 +24,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   int _currentStep = 0;
   bool isLastStep = false;
 
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<PolicyValidation>(
         create: (context) => PolicyValidation.setPolicy(widget.policy),
@@ -55,7 +50,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
               body: SafeArea(
                 child: Expanded(
                   child: Stepper(
-                    physics: ClampingScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
                     elevation: 0.0,
                     currentStep: _currentStep,
                     type: StepperType.horizontal,
@@ -139,11 +134,149 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         }));
   }
 
+  Step getReservationStep(
+      PolicyValidation policyCreationValidation, BuildContext context) {
+    return Step(
+        isActive: _currentStep >= 1,
+        title: const Text("Reservation "),
+        content: Column(
+          children: [
+            ListToggle(
+                title: 'Allow Reservations',
+                value: policyCreationValidation.reservationAccept!,
+                onToggle: policyCreationValidation.toggleReservationAceept),
+            policyCreationValidation.reservationAccept!
+                ? Column(
+                    children: [
+                      SectionDivider(
+                          leadIcon: Icons.book_outlined,
+                          title: 'Reservation fee.',
+                          color: redSwatch.shade500),
+                      const InfoMessage(
+                          message:
+                              'indicate the reservation policy for your product. Include whether the reservation is free, partial or total, the maximum days for reservation, and any applicable cancellation fees.'),
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(normal_100).copyWith(right: 0),
+                        child: Column(
+                          children: [
+                            ListToggle(
+                                title: 'Free Reservation',
+                                value:
+                                    policyCreationValidation.reservationFree!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationFree),
+                            ListToggle(
+                                title: 'Partial Reservation',
+                                value: policyCreationValidation
+                                    .reservationPartial!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationPartial),
+                            ListToggle(
+                                title: 'Total Reservation',
+                                value:
+                                    policyCreationValidation.reservationTotal!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationTotal),
+                            if ((policyCreationValidation.reservationPartial ??
+                                true)) ...[
+                              const SizedBox(height: normal_100),
+                              EditText(
+                                hintText: 'Reservation Price.',
+                                keyboardType: TextInputType.number,
+                                saved: (policyCreationValidation
+                                            .reservationtax ==
+                                        null)
+                                    ? ""
+                                    : policyCreationValidation.reservationtax!
+                                        .toString(),
+                                //enabled: (store.policy == null) || editScreen,
+                                onChanged: policyCreationValidation
+                                    .changeReservationTax,
+                              )
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: normal_100),
+                      SectionDivider(
+                          leadIcon: Icons.timelapse_outlined,
+                          title: 'Reservation duration.',
+                          color: redSwatch.shade500),
+                      DropDownSelector<String>(
+                        // labelText: 'Product Category.',
+                        hintText: 'Reservation duration.',
+                        onChanged:
+                            policyCreationValidation.changeResevationDuration,
+                        borderType: BorderType.middle,
+                        savedValue: policyCreationValidation.reservationDuration
+                            .toString(),
+                        items: daysMap.entries
+                            .map((item) => DropdownItem<String>(
+                                value: item.key,
+                                child: Text(item.value,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(
+                                            fontWeight: FontWeight.w600))))
+                            .toList(),
+                      ),
+                      SectionDivider(
+                          leadIcon: Icons.cancel_outlined,
+                          title: 'Reservation cancelation.',
+                          color: redSwatch.shade500),
+                      Padding(
+                        padding:
+                            const EdgeInsets.all(normal_100).copyWith(right: 0),
+                        child: Column(
+                          children: [
+                            ListToggle(
+                                title: 'Free Cancelation',
+                                value: policyCreationValidation
+                                    .reservationConcelationFree!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationConcelationFree),
+                            ListToggle(
+                                title: 'Chargeable Cancelation',
+                                value: policyCreationValidation
+                                    .reservationConcelationPartial!,
+                                onToggle: policyCreationValidation
+                                    .toggleReservationConcelationPartial),
+                            if ((policyCreationValidation
+                                    .reservationConcelationPartial ??
+                                true)) ...[
+                              const SizedBox(height: normal_100),
+                              EditText(
+                                hintText: 'Cancelation Fee.',
+                                keyboardType: TextInputType.number,
+                                saved: (policyCreationValidation
+                                            .reservationcancelationtax ==
+                                        null)
+                                    ? ""
+                                    : policyCreationValidation
+                                        .reservationcancelationtax
+                                        .toString(),
+                                //enabled: (store.policy == null) || editScreen,
+                                onChanged: policyCreationValidation
+                                    .changeReservationCancelationTax,
+                              )
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Container()
+          ],
+        ));
+  }
+
   Step getShippingStep(
       PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 0,
-        title: Text("Shipping"),
+        title: const Text("Shipping"),
         content: Column(
           children: [
             SectionDivider(
@@ -201,7 +334,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           child: Text(item.value,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle2!
+                                  .titleSmall!
                                   .copyWith(fontWeight: FontWeight.w600))))
                       .toList(),
                 ),
@@ -343,156 +476,20 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         ));
   }
 
-  Step getReservationStep(
-      PolicyValidation policyCreationValidation, BuildContext context) {
-    return Step(
-        isActive: _currentStep >= 1,
-        title: Text("Reservation "),
-        content: Column(
-          children: [
-            ListToggle(
-                title: 'Allow Reservations',
-                value: policyCreationValidation.reservationAccept!,
-                onToggle: policyCreationValidation.toggleReservationAceept),
-            policyCreationValidation.reservationAccept!
-                ? Column(
-                    children: [
-                      SectionDivider(
-                          leadIcon: Icons.book_outlined,
-                          title: 'Reservation fee.',
-                          color: redSwatch.shade500),
-                      const InfoMessage(
-                          message:
-                              'indicate the reservation policy for your product. Include whether the reservation is free, partial or total, the maximum days for reservation, and any applicable cancellation fees.'),
-                      Padding(
-                        padding:
-                            const EdgeInsets.all(normal_100).copyWith(right: 0),
-                        child: Column(
-                          children: [
-                            ListToggle(
-                                title: 'Free Reservation',
-                                value:
-                                    policyCreationValidation.reservationFree!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationFree),
-                            ListToggle(
-                                title: 'Partial Reservation',
-                                value: policyCreationValidation
-                                    .reservationPartial!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationPartial),
-                            ListToggle(
-                                title: 'Total Reservation',
-                                value:
-                                    policyCreationValidation.reservationTotal!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationTotal),
-                            if ((policyCreationValidation.reservationPartial ??
-                                true)) ...[
-                              const SizedBox(height: normal_100),
-                              EditText(
-                                hintText: 'Reservation Price.',
-                                keyboardType: TextInputType.number,
-                                saved: (policyCreationValidation
-                                            .reservationtax ==
-                                        null)
-                                    ? ""
-                                    : policyCreationValidation.reservationtax!
-                                        .toString(),
-                                //enabled: (store.policy == null) || editScreen,
-                                onChanged: policyCreationValidation
-                                    .changeReservationTax,
-                              )
-                            ],
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: normal_100),
-                      SectionDivider(
-                          leadIcon: Icons.timelapse_outlined,
-                          title: 'Reservation duration.',
-                          color: redSwatch.shade500),
-                      DropDownSelector<String>(
-                        // labelText: 'Product Category.',
-                        hintText: 'Reservation duration.',
-                        onChanged:
-                            policyCreationValidation.changeResevationDuration,
-                        borderType: BorderType.middle,
-                        savedValue: policyCreationValidation.reservationDuration
-                            .toString(),
-                        items: daysMap.entries
-                            .map((item) => DropdownItem<String>(
-                                value: item.key,
-                                child: Text(item.value,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle2!
-                                        .copyWith(
-                                            fontWeight: FontWeight.w600))))
-                            .toList(),
-                      ),
-                      SectionDivider(
-                          leadIcon: Icons.cancel_outlined,
-                          title: 'Reservation cancelation.',
-                          color: redSwatch.shade500),
-                      Padding(
-                        padding:
-                            const EdgeInsets.all(normal_100).copyWith(right: 0),
-                        child: Column(
-                          children: [
-                            ListToggle(
-                                title: 'Free Cancelation',
-                                value: policyCreationValidation
-                                    .reservationConcelationFree!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationConcelationFree),
-                            ListToggle(
-                                title: 'Chargeable Cancelation',
-                                value: policyCreationValidation
-                                    .reservationConcelationPartial!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationConcelationPartial),
-                            if ((policyCreationValidation
-                                    .reservationConcelationPartial ??
-                                true)) ...[
-                              const SizedBox(height: normal_100),
-                              EditText(
-                                hintText: 'Cancelation Fee.',
-                                keyboardType: TextInputType.number,
-                                saved: (policyCreationValidation
-                                            .reservationcancelationtax ==
-                                        null)
-                                    ? ""
-                                    : policyCreationValidation
-                                        .reservationcancelationtax
-                                        .toString(),
-                                //enabled: (store.policy == null) || editScreen,
-                                onChanged: policyCreationValidation
-                                    .changeReservationCancelationTax,
-                              )
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                : Container()
-          ],
-        ));
-  }
-
   Step getOrdersStep(
       PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 3,
-        title: Text("Orders"),
+        title: const Text("Orders"),
         content: Column(
           children: [
             SectionDivider(
                 leadIcon: Icons.check_circle_outline,
                 title: 'Orders Validation.',
                 color: redSwatch.shade500),
-            const InfoMessage(message: '.'),
+            const InfoMessage(
+                message:
+                    'Choose your order validation method: automatic or manual. With automatic validation, orders are quickly processed for fast fulfillment. Manual validation allows you to review and validate each order for meticulous accuracy. Switch between methods anytime.'),
             Padding(
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
@@ -553,7 +550,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                     child: Text(item.value,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle2!
+                                            .titleSmall!
                                             .copyWith(
                                                 fontWeight: FontWeight.w600))))
                                 .toList(),
@@ -577,7 +574,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                     child: Text(item.key,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle2!
+                                            .titleSmall!
                                             .copyWith(
                                                 fontWeight: FontWeight.w600))))
                                 .toList(),
@@ -626,7 +623,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
       PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 2,
-        title: Text("Return "),
+        title: const Text("Return "),
         content: Column(
           children: [
             SectionDivider(
@@ -668,7 +665,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                 child: Text(item.value,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .subtitle2!
+                                        .titleSmall!
                                         .copyWith(
                                             fontWeight: FontWeight.w600))))
                             .toList(),
@@ -730,7 +727,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                         child: Text(item.value,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle2!
+                                                .titleSmall!
                                                 .copyWith(
                                                     fontWeight:
                                                         FontWeight.w600))))

@@ -13,8 +13,10 @@ class Store {
   Address? address;
   Policy? policy;
   List<Category>? categories;
-  List<WorkingTime>? workingTimes;
+  WorkingTime? workingTime;
   bool? isActive;
+  DateTime? creationDate;
+
   // bool? isVerified;
 
   // List<Offer>? offers;
@@ -34,7 +36,8 @@ class Store {
       this.categories,
       this.followers,
       this.isActive,
-      this.workingTimes
+      this.workingTime,
+      this.creationDate
       //  this.isVerified
       });
   //todo : add working times
@@ -47,6 +50,9 @@ class Store {
         phoneNumber = '0745431397',
         ownerPhoneNumber = '0745431397',
         image = BASE_IMG_URL + '/' + parsedJson['image'],
+        creationDate = parsedJson['createdAt'] != null
+            ? DateTime.tryParse(parsedJson['createdAt'])
+            : null,
         //isVerified = parsedJson[' isVerified'],
         followers = parsedJson['followers'],
         isActive = parsedJson['isActive'],
@@ -88,6 +94,9 @@ class Store {
           locality: parsedJson['address']['region'],
           region: parsedJson['address']['region'],
         ),
+        workingTime = parsedJson['workingTime'] == null
+            ? null
+            : WorkingTime.fromJson(parsedJson['workingTime']),
         categories = null;
 
   static List<Store> storesFromJsonList(List<dynamic> parsedJson) {
@@ -106,6 +115,17 @@ class Store {
         (image != null) &&
         (address != null)); // &&
     //  (policy != null));
+  }
+
+  bool isNew() {
+    if (creationDate == null) {
+      // Handle the case when createdAt is not available
+      return false; // Or handle it according to your requirements
+    }
+
+    final currentDate = DateTime.now();
+    final duration = currentDate.difference(creationDate!).inDays;
+    return duration <= 30; // Change the duration as needed (e.g., 30 days)
   }
 
   static List<Store> stores = [

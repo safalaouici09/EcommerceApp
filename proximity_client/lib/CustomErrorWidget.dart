@@ -3,13 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class CustomErrorWidget extends StatelessWidget {
-  const CustomErrorWidget({Key? key}) : super(key: key);
-
+  const CustomErrorWidget({Key? key, required this.error}) : super(key: key);
+  final FlutterErrorDetails error;
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    // String errorMessage = error.exceptionAsString();
+    return Center(
       child: Text(
-        '',
+        // errorMessage,
+        "",
         style: TextStyle(fontSize: 7),
       ),
     );

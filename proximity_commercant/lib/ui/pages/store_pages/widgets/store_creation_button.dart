@@ -36,7 +36,7 @@ class StoreCreationButton extends StatelessWidget {
                 const Icon(ProximityIcons.add),
                 const SizedBox(height: small_100),
                 Text('Create a new Store.',
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center)
               ])),
     );

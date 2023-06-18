@@ -11,6 +11,8 @@ class CharacteristicFormsController extends ChangeNotifier {
   ValidationItem get tempValue => _tempValue;
 
   ValidationItem get tempOption => _tempOption;
+  bool? _optionValid = false;
+  bool? get optionValid => _optionValid;
 
   bool get isValid {
     bool _isValid = true;
@@ -25,7 +27,6 @@ class CharacteristicFormsController extends ChangeNotifier {
         characteristics.map((key, value) => MapEntry(key, value.toSet()));
     // _tempValue = '';
     // _tempOption = ValidationItem('', null);
-    ;
     notifyListeners();
   }
 
@@ -50,15 +51,15 @@ class CharacteristicFormsController extends ChangeNotifier {
       _tempOption = ValidationItem(null, null);
       notifyListeners();
     } else {
-      bool _optionValid = RegExp(r'^[a-zA-Z]+$').hasMatch(value);
-      print(_optionValid);
-      if (_optionValid) {
+      _optionValid = RegExp(r'^[a-zA-Z]+$').hasMatch(value);
+
+      if (_optionValid!) {
         _tempOption = ValidationItem(value, null);
       } else {
         _tempOption = ValidationItem(null,
             "Option cannot contain numbers, spaces, or alphanumeric characters.");
       }
-      print(_tempOption.value);
+
       notifyListeners();
     }
   }

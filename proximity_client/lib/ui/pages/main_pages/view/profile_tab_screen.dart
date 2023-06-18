@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/authentication/authentication.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
+import 'package:proximity_client/domain/notification_repository/notification_repository.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
 
@@ -17,6 +18,7 @@ class ProfileTabScreen extends StatelessWidget {
 
     final loginValidation = Provider.of<LoginValidation>(context);
     final userService = Provider.of<UserService>(context);
+    final notificationsService = Provider.of<NotificationService>(context);
 
     if (_token != null && userService.user == null) {
       userService.getUserData();
@@ -134,11 +136,12 @@ class ProfileTabScreen extends StatelessWidget {
                   title: 'Notifications.',
                   leadIcon: ProximityIcons.notifications,
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const NotificationsPreferencesScreen()));
+                    notificationsService.getNotifications(context);
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             const NotificationsPreferencesScreen()));
                   }),
               const SizedBox(height: normal_100),
               SectionDivider(

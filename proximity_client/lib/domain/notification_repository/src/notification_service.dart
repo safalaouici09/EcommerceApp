@@ -2,16 +2,66 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_client/domain/notification_repository/models/models.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
 
 class NotificationService with ChangeNotifier {
   Order? _order;
-
   late bool _loadingOrder = false;
+
+  List<NotificationModel> _notifications = [];
+  late bool _loadingNotifications = false;
 
   Order? get order => _order;
   bool get loadingOrder => _loadingOrder;
+
+  List<NotificationModel> get notifications => _notifications;
+  bool get loadingNotifications => _loadingNotifications;
+
+  Future<void> getNotifications(BuildContext? context) async {
+    _notifications = [];
+    _loadingNotifications = true;
+    notifyListeners();
+
+    /// open hive boxP
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer " + _token;
+      var res = await dio.get(BASE_API_URL + '/notification/$_id');
+      _loadingNotifications = false;
+      notifyListeners();
+      if (res.statusCode == 200) {
+        _notifications = [];
+        _notifications!
+            .addAll(NotificationModel.notificationsFromJsonList(res.data));
+        notifyListeners();
+        if (context != null) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      NotificationsScreen(notifications: _notifications)));
+        }
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
 
   Future getOrder(String order_id, BuildContext context,
       {bool? returnOrder = false, bool? refundOrder = false}) async {

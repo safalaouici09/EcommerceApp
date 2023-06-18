@@ -31,7 +31,7 @@ class Offer {
     print('ox' + DateTime.parse(json['offerExpiration']).toString());
     return Offer(
       id: json['_id'],
-      offerDiscount: json['offerDiscount'].toInt(),
+      offerDiscount: (json['offerDiscount'].toDouble() * 100).toInt(),
       offerStock: json['offerStock'],
       offerDeleted: json['offerDeleted'],
       discountType: json['discountType'],

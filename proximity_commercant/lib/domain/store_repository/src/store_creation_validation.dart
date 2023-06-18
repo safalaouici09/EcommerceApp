@@ -1,33 +1,34 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:proximity/config/backend.dart';
-import 'package:proximity/config/values.dart';
-import 'package:proximity/domain_repository/domain_repository.dart';
-import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
-import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
+import 'package:proximity/proximity.dart';
+import 'package:proximity_commercant/domain/store_repository/models/workingTime_model.dart';
+
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
-import 'package:proximity_commercant/domain/user_repository/models/user_model.dart';
-import 'package:proximity_commercant/ui/pages/store_pages/view/store_creation_screen.dart';
-import 'package:proximity_commercant/ui/pages/store_pages/widgets/widgets.dart';
 
 class StoreCreationValidation with ChangeNotifier {
   String? _id;
   ValidationItem _storeName = ValidationItem(null, null);
   ValidationItem _storeDescription = ValidationItem(null, null);
   ValidationItem _storeCategory = ValidationItem(null, null);
+  final List<String> _selectedDays = [];
 
-  TimeOfDay? _openTime = TimeOfDay(hour: 09, minute: 00);
-  TimeOfDay? _closeTime = TimeOfDay(hour: 18, minute: 00);
-  List<WorkingTime> _storeWorkingTimes = [];
+  int _timeRangeKey = 0;
+  String? _errorMessage;
+
+  List<TimeRange>? _fixedWorkingHours = [];
+  Map<String, List<TimeRange>>? _dayWorkingHours;
+  Map<String, List<TimeRange>>? _customizedWorkingHours;
+  final TimeOfDay? _openTime = const TimeOfDay(hour: 09, minute: 00);
+  final TimeOfDay? _closeTime = const TimeOfDay(hour: 18, minute: 00);
+  //List<WorkingTime> _storeWorkingTimes = [];
   Address _storeAddress = Address();
   String? _workingTimeOption;
   List<dynamic> _storeImages = [];
-  List<String> _deletedImages = [];
-  Policy? _policy = null;
+  final List<String> _deletedImages = [];
+  Policy? _policy;
+  WorkingTime? _workingTime;
 
   StoreCreationValidation();
 
@@ -62,6 +63,25 @@ class StoreCreationValidation with ChangeNotifier {
     if (store.image != null) {
       _storeImages = [store.image!];
     }
+    // set working time :
+    if (store.workingTime != null) {
+      _workingTimeOption = store.workingTime!.option;
+      if (store.workingTime!.fixedHours != null) {
+        if (store.workingTime!.fixedHours!.isNotEmpty) {
+          _fixedWorkingHours = store.workingTime!.fixedHours;
+        }
+      }
+      if (store.workingTime!.customizedHours != null) {
+        _customizedWorkingHours = store.workingTime!.customizedHours;
+        _dayWorkingHours = store.workingTime!.customizedHours!;
+        _customizedWorkingHours!.forEach((day, values) {
+          // Map the dayString to a Day enum value
+
+          // Add the mapping to the second map
+          _selectedDays.add(day); //values;
+        });
+      }
+    }
   }
 
   // Getters
@@ -73,19 +93,29 @@ class StoreCreationValidation with ChangeNotifier {
   ValidationItem get storeDescription => _storeDescription;
   bool? get globalPolicy => _globalPolicy;
   bool? get customPolicy => _customPolicy;
+  List<String> get selectedDays => _selectedDays;
 
   bool? _globalPolicy = true;
   bool? _customPolicy = false;
   TimeOfDay? get openTime => _openTime;
 
   TimeOfDay? get closeTime => _closeTime;
+  int get timeRangeKey => _timeRangeKey;
 
   Address get storeAddress => _storeAddress;
   Policy? get policy => _policy;
+  WorkingTime? get workingTime => _workingTime;
 
   List<dynamic> get storeImages => _storeImages;
 
   List<String> get deletedImages => _deletedImages;
+
+  List<TimeRange>? get fixedWorkingHours => _fixedWorkingHours;
+
+  Map<String, List<TimeRange>>? get customizedWorkingHours =>
+      _customizedWorkingHours;
+  Map<String, List<TimeRange>>? get dayWorkingHours => _dayWorkingHours;
+  String? get errorMessage => _errorMessage;
   setPolicy(Policy policy) {
     _policy = policy;
   }
@@ -117,6 +147,11 @@ class StoreCreationValidation with ChangeNotifier {
     Future.delayed(largeAnimationDuration, () {
       notifyListeners();
     });
+  }
+
+  void changeTimeRangeKey() {
+    _timeRangeKey++;
+    print(_timeRangeKey);
   }
 
   void toggleGlobalPolicy(
@@ -211,6 +246,98 @@ class StoreCreationValidation with ChangeNotifier {
 
   void changeWorkingTimeOption(String value, int index) {
     _workingTimeOption = value;
+    notifyListeners();
+  }
+
+  void addFixedWorkingHours(TimeRange timeRange) {
+    _fixedWorkingHours!.add(timeRange);
+
+    notifyListeners();
+  }
+
+  void deleteFixedWorkingHours(TimeRange timeRange) {
+    _fixedWorkingHours!.remove(timeRange);
+
+    notifyListeners();
+  }
+
+  /* void addCustomizedHours(String day, TimeRange timeRanges) {
+    /*  _customizedWorkingHours ??= {};
+    _customizedWorkingHours![day] = [];
+    _customizedWorkingHours![day]!.add(timeRanges);*/
+    _customizedWorkingHours ??= {};
+
+    if (_customizedWorkingHours![day] == null) {
+      _customizedWorkingHours![day] = [];
+    }
+
+    _customizedWorkingHours![day]!.add(timeRanges);
+  }
+  */
+  void addCustomizedHours(String day, TimeRange timeRanges) {
+    _customizedWorkingHours ??= {};
+
+    if (_customizedWorkingHours![day] == null) {
+      _customizedWorkingHours![day] = [];
+    }
+
+    // Check if the time range already exists
+    bool exists = _customizedWorkingHours![day]!.any((range) =>
+        range.openTime == timeRanges.openTime &&
+        range.closeTime == timeRanges.closeTime);
+    if (exists) {
+      _errorMessage = "The time range already exists";
+      print(_errorMessage);
+      notifyListeners();
+    }
+    if (!exists) {
+      _customizedWorkingHours![day]!.add(timeRanges);
+    }
+  }
+
+  void removeDay(String day) {
+    _customizedWorkingHours?.remove(day);
+  }
+
+  void addDayDayWorkingHours(
+    String day,
+  ) {
+    _dayWorkingHours ??= {};
+    _dayWorkingHours![day] = [];
+    //_dayWorkingHours![day]!.add(timeRanges);
+  }
+
+  void addDayWorkingHours(String day, TimeRange timeRanges) {
+    _dayWorkingHours ??= {};
+
+    if (_dayWorkingHours![day] == null) {
+      _dayWorkingHours![day] = [];
+    }
+
+    _dayWorkingHours![day]!.add(timeRanges);
+  }
+
+  void deleteDayWorkingHours(String day, TimeRange timeRanges) {
+    if (_dayWorkingHours != null && _dayWorkingHours![day] != null) {
+      _dayWorkingHours![day]!.removeWhere((range) =>
+          range.openTime == timeRanges.openTime &&
+          range.closeTime == timeRanges.closeTime);
+    }
+  }
+
+  addWorkingHours(TimeRange timeRange) {}
+  void removeDayWorkingHours(String day) {
+    _dayWorkingHours?.remove(day);
+  }
+
+  void deleteSelectedDay(String day) {
+    _selectedDays.remove(day);
+    notifyListeners();
+  }
+
+  void addSelectedDays(String day) {
+    _selectedDays.add(day);
+
     notifyListeners();
   }
 
@@ -311,7 +438,10 @@ class StoreCreationValidation with ChangeNotifier {
 
   /// A method to convert this form validator into a Store object
   FormData toFormData(Policy policy) {
-    print('tfd' + policy.toJson().toString());
+    WorkingTime workingTime = WorkingTime(
+        option: _workingTimeOption!,
+        fixedHours: _fixedWorkingHours,
+        customizedHours: _customizedWorkingHours);
     FormData _formData = FormData.fromMap({
       "name": storeName.value,
       "description": storeDescription.value,
@@ -329,7 +459,9 @@ class StoreCreationValidation with ChangeNotifier {
         "country": "${storeAddress.countryName ?? ""}",
         "countryCode": "FR"
       }''',
-      "policy": policy.toJson()
+      "policy": policy.toJson(),
+      "workingTime": workingTime.toJson()
+      //workingTime.toJson() //getWorkingHoursJson(),
     });
 
     // _formData.fields.add(policytoFormData);
@@ -339,7 +471,41 @@ class StoreCreationValidation with ChangeNotifier {
             'image', MultipartFile.fromFileSync(_storeImages.first.path)));
       }
     }
-    print("ff" + _formData.fields.toString());
+    print("ff" + workingTime.toJson());
     return _formData;
+  }
+
+  Map<String, dynamic> getWorkingHoursJson() {
+    List<Map<String, dynamic>> _fixedHoursListJson = [];
+    Map<String, List<Map<String, dynamic>>> _customizedHoursMapJson = {};
+
+    if (_fixedWorkingHours!.isNotEmpty) {
+      // Add fixed working hours to the fixedHoursList
+      for (var timeRange in _fixedWorkingHours!) {
+        _fixedHoursListJson.add(timeRange.toJson());
+      }
+    }
+
+    if (_customizedWorkingHours != null) {
+      // Add customized working hours to the customizedHoursMap
+      for (var entry in _customizedWorkingHours!.entries) {
+        String day = entry.key;
+        List<TimeRange> timeRanges = entry.value;
+        List<Map<String, dynamic>> timeRangesList = [];
+
+        for (var timeRange in timeRanges) {
+          timeRangesList.add(timeRange.toJson());
+        }
+
+        _customizedHoursMapJson[day] = timeRangesList;
+      }
+    }
+
+    return {
+      "option": _workingTimeOption,
+
+      "fixedHours": _fixedHoursListJson, // Updated name here
+      "customizedHours": _customizedHoursMapJson, // Updated name here
+    };
   }
 }

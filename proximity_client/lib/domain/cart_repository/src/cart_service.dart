@@ -148,8 +148,8 @@ class CartService with ChangeNotifier {
       if (storeId != null) {
         final double _totalPrice = getTotalPrice(storeId);
 
-        /// get Store Policy
-        final Policy _policy = Policy.policy;
+        // /// get Store Policy
+        // final Policy _policy = Policy.policy;
 
         /// convert [List<CartItem>] into [List<OrderItem>]
         final List<OrderItem> _orderItems = [];
@@ -356,7 +356,7 @@ class CartService with ChangeNotifier {
                 message: "Product Successfully added to Cart!",
                 type: ToastSnackbarType.success);
             if (noredirection == 0) {
-              // Navigator.pop(context);
+              Navigator.pop(context);
             } else {
               print("add to cart order");
               order(context, store.id);

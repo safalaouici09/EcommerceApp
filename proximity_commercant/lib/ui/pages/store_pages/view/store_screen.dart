@@ -72,10 +72,12 @@ class _StoreScreenState extends State<StoreScreen> {
         StoreMap(address: store.address!),
 
         StoreDetails(
-            name: store.name!,
-            rating: store.rating!,
-            image: store.image,
-            followers: store.followers!.length),
+          name: store.name!,
+          rating: store.rating!,
+          image: store.image,
+          followers: store.followers!.length,
+          isNew: store.isNew(),
+        ),
         Row(children: [
           const SizedBox(width: normal_100),
           Expanded(

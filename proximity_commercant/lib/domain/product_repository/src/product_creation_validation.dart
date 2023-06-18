@@ -16,13 +16,13 @@ class ProductCreationValidation with ChangeNotifier {
   ValidationItem _description = ValidationItem(null, null);
   ValidationItem _category = ValidationItem(null, null);
   ValidationItem _price = ValidationItem(null, null);
-  ValidationItem _quantity = ValidationItem(null, null);
+  ValidationItem _quantity = ValidationItem("0", null);
   // double? _price;
   double? _discount;
   bool? _storePolicy = true;
   bool? _hasVariants = false;
   bool? _productPolicy;
-  Policy? _policy = null;
+  Policy? _policy;
 
   // int? _quantity;
   Map<String, Set<String>> _characteristics = {};
@@ -38,15 +38,21 @@ class ProductCreationValidation with ChangeNotifier {
   ProductCreationValidation();
 
   ProductCreationValidation.setProduct(Product product) {
+    print(product.price!);
     _id = product.id;
     _storeId = product.storeId;
     _name = ValidationItem(product.name, null);
     _description = ValidationItem(product.description, null);
     _category = ValidationItem(product.categoryId, null);
-    _category = ValidationItem(product.price.toString(), null);
-    //_price = product.price ?? 0.00;
-    _quantity = ValidationItem(product.quantity.toString(), null);
-    //  _quantity = product.quantity ?? 0;
+    if (product.price != null) {
+      _price = ValidationItem(product.price.toString(), null);
+    }
+    if (product.quantity != null) {
+      _quantity = ValidationItem(product.quantity.toString(), null);
+    }
+    if (product.policy != null) {
+      _policy = product.policy;
+    }
 
     /// Setting up Characteristics
     if (product.variants != null) {
@@ -60,6 +66,11 @@ class ProductCreationValidation with ChangeNotifier {
               .add(variantCharacteristic['value']);
         }
       }
+    }
+    if (product.variants != null &&
+        product.variants!.length > 0 &&
+        product.variants![0].characteristics![0]!["value"] != product.name) {
+      _hasVariants = true;
     }
 
     /// Setting up product variants
@@ -140,6 +151,7 @@ class ProductCreationValidation with ChangeNotifier {
   setPolicy(Policy? policy) {
     _policy = policy;
     print("policyyyy " + _policy!.toJson().toString());
+    notifyListeners();
   }
 
   void toggleStorePolicy(
@@ -321,17 +333,70 @@ class ProductCreationValidation with ChangeNotifier {
     return _formData;
   }
 
+  String productToVariant() {
+    String _formData = "[";
+    List<String> _car = [];
+    _formData += '{"characterstics": [';
+    _formData += '''{
+          "name": "option",
+          "value": "${name.value}"
+        }''';
+
+    _formData +=
+        '], "price": ${double.parse(price!.value!)}, "quantity": ${_quantity != null ? _quantity!.value! : 1}},';
+    if (_formData.endsWith(',')) {
+      _car = _formData.characters.toList();
+      _car.removeLast();
+      _formData = _car.join("");
+    }
+    _formData += "]";
+    return _formData;
+  }
+
   /// A method to convert this form validator into a Store object
   FormData toFormData(Policy? policy) {
+    print("im here for adding product");
+    // print("policyyyy " + _policy!.toJson().toString());
+
+    print("init price");
+    print(productToVariant());
+    var productPrice = 0.0;
+
+    var variants = "";
+
+    if (price != null && price!.value != null && hasVariants == false) {
+      print("product price");
+      productPrice = double.parse(price!.value!);
+      variants = productToVariant();
+    } else if (_variants.isNotEmpty && hasVariants == true) {
+      print("variantes prices");
+      productPrice = _variants[0].price!;
+      for (var v in _variants) {
+        if (v.price! < productPrice) productPrice = v.price!;
+      }
+      print(productPrice);
+      variants = _variantsFormData();
+    }
+
+    print({
+      "name": name.value,
+      "description": description.value,
+      "categoryId": category.value,
+      "price": productPrice,
+      // "discount": discount,
+      "variantes": variants,
+      "storeId": _storeId,
+      "policy": policy?.toJson(),
+    });
     FormData _formData = FormData.fromMap({
       "name": name.value,
       "description": description.value,
       "categoryId": category.value,
-      "price": price,
+      "price": productPrice,
       // "discount": discount,
-      "variantes": _variantsFormData(),
+      "variantes": variants,
       "storeId": _storeId,
-      "policy": policy == null ? null : policy!.toJson(),
+      "policy": policy?.toJson(),
     });
 
     if (_images.isNotEmpty) {
@@ -353,6 +418,11 @@ class ProductCreationValidation with ChangeNotifier {
               'varientsImages', MultipartFile.fromFileSync(v.image.path)));
         }
       }
+    }
+
+    if (_variants.isEmpty && _images.isNotEmpty) {
+      _formData.files.add(MapEntry(
+          'varientsImages', MultipartFile.fromFileSync(_images[0].path)));
     }
     print(_formData);
     return _formData;

@@ -1,20 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/config/backend.dart';
-import 'package:proximity/config/values.dart';
 import 'package:proximity/domain_repository/domain_repository.dart';
 import 'package:proximity/widgets/toast_snackbar/toast_snackbar.dart';
 import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/src/user_service.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
-
-import 'package:proximity_commercant/ui/pages/store_pages/view/store_creation_screen.dart';
 
 class PolicyValidation with ChangeNotifier {
   bool _selfPickup = false;
@@ -60,8 +55,8 @@ class PolicyValidation with ChangeNotifier {
   TimeOfDay? get openTime => _openTime;
 
   TimeOfDay? get closeTime => _closeTime;
-  TimeOfDay? _openTime = TimeOfDay(hour: 09, minute: 00);
-  TimeOfDay? _closeTime = TimeOfDay(hour: 18, minute: 00);
+  final TimeOfDay? _openTime = const TimeOfDay(hour: 09, minute: 00);
+  final TimeOfDay? _closeTime = const TimeOfDay(hour: 18, minute: 00);
   int? _reservationDuration;
   int? _notifDuration;
   int? _returnMaxDays;
@@ -199,8 +194,7 @@ class PolicyValidation with ChangeNotifier {
           _selfPickUpMaxDays = policy.pickupPolicy!.timeLimit;
         }
       }
-//set delivery
-
+      //set delivery
       if (policy.deliveryPolicy != null) {
         if (policy.deliveryPolicy!.zone!.radius != null) {
           _delivery = true;
@@ -656,15 +650,15 @@ class PolicyValidation with ChangeNotifier {
   }
 
   Map<String, dynamic> policytoFormData() {
-    var pickup = null;
-    var delivery = null;
+    var pickup;
+    var delivery;
     ReturnPolicy? returnPolicy;
     PickupPolicy? pickupPolicy;
     DeliveryPolicy? deliveryPolicy;
     ReservationPolicy? reservationPolicy;
 
-    WorkingTime workingTime =
-        WorkingTime(openTime: _openTime, closeTime: _closeTime);
+    /* WorkingTime workingTime = WorkingTime(
+        openTime: _openTime.toString(), closeTime: _closeTime.toString());*/
     if (_selfPickup) {
       pickupPolicy = PickupPolicy(timeLimit: selfPickUplMaxDays);
     }
@@ -733,15 +727,15 @@ class PolicyValidation with ChangeNotifier {
   }
 
   Policy getPolicy() {
-    var pickup = null;
-    var delivery = null;
+    var pickup;
+    var delivery;
     ReturnPolicy? returnPolicy;
     PickupPolicy? pickupPolicy;
     DeliveryPolicy? deliveryPolicy;
     ReservationPolicy? reservationPolicy;
 
-    WorkingTime workingTime =
-        WorkingTime(openTime: _openTime, closeTime: _closeTime);
+    /* WorkingTime workingTime = WorkingTime(
+        openTime: _openTime.toString(), closeTime: _closeTime.toString());*/
     if (_selfPickup) {
       pickupPolicy = PickupPolicy(timeLimit: selfPickUplMaxDays);
     }
