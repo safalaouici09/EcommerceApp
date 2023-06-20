@@ -45,6 +45,7 @@ class _OnBoardState extends State<OnBoard> {
     if (_debugLabelString != "") {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         handleNotification(notification, notificationService, parentContext);
+        notificationService.getNotifications(null);
         setState(() {
           _debugLabelString = "";
         });
@@ -98,7 +99,7 @@ class _OnBoardState extends State<OnBoard> {
       var _id = credentialsBox.get('id');
 
       print(_id);
-      print(notification!["owner_id"]);
+      print(event.notification.additionalData!["owner_id"]);
 
       if (_id != null &&
           _id != "" &&
@@ -112,6 +113,8 @@ class _OnBoardState extends State<OnBoard> {
           notification_body = event.notification.body ?? "";
         });
       } else {
+        print("your are not the owner");
+        print("complete");
         event.complete(null);
       }
     });

@@ -39,7 +39,10 @@ class AccountSwitcher extends StatelessWidget {
                                 child: FittedBox(
                                     fit: BoxFit.cover,
                                     child: (userService.user!.profileImage !=
-                                            null)
+                                                null &&
+                                            userService.user!.profileImage!
+                                                    .first !=
+                                                null)
                                         ? Image.network(userService
                                             .user!.profileImage!.first!)
                                         : Image.network(

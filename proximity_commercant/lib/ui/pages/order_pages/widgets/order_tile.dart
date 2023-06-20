@@ -28,6 +28,7 @@ class OrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// get Locale
+    print("order tile");
     final Locale _locale = Localizations.localeOf(context);
 
     final ordersService = Provider.of<OrderService>(context);
@@ -283,27 +284,6 @@ class OrderTile extends StatelessWidget {
                   ],
                 )),
 
-            if (returnOrder != true &&
-                refundOrder != true &&
-                order.delivery == true)
-              Padding(
-                  padding: const EdgeInsets.all(small_100),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Delivery:',
-                            textAlign: TextAlign.left,
-                            style: Theme.of(context).textTheme.bodyText2),
-                        const Spacer(),
-                        Text(
-                            ' € ${(order.paymentInfo!.deliveryAmount ?? 0.0).toStringAsFixed(2)}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(fontSize: 14))
-                      ])),
-
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               Expanded(
                 child: Padding(
@@ -371,11 +351,14 @@ class OrderTile extends StatelessWidget {
                           order.acceptedReturnedItems!.length,
                           (index) => OrderDetails(details: {
                                 '${order.acceptedReturnedItems![index].name}':
-                                    '${((order.acceptedReturnedItems![index].price ?? 1) * (order.acceptedReturnedItems![index].returnQuantity ?? 1) * (1 - (order.acceptedReturnedItems![index].discount > 0 ? (order.acceptedReturnedItems![index].discount) : 0)) * ((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage!) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 1))).toString()}',
+                                    '${((order.acceptedReturnedItems![index].price ?? 1) * (order.acceptedReturnedItems![index].returnQuantity ?? 1) * (1 - (order.acceptedReturnedItems![index].discount > 0 ? (order.acceptedReturnedItems![index].discount) : 0)) * (order.acceptedReturnedItems![index].policy == null ? 0 : (order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage ?? 0.0) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 1))).toString()}',
                                 '${order.acceptedReturnedItems![index].price} x${order.acceptedReturnedItems![index].returnQuantity}':
                                     '',
-                                'Refund':
-                                    '${((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage! * 100) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 0.0))}' +
+                                'Refund': () {
+                                  if (order.acceptedReturnedItems![index]
+                                          .policy !=
+                                      null) {
+                                    return '${(((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage ?? 0.0) * 100) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 0.0))}' +
                                         (order
                                                     .acceptedReturnedItems![
                                                         index]
@@ -386,7 +369,10 @@ class OrderTile extends StatelessWidget {
                                                     .percentage !=
                                                 null
                                             ? "%"
-                                            : ""),
+                                            : "");
+                                  }
+                                  return "";
+                                }(),
                               })),
                     ],
                   )),
@@ -417,11 +403,14 @@ class OrderTile extends StatelessWidget {
                                         (element.discount > 0
                                             ? element.discount
                                             : 0)) *
-                                    ((element.policy!.returnPolicy!.refund.order
-                                            .percentage!) ??
-                                        (element.policy!.returnPolicy?.refund
-                                                .order.fixe ??
-                                            1));
+                                    (element.policy == null
+                                        ? 0.0
+                                        : (element.policy!.returnPolicy!.refund
+                                                    .order.percentage ??
+                                                0.0) ??
+                                            (element.policy!.returnPolicy
+                                                    ?.refund.order.fixe ??
+                                                1));
                               }
                               return ' € ${(returnTotal ?? 0.0).toStringAsFixed(2)}';
                             }(),
@@ -442,8 +431,10 @@ class OrderTile extends StatelessWidget {
                         if (["Recovered", "Delivered", "Reserved"].indexWhere(
                                     (item) => item == order.orderStatus) ==
                                 -1 ||
-                            order.returnOrder == true ||
-                            order.waitingforReturn == true) ...[
+                            (order.returnOrder == true &&
+                                returnOrder == true) ||
+                            order.waitingforReturn == true &&
+                                returnOrder == true) ...[
                           Expanded(
                               child: TertiaryButton(
                                   onPressed: () => {
@@ -463,6 +454,7 @@ class OrderTile extends StatelessWidget {
                                   onPressed: () {
                                     if (returnOrder == true &&
                                         order.waitingforReturn == true) {
+                                      print(order.items!.length);
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(

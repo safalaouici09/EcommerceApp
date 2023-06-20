@@ -413,59 +413,59 @@ class BillItem extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             )),
                           ]),
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Km Price ",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    ?.copyWith(
-                                        color: Color(0xFF136DA5),
-                                        fontWeight: FontWeight.bold)),
-                            const SizedBox(width: small_100),
-                            Expanded(
-                                child: Text(
-                              '${(orderSliderValidation.maxDeliveryKm ?? 1.0).toStringAsFixed(2)} Km ',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  ?.copyWith(
-                                      color: Color(0xFF136DA5),
-                                      fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.end,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                          ]),
-                      SizedBox(height: 20),
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Delivery Price ",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    ?.copyWith(
-                                        color: Color(0xFF136DA5),
-                                        fontWeight: FontWeight.bold)),
-                            const SizedBox(width: small_100),
-                            Expanded(
-                                child: Text(
-                              ' € ${(orderSliderValidation.totalDelivery ?? 0.0).toStringAsFixed(2)}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  ?.copyWith(
-                                      color: Color(0xFF136DA5),
-                                      fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.end,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                          ])
+                      // Row(
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Text("Km Price ",
+                      //           style: Theme.of(context)
+                      //               .textTheme
+                      //               .bodyText2
+                      //               ?.copyWith(
+                      //                   color: Color(0xFF136DA5),
+                      //                   fontWeight: FontWeight.bold)),
+                      //       const SizedBox(width: small_100),
+                      //       Expanded(
+                      //           child: Text(
+                      //         '${(orderSliderValidation.maxDeliveryKm ?? 1.0).toStringAsFixed(2)} Km ',
+                      //         style: Theme.of(context)
+                      //             .textTheme
+                      //             .bodyText2
+                      //             ?.copyWith(
+                      //                 color: Color(0xFF136DA5),
+                      //                 fontWeight: FontWeight.bold),
+                      //         textAlign: TextAlign.end,
+                      //         maxLines: 2,
+                      //         overflow: TextOverflow.ellipsis,
+                      //       )),
+                      //     ]),
+                      // SizedBox(height: 20),
+                      // Row(
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Text("Delivery Price ",
+                      //           style: Theme.of(context)
+                      //               .textTheme
+                      //               .bodyText2
+                      //               ?.copyWith(
+                      //                   color: Color(0xFF136DA5),
+                      //                   fontWeight: FontWeight.bold)),
+                      //       const SizedBox(width: small_100),
+                      //       Expanded(
+                      //           child: Text(
+                      //         ' € ${(orderSliderValidation.totalDelivery ?? 0.0).toStringAsFixed(2)}',
+                      //         style: Theme.of(context)
+                      //             .textTheme
+                      //             .bodyText2
+                      //             ?.copyWith(
+                      //                 color: Color(0xFF136DA5),
+                      //                 fontWeight: FontWeight.bold),
+                      //         textAlign: TextAlign.end,
+                      //         maxLines: 2,
+                      //         overflow: TextOverflow.ellipsis,
+                      //       )),
+                      //     ])
                     ]),
                   if (!(reservationBill || deliveryBill || pickupBill) &&
                       productReservationTotal != 0.0)

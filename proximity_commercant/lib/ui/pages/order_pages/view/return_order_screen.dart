@@ -107,17 +107,6 @@ class _ReturnOrderScreenState extends State<ReturnOrderScreen> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    Consumer2<ReturnScreenValidation,
-                                            OrderService>(
-                                        builder: (context,
-                                            returnScreenValidation,
-                                            orderService,
-                                            child) {
-                                      return PaymentMethodScreen(
-                                          returnScreenValidation:
-                                              returnScreenValidation,
-                                          orderService: orderService);
-                                    }),
                                     const SizedBox(
                                       height: 22,
                                     ),
@@ -144,6 +133,8 @@ class _ReturnOrderScreenState extends State<ReturnOrderScreen> {
                                   onPressed: () {
                                     if (returnScreenValidation.isFormValid()) {
                                       print("start action");
+                                      print(returnScreenValidation
+                                          .itemsToString());
                                       widget.actionReturn?.call(
                                           returnScreenValidation
                                               .itemsToString(),

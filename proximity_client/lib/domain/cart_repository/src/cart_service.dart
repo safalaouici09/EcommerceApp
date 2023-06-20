@@ -196,26 +196,30 @@ class CartService with ChangeNotifier {
                   });
 
                   var prodInsert = ProductCart(
-                    id: prod["id"],
-                    productId: prod["productId"],
-                    variantId: prod["variantId"],
-                    name: prodName.substring(0, prodName.length - 2) + ")",
-                    characteristics: preOrderItemCharac,
-                    image: prod["image"],
-                    price: double.parse(prod["price"].toString()),
-                    quantity: prod["quantity"],
-                    discount: prod["discount"].toDouble(),
-                    reservationPolicy: prod["reservationPolicy"] != null,
-                    deliveryPolicy: prod["deliveryPolicy"] != null,
-                    pickupPolicy: prod["pickupPolicy"] != null,
-                    reservationP: double.parse(prod["reservationP"].toString()),
-                    deliveryP: double.parse(prod["deliveryP"].toString()),
-                    reservation: prod["reservation"] == true ||
-                        prod["reservation"] == 'true',
-                    delivery:
-                        prod["delivery"] == true || prod["delivery"] == 'true',
-                    pickup: prod["pickup"] == true || prod["pickup"] == 'true',
-                  );
+                      id: prod["id"],
+                      productId: prod["productId"],
+                      variantId: prod["variantId"],
+                      name: prodName.substring(0, prodName.length - 2) + ")",
+                      characteristics: preOrderItemCharac,
+                      image: prod["image"],
+                      price: double.parse(prod["price"].toString()),
+                      quantity: prod["quantity"],
+                      discount: prod["discount"].toDouble(),
+                      reservationPolicy: prod["reservationPolicy"] ?? false,
+                      deliveryPolicy: prod["deliveryPolicy"] ?? false,
+                      pickupPolicy: prod["pickupPolicy"] > 0 ?? false,
+                      reservationP:
+                          double.parse(prod["reservationP"].toString()),
+                      deliveryP: double.parse(prod["deliveryP"].toString()),
+                      reservation: prod["reservation"] == true ||
+                          prod["reservation"] == 'true',
+                      delivery: prod["delivery"] == true ||
+                          prod["delivery"] == 'true',
+                      pickup:
+                          prod["pickup"] == true || prod["pickup"] == 'true',
+                      policy: prod['policy'] == null
+                          ? null
+                          : Policy.fromJson(prod['policy']));
                   preOrderProducts.add(prodInsert);
                 }
               }

@@ -134,23 +134,17 @@ class _ProductScreenState extends State<ProductScreen> {
             // MasonryGrid(
             //delivery policy
             product.policy!.deliveryPolicy != null
-                ? product.policy!.deliveryPolicy!.pricing!.fixedPrice != null
-                    ? PolicyCard(
-                        leadIcon: ProximityIcons.shipping,
-                        title: "Shipping",
-                        subTitle:
-                            "Estimated delivery time is  days. Shipping fees are ${product.policy!.deliveryPolicy!.pricing!.fixedPrice} for this product",
-                      )
-                    : PolicyCard(
-                        leadIcon: ProximityIcons.shipping,
-                        title: "Shipping",
-                        subTitle:
-                            "Estimated delivery time is ${product.policy!.pickupPolicy!.timeLimit} days. Shipping fees will apply and will be calculated at checkout based on your location",
-                      )
+                ? PolicyCard(
+                    leadIcon: ProximityIcons.shipping,
+                    title: "Shipping",
+                    subTitle:
+                        "Estimated delivery time is  days. Shipping fees will negociate for this product",
+                  )
                 : Container(),
 
             // pickup policy
-            product.policy!.pickupPolicy!.timeLimit != null
+            product.policy!.pickupPolicy != null &&
+                    product.policy!.pickupPolicy!.timeLimit != null
                 ? PolicyCard(
                     leadIcon: ProximityIcons.self_pickup,
                     title: "Pick UP",
@@ -158,35 +152,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         "Remember to pick up your order from our store within ${product.policy!.pickupPolicy!.timeLimit} days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
                   )
                 : Container(),
-            // reservation policy
-            product.policy!.reservationPolicy != null
-                ? product.policy!.reservationPolicy!.payment!.free!
-                    ? PolicyCard(
-                        leadIcon: Icons.book_online,
-                        title: "Reservation",
-                        subTitle:
-                            "Once your reservation is confirmed, you may pick up your item from our store within ${product.policy!.reservationPolicy!.duration} days",
-                      )
-                    : product.policy!.reservationPolicy!.payment!.partial !=
-                            null
-                        ? PolicyCard(
-                            leadIcon: Icons.book_online,
-                            title: "Reservation",
-                            subTitle:
-                                "A deposit of ${product.policy!.reservationPolicy!.payment.partial!.fixe} may be required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${product.policy!.reservationPolicy!.duration} days.",
-                          )
-                        : product.policy!.reservationPolicy!.payment!.free!
-                            ? product.policy!.reservationPolicy!.payment!.total!
-                                ? PolicyCard(
-                                    leadIcon: Icons.book_online,
-                                    title: "Reservation",
-                                    subTitle:
-                                        "a full price payement is  required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${product.policy!.reservationPolicy!.duration} days.",
-                                  )
-                                : Container()
-                            : Container()
-                : Container(),
-// Return  Policy
+
+            // Return  Policy
             product.policy!.returnPolicy != null
                 ? product.policy!.returnPolicy!.refund!.shipping != null &&
                         product.policy!.returnPolicy!.refund!.order != null

@@ -59,7 +59,9 @@ class Search extends CustomSearchDelegate<Product> {
   @override
   Widget buildResults(BuildContext context) {
     final productService = Provider.of<ProductService>(context);
-    productService.searchProducts(query);
+    if (productService.query != query) {
+      productService.getProximityProducts(name: query);
+    }
     List<Widget> _widgetList = [];
     if (query.isNotEmpty) {
       for (int i = 0; i < productService.searchResults.length; i++) {
@@ -85,27 +87,27 @@ class Search extends CustomSearchDelegate<Product> {
     List<Widget> _widgetList = [];
     int i = 0;
     if (query != '') {
-      final productService = Provider.of<ProductService>(context);
-      productService.searchProducts(query);
-      for (Product element in productService.searchResults) {
-        if (element.name!.toLowerCase().contains(query.toLowerCase())) {
-          _widgetList.add(GestureDetector(
-              onTap: () {
-                query = element.name!;
-                showResults(context);
-              },
-              child: Container(
-                  padding: const EdgeInsets.all(normal_100),
-                  child: Text(element.name!,
-                      style: Theme.of(context).textTheme.bodyText1))));
-          _widgetList.add(Divider(
-              height: tiny_50,
-              thickness: tiny_50,
-              color: Theme.of(context).dividerColor));
-          i++;
-          if (i >= 7) break;
-        }
-      }
+      // final productService = Provider.of<ProductService>(context);
+      // productService.searchProducts(query);
+      // for (Product element in productService.searchResults) {
+      //   if (element.name!.toLowerCase().contains(query.toLowerCase())) {
+      //     _widgetList.add(GestureDetector(
+      //         onTap: () {
+      //           query = element.name!;
+      //           showResults(context);
+      //         },
+      //         child: Container(
+      //             padding: const EdgeInsets.all(normal_100),
+      //             child: Text(element.name!,
+      //                 style: Theme.of(context).textTheme.bodyText1))));
+      //     _widgetList.add(Divider(
+      //         height: tiny_50,
+      //         thickness: tiny_50,
+      //         color: Theme.of(context).dividerColor));
+      //     i++;
+      //     if (i >= 7) break;
+      //   }
+      // }
     }
 
     return Column(
@@ -448,6 +450,7 @@ Future<T?> previewSearch<T>({
   required CustomSearchDelegate<T> delegate,
   String query = '',
 }) {
+  print(query);
   delegate.query = query;
   delegate._currentBody = _SearchBody.suggestions;
   return Navigator.of(context).push(_SearchPageRoute<T>(delegate: delegate));

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
-import 'package:proximity_client/domain/notification_repository/notification_repository.dart';
-import 'package:proximity_client/domain/order_repository/order_repository.dart';
+import 'package:proximity_commercant/domain/notification_repository/notification_repository.dart';
+import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 
 class NotificationItem extends StatelessWidget {
   const NotificationItem({Key? key, required this.notification})

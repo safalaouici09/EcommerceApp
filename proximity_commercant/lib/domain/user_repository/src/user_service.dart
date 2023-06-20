@@ -141,7 +141,7 @@ class UserService extends ChangeNotifier {
       if (res.statusCode == 200) {
         /// Save new User Data
         _user = User.fromJson(res.data);
-        print(_user);
+        print(_user!.profileImage);
         notifyListeners();
       }
     } on DioError catch (e) {

@@ -19,6 +19,11 @@ class NotificationService with ChangeNotifier {
   List<NotificationModel> get notifications => _notifications;
   bool get loadingNotifications => _loadingNotifications;
 
+  NotificationService() {
+    print("init service");
+    getNotifications(null);
+  }
+
   Future<void> getNotifications(BuildContext? context) async {
     _notifications = [];
     _loadingNotifications = true;
@@ -43,6 +48,7 @@ class NotificationService with ChangeNotifier {
         _notifications!
             .addAll(NotificationModel.notificationsFromJsonList(res.data));
         notifyListeners();
+        print(_notifications.length);
         if (context != null) {
           Navigator.push(
               context,
@@ -101,6 +107,86 @@ class NotificationService with ChangeNotifier {
     } on DioError catch (e) {
       _loadingOrder = false;
       notifyListeners();
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
+  Future makeItSeend(String notificationId) async {
+    print("ws lanched : $notificationId  ");
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      Map<String, dynamic> fd = {"seend": true, "seendInList": true};
+      var res = await dio.post(
+          BASE_API_URL + '/notification/update/$notificationId',
+          data: fd);
+      notifyListeners();
+      if (res.statusCode == 200) {
+        print("notification updated");
+        var index = _notifications
+            .indexWhere((element) => element.notification_id == notificationId);
+        if (index != -1) {
+          _notifications[index].seend = true;
+          _notifications[index].seendInList = true;
+          notifyListeners();
+        }
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
+  Future makeItListSeend() async {
+    print("ws lanched :  ");
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      Map<String, dynamic> fd = {"seendInList": true};
+      var res = await dio.post(BASE_API_URL + '/notification/update/user/$_id',
+          data: fd);
+      notifyListeners();
+      if (res.statusCode == 200) {
+        print("notification updated");
+
+        _notifications.map((el) {
+          el.seendInList = true;
+          return el;
+        });
+        notifyListeners();
+      }
+    } on DioError catch (e) {
       if (e.response != null) {
         /// Toast Message to print the message
         print('${e.response!}');

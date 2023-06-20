@@ -3,7 +3,7 @@ import 'dart:convert';
 class Policy {
   // List<ShippingMethod>? shippingMethods;
 
-//  WorkingTime? workingTimePolicy;
+  // WorkingTime? workingTimePolicy;
   PickupPolicy? pickupPolicy;
   DeliveryPolicy? deliveryPolicy;
   ReservationPolicy? reservationPolicy;
@@ -21,7 +21,9 @@ class Policy {
   });
 
   Policy.fromJson(Map<String, dynamic> json) {
-    // workingTimePolicy = json['workingTime'] == null ? null :  WorkingTime.fromJson(json['workingTime']);
+    /* workingTimePolicy = json['workingTime'] == null
+        ? null
+        : WorkingTime.fromJson(json['workingTime']);*/
     pickupPolicy =
         json['pickup'] == null ? null : PickupPolicy.fromJson(json['pickup']);
     deliveryPolicy = json['delivery'] == null
@@ -53,7 +55,6 @@ class Policy {
 
     data['order'] = orderPolicy == null ? null : orderPolicy!.toJson();
 
-    print(json.encode(data));
     return json.encode(data);
   }
 }
@@ -80,88 +81,19 @@ class PickupPolicy {
 }
 
 class DeliveryPolicy {
-  Zone? zone;
-  Pricing? pricing;
-
-  DeliveryPolicy({required this.zone, required this.pricing});
+  bool? delivery;
+  DeliveryPolicy({
+    required this.delivery,
+  });
   factory DeliveryPolicy.fromJson(Map<String, dynamic> json) {
-    return DeliveryPolicy(
-      zone: Zone.fromJson(json['zone']),
-      pricing: Pricing.fromJson(json['pricing']),
-    );
+    return DeliveryPolicy(delivery: json['delivery']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (zone != null) {
-      data['zone'] = zone!.toJson();
-    }
-    if (pricing != null) {
-      data['pricing'] = pricing!.toJson();
-    }
 
-    return data;
-  }
-}
+    data['delivery'] = delivery;
 
-class Zone {
-  CenterPoint? centerPoint;
-
-  int? radius;
-
-  Zone({required this.centerPoint, required this.radius});
-
-  factory Zone.fromJson(Map<String, dynamic> json) {
-    return Zone(
-      centerPoint: CenterPoint.fromJson(json['centerPoint']),
-      radius: json['radius'],
-    );
-  }
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['centerPoint'] = centerPoint!.toJson();
-    if (radius == null) {
-      print("set policy");
-    }
-    data['radius'] = radius;
-    return data;
-  }
-}
-
-class CenterPoint {
-  double? latitude;
-  double? longitude;
-
-  CenterPoint({required this.latitude, required this.longitude});
-
-  factory CenterPoint.fromJson(Map<String, dynamic> json) => CenterPoint(
-        latitude: json['latitude'] != null ? json['latitude'].toDouble() : null,
-        longitude:
-            json['longitude'] != null ? json['longitude'].toDouble() : null,
-      );
-
-  Map<String, dynamic> toJson() => {
-        'latitude': latitude,
-        'longitude': longitude,
-      };
-}
-
-class Pricing {
-  double? fixedPrice;
-  double? kmPrice;
-
-  Pricing({this.fixedPrice, this.kmPrice});
-  factory Pricing.fromJson(Map<String, dynamic> json) {
-    return Pricing(
-      fixedPrice: json['fixe'] != null ? json['fixe'].toDouble() : null,
-      kmPrice: json['km'] != null ? json['km'].toDouble() : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['fixe'] = fixedPrice;
-    data['km'] = kmPrice;
     return data;
   }
 }
@@ -390,18 +322,38 @@ class ShippingRefund {
     return data;
   }
 }
+/*
+class WorkingTime {
+  TimeOfDay? openTime; // Initialize with default values
+  TimeOfDay? closeTime; // Initialize with default values
+
+  WorkingTime({TimeOfDay? openTime, TimeOfDay? closeTime}) {
+    this.openTime = openTime ?? TimeOfDay(hour: 0, minute: 0);
+    this.closeTime = closeTime ?? TimeOfDay(hour: 0, minute: 0);
+  }
+
+  factory WorkingTime.fromJson(Map<String, dynamic> json) {
+    return WorkingTime(
+      openTime: json['openTime'],
+      closeTime: json['closeTime'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'openTime': openTime,
+      'closeTime': closeTime,
+    };
+  }
+}*/
 
 class OrderPolicy {
-  Validation? validation;
   OrderNotification? notification;
 
-  OrderPolicy({this.validation, this.notification});
+  OrderPolicy({this.notification});
 
   factory OrderPolicy.fromJson(Map<String, dynamic> json) {
     return OrderPolicy(
-      validation: json['validation'] != null
-          ? Validation.fromJson(json['validation'])
-          : null,
       notification: json['notification'] != null
           ? OrderNotification.fromJson(json['notification'])
           : null,
@@ -410,35 +362,10 @@ class OrderPolicy {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (validation != null) {
-      data['validation'] = validation!.toJson();
-    }
+
     if (notification != null) {
       data['notification'] = notification!.toJson();
     }
-    return data;
-  }
-}
-
-class Validation {
-  bool? auto;
-  bool? manual;
-  bool? both;
-  Validation({this.auto, this.manual, this.both});
-
-  factory Validation.fromJson(Map<String, dynamic> json) {
-    return Validation(
-        auto: json['auto'] as bool?, manual: json['manual'] as bool?
-        // both: json['both']
-        );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['auto'] = auto;
-    data['manual'] = manual;
-    //  data['both'] = both;
-
     return data;
   }
 }

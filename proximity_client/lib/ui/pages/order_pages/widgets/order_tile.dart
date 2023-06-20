@@ -27,6 +27,8 @@ class OrderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("order tile");
+
     /// get Locale
     final Locale _locale = Localizations.localeOf(context);
 
@@ -259,17 +261,6 @@ class OrderTile extends StatelessWidget {
                   children: [
                     if (returnOrder != true)
                       ...List.generate(order.items!.length, (index) {
-                        if (order.items![index].reservation != 0.0) {
-                          return OrderDetails(details: {
-                            '${order.items![index].name}':
-                                '${((order.items![index].price ?? 1) * (order.items![index].orderedQuantity ?? 1) * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0)) * (order.items![index].reservation ?? 1.0)).toString()}',
-                            '${order.items![index].price! * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0))} x${order.items![index].orderedQuantity}':
-                                '',
-                            'Reservation : ${((order.items![index].reservation ?? 0.0) * 100).toInt()}% ':
-                                ''
-                          });
-                        }
-
                         return OrderDetails(details: {
                           '${order.items![index].name}':
                               '${((order.items![index].price ?? 1) * (order.items![index].orderedQuantity ?? 1) * (1 - (order.items![index].discount > 0 ? (order.items![index].discount) : 0))).toString()}',
@@ -294,27 +285,6 @@ class OrderTile extends StatelessWidget {
                           ),
                   ],
                 )),
-
-            if (returnOrder != true &&
-                refundOrder != true &&
-                order.delivery == true)
-              Padding(
-                  padding: const EdgeInsets.all(small_100),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Delivery:',
-                            textAlign: TextAlign.left,
-                            style: Theme.of(context).textTheme.bodyText2),
-                        const Spacer(),
-                        Text(
-                            ' € ${(order.paymentInfo!.deliveryAmount ?? 0.0).toStringAsFixed(2)}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(fontSize: 14))
-                      ])),
 
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               Expanded(
@@ -383,11 +353,53 @@ class OrderTile extends StatelessWidget {
                           order.acceptedReturnedItems!.length,
                           (index) => OrderDetails(details: {
                                 '${order.acceptedReturnedItems![index].name}':
-                                    '${((order.acceptedReturnedItems![index].price ?? 1) * (order.acceptedReturnedItems![index].returnQuantity ?? 1) * (1 - (order.acceptedReturnedItems![index].discount > 0 ? (order.acceptedReturnedItems![index].discount) : 0)) * ((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage!) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 1))).toString()}',
+                                    () {
+                                  var first_price = (order
+                                              .acceptedReturnedItems![index]
+                                              .price ??
+                                          1) *
+                                      (order.acceptedReturnedItems![index]
+                                              .returnQuantity ??
+                                          1) *
+                                      (1 -
+                                          (order.acceptedReturnedItems![index]
+                                                      .discount >
+                                                  0
+                                              ? (order
+                                                  .acceptedReturnedItems![index]
+                                                  .discount)
+                                              : 0));
+                                  if (order.acceptedReturnedItems![index]
+                                          .policy !=
+                                      null) {
+                                    first_price *= ((order
+                                                    .acceptedReturnedItems![
+                                                        index]
+                                                    .policy!
+                                                    .returnPolicy!
+                                                    .refund
+                                                    .order
+                                                    .percentage ??
+                                                0.0) *
+                                            100) ??
+                                        (order
+                                                .acceptedReturnedItems![index]
+                                                .policy!
+                                                .returnPolicy
+                                                ?.refund
+                                                .order
+                                                .fixe ??
+                                            0.0);
+                                  }
+                                  return first_price.toStringAsFixed(2);
+                                }(),
                                 '${order.acceptedReturnedItems![index].price} x${order.acceptedReturnedItems![index].returnQuantity}':
                                     '',
-                                'Refund':
-                                    '${((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage! * 100) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 0.0))}' +
+                                'Refund': () {
+                                  if (order.acceptedReturnedItems![index]
+                                          .policy !=
+                                      null) {
+                                    return '${(((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage ?? 0.0) * 100) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 0.0))}' +
                                         (order
                                                     .acceptedReturnedItems![
                                                         index]
@@ -398,7 +410,10 @@ class OrderTile extends StatelessWidget {
                                                     .percentage !=
                                                 null
                                             ? "%"
-                                            : ""),
+                                            : "");
+                                  }
+                                  return "";
+                                }(),
                               })),
                     ],
                   )),
@@ -429,11 +444,14 @@ class OrderTile extends StatelessWidget {
                                         (element.discount > 0
                                             ? element.discount
                                             : 0)) *
-                                    ((element.policy!.returnPolicy!.refund.order
-                                            .percentage!) ??
-                                        (element.policy!.returnPolicy?.refund
-                                                .order.fixe ??
-                                            1));
+                                    (element.policy == null
+                                        ? 0.0
+                                        : (element.policy!.returnPolicy!.refund
+                                                    .order.percentage ??
+                                                0.0) ??
+                                            (element.policy!.returnPolicy
+                                                    ?.refund.order.fixe ??
+                                                1));
                               }
                               return ' € ${(returnTotal ?? 0.0).toStringAsFixed(2)}';
                             }(),
@@ -451,10 +469,10 @@ class OrderTile extends StatelessWidget {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        if (["Recovered", "Delivered"].indexWhere(
+                        if (["Delivered"].indexWhere(
                                     (item) => item == order.orderStatus) !=
                                 -1 &&
-                            order.returnOrder == false) ...[
+                            order.returnOrder != true) ...[
                           Expanded(
                               child: TertiaryButton(
                                   onPressed: () {

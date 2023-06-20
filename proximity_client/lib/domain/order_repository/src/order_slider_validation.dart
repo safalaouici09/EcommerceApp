@@ -284,10 +284,11 @@ class OrderSliderValidation with ChangeNotifier {
     String _id = credentialsBox.get('id');
 
     Map<String, dynamic> card = {
-      "cardNumber": _cardNumber ?? "",
-      "ccv": _cvc ?? "",
-      "expdate": _expdate ?? "",
+      "cardNumber": null,
+      "ccv": null,
+      "expdate": null,
       "name": _name ?? "",
+      "phone": _phone ?? "",
       "address_city": _city ?? "",
       "address_line1": _street ?? "",
       "address_line2": _street2 ?? "",
@@ -302,8 +303,6 @@ class OrderSliderValidation with ChangeNotifier {
 
     if (currentPickupItems.isNotEmpty) {
       Map<String, dynamic> pickUpPaymentInfos = {
-        "deliveryAmount": 0.0,
-        "reservationAmount": 0.0,
         "totalAmount": getPickupItemsTotal(),
         "paymentMethodeId": 1,
         "card": card,
@@ -323,7 +322,7 @@ class OrderSliderValidation with ChangeNotifier {
           "price": element.price ?? "",
           "discount": element.discount ?? 0.0,
           "quantity": element.quantity ?? 0.0,
-          "policy": null,
+          "policy": element.policy!.toJson(),
         });
       });
 
@@ -337,7 +336,6 @@ class OrderSliderValidation with ChangeNotifier {
         "distance": null,
         "paymentInfos": pickUpPaymentInfos,
         "items": itemsPickUpOrder,
-        "reservation": false,
         "pickUp": true,
         "delivery": false,
         "timeLimit": null,
@@ -348,8 +346,6 @@ class OrderSliderValidation with ChangeNotifier {
 
     if (currentDeliveryItems.isNotEmpty) {
       Map<String, dynamic> deliveryPaymentInfos = {
-        "deliveryAmount": _totalDelivery,
-        "reservationAmount": 0.0,
         "totalAmount": getDeliveryItemsTotal(),
         "paymentMethodeId": 1,
         "card": card,
@@ -382,7 +378,7 @@ class OrderSliderValidation with ChangeNotifier {
           "price": element.price ?? "",
           "discount": element.discount ?? 0.0,
           "quantity": element.quantity ?? 0.0,
-          "policy": null,
+          "policy": element.policy!.toJson(),
         });
       });
 
@@ -396,7 +392,6 @@ class OrderSliderValidation with ChangeNotifier {
         "distance": _distance,
         "paymentInfos": deliveryPaymentInfos,
         "items": itemsDeliveryOrder,
-        "reservation": false,
         "pickUp": false,
         "delivery": true,
         "timeLimit": null,
@@ -405,49 +400,6 @@ class OrderSliderValidation with ChangeNotifier {
       orders.add(deliveryOrder);
     }
 
-    if (currentReservationItems.isNotEmpty) {
-      Map<String, dynamic> reservationPaymentInfos = {
-        "deliveryAmount": 0.0,
-        "reservationAmount": getReservationItemsTotal(),
-        "totalAmount": getReservationItemsTotal(),
-        "paymentMethodeId": 1,
-        "card": card,
-      };
-
-      List<Map<String, dynamic>> itemsReservationOrder = [];
-
-      currentReservationItems.forEach((element) {
-        itemsReservationOrder.add({
-          "productId": element.productId ?? "",
-          "variantId": element.variantId ?? "",
-          "name": element.name ?? "",
-          "image": element.image ?? "",
-          "price": element.price ?? "",
-          "discount": element.discount ?? 0.0,
-          "quantity": element.quantity ?? 0.0,
-          "reservation": element.reservationP ?? 0.0,
-          "policy": null,
-        });
-      });
-
-      Map<String, dynamic> deliveryOrder = {
-        "clientId": _id,
-        "storeId": _storeId,
-        "cartId": _cartId,
-        "pickupPerson": null,
-        "deliveryAddresse": null,
-        "deliveryLocation": null,
-        "distance": _distance,
-        "paymentInfos": reservationPaymentInfos,
-        "items": itemsReservationOrder,
-        "reservation": true,
-        "pickUp": false,
-        "delivery": false,
-        "timeLimit": null,
-      };
-
-      orders.add(deliveryOrder);
-    }
     print(orders);
 
     FormData _formData =

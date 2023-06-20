@@ -46,10 +46,19 @@ class ReturnScreenValidation with ChangeNotifier {
     double refundTotal = 0.0;
 
     for (var element in _returnedItems!) {
-      refundTotal += element.price! *
-          (element.returnQuantity ?? 0) *
-          (element.policy!.returnPolicy!.refund.order.percentage ??
-              (element.policy!.returnPolicy!.refund.order.fixe ?? 0));
+      double returnPercentage = 0.0;
+      if (element.policy != null && element.policy!.returnPolicy != null) {
+        if (element.policy!.returnPolicy!.refund.order.percentage != null) {
+          returnPercentage =
+              element.policy!.returnPolicy!.refund.order.percentage ?? 0.0;
+        } else if (element.policy!.returnPolicy!.refund.order.fixe != null) {
+          returnPercentage =
+              element.policy!.returnPolicy!.refund.order.fixe ?? 0.0;
+        }
+      }
+
+      refundTotal +=
+          element.price! * (element.returnQuantity ?? 0) * (returnPercentage);
     }
 
     return refundTotal;
@@ -61,39 +70,36 @@ class ReturnScreenValidation with ChangeNotifier {
     notifyListeners();
   }
   String itemsToString() {
+    print("im here");
     List<Map<String, dynamic>> items = [];
-
-    Map<String, dynamic> card = {
-      "cardNumber": _cardNumber ?? "",
-      "ccv": _cvc ?? "",
-      "expdate": _expdate ?? "",
-      "name": _name ?? "",
-      "address_city": _city ?? "",
-      "address_line1": _street ?? "",
-      "address_line2": _street2 ?? "",
-      "postalCode": _postalCode ?? ""
-    };
-
-    _returnedItems!.forEach((element) {
-      items.add({
-        "productId": element.productId ?? "",
-        "variantId": element.variantId ?? "",
-        "name": element.name ?? "",
-        "image": (element.image ?? "").replaceAll(BASE_IMG_URL + '/', ""),
-        "price": element.price ?? "",
-        "discount": element.discount ?? 0.0,
-        "quantity": element.returnQuantity ?? 0,
-        "orderQuantity": element.orderedQuantity,
-        "policy": element.policy!.toJson()
+    try {
+      _returnedItems!.forEach((element) {
+        print("im here");
+        print(element.policy == null);
+        items.add({
+          "productId": element.productId ?? "",
+          "variantId": element.variantId ?? "",
+          "name": element.name ?? "",
+          "image": (element.image ?? "").replaceAll(BASE_IMG_URL + '/', ""),
+          "price": element.price ?? "",
+          "discount": element.discount ?? 0.0,
+          "quantity": element.returnQuantity ?? 0,
+          "orderQuantity": element.orderedQuantity,
+          "policy": element.policy == null ? "null" : element.policy!.toJson()
+        });
       });
-    });
+    } catch (e) {
+      print(e.toString());
+    }
+
+    print({"items": items, "total": getTotalToRefund()});
 
     Map<String, dynamic> request = {
       "items": items,
-      "card": card,
       "total": getTotalToRefund()
     };
 
+    print(json.encode(request));
     return json.encode(request);
   }
 
@@ -158,19 +164,7 @@ class ReturnScreenValidation with ChangeNotifier {
     }
     if (allReturnedQuantity == 0) return false;
 
-    if (getTotalToRefund() == 0.0 ||
-        (_cardNumber != "" &&
-            _expdate != "" &&
-            _cvc != "" &&
-            _name != "" &&
-            _phone != "" &&
-            _city != "" &&
-            _street != "" &&
-            _postalCode != "")) {
-      return true;
-    } else {
-      return false;
-    }
+    return true;
   }
 
   ReturnScreenValidation();

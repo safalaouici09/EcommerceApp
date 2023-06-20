@@ -78,7 +78,7 @@ class _ImageProfileState extends State<ImageProfile> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.images!.isNotEmpty) {
+    if (widget.images!.isNotEmpty && widget.images!.first != null) {
       return Column(
         children: [
           Padding(

@@ -37,18 +37,8 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _index = 0;
-    nbr_of_notifications = (notificationServiceGlobal.notifications!
-        .where((notification) => notification.seendInList != true)).length;
-    initPlatform();
-
-    notificationServiceGlobal.addListener(_handleChange);
-  }
-
-  void _handleChange() {
-    setState(() {
-      nbr_of_notifications = (notificationServiceGlobal.notifications!
-          .where((notification) => notification.seendInList != true)).length;
-    });
+    notificationServiceGlobal.getNotifications(null);
+    initPlatform(notificationServiceGlobal);
   }
 
   @override
@@ -221,64 +211,73 @@ class _MainScreenState extends State<MainScreen> {
                               onTap: () => setState(() {
                                 _index = 3;
                               }),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Stack(children: [
-                                      if (nbr_of_notifications > 0)
-                                        Container(
-                                            padding:
-                                                const EdgeInsets.all(tiny_50),
-                                            margin: const EdgeInsets.only(
-                                                top: 2, left: 25),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        tinyRadius),
-                                                color: redSwatch.shade500),
-                                            child: Text(
-                                              '${nbr_of_notifications}',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .caption!
-                                                  .copyWith(
-                                                      color:
-                                                          primaryTextDarkColor,
-                                                      fontWeight:
-                                                          FontWeight.w800),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            )),
-                                      if (_index == 3)
-                                        Column(
-                                          children: [
-                                            DuotoneIcon(
-                                              primaryLayer:
-                                                  ProximityIcons.user_duotone_1,
-                                              secondaryLayer:
-                                                  ProximityIcons.user_duotone_2,
-                                              color: redSwatch.shade500,
-                                            ),
-                                            Text('Profile',
-                                                style: Theme.of(parentContext)
+                              child: Consumer<NotificationService>(
+                                  builder: (_, notificationService, __) {
+                                var nb_notifs = notificationService
+                                    .notifications
+                                    .where((element) =>
+                                        element.seendInList != true)
+                                    .length;
+                                return Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Stack(children: [
+                                        if (nb_notifs > 0)
+                                          Container(
+                                              padding:
+                                                  const EdgeInsets.all(tiny_50),
+                                              margin: const EdgeInsets.only(
+                                                  top: 2, left: 25),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          tinyRadius),
+                                                  color: redSwatch.shade500),
+                                              child: Text(
+                                                '${nb_notifs}',
+                                                style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1!
-                                                    .copyWith(height: 0.9)),
-                                            Container(
-                                                height: tiny_50,
-                                                width: normal_150,
-                                                decoration: BoxDecoration(
-                                                    color: redSwatch.shade500,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            tinyRadius))),
-                                            const SizedBox(height: tiny_50),
-                                          ],
-                                        ),
-                                      if (_index != 3)
-                                        const Icon(ProximityIcons.user),
-                                    ])
-                                  ]),
+                                                    .caption!
+                                                    .copyWith(
+                                                        color:
+                                                            primaryTextDarkColor,
+                                                        fontWeight:
+                                                            FontWeight.w800),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              )),
+                                        if (_index == 3)
+                                          Column(
+                                            children: [
+                                              DuotoneIcon(
+                                                primaryLayer: ProximityIcons
+                                                    .user_duotone_1,
+                                                secondaryLayer: ProximityIcons
+                                                    .user_duotone_2,
+                                                color: redSwatch.shade500,
+                                              ),
+                                              Text('Profile',
+                                                  style: Theme.of(parentContext)
+                                                      .textTheme
+                                                      .bodyText1!
+                                                      .copyWith(height: 0.9)),
+                                              Container(
+                                                  height: tiny_50,
+                                                  width: normal_150,
+                                                  decoration: BoxDecoration(
+                                                      color: redSwatch.shade500,
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                                  .all(
+                                                              tinyRadius))),
+                                              const SizedBox(height: tiny_50),
+                                            ],
+                                          ),
+                                        if (_index != 3)
+                                          const Icon(ProximityIcons.user),
+                                      ])
+                                    ]);
+                              }),
                             )),
                           ])),
                 ),
@@ -286,7 +285,7 @@ class _MainScreenState extends State<MainScreen> {
         ])));
   }
 
-  Future<void> initPlatform() async {
+  Future<void> initPlatform(NotificationService notificationService) async {
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult event) {
       notificationServiceGlobal.getNotifications(null);
@@ -342,13 +341,15 @@ class _MainScreenState extends State<MainScreen> {
           notification_body = event.notification.body ?? "";
           nbr_of_notifications += 1;
         });
+        notificationService.getNotifications(null);
       } else {
         event.complete(null);
       }
     });
   }
 
-  void handleNotification(notification, notificationService, parentContext) {
+  void handleNotification(
+      notification, NotificationService notificationService, parentContext) {
     print("abousssssssssssssssss");
     var notification_icon = ProximityIcons.delivery_duotone_1;
     var notification_text = "Apple store responded to one of your orders";
@@ -452,6 +453,8 @@ class _MainScreenState extends State<MainScreen> {
                                 child: SecondaryButton(
                                     title: 'Voir.',
                                     onPressed: () async {
+                                      notificationService.makeItSeend(
+                                          notification!["notification_id"]);
                                       if (notification!["type"] == 'order') {
                                         Navigator.of(context).pop();
                                         await notificationService.getOrder(

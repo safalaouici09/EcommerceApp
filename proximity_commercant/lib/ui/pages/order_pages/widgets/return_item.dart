@@ -20,9 +20,6 @@ class ReturnItem extends StatelessWidget {
   Widget build(BuildContext context) {
     /// A [productProxy] is declared to update its value [idShop] whenever
     /// a new shop is selected
-    print("item");
-    print(product.image);
-    print(product.policy!.returnPolicy!.toJson());
     SizedBox _productCard = SizedBox(
         height: 130,
         width: double.infinity,
@@ -162,10 +159,34 @@ class ReturnItem extends StatelessWidget {
                           borderRadius: BorderRadius.all(tinyRadius),
                           color: Color.fromARGB(255, 163, 8, 104)),
                       child: Text(
-                        product.policy!.returnPolicy!.refund.order.percentage !=
-                                0.0
-                            ? 'To Refund :  ${((product.policy!.returnPolicy!.refund.order.percentage ?? 0)).toInt() * double.parse((product.price!).toStringAsFixed(2)) * (product.orderedQuantity)} €'
-                            : 'To Refund : ${((product.policy!.returnPolicy!.refund.order.fixe ?? 0)).toInt() * (product.orderedQuantity)} €',
+                        () {
+                          double refundTotal = 0.0;
+
+                          double returnPercentage = 0.0;
+                          if (product.policy != null &&
+                              product.policy!.returnPolicy != null) {
+                            if (product.policy!.returnPolicy!.refund.order
+                                    .percentage !=
+                                null) {
+                              returnPercentage = product.policy!.returnPolicy!
+                                      .refund.order.percentage ??
+                                  0.0;
+                            } else if (product
+                                    .policy!.returnPolicy!.refund.order.fixe !=
+                                null) {
+                              returnPercentage = product.policy!.returnPolicy!
+                                      .refund.order.fixe ??
+                                  0.0;
+                            }
+                          }
+
+                          refundTotal += product.price! *
+                              (product.returnQuantity ?? 0) *
+                              (returnPercentage);
+
+                          return "To Refund : " +
+                              refundTotal.toStringAsFixed(2);
+                        }(),
                         style: Theme.of(context).textTheme.caption!.copyWith(
                             color: primaryTextDarkColor,
                             fontWeight: FontWeight.w800),

@@ -13,6 +13,7 @@ class ProductService with ChangeNotifier {
   late List<Product> _todayDeals;
   late Set<Product> _wishList;
   late List<String> _ads;
+  String _query = "";
   //final Map<String, String>? _selectedOptions = {};
 
   // get methods
@@ -25,6 +26,8 @@ class ProductService with ChangeNotifier {
   List<Product> get todayDeals => _todayDeals;
 
   List<Product> get wishList => _wishList.toList();
+
+  String get query => _query;
 
   List<String> get ads => _ads;
   //Map<String, String>? get selectedOptions => _selectedOptions;
@@ -76,9 +79,12 @@ class ProductService with ChangeNotifier {
     }
   }
 
-  Future getProximityProducts() async {
+  Future getProximityProducts({String name = ""}) async {
     /// open hive box
     ///
+    ///
+    _query = name;
+    notifyListeners();
     var credentialsBox = Boxes.getCredentials();
     credentialsBox.put('first_time', false);
     dynamic _adresse = credentialsBox.get('address');
@@ -108,167 +114,21 @@ class ProductService with ChangeNotifier {
       dio.options.headers["token"] = "Bearer $_token";
 
       var res = await dio.get(BASE_API_URL +
-          '/search/product/?radius=${radius.toString()}&latitude=${latitude.toString()}&langitude=${langitude.toString()}');
+          '/search/product/?radius=${radius.toString()}&latitude=${latitude.toString()}&langitude=${langitude.toString()}&name=${(name)}');
 
       if (res.statusCode == 200) {
-        _products = [];
+        if (name == "") {
+          _products = [];
 
-        _products.addAll(Product.productsFromJsonList(res.data));
-        _products.add(Product(
-            id: '0',
-            name:
-                'Xiaomi Cleargrass -compatible Alarm Clock smart Control Temperature Humidity Display LCD Screen Adjustable Nightlight - gray',
-            description: '''Main Features
+          _products.addAll(Product.productsFromJsonList(res.data));
+          _todayDeals = [];
+          _todayDeals
+              .addAll(_products.where((element) => (element.discount != 0)));
+        } else {
+          _searchResults = [];
+          _searchResults.addAll(Product.productsFromJsonList(res.data));
+        }
 
-Description :
-
-ClearGrass CGD1 Bluetooth No Button Alarm Clock Mijia APP Control Temperature Humidity Display LCD Screen Adjustable Nightlight
-
-- Simple Buttonless Design
-The product can be pressed as a whole, which realizes no button function, and the operation is very interesting. The internal design of the silicone base has a comfortable pressing feel and a simple appearance design, which can be well integrated in various places in the home.
-
-- Custom Personalized Alarm Clock
-Each time you connect your phone via Bluetooth, the time is automatically synchronized and you can easily set the time. You can set 16 groups of alarm clocks, and each group of alarm clocks can be set for snooze function, which is very simple. 8 ringtones optional.
-
-- Temperature And Humidity Display
-Using Swiss Sensirion sensor, the temperature measurement accuracy is ± 0.2 ℃, the humidity measurement accuracy is ± 2% RH, and the temperature and humidity changes are sensitively sensed.
-
-- Tap To Light The Night Light
-Press the alarm clock, the backlight turns on, you can check the time clearly even at night.
-
-- Adjust The Backlight At Any Time
-The intensity of the backlight can be adjusted in different periods, and the duration of the backlight can also be adjusted, from completely off to 30 seconds.
-
-- Comfortable Smart Little Housekeeper
-Cooperate with other Mijia equipment to realize automatic adjustment of indoor temperature and humidity. For example: if the temperature is lower than 20 ℃, the heater will be turned on automatically.''',
-            price: 19.99,
-            discount: 0.1,
-            discountEndDate: DateTime.now().add(
-                const Duration(days: 31, hours: 23, minutes: 48, seconds: 3)),
-            images: [
-              'https://i.ibb.co/6mjY1WD/product-0-1.png',
-              'https://i.ibb.co/Sypdpj5/product-0-2.png',
-              'https://i.ibb.co/ZNP8nJd/product-0-3.png',
-            ],
-            storeId: '0',
-            variants: [
-              ProductVariant(
-                  id: '0-0',
-                  price: 158.5,
-                  variantName: '',
-                  image: 'https://i.ibb.co/N2d3vP3/product-0-variant-0.png',
-                  quantity: 5654),
-              ProductVariant(
-                  id: '0-1',
-                  price: 158.5,
-                  variantName: '',
-                  image: 'https://i.ibb.co/RQwZrX8/product-0-variant-1.png',
-                  quantity: 5654),
-              ProductVariant(
-                  id: '0-2',
-                  price: 158.5,
-                  image: 'https://i.ibb.co/g7Y7yvc/product-0-variant-2.png',
-                  quantity: 5654),
-              ProductVariant(
-                  id: '0-3',
-                  price: 158.5,
-                  variantName: '',
-                  characteristics: [
-                    {"name": "Color", "value": "Mint Green"},
-                    {"name": "Language", "value": "English"}
-                  ],
-                  image: 'https://i.ibb.co/7bN9KJk/product-0-variant-3.png',
-                  quantity: 5654),
-              ProductVariant(
-                  id: '0-4',
-                  variantName: '',
-                  price: 158.5,
-                  characteristics: [
-                    {"name": "Color", "value": "Peach"},
-                    {"name": "Language", "value": "Français"}
-                  ],
-                  image: 'https://i.ibb.co/0BZSLgM/product-0-variant-4.png',
-                  quantity: 5654),
-              ProductVariant(
-                  id: '0-5',
-                  variantName: '',
-                  price: 158.5,
-                  characteristics: [
-                    {"name": "Color", "value": "Peach"},
-                    {"name": "Language", "value": "English"}
-                  ],
-                  image: 'https://i.ibb.co/CbYfPVL/product-0-variant-5.png',
-                  quantity: 5654),
-              ProductVariant(
-                  id: '0-6',
-                  variantName: '',
-                  price: 158.5,
-                  characteristics: [
-                    {"name": "Color", "value": "Blue"},
-                    {"name": "Language", "value": "Français"}
-                  ],
-                  image: 'https://i.ibb.co/FxKnM1p/product-0-variant-6.png',
-                  quantity: 5654),
-              ProductVariant(
-                  id: '0-7',
-                  price: 158.5,
-                  variantName: '',
-                  characteristics: [
-                    {"name": "Color", "value": "Blue"},
-                    {"name": "Language", "value": "English"}
-                  ],
-                  image: 'https://i.ibb.co/7zwP1M9/product-0-variant-7.png',
-                  quantity: 5654)
-            ]));
-        _products.add(
-          Product(
-              id: '1',
-              name: 'Nintendo Switch™ Family - Nintendo',
-              description:
-                  "The Nintendo Switch (ニ ン テ ン ド ー ス イ ッ チ, Nintendō Suitchi) is a video game console produced by Nintendo, succeeding the Wii U.\nIt is the first hybrid console in the history of video games, which could also do as a living room console as a portable console.",
-              price: 500.0,
-              discount: 1 / 3,
-              discountEndDate: DateTime.now().add(
-                  const Duration(days: 7, hours: 4, minutes: 48, seconds: 3)),
-              images: [
-                'https://i.ibb.co/Xpx2N1B/switch1.png',
-                'https://i.ibb.co/5M2Nyh2/switch3.png'
-              ],
-              storeId: '2',
-              variants: [
-                ProductVariant(
-                    id: '1-0',
-                    characteristics: [
-                      {"name": "Color", "value": "Default"}
-                    ],
-                    image: 'https://i.ibb.co/QfdNZHD/product-1-variant-0.png',
-                    quantity: 5654),
-                ProductVariant(
-                    id: '1-1',
-                    characteristics: [
-                      {"name": "Color", "value": "Frost White"}
-                    ],
-                    image: 'https://i.ibb.co/D8mV6S4/product-1-variant-1.png',
-                    quantity: 5654),
-                ProductVariant(
-                    id: '1-2',
-                    characteristics: [
-                      {"name": "Color", "value": "Coral"}
-                    ],
-                    image: 'https://i.ibb.co/LPdjY8L/product-1-variant-2.png',
-                    quantity: 5654),
-                ProductVariant(
-                    id: '1-3',
-                    characteristics: [
-                      {"name": "Color", "value": "Frost White"}
-                    ],
-                    image: 'https://i.ibb.co/HX1Yzrd/product-1-variant-3.png',
-                    quantity: 5654),
-              ]),
-        );
-        _todayDeals = [];
-        _todayDeals
-            .addAll(_products.where((element) => (element.discount != 0)));
         print(_products.length.toString());
         notifyListeners();
       }
@@ -330,7 +190,9 @@ Cooperate with other Mijia equipment to realize automatic adjustment of indoor t
       if (res.statusCode == 200) {
         _selectedOptions = {};
         final int _index = _products.indexWhere((element) => element.id == id);
+        print(_index);
         _products[_index] = Product.fromJson(res.data);
+        print(res.data);
 
         _loadingProduct = false;
         notifyListeners();

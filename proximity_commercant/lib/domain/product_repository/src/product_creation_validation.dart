@@ -38,7 +38,6 @@ class ProductCreationValidation with ChangeNotifier {
   ProductCreationValidation();
 
   ProductCreationValidation.setProduct(Product product) {
-    print(product.price!);
     _id = product.id;
     _storeId = product.storeId;
     _name = ValidationItem(product.name, null);
@@ -359,10 +358,12 @@ class ProductCreationValidation with ChangeNotifier {
     // print("policyyyy " + _policy!.toJson().toString());
 
     print("init price");
-    print(productToVariant());
+    // print(productToVariant());
     var productPrice = 0.0;
 
     var variants = "";
+
+    print("_variants");
 
     if (price != null && price!.value != null && hasVariants == false) {
       print("product price");

@@ -4,8 +4,6 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/order_repository/models/bill_card_model.dart';
 import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
-import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
-import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 
 /// This class has a couple of DialogWidgets to avoid BoilerPlate between Widgets
 ///
@@ -33,35 +31,13 @@ class PaymentDialogs {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Text(
-                                    'Payment Infos',
+                                    'Contact Infos',
                                     style: TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF136DA5)),
                                   ),
                                   Divider(),
-                                  SizedBox(height: 20),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                          child: Text(
-                                        'Payment Methode',
-                                        style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                Theme.of(context).dividerColor),
-                                      )),
-                                      Expanded(
-                                          child: Text(
-                                        'Pay by card',
-                                        style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
-                                      ))
-                                    ],
-                                  ),
                                   SizedBox(height: 20),
                                   Container(
                                       margin: const EdgeInsets.all(10),
@@ -72,64 +48,19 @@ class PaymentDialogs {
                                           color: Color(0xFF104D72)),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            infos!.name ?? "",
+                                            infos!.name!.toUpperCase() ?? "",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                                 fontSize: 13.0,
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFFEFEFEF)),
-                                          ),
-                                          Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Image.network(
-                                                    'https://i.ibb.co/zmn2F5b/Vector-Visa-Credit-Card.png',
-                                                    width: 50.0,
-                                                    height: 50.0),
-                                                Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      Text(
-                                                        infos!.cardNumber ?? "",
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            fontSize: 13.0,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Color(
-                                                                0xFFEFEFEF)),
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        (infos!.expdate ?? '') +
-                                                            '      ' +
-                                                            (infos!.cvc ?? ''),
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: TextStyle(
-                                                            fontSize: 10.0,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Color(
-                                                                0xFFEFEFEF)),
-                                                      ),
-                                                    ])
-                                              ]),
+                                          )
                                         ],
                                       )),
-                                  SectionDivider(
-                                      leadIcon: ProximityIcons.address,
-                                      title: 'Billing Address.',
-                                      color: blueSwatch.shade500),
                                   SizedBox(height: 20),
                                   Row(
                                     children: [
@@ -145,6 +76,28 @@ class PaymentDialogs {
                                       Expanded(
                                           child: Text(
                                         infos!.name ?? "",
+                                        style: TextStyle(
+                                            fontSize: 11.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      ))
+                                    ],
+                                  ),
+                                  SizedBox(height: 20),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                        'Phone',
+                                        style: TextStyle(
+                                            fontSize: 11.0,
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                Theme.of(context).dividerColor),
+                                      )),
+                                      Expanded(
+                                          child: Text(
+                                        infos!.phone ?? "",
                                         style: TextStyle(
                                             fontSize: 11.0,
                                             fontWeight: FontWeight.bold,
@@ -255,7 +208,8 @@ class PaymentDialogs {
                                 ])))))));
   }
 
-  static void cancelOrder(BuildContext context, String? orderId) =>
+  static Future cancelOrder(
+          BuildContext context, String? orderId, OrderService? ordersService) =>
       showDialogPopup(
           context: context,
           pageBuilder: (ctx, anim1, anim2) => StatefulBuilder(
@@ -283,6 +237,12 @@ class PaymentDialogs {
                                 'Are you really want cancel the order ?',
                                 style: Theme.of(context).textTheme.subtitle2,
                                 textAlign: TextAlign.center)),
+                        EditText(
+                          hintText: 'Motif.',
+                          borderType: BorderType.bottom,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                        ),
                         Padding(
                             padding: const EdgeInsets.all(normal_100),
                             child:
@@ -290,7 +250,8 @@ class PaymentDialogs {
                               Expanded(
                                   child: SecondaryButton(
                                       title: 'Cancel.',
-                                      onPressed: () => Navigator.pop(context))),
+                                      onPressed: () =>
+                                          Navigator.pop(context, false))),
                               const SizedBox(width: normal_100),
                               Expanded(
                                   child: Consumer<StoreService>(
@@ -298,20 +259,9 @@ class PaymentDialogs {
                                           Expanded(
                                               child: PrimaryButton(
                                                   title: 'Confirm.',
-                                                  onPressed: () async {
-                                                    // int count = 0;
-                                                    // bool _bool =
-                                                    // await storeService
-                                                    //     .deleteStore(
-                                                    //         context, index);
-                                                    // if (_bool) {
-                                                    //   Navigator.popUntil(
-                                                    //       context, (route) {
-                                                    //     return count++ ==
-                                                    //         (popCount ?? 1);
-                                                    //   });
-                                                    // }
-                                                  }))))
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, true)))))
                             ]))
                       ])))));
 }

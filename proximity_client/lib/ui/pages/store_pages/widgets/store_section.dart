@@ -223,6 +223,44 @@ class _StoreSectionState extends State<StoreSection> {
       return false;
     }
 
+    void handleRaiting(rating, parentContext) {
+      showDialogPopup(
+          barrierDismissible: false,
+          context: context,
+          pageBuilder: (ctx, anim1, anim2) => StatefulBuilder(
+              builder: (context, setState) => DialogPopup(
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width - normal_200 * 2,
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        const SizedBox(height: normal_100),
+                        Padding(
+                            padding: const EdgeInsets.only(
+                                top: normal_100,
+                                left: normal_100,
+                                right: normal_100),
+                            child: StarRatingStore()),
+                        Padding(
+                            padding: const EdgeInsets.all(normal_100),
+                            child:
+                                Row(mainAxisSize: MainAxisSize.max, children: [
+                              Expanded(
+                                  child: SecondaryButton(
+                                      title: 'Cancel.',
+                                      onPressed: () =>
+                                          Navigator.of(context).pop())),
+                              const SizedBox(
+                                width: small_100,
+                              ),
+                              Expanded(
+                                  child: SecondaryButton(
+                                      title: 'Valider.',
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                      })),
+                            ]))
+                      ])))));
+    }
+
     return Consumer<StoreService>(builder: (_, storeService, __) {
       return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SectionDivider(
@@ -274,7 +312,14 @@ class _StoreSectionState extends State<StoreSection> {
                       ]),
                       Row(
                         children: [
-                          StarRating(rating: storeService.store!.rating!),
+                          InkWell(
+                            onTap: () {
+                              handleRaiting(
+                                  storeService.store!.rating, context);
+                            },
+                            child:
+                                StarRating(rating: storeService.store!.rating!),
+                          ),
                           storeService.store!.isNew()
                               ? Container(
                                   padding: const EdgeInsets.symmetric(

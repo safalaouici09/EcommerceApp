@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_commercant/domain/notification_repository/notification_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/onBoard.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
@@ -115,16 +116,50 @@ class SideMenu extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => const LanguageScreen()));
                       }),
-                  ListButton(
-                      title: 'Notifications.',
-                      leadIcon: ProximityIcons.notifications,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const NotificationsPreferencesScreen()));
-                      }),
+                  Consumer<NotificationService>(
+                      builder: (_, notificationService, __) {
+                    var nb_notifs = notificationService.notifications
+                        .where((element) => element.seendInList != true)
+                        .length;
+                    return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Stack(children: [
+                            if (nb_notifs > 0)
+                              Container(
+                                  padding: const EdgeInsets.all(tiny_50),
+                                  margin:
+                                      const EdgeInsets.only(top: 2, left: 30),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          const BorderRadius.all(tinyRadius),
+                                      color: redSwatch.shade500),
+                                  child: Text(
+                                    '${nb_notifs}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption!
+                                        .copyWith(
+                                            color: primaryTextDarkColor,
+                                            fontWeight: FontWeight.w800),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
+                            ListButton(
+                                title: 'Notifications.',
+                                leadIcon: ProximityIcons.notifications,
+                                onPressed: () {
+                                  notificationService.makeItListSeend();
+                                  notificationService.getNotifications(context);
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) =>
+                                  //             const NotificationsPreferencesScreen()));
+                                }),
+                          ])
+                        ]);
+                  }),
                   const SizedBox(height: normal_100),
                   SectionDivider(
                       leadIcon: ProximityIcons.info,

@@ -31,35 +31,13 @@ class PaymentDialogs {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Text(
-                                    'Payment Infos',
+                                    'Contact Infos',
                                     style: TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF136DA5)),
                                   ),
                                   Divider(),
-                                  SizedBox(height: 20),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                          child: Text(
-                                        'Payment Methode',
-                                        style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                Theme.of(context).dividerColor),
-                                      )),
-                                      Expanded(
-                                          child: Text(
-                                        'Pay by card',
-                                        style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
-                                      ))
-                                    ],
-                                  ),
                                   SizedBox(height: 20),
                                   Container(
                                       margin: const EdgeInsets.all(10),
@@ -70,64 +48,19 @@ class PaymentDialogs {
                                           color: Color(0xFF104D72)),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            infos!.name ?? "",
+                                            infos!.name!.toUpperCase() ?? "",
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                                 fontSize: 13.0,
                                                 fontWeight: FontWeight.bold,
                                                 color: Color(0xFFEFEFEF)),
-                                          ),
-                                          Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Image.network(
-                                                    'https://i.ibb.co/zmn2F5b/Vector-Visa-Credit-Card.png',
-                                                    width: 50.0,
-                                                    height: 50.0),
-                                                Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      Text(
-                                                        infos!.cardNumber ?? "",
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            fontSize: 13.0,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Color(
-                                                                0xFFEFEFEF)),
-                                                      ),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                        (infos!.expdate ?? '') +
-                                                            '      ' +
-                                                            (infos!.cvc ?? ''),
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: TextStyle(
-                                                            fontSize: 10.0,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Color(
-                                                                0xFFEFEFEF)),
-                                                      ),
-                                                    ])
-                                              ]),
+                                          )
                                         ],
                                       )),
-                                  SectionDivider(
-                                      leadIcon: ProximityIcons.address,
-                                      title: 'Billing Address.',
-                                      color: blueSwatch.shade500),
                                   SizedBox(height: 20),
                                   Row(
                                     children: [
@@ -143,6 +76,28 @@ class PaymentDialogs {
                                       Expanded(
                                           child: Text(
                                         infos!.name ?? "",
+                                        style: TextStyle(
+                                            fontSize: 11.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      ))
+                                    ],
+                                  ),
+                                  SizedBox(height: 20),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                        'Phone',
+                                        style: TextStyle(
+                                            fontSize: 11.0,
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                Theme.of(context).dividerColor),
+                                      )),
+                                      Expanded(
+                                          child: Text(
+                                        infos!.phone ?? "",
                                         style: TextStyle(
                                             fontSize: 11.0,
                                             fontWeight: FontWeight.bold,

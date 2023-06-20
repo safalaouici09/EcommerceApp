@@ -47,99 +47,99 @@ class ShippingAddressOrderScreen extends StatelessWidget {
                   orderSliderValidation.deliveryAdresse!.fullAddress ?? "",
             }),
           ),
-        if (orderSliderValidation.maxDeliveryFixe != null &&
-            orderSliderValidation.maxDeliveryFixe != 0.0)
-          Padding(
-            padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Delivery Price Fixed at ",
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                          color: Color(0xFF136DA5),
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(width: small_100),
-                  Expanded(
-                      child: Text(
-                    ' € ${orderSliderValidation.maxDeliveryFixe.toString()}',
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        color: Color(0xFF136DA5), fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.end,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  )),
-                ]),
-          )
-        else if (orderSliderValidation.distance != null &&
-            orderSliderValidation.distance != 0.0)
-          Padding(
-            padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
-            child: Column(children: [
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Distance ",
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                            color: Color(0xFF136DA5),
-                            fontWeight: FontWeight.bold)),
-                    const SizedBox(width: small_100),
-                    Expanded(
-                        child: Text(
-                      '${(orderSliderValidation.distance ?? 1.0).toStringAsFixed(2)} Km ',
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                          color: Color(0xFF136DA5),
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.end,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    )),
-                  ]),
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Km Price ",
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                            color: Color(0xFF136DA5),
-                            fontWeight: FontWeight.bold)),
-                    const SizedBox(width: small_100),
-                    Expanded(
-                        child: Text(
-                      '${(orderSliderValidation.maxDeliveryKm ?? 1.0).toStringAsFixed(2)} Km ',
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                          color: Color(0xFF136DA5),
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.end,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    )),
-                  ]),
-              SizedBox(height: 20),
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Delivery Price ",
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                            color: Color(0xFF136DA5),
-                            fontWeight: FontWeight.bold)),
-                    const SizedBox(width: small_100),
-                    Expanded(
-                        child: Text(
-                      ' € ${((orderSliderValidation.maxDeliveryKm ?? 1.0) * (orderSliderValidation.distance ?? 1.0)).toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                          color: Color(0xFF136DA5),
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.end,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    )),
-                  ])
-            ]),
-          ),
-        SizedBox(height: 20),
+        // if (orderSliderValidation.maxDeliveryFixe != null &&
+        //     orderSliderValidation.maxDeliveryFixe != 0.0)
+        //   Padding(
+        //     padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+        //     child: Row(
+        //         crossAxisAlignment: CrossAxisAlignment.center,
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           Text("Delivery Price Fixed at ",
+        //               style: Theme.of(context).textTheme.bodyText2?.copyWith(
+        //                   color: Color(0xFF136DA5),
+        //                   fontWeight: FontWeight.bold)),
+        //           const SizedBox(width: small_100),
+        //           Expanded(
+        //               child: Text(
+        //             ' € ${orderSliderValidation.maxDeliveryFixe.toString()}',
+        //             style: Theme.of(context).textTheme.displaySmall?.copyWith(
+        //                 color: Color(0xFF136DA5), fontWeight: FontWeight.bold),
+        //             textAlign: TextAlign.end,
+        //             maxLines: 2,
+        //             overflow: TextOverflow.ellipsis,
+        //           )),
+        //         ]),
+        //   )
+        // else if (orderSliderValidation.distance != null &&
+        //     orderSliderValidation.distance != 0.0)
+        //   Padding(
+        //     padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+        //     child: Column(children: [
+        //       Row(
+        //           crossAxisAlignment: CrossAxisAlignment.center,
+        //           mainAxisAlignment: MainAxisAlignment.center,
+        //           children: [
+        //             Text("Distance ",
+        //                 style: Theme.of(context).textTheme.bodyText2?.copyWith(
+        //                     color: Color(0xFF136DA5),
+        //                     fontWeight: FontWeight.bold)),
+        //             const SizedBox(width: small_100),
+        //             Expanded(
+        //                 child: Text(
+        //               '${(orderSliderValidation.distance ?? 1.0).toStringAsFixed(2)} Km ',
+        //               style: Theme.of(context).textTheme.bodyText2?.copyWith(
+        //                   color: Color(0xFF136DA5),
+        //                   fontWeight: FontWeight.bold),
+        //               textAlign: TextAlign.end,
+        //               maxLines: 2,
+        //               overflow: TextOverflow.ellipsis,
+        //             )),
+        //           ]),
+        //       Row(
+        //           crossAxisAlignment: CrossAxisAlignment.center,
+        //           mainAxisAlignment: MainAxisAlignment.center,
+        //           children: [
+        //             Text("Km Price ",
+        //                 style: Theme.of(context).textTheme.bodyText2?.copyWith(
+        //                     color: Color(0xFF136DA5),
+        //                     fontWeight: FontWeight.bold)),
+        //             const SizedBox(width: small_100),
+        //             Expanded(
+        //                 child: Text(
+        //               '${(orderSliderValidation.maxDeliveryKm ?? 1.0).toStringAsFixed(2)} Km ',
+        //               style: Theme.of(context).textTheme.bodyText2?.copyWith(
+        //                   color: Color(0xFF136DA5),
+        //                   fontWeight: FontWeight.bold),
+        //               textAlign: TextAlign.end,
+        //               maxLines: 2,
+        //               overflow: TextOverflow.ellipsis,
+        //             )),
+        //           ]),
+        //       SizedBox(height: 20),
+        //       Row(
+        //           crossAxisAlignment: CrossAxisAlignment.center,
+        //           mainAxisAlignment: MainAxisAlignment.center,
+        //           children: [
+        //             Text("Delivery Price ",
+        //                 style: Theme.of(context).textTheme.bodyText2?.copyWith(
+        //                     color: Color(0xFF136DA5),
+        //                     fontWeight: FontWeight.bold)),
+        //             const SizedBox(width: small_100),
+        //             Expanded(
+        //                 child: Text(
+        //               ' € ${((orderSliderValidation.maxDeliveryKm ?? 1.0) * (orderSliderValidation.distance ?? 1.0)).toStringAsFixed(2)}',
+        //               style: Theme.of(context).textTheme.displaySmall?.copyWith(
+        //                   color: Color(0xFF136DA5),
+        //                   fontWeight: FontWeight.bold),
+        //               textAlign: TextAlign.end,
+        //               maxLines: 2,
+        //               overflow: TextOverflow.ellipsis,
+        //             )),
+        //           ])
+        //     ]),
+        //   ),
+        // SizedBox(height: 20),
       ],
     );
   }

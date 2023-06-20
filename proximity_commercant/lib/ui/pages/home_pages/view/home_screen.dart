@@ -15,6 +15,7 @@ import 'package:proximity_commercant/ui/pages/store_pages/widgets/loading_skelet
 import 'package:showcaseview/showcaseview.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_commercant/domain/notification_repository/notification_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -209,10 +210,76 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                                                   .textTheme
                                                                   .subtitle1)
                                                         ]))),
-                                            SmallIconButton(
-                                                onPressed: () {},
-                                                icon: const Icon(ProximityIcons
-                                                    .notifications)),
+                                            Consumer<NotificationService>(
+                                                builder: (_,
+                                                    notificationService, __) {
+                                              var nb_notifs =
+                                                  notificationService
+                                                      .notifications
+                                                      .where((element) =>
+                                                          element.seendInList !=
+                                                          true)
+                                                      .length;
+                                              return Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Stack(children: [
+                                                      SmallIconButton(
+                                                          onPressed: () {
+                                                            notificationService
+                                                                .makeItListSeend();
+                                                            notificationService
+                                                                .getNotifications(
+                                                                    context);
+                                                            // Navigator.push(
+                                                            //     context,
+                                                            //     MaterialPageRoute(
+                                                            //         builder: (context) =>
+                                                            //             const NotificationsPreferencesScreen()));
+                                                          },
+                                                          icon: const Icon(
+                                                              ProximityIcons
+                                                                  .notifications)),
+                                                      if (nb_notifs > 0)
+                                                        Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .all(
+                                                                    tiny_50),
+                                                            margin:
+                                                                const EdgeInsets.only(
+                                                                    top: 0,
+                                                                    left: 35),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                            .all(
+                                                                        tinyRadius),
+                                                                color: redSwatch
+                                                                    .shade500),
+                                                            child: Text(
+                                                              '${nb_notifs}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption!
+                                                                  .copyWith(
+                                                                      color:
+                                                                          primaryTextDarkColor,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w800),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            )),
+                                                      const SizedBox(
+                                                          width: normal_100)
+                                                    ])
+                                                  ]);
+                                            }),
                                             const SizedBox(width: normal_100)
                                           ])
                                     ]);

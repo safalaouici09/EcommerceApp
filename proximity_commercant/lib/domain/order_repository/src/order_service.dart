@@ -90,7 +90,8 @@ class OrderService with ChangeNotifier {
       notifyListeners();
       if (res.statusCode == 200) {
         print("res.data.length");
-        print(res.data.length);
+        print(res.data);
+        print(Order.ordersFromJsonList(res.data));
         _orders = [];
         _orders!.addAll(Order.ordersFromJsonList(res.data));
         notifyListeners();
@@ -383,7 +384,7 @@ class OrderService with ChangeNotifier {
 
   Future refundOrder(BuildContext context, String orderId, String returnItems,
       String? type, String? oldStatus, bool? reload) async {
-    print("ws return lanched : $orderId [ $returnItems ]");
+    print("ws refund lanched : $orderId [ $returnItems ]");
 
     _loadingReturn = true;
     notifyListeners();

@@ -235,6 +235,23 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                             false);
                         // }
                       },
+                      actionReturn: (String motif, String items,
+                          BuildContext contextReturn) async {
+                        // final bool _result = await PaymentDialogs.cancelOrder(
+                        //     context,
+                        //     ordersService.orders![i].id,
+                        //     ordersService);
+                        // if (_result == true) {
+                        ordersService.returnOrder(
+                            contextReturn,
+                            ordersService.orders![i].id ?? "",
+                            motif,
+                            items,
+                            null,
+                            null,
+                            false);
+                        // }
+                      },
                       action: () {} // index 4
                       ,
                     ),

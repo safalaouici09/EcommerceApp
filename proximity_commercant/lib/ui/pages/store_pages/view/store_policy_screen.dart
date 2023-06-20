@@ -5,8 +5,6 @@ import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 
-import 'package:proximity_commercant/ui/widgets/address_picker/area_selection_screen.dart';
-
 class StorePolicyScreen extends StatefulWidget {
   StorePolicyScreen(
       {Key? key, this.global, this.store, this.product, this.policy})
@@ -48,228 +46,94 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 elevation: 0.0,
               ),
               body: SafeArea(
-                child: Expanded(
-                  child: Stepper(
-                    physics: const ClampingScrollPhysics(),
-                    elevation: 0.0,
-                    currentStep: _currentStep,
-                    type: StepperType.horizontal,
-                    onStepContinue: () {
-                      if (_currentStep == 3) {
-                        if (widget.global!) {
-                          policyCreationValidation.updatePolicy(context,
-                              policyCreationValidation.policytoFormData());
-                          Navigator.pop(context);
-                        } else {
-                          setState(() {
-                            Navigator.pop(
-                                context, policyCreationValidation.getPolicy());
-                          });
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Stepper(
+                        physics: const ClampingScrollPhysics(),
+                        elevation: 0.0,
+                        currentStep: _currentStep,
+                        type: StepperType.horizontal,
+                        onStepContinue: () {
+                          if (_currentStep == 2) {
+                            if (widget.global!) {
+                              policyCreationValidation.updatePolicy(context,
+                                  policyCreationValidation.policytoFormData());
+                              Navigator.pop(context);
+                            } else {
+                              setState(() {
+                                Navigator.pop(context,
+                                    policyCreationValidation.getPolicy());
+                              });
 
-                          /* StoreCreationValidation.setPolicy(
-                              policyCreationValidation.getPolicy());*/
-                        }
-                      } else {
-                        setState(() {
-                          _currentStep = _currentStep + 1;
-                        });
-                      }
-                    },
-                    onStepCancel: () {
-                      _currentStep == 0
-                          ? null
-                          : setState(() {
-                              _currentStep -= 1;
-                              print(_currentStep);
+                              /* StoreCreationValidation.setPolicy(
+                                  policyCreationValidation.getPolicy());*/
+                            }
+                          } else {
+                            setState(() {
+                              _currentStep = _currentStep + 1;
                             });
-                    },
-                    controlsBuilder: (context, details) {
-                      return Padding(
-                        padding: const EdgeInsets.all(normal_100),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            if (_currentStep != 0)
-                              SecondaryButton(
-                                  onPressed: details.onStepCancel,
-                                  title: "Back"),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                PrimaryButton(
-                                  buttonState: (_currentStep == 0 &&
-                                              policyCreationValidation
-                                                  .shippingIsValid) ||
-                                          (_currentStep == 1 &&
-                                              policyCreationValidation
-                                                  .reservationIsValid) ||
-                                          (_currentStep == 2 &&
-                                              policyCreationValidation
-                                                  .returnIsValid) ||
-                                          (_currentStep == 3 &&
-                                              policyCreationValidation
-                                                  .ordersIsValid)
-                                      ? ButtonState.enabled
-                                      : ButtonState.disabled,
-                                  onPressed: details.onStepContinue,
-                                  title:
-                                      _currentStep == 3 ? "confirm" : "Next.",
-                                ),
-                              ],
+                          }
+                        },
+                        onStepCancel: () {
+                          _currentStep == 0
+                              ? null
+                              : setState(() {
+                                  _currentStep -= 1;
+                                  print(_currentStep);
+                                });
+                        },
+                        controlsBuilder: (context, details) {
+                          return Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.all(normal_100),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  if (_currentStep != 0)
+                                    SecondaryButton(
+                                        onPressed: details.onStepCancel,
+                                        title: "Back"),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      PrimaryButton(
+                                        buttonState: (_currentStep == 0 &&
+                                                    policyCreationValidation
+                                                        .shippingIsValid) ||
+                                                (_currentStep == 1 &&
+                                                    policyCreationValidation
+                                                        .returnIsValid) ||
+                                                (_currentStep == 2 &&
+                                                    policyCreationValidation
+                                                        .ordersIsValid)
+                                            ? ButtonState.enabled
+                                            : ButtonState.disabled,
+                                        onPressed: details.onStepContinue,
+                                        title: _currentStep == 2
+                                            ? "confirm"
+                                            : "Next.",
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                    steps: [
-                      getShippingStep(policyCreationValidation, context),
-                      getReservationStep(policyCreationValidation, context),
-                      getReturnStep(policyCreationValidation, context),
-                      getOrdersStep(policyCreationValidation, context),
-                    ],
-                  ),
+                          );
+                        },
+                        steps: [
+                          getShippingStep(policyCreationValidation, context),
+                          getReturnStep(policyCreationValidation, context),
+                          getOrdersStep(policyCreationValidation, context),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ));
         }));
-  }
-
-  Step getReservationStep(
-      PolicyValidation policyCreationValidation, BuildContext context) {
-    return Step(
-        isActive: _currentStep >= 1,
-        title: const Text("Reservation "),
-        content: Column(
-          children: [
-            ListToggle(
-                title: 'Allow Reservations',
-                value: policyCreationValidation.reservationAccept!,
-                onToggle: policyCreationValidation.toggleReservationAceept),
-            policyCreationValidation.reservationAccept!
-                ? Column(
-                    children: [
-                      SectionDivider(
-                          leadIcon: Icons.book_outlined,
-                          title: 'Reservation fee.',
-                          color: redSwatch.shade500),
-                      const InfoMessage(
-                          message:
-                              'indicate the reservation policy for your product. Include whether the reservation is free, partial or total, the maximum days for reservation, and any applicable cancellation fees.'),
-                      Padding(
-                        padding:
-                            const EdgeInsets.all(normal_100).copyWith(right: 0),
-                        child: Column(
-                          children: [
-                            ListToggle(
-                                title: 'Free Reservation',
-                                value:
-                                    policyCreationValidation.reservationFree!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationFree),
-                            ListToggle(
-                                title: 'Partial Reservation',
-                                value: policyCreationValidation
-                                    .reservationPartial!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationPartial),
-                            ListToggle(
-                                title: 'Total Reservation',
-                                value:
-                                    policyCreationValidation.reservationTotal!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationTotal),
-                            if ((policyCreationValidation.reservationPartial ??
-                                true)) ...[
-                              const SizedBox(height: normal_100),
-                              EditText(
-                                hintText: 'Reservation Price.',
-                                keyboardType: TextInputType.number,
-                                saved: (policyCreationValidation
-                                            .reservationtax ==
-                                        null)
-                                    ? ""
-                                    : policyCreationValidation.reservationtax!
-                                        .toString(),
-                                //enabled: (store.policy == null) || editScreen,
-                                onChanged: policyCreationValidation
-                                    .changeReservationTax,
-                              )
-                            ],
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: normal_100),
-                      SectionDivider(
-                          leadIcon: Icons.timelapse_outlined,
-                          title: 'Reservation duration.',
-                          color: redSwatch.shade500),
-                      DropDownSelector<String>(
-                        // labelText: 'Product Category.',
-                        hintText: 'Reservation duration.',
-                        onChanged:
-                            policyCreationValidation.changeResevationDuration,
-                        borderType: BorderType.middle,
-                        savedValue: policyCreationValidation.reservationDuration
-                            .toString(),
-                        items: daysMap.entries
-                            .map((item) => DropdownItem<String>(
-                                value: item.key,
-                                child: Text(item.value,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .copyWith(
-                                            fontWeight: FontWeight.w600))))
-                            .toList(),
-                      ),
-                      SectionDivider(
-                          leadIcon: Icons.cancel_outlined,
-                          title: 'Reservation cancelation.',
-                          color: redSwatch.shade500),
-                      Padding(
-                        padding:
-                            const EdgeInsets.all(normal_100).copyWith(right: 0),
-                        child: Column(
-                          children: [
-                            ListToggle(
-                                title: 'Free Cancelation',
-                                value: policyCreationValidation
-                                    .reservationConcelationFree!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationConcelationFree),
-                            ListToggle(
-                                title: 'Chargeable Cancelation',
-                                value: policyCreationValidation
-                                    .reservationConcelationPartial!,
-                                onToggle: policyCreationValidation
-                                    .toggleReservationConcelationPartial),
-                            if ((policyCreationValidation
-                                    .reservationConcelationPartial ??
-                                true)) ...[
-                              const SizedBox(height: normal_100),
-                              EditText(
-                                hintText: 'Cancelation Fee.',
-                                keyboardType: TextInputType.number,
-                                saved: (policyCreationValidation
-                                            .reservationcancelationtax ==
-                                        null)
-                                    ? ""
-                                    : policyCreationValidation
-                                        .reservationcancelationtax
-                                        .toString(),
-                                //enabled: (store.policy == null) || editScreen,
-                                onChanged: policyCreationValidation
-                                    .changeReservationCancelationTax,
-                              )
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                : Container()
-          ],
-        ));
   }
 
   Step getShippingStep(
@@ -278,6 +142,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         isActive: _currentStep >= 0,
         title: const Text("Shipping"),
         content: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SectionDivider(
                 leadIcon: Icons.local_shipping_outlined,
@@ -286,36 +151,43 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
             const InfoMessage(
                 message:
                     'Select the type of Deliveries your store support, and set a delivery tax value in case you deliver your orders.'),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                child: Row(children: [
-                  Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: small_100),
-                    child: LargeIconButton(
-                        onPressed: policyCreationValidation.toggleSelfPickup,
-                        selected:
-                            (policyCreationValidation.selfPickup ?? false),
-                        icon: DuotoneIcon(
-                            primaryLayer: ProximityIcons.self_pickup_duotone_1,
-                            secondaryLayer:
-                                ProximityIcons.self_pickup_duotone_2,
-                            color: redSwatch.shade500),
-                        title: 'Self Pickup'),
-                  )),
-                  Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: small_100),
-                    child: LargeIconButton(
-                        onPressed: policyCreationValidation.toggleDelivery,
-                        selected: (policyCreationValidation.delivery ?? false),
-                        icon: DuotoneIcon(
-                            primaryLayer: ProximityIcons.delivery_duotone_1,
-                            secondaryLayer: ProximityIcons.delivery_duotone_2,
-                            color: redSwatch.shade500),
-                        title: 'Delivery'),
-                  ))
-                ])),
+            ListToggle(
+                leadIcon: Icons.local_shipping_rounded,
+                title: 'Delivery',
+                value: policyCreationValidation.delivery!,
+                onToggle: policyCreationValidation.toggleDelivery),
+            SizedBox(height: small_100),
+            ListToggle(
+                leadIcon: ProximityIcons.self_pickup_duotone_1,
+                title: 'Self Pickup',
+                value: policyCreationValidation.selfPickup!,
+                onToggle: policyCreationValidation.toggleSelfPickup),
+            Row(children: [
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: small_100),
+                /* child: LargeIconButton(
+                    onPressed: policyCreationValidation.toggleSelfPickup,
+                    selected: (policyCreationValidation.selfPickup ?? false),
+                    icon: DuotoneIcon(
+                        primaryLayer: ProximityIcons.self_pickup_duotone_1,
+                        secondaryLayer: ProximityIcons.self_pickup_duotone_2,
+                        color: redSwatch.shade500),
+                    title: 'Self Pickup)*/
+              )),
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: small_100),
+                /* child: LargeIconButton(
+                  onPressed: policyCreationValidation.toggleDelivery,
+                    selected: (policyCreationValidation.delivery ?? false),
+                    icon: DuotoneIcon(
+                        primaryLayer: ProximityIcons.delivery_duotone_1,
+                        secondaryLayer: ProximityIcons.delivery_duotone_2,
+                        color: redSwatch.shade500),
+                    title: 'Delivery'),*/
+              ))
+            ]),
             if (policyCreationValidation.selfPickup ??
                 true && policyCreationValidation.delivery! ??
                 false)
@@ -340,47 +212,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 ),
               ),
 
-            /*  if (policyCreationValidation.selfPickup ??
-                                    false) ...[
-                                  ListToggle(
-                                      title: 'Free SelfPickup',
-                                      value: policyCreationValidation
-                                          .selfPickupFree!,
-                                      onToggle: policyCreationValidation
-                                          .toggleSelfPickupFree),
-                                  ListToggle(
-                                      title: 'Partial SelfPickup',
-                                      value: policyCreationValidation
-                                          .selfPickupPartial!,
-                                      onToggle: policyCreationValidation
-                                          .toggleSelfPickupPartial),
-                                  ListToggle(
-                                      title: 'Total SelfPickup',
-                                      value: policyCreationValidation
-                                          .selfPickupTotal!,
-                                      onToggle: policyCreationValidation
-                                          .toggleSelfPickupTotal),
-                                  if (!(policyCreationValidation
-                                          .selfPickupFree ??
-                                      false)) ...[
-                                    const SizedBox(height: normal_100),
-                                    EditText(
-                                      hintText: 'SelfPickup Price.',
-                                      keyboardType: TextInputType.number,
-                                      saved: (policyCreationValidation
-                                                  .selfPickupPrice ==
-                                              null)
-                                          ? ""
-                                          : policyCreationValidation
-                                              .selfPickupPrice
-                                              .toString(),
-                                      //    enabled: (store.policy == null) ||
-                                      //    editScreen,
-                                      onChanged: policyCreationValidation
-                                          .changeSelfPickupPrice,
-                                    )
-                                  ],
-                                ],*/
+            /*
             if (policyCreationValidation.delivery ?? false) ...[
               const SizedBox(height: normal_100),
               Padding(
@@ -433,45 +265,42 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                               color: redSwatch.shade500),
                           title: ' By KM'),
                     ))
-                  ])),
-              policyCreationValidation.shippingFixedPrice!
-                  ? Padding(
-                      padding: const EdgeInsets.all(small_100),
-                      child: EditText(
-                        hintText: 'Delivery Tax. ',
-                        keyboardType: TextInputType.number,
-                        saved:
-                            (policyCreationValidation.shippingFixedPriceTax ==
-                                    null)
-                                ? ""
-                                : policyCreationValidation.shippingFixedPriceTax
-                                    .toString(),
-                        //   enabled:
-                        // (store.policy == null) || editScreen,
-                        onChanged: policyCreationValidation
-                            .changeShippingFixedPriceTax,
-                      ),
-                    )
-                  : Container(),
-              policyCreationValidation.shippingPerKm!
-                  ? Padding(
-                      padding: const EdgeInsets.all(small_100),
-                      child: EditText(
-                        hintText: 'Delivery Tax per km. ',
-                        keyboardType: TextInputType.number,
-                        saved:
-                            (policyCreationValidation.shippingPerKmTax == null)
-                                ? ""
-                                : policyCreationValidation.shippingPerKmTax
-                                    .toString(),
-                        //   enabled:
-                        // (store.policy == null) || editScreen,
-                        onChanged:
-                            policyCreationValidation.changeShippingPerKmTax,
-                      ),
-                    )
-                  : Container(),
-            ],
+                  ])),*/
+            policyCreationValidation.shippingFixedPrice!
+                ? Padding(
+                    padding: const EdgeInsets.all(small_100),
+                    child: EditText(
+                      hintText: 'Delivery Tax. ',
+                      keyboardType: TextInputType.number,
+                      saved: (policyCreationValidation.shippingFixedPriceTax ==
+                              null)
+                          ? ""
+                          : policyCreationValidation.shippingFixedPriceTax
+                              .toString(),
+                      //   enabled:
+                      // (store.policy == null) || editScreen,
+                      onChanged:
+                          policyCreationValidation.changeShippingFixedPriceTax,
+                    ),
+                  )
+                : Container(),
+            policyCreationValidation.shippingPerKm!
+                ? Padding(
+                    padding: const EdgeInsets.all(small_100),
+                    child: EditText(
+                      hintText: 'Delivery Tax per km. ',
+                      keyboardType: TextInputType.number,
+                      saved: (policyCreationValidation.shippingPerKmTax == null)
+                          ? ""
+                          : policyCreationValidation.shippingPerKmTax
+                              .toString(),
+                      //   enabled:
+                      // (store.policy == null) || editScreen,
+                      onChanged:
+                          policyCreationValidation.changeShippingPerKmTax,
+                    ),
+                  )
+                : Container(),
           ],
         ));
   }
@@ -483,35 +312,6 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         title: const Text("Orders"),
         content: Column(
           children: [
-            SectionDivider(
-                leadIcon: Icons.check_circle_outline,
-                title: 'Orders Validation.',
-                color: redSwatch.shade500),
-            const InfoMessage(
-                message:
-                    'Choose your order validation method: automatic or manual. With automatic validation, orders are quickly processed for fast fulfillment. Manual validation allows you to review and validate each order for meticulous accuracy. Switch between methods anytime.'),
-            Padding(
-              padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
-              child: Column(
-                children: [
-                  ListToggle(
-                      title: 'Automatic validation',
-                      value: policyCreationValidation.oredersAutoValidation!,
-                      onToggle:
-                          policyCreationValidation.toggleOrdersAutoValidation),
-                  ListToggle(
-                      title: 'Manuel validation',
-                      value: policyCreationValidation.oredersManValidation!,
-                      onToggle:
-                          policyCreationValidation.toggleOredersManValidation),
-                  ListToggle(
-                      title: 'Both',
-                      value: policyCreationValidation.oredersMixValidation!,
-                      onToggle:
-                          policyCreationValidation.toggleOrdersMixValidation),
-                ],
-              ),
-            ),
             const SizedBox(height: normal_100),
             SectionDivider(
                 leadIcon: Icons.notifications_none_outlined,

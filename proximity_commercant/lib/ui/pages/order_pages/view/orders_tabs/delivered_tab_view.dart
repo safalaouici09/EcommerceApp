@@ -171,7 +171,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                   onTap: () {
                     ordersService.getOrders("delivery", "Delivered");
                     setState(() {
-                      _index = 1;
+                      _index = 4;
                     });
                   },
                   child: Padding(

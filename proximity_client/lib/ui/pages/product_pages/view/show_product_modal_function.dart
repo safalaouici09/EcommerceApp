@@ -13,12 +13,12 @@ Future showProductModal(BuildContext context, String id, {String? variantId}) {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       context: context,
-      builder: (context) =>
-          ChangeNotifierProvider(create: (_) => ProductModalController(variantId),
-        child: AnimatedPadding(
-            padding: MediaQuery.of(context).viewInsets,
-            duration: smallAnimationDuration,
-            curve: Curves.decelerate,
-            child: ProductModal(id: id)),
-      ));
+      builder: (context) => ChangeNotifierProvider(
+            create: (_) => ProductModalController(variantId),
+            child: AnimatedPadding(
+                padding: MediaQuery.of(context).viewInsets,
+                duration: smallAnimationDuration,
+                curve: Curves.decelerate,
+                child: ProductModal(id: id)),
+          ));
 }

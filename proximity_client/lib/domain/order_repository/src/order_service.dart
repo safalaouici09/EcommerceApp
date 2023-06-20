@@ -87,6 +87,8 @@ class OrderService with ChangeNotifier {
       notifyListeners();
       if (res.statusCode == 200) {
         print(res.data.length);
+        print(res.data);
+        print(Order.ordersFromJsonList(res.data));
         _orders = [];
         _orders!.addAll(Order.ordersFromJsonList(res.data));
         notifyListeners();

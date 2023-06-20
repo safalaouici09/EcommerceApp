@@ -74,7 +74,9 @@ class AccountSwitcher extends StatelessWidget {
                           borderRadius: const BorderRadius.all(normalRadius),
                           child: FittedBox(
                               fit: BoxFit.cover,
-                              child: (userService.user!.profileImage != null)
+                              child: (userService.user!.profileImage != null &&
+                                      userService.user!.profileImage!.first !=
+                                          null)
                                   ? Image.network(
                                       userService.user!.profileImage!.first!)
                                   : Image.network(

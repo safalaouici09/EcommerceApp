@@ -472,6 +472,7 @@ class StoreCreationValidation with ChangeNotifier {
       }
     }
     print("ff" + workingTime.toJson());
+    print(_formData.toString());
     return _formData;
   }
 

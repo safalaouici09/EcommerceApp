@@ -285,24 +285,6 @@ class OrderTilePage extends StatelessWidget {
       ...List.generate(order.items!.length,
           (index) => OrderItemTile(orderItem: order.items![index])),
       const Divider(height: tiny_50, thickness: tiny_50),
-      if (returnOrder != true && refundOrder != true && order.delivery == true)
-        Padding(
-            padding: const EdgeInsets.all(small_100),
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Delivery:',
-                      textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.bodyText2),
-                  const Spacer(),
-                  Text(
-                      ' € ${(order.paymentInfo!.deliveryAmount ?? 0.0).toStringAsFixed(2)}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(fontSize: 16))
-                ])),
 
       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
         Expanded(
@@ -352,7 +334,7 @@ class OrderTilePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Payment Methode',
+                      Text('Contact informations',
                           style: Theme.of(context)
                               .textTheme
                               .headline3!
@@ -380,20 +362,12 @@ class OrderTilePage extends StatelessWidget {
                                   SizedBox(width: 12.0),
                                   Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          '***${order.paymentInfo!.card!.cardNumber!.substring(order.paymentInfo!.card!.cardNumber!.length - 4, order.paymentInfo!.card!.cardNumber!.length)}',
+                                          'Show',
                                           style: TextStyle(
                                               fontSize: 7.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFFEFEFEF)),
-                                        ),
-                                        Text(
-                                          '${order.paymentInfo!.card!.expdate}',
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              fontSize: 5.0,
                                               fontWeight: FontWeight.bold,
                                               color: Color(0xFFEFEFEF)),
                                         ),
@@ -434,11 +408,13 @@ class OrderTilePage extends StatelessWidget {
                     order.acceptedReturnedItems!.length,
                     (index) => OrderDetails(details: {
                           '${order.acceptedReturnedItems![index].name}':
-                              '${((order.acceptedReturnedItems![index].price ?? 1) * (order.acceptedReturnedItems![index].returnQuantity ?? 1) * (1 - (order.acceptedReturnedItems![index].discount > 0 ? (order.acceptedReturnedItems![index].discount) : 0)) * ((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage!) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 1))).toString()}',
+                              '${((order.acceptedReturnedItems![index].price ?? 1) * (order.acceptedReturnedItems![index].returnQuantity ?? 1) * (1 - (order.acceptedReturnedItems![index].discount > 0 ? (order.acceptedReturnedItems![index].discount) : 0)) * (order.acceptedReturnedItems![index].policy == null ? 0 : (order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage ?? 0.0) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 1))).toString()}',
                           '${order.acceptedReturnedItems![index].price} x${order.acceptedReturnedItems![index].returnQuantity}':
                               '',
-                          'Refund':
-                              '${((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage! * 100) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 0.0))}' +
+                          'Refund': () {
+                            if (order.acceptedReturnedItems![index].policy !=
+                                null) {
+                              return '${(((order.acceptedReturnedItems![index].policy!.returnPolicy!.refund.order.percentage ?? 0.0) * 100) ?? (order.acceptedReturnedItems![index].policy!.returnPolicy?.refund.order.fixe ?? 0.0))}' +
                                   (order
                                               .acceptedReturnedItems![index]
                                               .policy!
@@ -448,7 +424,10 @@ class OrderTilePage extends StatelessWidget {
                                               .percentage !=
                                           null
                                       ? "%"
-                                      : ""),
+                                      : "");
+                            }
+                            return "";
+                          }(),
                         })),
               ],
             )),
@@ -477,11 +456,14 @@ class OrderTilePage extends StatelessWidget {
                                   (element.discount > 0
                                       ? element.discount
                                       : 0)) *
-                              ((element.policy!.returnPolicy!.refund.order
-                                      .percentage!) ??
-                                  (element.policy!.returnPolicy?.refund.order
-                                          .fixe ??
-                                      1));
+                              (element.policy == null
+                                  ? 0.0
+                                  : (element.policy!.returnPolicy!.refund.order
+                                              .percentage ??
+                                          0.0) ??
+                                      (element.policy!.returnPolicy?.refund
+                                              .order.fixe ??
+                                          1));
                         }
                         return ' € ${(returnTotal ?? 0.0).toStringAsFixed(2)}';
                       }(),
@@ -493,75 +475,6 @@ class OrderTilePage extends StatelessWidget {
           ),
         ]),
 
-      if ((returnOrder == true || refundOrder == true) &&
-          order.returned == true &&
-          order.refundPaymentInfo != null &&
-          order.refundPaymentInfo!.totalAmount! > 0)
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 10, top: 10),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).dividerColor.withOpacity(0.4)),
-              child: Padding(
-                  padding: const EdgeInsets.all(small_100),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Refund Payment Methode',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(color: Colors.black, fontSize: 12)),
-                        const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 5),
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(tinyRadius),
-                              color: Color(0xFF104D72)),
-                          child: InkWell(
-                              onTap: () => {
-                                    PaymentDialogs.showInfos(
-                                        context, order.refundPaymentInfo!.card!)
-                                  },
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Image.network(
-                                        'https://i.ibb.co/zmn2F5b/Vector-Visa-Credit-Card.png',
-                                        width: 20.0,
-                                        height: 20.0),
-                                    SizedBox(width: 12.0),
-                                    Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '***${order.refundPaymentInfo!.card!.cardNumber!.substring(order.refundPaymentInfo!.card!.cardNumber!.length - 4, order.refundPaymentInfo!.card!.cardNumber!.length)}',
-                                            style: TextStyle(
-                                                fontSize: 7.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFFEFEFEF)),
-                                          ),
-                                          Text(
-                                            '${order.refundPaymentInfo!.card!.expdate}',
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                fontSize: 5.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFFEFEFEF)),
-                                          ),
-                                        ])
-                                  ])),
-                        ),
-                      ])),
-            ),
-          ),
-        ]),
       // if (order.returnOrder == true)
       //   Row(mainAxisAlignment: MainAxisAlignment.end, children: [
       //     Expanded(

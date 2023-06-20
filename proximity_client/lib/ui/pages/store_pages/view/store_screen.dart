@@ -260,26 +260,19 @@ class _StoreScreenState extends State<StoreScreen> {
                         // MasonryGrid(
                         //delivery policy
                         storeService.store!.policy!.deliveryPolicy != null
-                            ? storeService.store!.policy!.deliveryPolicy!
-                                        .pricing!.fixedPrice !=
-                                    null
-                                ? PolicyCard(
-                                    leadIcon: ProximityIcons.shipping,
-                                    title: "Shipping",
-                                    subTitle:
-                                        "Estimated delivery time is  days. Shipping fees are ${storeService.store!.policy!.deliveryPolicy!.pricing!.fixedPrice} for this product",
-                                  )
-                                : PolicyCard(
-                                    leadIcon: ProximityIcons.shipping,
-                                    title: "Shipping",
-                                    subTitle:
-                                        "Estimated delivery time is ${storeService.store!.policy!.pickupPolicy!.timeLimit} days. Shipping fees will apply and will be calculated at checkout based on your location",
-                                  )
+                            ? PolicyCard(
+                                leadIcon: ProximityIcons.shipping,
+                                title: "Shipping",
+                                subTitle:
+                                    "Estimated delivery time is  days. Shipping fees are will negociate for this product",
+                              )
                             : Container(),
 
                         // pickup policy
-                        storeService.store!.policy!.pickupPolicy!.timeLimit !=
-                                null
+                        storeService.store!.policy!.pickupPolicy != null &&
+                                storeService.store!.policy!.pickupPolicy!
+                                        .timeLimit !=
+                                    null
                             ? PolicyCard(
                                 leadIcon: ProximityIcons.self_pickup,
                                 title: "Pick UP",

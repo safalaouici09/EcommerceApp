@@ -20,7 +20,7 @@ class ProductCart {
   bool reservationPolicy;
   bool deliveryPolicy;
   bool pickupPolicy;
-  // Policy? policy ;
+  Policy? policy;
 
   ProductCart({
     this.id,
@@ -40,5 +40,6 @@ class ProductCart {
     this.reservationPolicy = true,
     this.deliveryPolicy = true,
     this.pickupPolicy = true,
+    this.policy,
   });
 }
