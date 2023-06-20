@@ -225,7 +225,7 @@ class StoreInVerificationCard extends StatelessWidget {
                                                       .colorScheme
                                                       .error,
                                                   width: tiny_50)),
-                                          child: Text('In Verification',
+                                          child: Text('Freezed',
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleMedium!

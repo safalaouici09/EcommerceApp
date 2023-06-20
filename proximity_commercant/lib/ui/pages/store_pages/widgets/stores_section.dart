@@ -104,12 +104,24 @@ class _StoresSectionState extends State<StoresSection> {
                       enabled:
                           false, // storeService.stores![_selectedShop].isActive,
                       onPressed: () {}),
-                  ListButton(
-                      title: 'Freeze Store.',
-                      leadIcon: ProximityIcons.freeze,
-                      onPressed: () {
-                        StoreDialogs.freezeStore(context, _selectedShop);
-                      }),
+                  if (storeService.stores![_selectedShop].isActive! == true)
+                    ListButton(
+                        title: 'Freeze Store.',
+                        leadIcon: ProximityIcons.freeze,
+                        onPressed: () {
+                          StoreDialogs.freezeStore(context, _selectedShop,
+                              activated: storeService
+                                  .stores![_selectedShop].isActive!);
+                        }),
+                  if (storeService.stores![_selectedShop].isActive! == false)
+                    ListButton(
+                        title: 'Unfreeze Store.',
+                        leadIcon: ProximityIcons.freeze,
+                        onPressed: () {
+                          StoreDialogs.freezeStore(context, _selectedShop,
+                              activated: storeService
+                                  .stores![_selectedShop].isActive!);
+                        }),
                   ListButton(
                       title: 'Delete Store.',
                       leadIcon: ProximityIcons.remove,

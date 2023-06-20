@@ -10,7 +10,8 @@ import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_scre
 /// The [id] indicates the index of the store
 class StoreDialogs {
   /// A method to display the freeze dialog
-  static void freezeStore(BuildContext context, int index, {int? popCount}) =>
+  static void freezeStore(BuildContext context, int index,
+          {int? popCount, bool activated = false}) =>
       showDialogPopup(
           context: context,
           pageBuilder: (ctx, anim1, anim2) => StatefulBuilder(
@@ -28,14 +29,24 @@ class StoreDialogs {
                           Icon(ProximityIcons.freeze,
                               color: blueSwatch.shade100, size: normal_300)
                         ]),
-                        Padding(
-                            padding: const EdgeInsets.only(
-                                top: normal_100,
-                                left: normal_100,
-                                right: normal_100),
-                            child: Text('Freeze Store Message.',
-                                style: Theme.of(context).textTheme.subtitle2,
-                                textAlign: TextAlign.center)),
+                        if (activated == true)
+                          Padding(
+                              padding: const EdgeInsets.only(
+                                  top: normal_100,
+                                  left: normal_100,
+                                  right: normal_100),
+                              child: Text('Freeze Store Message.',
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                  textAlign: TextAlign.center)),
+                        if (activated != true)
+                          Padding(
+                              padding: const EdgeInsets.only(
+                                  top: normal_100,
+                                  left: normal_100,
+                                  right: normal_100),
+                              child: Text('Unfreeze Store Message.',
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                  textAlign: TextAlign.center)),
                         Padding(
                             padding: const EdgeInsets.all(normal_100),
                             child:
@@ -50,7 +61,9 @@ class StoreDialogs {
                                       builder: (context, storeService, child) =>
                                           Expanded(
                                               child: PrimaryButton(
-                                                  title: 'Freeze.',
+                                                  title: activated == true
+                                                      ? 'Freeze.'
+                                                      : 'Unfreeze',
                                                   onPressed: () async {
                                                     int count = 0;
                                                     bool _bool =
