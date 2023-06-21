@@ -31,6 +31,7 @@ class OrderTilePage extends StatelessWidget {
     final Locale _locale = Localizations.localeOf(context);
 
     final ordersService = Provider.of<OrderService>(context);
+
     return Container(
         child:
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

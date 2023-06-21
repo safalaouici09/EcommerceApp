@@ -648,10 +648,19 @@ class PolicyValidation with ChangeNotifier {
           returnMethod: returnMethode,
           refund: Refund(
               order: OrderRefund(
-                fixe: _returnPerFee,
+                percentage: _returnTotalFee == true
+                    ? 1
+                    : _returnPerFee != null
+                        ? (_returnPerFee! / 100)
+                        : null,
               ),
               shipping: _returnShippingFee
-                  ? ShippingRefund(fixe: _returnPerFee)
+                  ? ShippingRefund(
+                      percentage: _returnTotalFee == true
+                          ? 1
+                          : _returnPerFee != null
+                              ? (_returnPerFee! / 100)
+                              : null)
                   : null));
     }
     if (_reservationAccept) {

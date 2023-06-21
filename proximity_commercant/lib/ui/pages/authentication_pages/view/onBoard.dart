@@ -22,10 +22,13 @@ class OnBoard extends StatefulWidget {
 }
 
 class _OnBoardState extends State<OnBoard> {
+  NotificationService notificationServiceGlobal = NotificationService();
+
   @override
   void initState() {
     super.initState();
-    initPlatform();
+    notificationServiceGlobal.getNotifications(null);
+    initPlatform(notificationServiceGlobal);
   }
 
   String _debugLabelString = "";
@@ -59,7 +62,7 @@ class _OnBoardState extends State<OnBoard> {
         : const LoginScreen();
   }
 
-  Future<void> initPlatform() async {
+  Future<void> initPlatform(NotificationService notificationService) async {
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult event) {
       print('BODY ${event.notification.body}');
@@ -78,6 +81,7 @@ class _OnBoardState extends State<OnBoard> {
           event.notification.additionalData != null &&
           event.notification.additionalData!["owner_id"].contains(_id)) {
         print("is the owner");
+        notificationService.getNotifications(null);
         setState(() {
           _debugLabelString = event.notification.jsonRepresentation();
           notification = event.notification.additionalData;
@@ -106,6 +110,7 @@ class _OnBoardState extends State<OnBoard> {
           event.notification.additionalData != null &&
           event.notification.additionalData!["owner_id"].contains(_id)) {
         print("is the owner");
+        notificationService.getNotifications(null);
         setState(() {
           _debugLabelString = event.notification.jsonRepresentation();
           notification = event.notification.additionalData;

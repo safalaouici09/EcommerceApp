@@ -368,25 +368,34 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                             const EdgeInsets.symmetric(vertical: normal_100),
                         itemCount: ordersService.orders!.length,
                         itemBuilder: (_, i) => OrderTile(
-                          returnOrder: true,
-                          order: ordersService.orders![i],
-                          actionCancel:
-                              (String motif, BuildContext contextCancel) async {
-                            // final bool _result = await PaymentDialogs.cancelOrder(
-                            //     context,
-                            //     ordersService.orders![i].id,
-                            //     ordersService);
-                            // if (_result == true) {
-                            ordersService.cancelOrder(
-                                contextCancel,
-                                ordersService.orders![i].id ?? "",
-                                motif,
-                                null,
-                                null,
-                                false);
-                            // }
-                          },
-                        ),
+                            returnOrder: true,
+                            order: ordersService.orders![i],
+                            actionCancel: (String motif,
+                                BuildContext contextCancel) async {
+                              // final bool _result = await PaymentDialogs.cancelOrder(
+                              //     context,
+                              //     ordersService.orders![i].id,
+                              //     ordersService);
+                              // if (_result == true) {
+                              ordersService.cancelOrder(
+                                  contextCancel,
+                                  ordersService.orders![i].id ?? "",
+                                  motif,
+                                  null,
+                                  null,
+                                  false);
+                              // }
+                            },
+                            actionReturn: (String items,
+                                BuildContext contextReturn) async {
+                              ordersService.refundOrder(
+                                  contextReturn,
+                                  ordersService.orders![i].id ?? "",
+                                  items,
+                                  null,
+                                  null,
+                                  false);
+                            }),
                       );
           case 3:
             return (ordersService.loadingOrders)

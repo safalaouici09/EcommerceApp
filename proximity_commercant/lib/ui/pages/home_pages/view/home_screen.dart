@@ -16,6 +16,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_commercant/domain/notification_repository/notification_repository.dart';
+import 'package:proximity_commercant/ui/pages/user_pages/user_pages.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -126,20 +127,35 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                                 (userService.user == null)
                                                     ? ShimmerFx(
                                                         child: Container(
-                                                            color: Theme.of(
-                                                                    context)
+                                                            color: Theme.of(context)
                                                                 .cardColor,
                                                             child: Text(
-                                                                'Montpellier, France',
-                                                                style: Theme.of(
-                                                                        context)
+                                                                'User undefined',
+                                                                style: Theme.of(context)
                                                                     .textTheme
                                                                     .bodyText2)))
-                                                    : Text(
-                                                        '${userService.user!.address!.city}, ${userService.user!.address!.countryName}',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2),
+                                                    : userService.user!.address!.city != null &&
+                                                            userService
+                                                                    .user!
+                                                                    .address!
+                                                                    .countryName !=
+                                                                null
+                                                        ? Text('${userService.user!.address!.city}, ${userService.user!.address!.countryName}',
+                                                            style: Theme.of(context)
+                                                                .textTheme
+                                                                .bodyText2)
+                                                        : InkWell(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              const EditProfileScreen()));
+                                                            },
+                                                            child: Text(
+                                                                'Set your Address',
+                                                                style: Theme.of(context).textTheme.bodyText2)),
                                                 const SizedBox(width: small_50),
                                                 Icon(Icons.pin_drop_rounded,
                                                     color: Theme.of(context)

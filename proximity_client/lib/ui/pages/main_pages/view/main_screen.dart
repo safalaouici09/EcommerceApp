@@ -305,6 +305,7 @@ class _MainScreenState extends State<MainScreen> {
           event.notification.additionalData != null &&
           event.notification.additionalData!["owner_id"].contains(_id)) {
         print("is the owner");
+        notificationService.getNotifications(null);
         setState(() {
           _debugLabelString = event.notification.jsonRepresentation();
           notification = event.notification.additionalData;
@@ -334,6 +335,7 @@ class _MainScreenState extends State<MainScreen> {
           event.notification.additionalData != null &&
           event.notification.additionalData!["owner_id"].contains(_id)) {
         print("is the owner");
+        notificationService.getNotifications(null);
         setState(() {
           _debugLabelString = event.notification.jsonRepresentation();
           notification = event.notification.additionalData;
@@ -341,7 +343,6 @@ class _MainScreenState extends State<MainScreen> {
           notification_body = event.notification.body ?? "";
           nbr_of_notifications += 1;
         });
-        notificationService.getNotifications(null);
       } else {
         event.complete(null);
       }
