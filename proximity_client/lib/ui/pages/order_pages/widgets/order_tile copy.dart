@@ -164,12 +164,12 @@ class OrderTile extends StatelessWidget {
                           textAlign: TextAlign.left,
                           style: Theme.of(context).textTheme.bodyText2),
                       const Spacer(),
-                      Text(
+                      /*Text(
                           ' € ${(order.paymentInfo!.deliveryAmount ?? 0.0).toStringAsFixed(2)}',
                           style: Theme.of(context)
                               .textTheme
                               .headline3!
-                              .copyWith(fontSize: 16))
+                              .copyWith(fontSize: 16))*/
                     ])),
 
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -210,7 +210,7 @@ class OrderTile extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
+                                            /* Text(
                                               '***${order.paymentInfo!.card!.cardNumber!.substring(order.paymentInfo!.card!.cardNumber!.length - 4, order.paymentInfo!.card!.cardNumber!.length)}',
                                               style: TextStyle(
                                                   fontSize: 7.0,
@@ -224,7 +224,7 @@ class OrderTile extends StatelessWidget {
                                                   fontSize: 5.0,
                                                   fontWeight: FontWeight.bold,
                                                   color: Color(0xFFEFEFEF)),
-                                            ),
+                                            ),*/
                                           ])
                                     ])),
                           ),

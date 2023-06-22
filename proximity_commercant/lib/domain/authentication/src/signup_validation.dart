@@ -14,7 +14,8 @@ class SignupValidation with ChangeNotifier {
   ValidationItem _userName = ValidationItem(null, null);
   ValidationItem _passwordConfirm = ValidationItem(null, null);
   bool _termsAgreement = false;
-  String _phoneNumberString = "";
+  double _passwordPercentage = 0;
+  final String _phoneNumberString = "";
   // essential values for the UI
   // loading to render circular progress bar when waiting for server response
   bool _loading = false;
@@ -37,6 +38,7 @@ class SignupValidation with ChangeNotifier {
   bool get password_visibility => _password_visibility;
   bool get passwordConfirm_visibility => _passwordConfirm_visibility;
   bool get loading => _loading;
+  double get passwordPercentage => _passwordPercentage;
 
   bool get isValid {
     return ((_email.value != null || _phone.value != null) &&
@@ -116,6 +118,227 @@ class SignupValidation with ChangeNotifier {
     });
   }
 
+  /************************* */
+  void changePassword(String value) {
+    int totalConditions = 5; // Number of password strength conditions
+    int conditionsMet = 0;
+    List<String> errorMessages =
+        []; // Store error messages for conditions not met
+
+    if (value.isEmpty) {
+      _password = ValidationItem(null, null);
+      _passwordPercentage = 0.0;
+      notifyListeners();
+      return;
+    }
+
+    if (!value.contains(RegExp(r'[A-Z]'))) {
+      errorMessages
+          .add("● Password must contain at least 1 uppercase letter[A-Z]");
+    } else {
+      conditionsMet++;
+    }
+
+    if (!value.contains(RegExp(r'[a-z]'))) {
+      errorMessages
+          .add("● Password must contain at least 1 lowercase letter[a-z]");
+    } else {
+      conditionsMet++;
+    }
+
+    if (!value.contains(RegExp(r'[0-9]'))) {
+      errorMessages.add("● Password must contain at least 1 number");
+    } else {
+      conditionsMet++;
+    }
+
+    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      errorMessages
+          .add("● Password must contain at least 1 special character[!@#%^&*]");
+    } else {
+      conditionsMet++;
+    }
+
+    if (value.length < 8) {
+      errorMessages.add("● Password must be at least 8 characters");
+    } else {
+      conditionsMet++;
+    }
+
+    if (conditionsMet == totalConditions) {
+      _password = ValidationItem(value, null);
+    } else {
+      _password = ValidationItem(null, errorMessages.join('\n'));
+    }
+
+    _passwordPercentage = conditionsMet / totalConditions;
+    notifyListeners();
+
+    Future.delayed(largeAnimationDuration, () {
+      notifyListeners();
+    });
+  }
+  /*
+  void changePassword(String value) {
+    int totalConditions = 5; // Number of password strength conditions
+    int conditionsMet = 0;
+
+    if (value.isEmpty) {
+      _password = ValidationItem(null, null);
+      _passwordPercentage = 0.0;
+      notifyListeners();
+      return;
+    }
+
+    if (value.contains(RegExp(r'[A-Z]'))) {
+      conditionsMet++;
+    } else {
+      _password = ValidationItem(
+          null, "Password must contain at least 1 uppercase letter");
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+      return;
+    }
+    if (value.contains(RegExp(r'[a-z]'))) {
+      // Condition for at least one lowercase letter
+      conditionsMet++;
+    } else {
+      _password = ValidationItem(
+          null, "Password must contain at least 1 lowercase letter");
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+      return;
+    }
+
+    if (value.contains(RegExp(r'[0-9]'))) {
+      conditionsMet++;
+    } else {
+      _password =
+          ValidationItem(null, "Password must contain at least 1 number");
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+      return;
+    }
+
+    if (value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      conditionsMet++;
+    } else {
+      _password = ValidationItem(
+          null, "Password must contain at least 1 special character");
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+      return;
+    }
+    if (value.length >= 8) {
+      conditionsMet++;
+    } else {
+      _password =
+          ValidationItem(null, "Password must be at least 8 characters");
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+      return;
+    }
+    if (conditionsMet == totalConditions) {
+      _password = ValidationItem(value, null);
+      _passwordPercentage = conditionsMet / totalConditions;
+    }
+
+    notifyListeners();
+
+    Future.delayed(largeAnimationDuration, () {
+      notifyListeners();
+    });
+  }
+*/
+  // Check for uppercase l♂etters
+
+  // Check for lowercase letters
+  /* if (value.contains(RegExp(r'[a-z]'))) {
+      conditionsMet++;
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+    }*/
+
+  // Check for numbers
+
+  // Check for special characters
+
+  //_passwordPercentage = conditionsMet / totalConditions;
+
+/*
+  void changePassword(String value) {
+    int totalConditions = 4; // Number of password strength conditions
+    int conditionsMet = 0;
+    print(value);
+    print(_password.error);
+
+    if (value.isEmpty) {
+      _password = ValidationItem(null, null);
+      _passwordPercentage = 0.0;
+      notifyListeners();
+      return;
+    }
+
+    if (value.length > 8) {
+      conditionsMet++;
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+    } else {
+      _password =
+          ValidationItem(null, "Password must be at least 8 characters");
+    }
+    // Check for uppercase l♂etters
+    if (value.contains(RegExp(r'[A-Z]'))) {
+      conditionsMet++;
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+    } else {
+      _password = ValidationItem(
+          null, "Password must be at least 1 uppercase character");
+    }
+
+    // Check for lowercase letters
+    /* if (value.contains(RegExp(r'[a-z]'))) {
+      conditionsMet++;
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+    }*/
+
+    // Check for numbers
+    if (value.contains(RegExp(r'[0-9]'))) {
+      conditionsMet++;
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+    }
+    {
+      _password = ValidationItem(null, "Password must be at least 1 number");
+    }
+
+    // Check for special characters
+    if (value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      conditionsMet++;
+      _passwordPercentage = conditionsMet / totalConditions;
+      notifyListeners();
+    }
+    {
+      _password = ValidationItem(
+          null, "Password must be at least 1 special character !@#%^&* ");
+    }
+
+    //_passwordPercentage = conditionsMet / totalConditions;
+
+    if (conditionsMet == totalConditions) {
+      _password = ValidationItem(value, null);
+    }
+
+    Future.delayed(largeAnimationDuration, () {
+      notifyListeners();
+    });
+  }
+*/
+  // Update the password strength percentage in your UI or state variable
+  // e.g., _passwordStrengthPercentage = passwordPercentage;
+/*
   void changePassword(String value) {
     if (value == '') {
       _password = ValidationItem(null, null);
@@ -130,7 +353,7 @@ class SignupValidation with ChangeNotifier {
     Future.delayed(largeAnimationDuration, () {
       notifyListeners();
     });
-  }
+  } */ //////////////////////////
 
   void verifyPassword(String value) {
     if (value == '') {

@@ -92,17 +92,16 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                                         title: 'Set Policy.',
                                                         onPressed: () {
                                                           /// Go to [HomeScreen]
-                                                          Navigator.of(context)
-                                                              .pushAndRemoveUntil(
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              StorePolicyScreen(
-                                                                                global: true,
-                                                                              )),
-                                                                  (Route<dynamic>
-                                                                          route) =>
-                                                                      false);
+                                                          Navigator.of(context).pushAndRemoveUntil(
+                                                              MaterialPageRoute(
+                                                                  builder: (context) => StorePolicyScreen(
+                                                                      global:
+                                                                          true,
+                                                                      policy: _user!
+                                                                          .policy)),
+                                                              (Route<dynamic>
+                                                                      route) =>
+                                                                  false);
                                                         }))))
                                   ]))
                         ])))));
@@ -613,9 +612,10 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                       builder: (context) => StorePolicyScreen(
                                             global: false,
                                             store: true,
-                                            policy: widget.store.policy,
+                                            policy: widget.store.policy ??
+                                                _user!.policy,
                                           )));
-                              storeCreationValidation.setPolicy(policyResult!);
+                              storeCreationValidation.setPolicy(policyResult);
 
                               // final Address _result = await
                               /* widget.editScreen

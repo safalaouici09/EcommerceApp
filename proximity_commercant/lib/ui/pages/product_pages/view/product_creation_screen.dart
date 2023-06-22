@@ -4,6 +4,8 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
+import 'package:proximity_commercant/domain/user_repository/models/user_model.dart';
+import 'package:proximity_commercant/domain/user_repository/src/user_service.dart';
 import 'package:proximity_commercant/ui/pages/product_pages/product_pages.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 
@@ -21,6 +23,7 @@ class ProductCreationScreen extends StatelessWidget {
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
     bool showImagePicker = false;
+    User? _user = context.watch<UserService>().user;
 
     return ChangeNotifierProvider<ProductCreationValidation>(
         create: (context) => ProductCreationValidation.setProduct(product),
@@ -296,10 +299,12 @@ class ProductCreationScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => StorePolicyScreen(
-                                            global: false,
-                                            store: false,
-                                            product: true,
-                                          )));
+                                          global: false,
+                                          store: false,
+                                          product: true,
+                                          policy: product.policy == null
+                                              ? _user!.policy
+                                              : product.policy)));
                               productCreationValidation.setPolicy(
                                   policyResult!); // storeCreationValidation.changeAddress(_result);
                             },

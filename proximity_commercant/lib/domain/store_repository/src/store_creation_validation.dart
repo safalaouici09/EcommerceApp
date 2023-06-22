@@ -116,7 +116,7 @@ class StoreCreationValidation with ChangeNotifier {
       _customizedWorkingHours;
   Map<String, List<TimeRange>>? get dayWorkingHours => _dayWorkingHours;
   String? get errorMessage => _errorMessage;
-  setPolicy(Policy policy) {
+  setPolicy(Policy? policy) {
     _policy = policy;
   }
 

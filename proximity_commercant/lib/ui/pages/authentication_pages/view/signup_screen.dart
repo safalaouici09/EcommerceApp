@@ -8,19 +8,44 @@ import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/authentication_pages.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  String _passwordStrength = "";
+  bool isTyping = false;
+
+  Color _getProgressColor(double percentage) {
+    if (percentage > 0.0 && percentage < 0.25) {
+      _passwordStrength = "Very weak";
+      return redSwatch.shade500;
+    } else if (percentage >= 0.25 && percentage < 0.5) {
+      _passwordStrength = "Weak";
+      return Colors.orange.shade500;
+    } else if (percentage >= 0.5 && percentage < 0.75) {
+      _passwordStrength = "Medium";
+      return Colors.yellow.shade500;
+    } else if (percentage >= 0.75 && percentage <= 1.0) {
+      _passwordStrength = "Strong";
+      return greenSwatch.shade500;
+    } else {
+      return Colors.white;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final signupValidation = Provider.of<SignupValidation>(context);
-
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
-            child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: ListView(
+                // mainAxisSize: MainAxisSize.max,
+                //crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
               const SizedBox(height: normal_100),
               Padding(
@@ -31,9 +56,10 @@ class SignupScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.displayMedium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
-                    Text('fields with * are mandatory',
+                    const Text('fields with * are mandatory',
                         style: TextStyle(fontSize: 10)),
-                    Text('you must at least one enter the email or the phone',
+                    const Text(
+                        'you must at least one enter the email or the phone',
                         style: TextStyle(fontSize: 10))
                   ])),
               const SizedBox(height: small_100),
@@ -84,9 +110,35 @@ class SignupScreen extends StatelessWidget {
                     signupValidation.changePasswordVisibility(),
                 obscureText: !signupValidation.password_visibility,
                 errorText: signupValidation.password.error,
-                onChanged: (value) => signupValidation.changePassword(value),
+                onChanged: (value) {
+                  signupValidation.changePassword(value);
+                  setState(() {
+                    isTyping = value.isNotEmpty;
+                    print(isTyping); // Update the isTyping variable
+                  });
+                },
                 enabled: !signupValidation.loading,
                 borderType: BorderType.middle,
+              ),
+              const EditTextSpacer(),
+              isTyping
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: normal_100),
+                      child: LinearProgressIndicator(
+                        value: signupValidation.passwordPercentage,
+                        backgroundColor: Colors.grey[200],
+                        color: _getProgressColor(
+                            signupValidation.passwordPercentage),
+                      ),
+                    )
+                  : Container(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: Text(_passwordStrength,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: _getProgressColor(
+                            signupValidation.passwordPercentage))),
               ),
               const EditTextSpacer(),
               EditText(
@@ -106,7 +158,8 @@ class SignupScreen extends StatelessWidget {
 
               /// Error Messages
               const EditTextSpacer(),
-              ErrorMessage(errors: [
+
+              const ErrorMessage(errors: [
                 //signupValidation.email.error,
                 // signupValidation.password.error
               ]),
@@ -206,13 +259,13 @@ class SignupScreen extends StatelessWidget {
                                 text: 'Already have an account?  ',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2!
+                                    .bodyMedium!
                                     .copyWith(fontSize: normal_100)),
                             TextSpan(
                                 text: 'Log In.',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(fontSize: normal_100))
                           ]))))
             ])));
