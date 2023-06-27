@@ -34,10 +34,9 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
 
   /// This method is used to create the google map
   void _onMapCreated(GoogleMapController controller) {
-    controller.setMapStyle(
-        (Theme.of(context).brightness == Brightness.dark)
-            ? GoogleMapsThemes.darkTheme
-            : GoogleMapsThemes.lightTheme);
+    controller.setMapStyle((Theme.of(context).brightness == Brightness.dark)
+        ? GoogleMapsThemes.darkTheme
+        : GoogleMapsThemes.lightTheme);
     _controller.complete(controller);
   }
 

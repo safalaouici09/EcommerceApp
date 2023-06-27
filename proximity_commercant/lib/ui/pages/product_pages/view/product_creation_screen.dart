@@ -302,11 +302,10 @@ class ProductCreationScreen extends StatelessWidget {
                                           global: false,
                                           store: false,
                                           product: true,
-                                          policy: product.policy == null
-                                              ? _user!.policy
-                                              : product.policy)));
+                                          policy: product.policy ??
+                                              _user!.policy)));
                               productCreationValidation.setPolicy(
-                                  policyResult!); // storeCreationValidation.changeAddress(_result);
+                                  policyResult); // storeCreationValidation.changeAddress(_result);
                             },
                             title: 'Set product  Policy .'),
                       )

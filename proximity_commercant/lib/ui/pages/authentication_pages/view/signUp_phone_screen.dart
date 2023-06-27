@@ -8,15 +8,15 @@ import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/authentication_pages.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+class SignUpPhoneScreen extends StatefulWidget {
+  const SignUpPhoneScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<SignUpPhoneScreen> createState() => _SignUpPhoneScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
-  String _passwordStrength = "";
+class _SignUpPhoneScreenState extends State<SignUpPhoneScreen> {
+  String? _passwordStrength;
   bool isTyping = false;
 
   Color _getProgressColor(double percentage) {
@@ -47,51 +47,43 @@ class _SignupScreenState extends State<SignupScreen> {
                 // mainAxisSize: MainAxisSize.max,
                 //crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-              const SizedBox(height: normal_100),
+              //  const SizedBox(height: normal_100),
+              Image.asset(
+                'assets/proximity-logo-light.png',
+                width: 100,
+                height: 100,
+              ),
+
               Padding(
-                  padding:
-                      const EdgeInsets.all(normal_100).copyWith(top: large_200),
-                  child: Column(children: [
-                    Text('Sign Up.',
-                        style: Theme.of(context).textTheme.displayMedium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
+                  padding: const EdgeInsets.all(normal_100),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Sign Up',
+                            style: Theme.of(context).textTheme.displaySmall,
+                            maxLines: 1,
+                            overflow: TextOverflow
+                                .ellipsis), /*
                     const Text('fields with * are mandatory',
                         style: TextStyle(fontSize: 10)),
                     const Text(
                         'you must at least one enter the email or the phone',
-                        style: TextStyle(fontSize: 10))
-                  ])),
+                        style: TextStyle(fontSize: 10))*/
+                      ])),
               const SizedBox(height: small_100),
 
               /// Signup Forms
               EditText(
-                hintText: 'User name*',
+                hintText: 'User name(Required)',
                 prefixIcon: ProximityIcons.user,
                 errorText: signupValidation.userName.error,
                 onChanged: (value) => signupValidation.changeUserName(value),
                 enabled: !signupValidation.loading,
               ),
               const SizedBox(height: small_100),
-              EditText(
-                hintText: "Email.",
-                prefixIcon: ProximityIcons.email,
-                errorText: signupValidation.email.error,
-                onChanged: (value) => signupValidation.changeEmail(value),
-                enabled: !signupValidation.loading,
-              ),
-              const SizedBox(height: small_100),
-              /* EditText(
-                hintText: "Phone number.",
-                prefixIcon: ProximityIcons.phone,
-                errorText: signupValidation.phone.error,
-                onChanged: (value) => signupValidation.changePhone(value),
-                enabled: !signupValidation.loading,
-                borderType: BorderType.middle,
-                keyboardType: TextInputType.number,
-              ),*/
+
               EditPhoneNumber(
-                hintText: "Phone number.",
+                hintText: "Phone number(Required)",
                 prefixIcon: ProximityIcons.phone,
                 errorText: signupValidation.phone.error,
                 // onChanged: (value) => signupValidation.changePhone(),
@@ -99,9 +91,10 @@ class _SignupScreenState extends State<SignupScreen> {
                 onChanged: ((value) => signupValidation.changePhone(value)),
                 keyboardType: TextInputType.number,
               ),
+
               const EditTextSpacer(),
               EditText(
-                hintText: "Password*",
+                hintText: "Password(Required)",
                 prefixIcon: ProximityIcons.password,
                 suffixIcon: signupValidation.password_visibility
                     ? ProximityIcons.eye_off
@@ -121,28 +114,24 @@ class _SignupScreenState extends State<SignupScreen> {
                 borderType: BorderType.middle,
               ),
               const EditTextSpacer(),
-              isTyping
-                  ? Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: normal_100),
-                      child: LinearProgressIndicator(
-                        value: signupValidation.passwordPercentage,
-                        backgroundColor: Colors.grey[200],
-                        color: _getProgressColor(
-                            signupValidation.passwordPercentage),
-                      ),
-                    )
+              signupValidation.passwordPercentage != null
+                  ? isTyping
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: normal_100),
+                          child: LinearProgressIndicator(
+                            value: signupValidation.passwordPercentage,
+                            backgroundColor: Colors.grey[200],
+                            color: _getProgressColor(
+                                signupValidation.passwordPercentage!),
+                          ),
+                        )
+                      : Container()
                   : Container(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                child: Text(_passwordStrength,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: _getProgressColor(
-                            signupValidation.passwordPercentage))),
-              ),
+
               const EditTextSpacer(),
               EditText(
-                hintText: "Password Confirmation*",
+                hintText: "Password Confirmation(Required)",
                 prefixIcon: ProximityIcons.password,
                 suffixIcon: signupValidation.passwordConfirm_visibility
                     ? ProximityIcons.eye_off
@@ -158,11 +147,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
               /// Error Messages
               const EditTextSpacer(),
+              EditText(
+                hintText: "Email(optional)",
+                prefixIcon: ProximityIcons.email,
+                errorText: signupValidation.email.error,
+                onChanged: (value) => signupValidation.changeEmail(value),
+                enabled: !signupValidation.loading,
+              ),
 
-              const ErrorMessage(errors: [
-                //signupValidation.email.error,
-                // signupValidation.password.error
-              ]),
               TermsAndConditions(
                   value: signupValidation.termsAgreement,
                   onChanged: () => signupValidation.agreeToTerms()),
@@ -174,7 +166,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       onPressed: () => signupValidation.signup(context),
                       buttonState: signupValidation.loading
                           ? ButtonState.loading
-                          : signupValidation.isValid
+                          : signupValidation.signUpPhoneisValid
                               ? ButtonState.enabled
                               : ButtonState.disabled,
                       title: 'Sign Up.')),

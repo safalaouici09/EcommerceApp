@@ -13,6 +13,7 @@ import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:proximity_commercant/ui/pages/onBoarding_page/OnBoardingScreen.dart';
 
 class OnBoard extends StatefulWidget {
   const OnBoard({Key? key}) : super(key: key);
@@ -59,7 +60,7 @@ class _OnBoardState extends State<OnBoard> {
         ? welcome == null
             ? const WelcomeScreen()
             : const HomeScreen()
-        : const LoginScreen();
+        : const OnBoardingScreen();
   }
 
   Future<void> initPlatform(NotificationService notificationService) async {

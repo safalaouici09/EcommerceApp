@@ -64,9 +64,10 @@ class ProductScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ProductCreationScreen(
-                                product: product,
-                                index: index,
-                                editScreen: true)));
+                                  product: product,
+                                  index: index,
+                                  editScreen: true,
+                                )));
                   })),
           Row(children: [
             const SizedBox(width: normal_100),

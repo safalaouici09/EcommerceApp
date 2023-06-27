@@ -14,7 +14,7 @@ class SignupValidation with ChangeNotifier {
   ValidationItem _userName = ValidationItem(null, null);
   ValidationItem _passwordConfirm = ValidationItem(null, null);
   bool _termsAgreement = false;
-  double _passwordPercentage = 0;
+  double? _passwordPercentage;
   final String _phoneNumberString = "";
   // essential values for the UI
   // loading to render circular progress bar when waiting for server response
@@ -38,13 +38,24 @@ class SignupValidation with ChangeNotifier {
   bool get password_visibility => _password_visibility;
   bool get passwordConfirm_visibility => _passwordConfirm_visibility;
   bool get loading => _loading;
-  double get passwordPercentage => _passwordPercentage;
+  double? get passwordPercentage => _passwordPercentage;
 
-  bool get isValid {
-    return ((_email.value != null || _phone.value != null) &&
+  bool get signUpPhoneisValid {
+    return ((_phone.value != null) &&
         _password.value != null &&
         _passwordConfirm.value != null &&
         _termsAgreement);
+  }
+
+  bool get SignUpEmailisValid {
+    return ((_email.value != null) &&
+        _password.value != null &&
+        _passwordConfirm.value != null &&
+        _termsAgreement);
+  }
+
+  bool get emailIsValid {
+    return ((_email.value != null));
   }
 
   // Setters

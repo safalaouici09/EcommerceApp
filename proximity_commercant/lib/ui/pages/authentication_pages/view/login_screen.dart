@@ -4,6 +4,7 @@ import 'package:proximity/proximity.dart';
 import 'package:flutter/gestures.dart';
 import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/authentication_pages.dart';
+import 'package:proximity_commercant/ui/pages/authentication_pages/view/email_screen.dart';
 import 'package:proximity_commercant/ui/pages/home_pages/home_pages.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -164,7 +165,7 @@ class LoginScreen extends StatelessWidget {
                     onTap: () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignupScreen())),
+                            builder: (context) => const EmailScreen())),
                     child: Padding(
                         padding: const EdgeInsets.all(normal_100),
                         child: RichText(

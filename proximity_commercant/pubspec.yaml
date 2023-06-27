@@ -52,6 +52,10 @@ flutter:
   uses-material-design: true
   assets:
     - assets/proximity-logo-light.png
+    - assets/orders.png
+    - assets/store_creation.png 
+    - assets/policy.png
+    - assets/promote.png
     - assets/proximity-logo-dark.png
     - assets/img/profile-pic.png
     - assets/img/ar.png
