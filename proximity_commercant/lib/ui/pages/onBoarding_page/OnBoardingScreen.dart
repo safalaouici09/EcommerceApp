@@ -3,6 +3,9 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
+import 'package:proximity_commercant/ui/pages/authentication_pages/authentication_pages.dart';
+import 'package:proximity_commercant/ui/pages/authentication_pages/view/email_screen.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);
@@ -11,18 +14,46 @@ class OnBoardingScreen extends StatefulWidget {
   State<OnBoardingScreen> createState() => _OnBoardingScreenState();
 }
 
-class _OnBoardingScreenState extends State<OnBoardingScreen> {
+class _OnBoardingScreenState extends State<OnBoardingScreen>
+    with SingleTickerProviderStateMixin {
   late PageController _pageController;
+  late TransformationController _transformationController;
+  late AnimationController _animationController;
+  Animation<Matrix4>? animation;
+  int _index = 0;
+  final double minScale = 1, maxScale = 4;
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: 0);
     super.initState();
+    var credentialsBox = Boxes.getCredentials();
+
+    credentialsBox.put('first_time', false);
+
+    _index = 0;
+    _pageController = PageController();
+    _transformationController = TransformationController();
+    _animationController = AnimationController(
+        vsync: this, duration: smallAnimationDuration)
+      ..addListener(() => _transformationController.value = animation!.value);
   }
 
+  @override
   void dispose() {
     _pageController.dispose();
+    _transformationController.dispose();
+    _animationController.dispose();
     super.dispose();
+  }
+
+  void resetAnimation() {
+    animation = Matrix4Tween(
+      begin: _transformationController.value,
+      end: Matrix4.identity(),
+    ).animate(CurvedAnimation(
+        parent: _animationController, curve: Curves.bounceInOut));
+
+    _animationController.forward(from: 0);
   }
 
   Widget build(BuildContext context) {
@@ -30,30 +61,59 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       body: SafeArea(
           child: Column(
         children: [
-          Expanded(
-            child: PageView.builder(
-                controller: _pageController,
-                itemCount: onboardingData.length,
-                itemBuilder: (context, index) {
-                  return OnBoardingItem(
-                      image: onboardingData[index].imagePath,
-                      title: onboardingData[index].title,
-                      description: onboardingData[index].description);
-                }),
-          ),
-          SizedBox(
-            height: 60,
-            width: 60,
-            child: ElevatedButton(
-              onPressed: () {
-                _pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.ease);
+          Flexible(
+            child: InteractiveViewer(
+              transformationController: _transformationController,
+              clipBehavior: Clip.none,
+              panEnabled: false,
+              minScale: minScale,
+              maxScale: maxScale,
+              onInteractionEnd: (details) {
+                resetAnimation();
               },
-              style: ElevatedButton.styleFrom(shape: const CircleBorder()),
-              child: Center(child: const Icon(ProximityIcons.arrow_more)),
+              child: PageView.builder(
+                  onPageChanged: (index) => setState(() {
+                        _index = index;
+                        if (index == onboardingData.length - 1) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
+                        }
+                      }),
+                  controller: _pageController,
+                  itemCount: onboardingData.length,
+                  itemBuilder: (context, index) {
+                    return OnBoardingItem(
+                        image: onboardingData[index].imagePath,
+                        title: onboardingData[index].title,
+                        description: onboardingData[index].description);
+                  }),
             ),
-          )
+          ),
+          Padding(
+              padding: const EdgeInsets.all(small_100),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                      onboardingData!.length,
+                      (index) => AnimatedContainer(
+                          duration: normalAnimationDuration,
+                          height: small_100,
+                          margin:
+                              const EdgeInsets.symmetric(horizontal: tiny_50),
+                          width: (_index == index) ? normal_150 : small_100,
+                          decoration: BoxDecoration(
+                              color: (_index == index)
+                                  ? Theme.of(context).primaryColor
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .color,
+                              borderRadius:
+                                  const BorderRadius.all(tinyRadius)))))),
         ],
       )),
     );

@@ -60,7 +60,7 @@ class _OnBoardState extends State<OnBoard> {
         ? welcome == null
             ? const WelcomeScreen()
             : const HomeScreen()
-        : const OnBoardingScreen();
+        : const LoginScreen();
   }
 
   Future<void> initPlatform(NotificationService notificationService) async {

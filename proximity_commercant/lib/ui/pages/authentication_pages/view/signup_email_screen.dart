@@ -43,17 +43,18 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
-            child: ListView(
+            child: Column(
                 // mainAxisSize: MainAxisSize.max,
-                //crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+              const Spacer(),
               //  const SizedBox(height: normal_100),
               Image.asset(
                 'assets/proximity-logo-light.png',
                 width: 100,
                 height: 100,
               ),
-
+              const Spacer(),
               Padding(
                   padding: const EdgeInsets.all(normal_100),
                   child: Row(
@@ -171,72 +172,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                               ? ButtonState.enabled
                               : ButtonState.disabled,
                       title: 'Sign Up.')),
-              Padding(
-                  padding: const EdgeInsets.all(normal_100),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                            child: Container(
-                                height: tiny_50,
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        colors: [
-                                      Theme.of(context)
-                                          .dividerColor
-                                          .withOpacity(0.0),
-                                      Theme.of(context).dividerColor,
-                                    ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight)))),
-                        const SizedBox(width: normal_100),
-                        const Text("Or Connect With",
-                            textAlign: TextAlign.center),
-                        const SizedBox(width: normal_100),
-                        Expanded(
-                            child: Container(
-                                height: tiny_50,
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        colors: [
-                                      Theme.of(context)
-                                          .dividerColor
-                                          .withOpacity(0.0),
-                                      Theme.of(context).dividerColor,
-                                    ],
-                                        begin: Alignment.centerRight,
-                                        end: Alignment.centerLeft))))
-                      ])),
-              Padding(
-                  padding: const EdgeInsets.all(normal_100),
-                  child: Row(mainAxisSize: MainAxisSize.max, children: [
-                    Expanded(
-                        child: NormalIconButton(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeScreen())),
-                            icon: Image.asset('assets/img/google.png',
-                                width: normal_200, height: normal_200))),
-                    const SizedBox(width: normal_200),
-                    Expanded(
-                        child: NormalIconButton(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeScreen())),
-                            icon: Image.asset('assets/img/facebook.png',
-                                width: normal_200, height: normal_200))),
-                    const SizedBox(width: normal_200),
-                    Expanded(
-                        child: NormalIconButton(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeScreen())),
-                            icon: Image.asset('assets/img/twitter.png',
-                                width: normal_200, height: normal_200)))
-                  ])),
+
               const Spacer(),
               InkWell(
                   onTap: () => Navigator.pushReplacement(
@@ -260,7 +196,8 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                                     .textTheme
                                     .bodyLarge!
                                     .copyWith(fontSize: normal_100))
-                          ]))))
+                          ])))),
+              const Spacer()
             ])));
   }
 }

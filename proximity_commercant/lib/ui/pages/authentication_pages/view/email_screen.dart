@@ -23,10 +23,11 @@ class _EmailScreenState extends State<EmailScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
-            child: ListView(
+            child: Column(
                 // mainAxisSize: MainAxisSize.max,
-                //crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+              Spacer(),
               //  const SizedBox(height: normal_100),
               Image.asset(
                 'assets/proximity-logo-light.png',
@@ -83,7 +84,7 @@ class _EmailScreenState extends State<EmailScreen> {
                           MaterialPageRoute(
                               builder: (context) => const SignUpPhoneScreen())),
                       title: 'Sign up with Phone.')),
-
+              const Spacer(),
               Padding(
                   padding: const EdgeInsets.all(normal_100),
                   child: Row(
@@ -102,7 +103,6 @@ class _EmailScreenState extends State<EmailScreen> {
                                     ],
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight)))),
-                        const SizedBox(width: normal_100),
                         const Text("Or Connect With",
                             textAlign: TextAlign.center),
                         const SizedBox(width: normal_100),
@@ -151,6 +151,30 @@ class _EmailScreenState extends State<EmailScreen> {
                                 width: normal_200, height: normal_200)))
                   ])),
               const Spacer(),
+              InkWell(
+                  onTap: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen())),
+                  child: Padding(
+                      padding: const EdgeInsets.all(normal_100),
+                      child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(children: [
+                            TextSpan(
+                                text: 'Already have an account?  ',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(fontSize: normal_100)),
+                            TextSpan(
+                                text: 'Log In.',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(fontSize: normal_100))
+                          ])))),
+              Spacer()
             ])));
   }
 }

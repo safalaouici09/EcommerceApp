@@ -18,17 +18,24 @@ class LoginScreen extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Column(
-              mainAxisSize: MainAxisSize.max,
+              // mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const Spacer(),
+                //  const SizedBox(height: normal_100),
+                Image.asset(
+                  'assets/proximity-logo-light.png',
+                  width: 100,
+                  height: 100,
+                ),
+
                 Padding(
                     padding: const EdgeInsets.all(normal_100)
                         .copyWith(top: normal_200),
-                    child: Text('Log In.',
-                        style: Theme.of(context).textTheme.subtitle1,
+                    child: Text('Log In',
+                        style: Theme.of(context).textTheme.displaySmall,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis)),
-                const SizedBox(height: large_100),
 
                 /// Login Forms
                 EditText(
@@ -86,6 +93,7 @@ class LoginScreen extends StatelessWidget {
                                 ? ButtonState.enabled
                                 : ButtonState.disabled,
                         title: "Log In.")),
+                Spacer(),
                 Padding(
                     padding: const EdgeInsets.all(normal_100),
                     child: Row(
@@ -183,7 +191,8 @@ class LoginScreen extends StatelessWidget {
                                       .textTheme
                                       .bodyText1!
                                       .copyWith(fontSize: normal_100)),
-                            ]))))
+                            ])))),
+                const Spacer(),
               ]),
         ));
   }

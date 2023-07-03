@@ -31,6 +31,7 @@ void main() async {
 
   /// Settings are to store user settings and preferences
   await Hive.openBox('settings');
+  await Hive.openBox('onboardingBox');
 
   /// Google Maps Android Hybrid Composition
   if (defaultTargetPlatform == TargetPlatform.android) {

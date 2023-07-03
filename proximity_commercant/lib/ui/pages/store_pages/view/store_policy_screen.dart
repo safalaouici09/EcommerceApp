@@ -32,162 +32,139 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 builder: (context, policyCreationValidation, storeService,
                     storecreationValidation, child) {
           return Scaffold(
-              appBar: AppBar(
-                title: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TopBar(
-                      title: widget.global!
-                          ? 'Golbal Policy.'
-                          : widget.store!
-                              ? 'Store Policy.'
-                              : 'Product Policy'),
-                ),
-                backgroundColor: Colors.white,
-                elevation: 0.0,
-              ),
               body: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Stepper(
-                        physics: const ClampingScrollPhysics(),
-                        elevation: 0.0,
-                        currentStep: _currentStep,
-                        type: StepperType.horizontal,
-                        onStepContinue: () {
-                          if (_currentStep == 2) {
-                            if (widget.global!) {
-                              policyCreationValidation.updatePolicy(context,
-                                  policyCreationValidation.policytoFormData());
-                              Navigator.pop(context);
-                            } else {
-                              setState(() {
-                                Navigator.pop(context,
-                                    policyCreationValidation.getPolicy());
-                              });
+            child: Column(
+              children: [
+                TopBar(
+                    title: widget.global!
+                        ? 'Golbal Policy.'
+                        : widget.store!
+                            ? 'Store Policy'
+                            : 'Product Policy'),
+                Expanded(
+                  child: Stepper(
+                    physics: const ClampingScrollPhysics(),
+                    elevation: 0.0,
+                    currentStep: _currentStep,
+                    type: StepperType.vertical,
+                    onStepContinue: () {
+                      if (_currentStep == 2) {
+                        if (widget.global!) {
+                          policyCreationValidation.updatePolicy(context,
+                              policyCreationValidation.policytoFormData());
+                          Navigator.pop(context);
+                        } else {
+                          setState(() {
+                            Navigator.pop(
+                                context, policyCreationValidation.getPolicy());
+                          });
 
-                              /* StoreCreationValidation.setPolicy(
+                          /* StoreCreationValidation.setPolicy(
                                   policyCreationValidation.getPolicy());*/
-                            }
-                          } else {
-                            setState(() {
-                              _currentStep = _currentStep + 1;
-                            });
-                          }
-                        },
-                        onStepCancel: () {
-                          _currentStep == 0
-                              ? null
-                              : setState(() {
-                                  _currentStep -= 1;
-                                  print(_currentStep);
-                                });
-                        },
-                        controlsBuilder: (context, details) {
-                          return Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.all(normal_100),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                        }
+                      } else {
+                        setState(() {
+                          _currentStep = _currentStep + 1;
+                        });
+                      }
+                    },
+                    onStepCancel: () {
+                      _currentStep == 0 ? null : setState(() {});
+                    },
+                    controlsBuilder: (context, details) {
+                      return Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(normal_100),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _currentStep != 0
+                                  ? SecondaryButton(
+                                      onPressed: details.onStepCancel,
+                                      title: "Back")
+                                  : Spacer(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  if (_currentStep != 0)
-                                    SecondaryButton(
-                                        onPressed: details.onStepCancel,
-                                        title: "Back"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      PrimaryButton(
-                                        buttonState: (_currentStep == 0 &&
-                                                    policyCreationValidation
-                                                        .shippingIsValid) ||
-                                                (_currentStep == 1 &&
-                                                    policyCreationValidation
-                                                        .returnIsValid) ||
-                                                (_currentStep == 2 &&
-                                                    policyCreationValidation
-                                                        .ordersIsValid)
-                                            ? ButtonState.enabled
-                                            : ButtonState.disabled,
-                                        onPressed: details.onStepContinue,
-                                        title: _currentStep == 2
-                                            ? "confirm"
-                                            : "Next.",
-                                      ),
-                                    ],
+                                  PrimaryButton(
+                                    buttonState: (_currentStep == 0 &&
+                                                policyCreationValidation
+                                                    .shippingIsValid) ||
+                                            (_currentStep == 1 &&
+                                                policyCreationValidation
+                                                    .returnIsValid) ||
+                                            (_currentStep == 2 &&
+                                                policyCreationValidation
+                                                    .ordersIsValid)
+                                        ? ButtonState.enabled
+                                        : ButtonState.disabled,
+                                    onPressed: details.onStepContinue,
+                                    title:
+                                        _currentStep == 2 ? "Confirm" : "Next",
                                   ),
                                 ],
                               ),
-                            ),
-                          );
-                        },
-                        steps: [
-                          getShippingStep(policyCreationValidation, context),
-                          getReturnStep(policyCreationValidation, context),
-                          getOrdersStep(policyCreationValidation, context),
-                        ],
-                      ),
-                    ),
-                  ],
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    steps: [
+                      getShippingStep(policyCreationValidation, context),
+                      getReturnStep(policyCreationValidation, context),
+                      getOrdersStep(policyCreationValidation, context),
+                    ],
+                  ),
                 ),
-              ));
+              ],
+            ),
+          ));
         }));
   }
 
   Step getShippingStep(
       PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
+        state: _currentStep > 0 ? StepState.complete : StepState.indexed,
         isActive: _currentStep >= 0,
-        title: const Text("Shipping"),
+        title: Text(
+          "Shipping",
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontSize: normal_100),
+        ),
         content: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: [
             SectionDivider(
-                leadIcon: Icons.local_shipping_outlined,
-                title: 'Shipping Policy.',
-                color: redSwatch.shade500),
+              leadIcon: Icons.local_shipping_outlined,
+              title: 'Shipping Policy.',
+              color: redSwatch.shade500,
+              noPadding: true,
+            ),
             const InfoMessage(
                 message:
                     'Select the type of Deliveries your store support, and set a delivery tax value in case you deliver your orders.'),
-            ListToggle(
+            ListTogglePolicy(
                 leadIcon: Icons.local_shipping_rounded,
+                color: policyCreationValidation.delivery!
+                    ? blueSwatch.shade500
+                    : Theme.of(context).dividerColor,
                 title: 'Delivery',
                 value: policyCreationValidation.delivery!,
                 onToggle: policyCreationValidation.toggleDelivery),
-            SizedBox(height: small_100),
-            ListToggle(
+            ListTogglePolicy(
                 leadIcon: ProximityIcons.self_pickup_duotone_1,
+                color: policyCreationValidation.selfPickup!
+                    ? blueSwatch.shade500
+                    : Theme.of(context).dividerColor,
                 title: 'Self Pickup',
                 value: policyCreationValidation.selfPickup!,
                 onToggle: policyCreationValidation.toggleSelfPickup),
-            Row(children: [
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: small_100),
-                /* child: LargeIconButton(
-                    onPressed: policyCreationValidation.toggleSelfPickup,
-                    selected: (policyCreationValidation.selfPickup ?? false),
-                    icon: DuotoneIcon(
-                        primaryLayer: ProximityIcons.self_pickup_duotone_1,
-                        secondaryLayer: ProximityIcons.self_pickup_duotone_2,
-                        color: redSwatch.shade500),
-                    title: 'Self Pickup)*/
-              )),
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: small_100),
-                /* child: LargeIconButton(
-                  onPressed: policyCreationValidation.toggleDelivery,
-                    selected: (policyCreationValidation.delivery ?? false),
-                    icon: DuotoneIcon(
-                        primaryLayer: ProximityIcons.delivery_duotone_1,
-                        secondaryLayer: ProximityIcons.delivery_duotone_2,
-                        color: redSwatch.shade500),
-                    title: 'Delivery'),*/
-              ))
-            ]),
             if (policyCreationValidation.selfPickup ??
                 true && policyCreationValidation.delivery! ??
                 false)
@@ -211,96 +188,6 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       .toList(),
                 ),
               ),
-
-            /*
-            if (policyCreationValidation.delivery ?? false) ...[
-              const SizedBox(height: normal_100),
-              Padding(
-                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
-                child: TertiaryButton(
-                    onPressed: () async {
-                      final Address _result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AreaSelectionScreen(
-                                  currentAddress: policyCreationValidation
-                                      .deliveryCenter)));
-                      policyCreationValidation
-                          .changeDeliveryCenterdress(_result);
-
-                      //  policyCreationValidation
-                      //  .changeAddress(_result);
-                    },
-                    title: 'Set Delivery Area.'),
-              ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                  child: Row(children: [
-                    Expanded(
-                        child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: small_100),
-                      child: LargeIconButton(
-                          onPressed:
-                              policyCreationValidation.toggleShippingFixedPrice,
-                          selected:
-                              (policyCreationValidation.shippingFixedPrice ??
-                                  false),
-                          icon: DuotoneIcon(
-                              primaryLayer: Icons.euro,
-                              color: redSwatch.shade500),
-                          title: 'Fixed Price'),
-                    )),
-                    Expanded(
-                        child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: small_100),
-                      child: LargeIconButton(
-                          onPressed:
-                              policyCreationValidation.toggleShippingPerKm,
-                          selected:
-                              (policyCreationValidation.shippingPerKm ?? true),
-                          icon: DuotoneIcon(
-                              primaryLayer: Icons.place_outlined,
-                              color: redSwatch.shade500),
-                          title: ' By KM'),
-                    ))
-                  ])),*/
-            policyCreationValidation.shippingFixedPrice!
-                ? Padding(
-                    padding: const EdgeInsets.all(small_100),
-                    child: EditText(
-                      hintText: 'Delivery Tax. ',
-                      keyboardType: TextInputType.number,
-                      saved: (policyCreationValidation.shippingFixedPriceTax ==
-                              null)
-                          ? ""
-                          : policyCreationValidation.shippingFixedPriceTax
-                              .toString(),
-                      //   enabled:
-                      // (store.policy == null) || editScreen,
-                      onChanged:
-                          policyCreationValidation.changeShippingFixedPriceTax,
-                    ),
-                  )
-                : Container(),
-            policyCreationValidation.shippingPerKm!
-                ? Padding(
-                    padding: const EdgeInsets.all(small_100),
-                    child: EditText(
-                      hintText: 'Delivery Tax per km. ',
-                      keyboardType: TextInputType.number,
-                      saved: (policyCreationValidation.shippingPerKmTax == null)
-                          ? ""
-                          : policyCreationValidation.shippingPerKmTax
-                              .toString(),
-                      //   enabled:
-                      // (store.policy == null) || editScreen,
-                      onChanged:
-                          policyCreationValidation.changeShippingPerKmTax,
-                    ),
-                  )
-                : Container(),
           ],
         ));
   }
@@ -308,28 +195,36 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   Step getOrdersStep(
       PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
+        state: _currentStep > 3 ? StepState.complete : StepState.indexed,
         isActive: _currentStep >= 3,
-        title: const Text("Orders"),
+        title: Text(
+          "Orders",
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontSize: normal_100),
+        ),
         content: Column(
           children: [
             const SizedBox(height: normal_100),
             SectionDivider(
                 leadIcon: Icons.notifications_none_outlined,
                 title: 'Notifications .',
+                noPadding: true,
                 color: redSwatch.shade500),
             Padding(
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
                 children: [
-                  ListToggle(
+                  ListTogglePolicy(
                       title: 'Real-time notifications',
                       value: policyCreationValidation.notifRealTime!,
                       onToggle: policyCreationValidation.toggleNotifRealTime),
-                  ListToggle(
+                  ListTogglePolicy(
                       title: 'Hourly notificationss',
                       value: policyCreationValidation.notifHourly!,
                       onToggle: policyCreationValidation.toggleNotifHourly),
-                  ListToggle(
+                  ListTogglePolicy(
                       title: 'Batch notifications ',
                       value: policyCreationValidation.notifBatch!,
                       onToggle: policyCreationValidation.toggleNotifBatch),
@@ -387,6 +282,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
             SectionDivider(
                 leadIcon: Icons.notifications_active_outlined,
                 title: 'Order notification preferences.',
+                noPadding: true,
                 color: redSwatch.shade500),
             const InfoMessage(
                 message:
@@ -395,20 +291,20 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
                 children: [
-                  ListToggle(
+                  ListTogglePolicy(
                       title: 'In-platform notifications',
                       value: policyCreationValidation.notifInPlateforme!,
                       onToggle:
                           policyCreationValidation.toggleNotifInPlateforme),
-                  ListToggle(
+                  ListTogglePolicy(
                       title: 'Pop pup notifications ',
                       value: policyCreationValidation.notifPopUp!,
                       onToggle: policyCreationValidation.toggleNotifPopup),
-                  ListToggle(
+                  ListTogglePolicy(
                       title: 'Email notifications',
                       value: policyCreationValidation.notifEmail!,
                       onToggle: policyCreationValidation.toggleNotifEmail),
-                  ListToggle(
+                  ListTogglePolicy(
                       title: 'SMS notifications',
                       value: policyCreationValidation.notifSms!,
                       onToggle: policyCreationValidation.toggleNotifSms),
@@ -422,12 +318,20 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
   Step getReturnStep(
       PolicyValidation policyCreationValidation, BuildContext context) {
     return Step(
-        isActive: _currentStep >= 2,
-        title: const Text("Return "),
+        state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+        isActive: _currentStep >= 1,
+        title: Text(
+          "Return ",
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontSize: normal_100),
+        ),
         content: Column(
           children: [
             SectionDivider(
                 leadIcon: Icons.book_outlined,
+                noPadding: true,
                 title: 'Return policy  .',
                 color: redSwatch.shade500),
             const InfoMessage(
@@ -437,7 +341,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
                 children: [
-                  ListToggle(
+                  ListTogglePolicy(
                       title: 'Allow Returns',
                       value: policyCreationValidation.returnAccept!,
                       onToggle: policyCreationValidation.toggleReturnAccept),
@@ -450,6 +354,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                     children: [
                       SectionDivider(
                           leadIcon: Icons.timelapse_outlined,
+                          noPadding: true,
                           title: 'Return conditions.',
                           color: redSwatch.shade500),
                       DropDownSelector<String>(
@@ -485,6 +390,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                       ),
                       SectionDivider(
                           leadIcon: Icons.cancel_outlined,
+                          noPadding: true,
                           title: 'Refund Policy.',
                           color: redSwatch.shade500),
                       Padding(
@@ -492,18 +398,18 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                             const EdgeInsets.all(normal_100).copyWith(right: 0),
                         child: Column(
                           children: [
-                            ListToggle(
+                            ListTogglePolicy(
                                 title: 'Shipping Fees.',
                                 value:
                                     policyCreationValidation.returnShippingFee!,
                                 onToggle: policyCreationValidation
                                     .toggleReturnShippingFee),
-                            ListToggle(
+                            ListTogglePolicy(
                                 title: 'Full Refund',
                                 value: policyCreationValidation.returnTotalFee!,
                                 onToggle: policyCreationValidation
                                     .toggleReturnTotalFee),
-                            ListToggle(
+                            ListTogglePolicy(
                                 title: 'Partial Refund',
                                 value:
                                     policyCreationValidation.returnPartialFee!,

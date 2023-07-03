@@ -215,7 +215,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                   title: widget.editScreen
                       ? 'Edit Store.'
                       : 'Create a new Store.'),
-              SectionDivider(
+              /* SectionDivider(
                   leadIcon: ProximityIcons.user,
                   title: 'Store owner.',
                   color: redSwatch.shade500),
@@ -230,45 +230,68 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                             enabled: true),
                       ],
                     );
-                  }),
+                  }),*/
 
               /// Store Details
               SectionDivider(
                   leadIcon: ProximityIcons.edit,
                   title: 'Store details.',
                   color: redSwatch.shade500),
-              RichEditText(children: [
-                EditText(
-                  hintText: 'Name.',
-                  borderType: BorderType.top,
-                  saved: storeCreationValidation.storeName.value,
-                  errorText: storeCreationValidation.storeName.error,
-                  enabled: (widget.store.name == null) || widget.editScreen,
-                  onChanged: storeCreationValidation.changeStoreName,
-                ),
-              ]),
+
+              EditText(
+                hintText: 'Name',
+                borderType: BorderType.top,
+                saved: storeCreationValidation.storeName.value,
+                errorText: storeCreationValidation.storeName.error,
+                enabled: (widget.store.name == null) || widget.editScreen,
+                onChanged: storeCreationValidation.changeStoreName,
+              ),
+
               const EditTextSpacer(),
-              RichEditText(
-                children: [
-                  EditText(
-                    hintText: 'Description.',
-                    borderType: BorderType.bottom,
-                    keyboardType: TextInputType.multiline,
-                    saved: storeCreationValidation.storeDescription.value,
-                    errorText: storeCreationValidation.storeDescription.error,
-                    maxLines: 5,
-                    enabled:
-                        (widget.store.description == null) || widget.editScreen,
-                    onChanged: storeCreationValidation.changeStoreDescription,
-                  ),
-                ],
+              EditText(
+                hintText: 'Description.',
+                borderType: BorderType.bottom,
+                keyboardType: TextInputType.multiline,
+                saved: storeCreationValidation.storeDescription.value,
+                errorText: storeCreationValidation.storeDescription.error,
+                maxLines: 5,
+                enabled:
+                    (widget.store.description == null) || widget.editScreen,
+                onChanged: storeCreationValidation.changeStoreDescription,
+              ),
+              InfoMessage(
+                  message:
+                      'Please provide your commercial registration number. This is a unique identifier assigned to your business by the relevant government authority'),
+              const EditTextSpacer(),
+              EditText(
+                hintText: 'Commercial Registration Number',
+                saved: storeCreationValidation.storeRegistrationNumber.value,
+                errorText:
+                    storeCreationValidation.storeRegistrationNumber.error,
+                enabled: (widget.store.registrationNumber == null) ||
+                    widget.editScreen,
+                onChanged:
+                    storeCreationValidation.changeStoreRegistrationNumber,
+              ),
+
+              SectionDivider(
+                  leadIcon: ProximityIcons.picture,
+                  title: 'Store Image.',
+                  color: redSwatch.shade500),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_125),
+                child: ImagePickerWidget(
+                    images: storeCreationValidation.storeImages,
+                    maxImages: 1,
+                    onImageAdded: storeCreationValidation.addStoreImage,
+                    onImageRemoved: storeCreationValidation.removeStoreImage),
               ),
 
               /// Error Messages
-              const SizedBox(height: small_100),
+              //  const SizedBox(height: small_100),
               ErrorMessage(errors: [
-                storeCreationValidation.storeName.error,
-                storeCreationValidation.storeDescription.error
+                // storeCreationValidation.storeName.error,
+                //storeCreationValidation.storeDescription.error
               ]),
 
               /// Policy
@@ -279,6 +302,9 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                   leadIcon: Icons.timer_outlined,
                   title: 'Working time.',
                   color: redSwatch.shade500),
+              const InfoMessage(
+                  message:
+                      "By updating your working hours in the app, your clients will be informed about when you're open for pickups. Take a moment to add your working hours and keep your customers in the loop"),
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: normal_100),
                   child: DropDownSelector<String>(
@@ -508,27 +534,20 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                     },
                     title: 'Select Address.'),
               ),
-              RichEditText(children: [
-                EditText(
-                  hintText: 'Street Address Line 1.',
-                  borderType: BorderType.top,
-                  saved: storeCreationValidation.storeAddress.fullAddress,
-                  enabled: (widget.store.address == null) || widget.editScreen,
-                  onChanged: storeCreationValidation.changeFullAddress,
-                ),
-              ]),
+              EditText(
+                hintText: 'Street Address Line 1.',
+                borderType: BorderType.top,
+                saved: storeCreationValidation.storeAddress.fullAddress,
+                enabled: (widget.store.address == null) || widget.editScreen,
+                onChanged: storeCreationValidation.changeFullAddress,
+              ),
               const EditTextSpacer(),
-              RichEditText(
-                children: [
-                  EditText(
-                    hintText: 'Street Address Line 2.',
-                    borderType: BorderType.middle,
-                    saved: storeCreationValidation.storeAddress.streetName,
-                    enabled:
-                        (widget.store.address == null) || widget.editScreen,
-                    onChanged: storeCreationValidation.changeStreetName,
-                  ),
-                ],
+              EditText(
+                hintText: 'Street Address Line 2.',
+                borderType: BorderType.middle,
+                saved: storeCreationValidation.storeAddress.streetName,
+                enabled: (widget.store.address == null) || widget.editScreen,
+                onChanged: storeCreationValidation.changeStreetName,
               ),
               const EditTextSpacer(),
               Padding(
@@ -551,40 +570,30 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                 ),
               ),
               const EditTextSpacer(),
-              RichEditText(
-                children: [
-                  EditText(
-                    hintText: 'Region.',
-                    borderType: BorderType.middle,
-                    saved: storeCreationValidation.storeAddress.region,
-                    enabled:
-                        (widget.store.address == null) || widget.editScreen,
-                    onChanged: storeCreationValidation.changeRegion,
-                  ),
-                ],
+              EditText(
+                hintText: 'Region.',
+                borderType: BorderType.middle,
+                saved: storeCreationValidation.storeAddress.region,
+                enabled: (widget.store.address == null) || widget.editScreen,
+                onChanged: storeCreationValidation.changeRegion,
               ),
               const EditTextSpacer(),
-              RichEditText(
-                children: [
-                  EditText(
-                    hintText: 'City.',
-                    borderType: BorderType.middle,
-                    saved: storeCreationValidation.storeAddress.city,
-                    enabled:
-                        (widget.store.address == null) || widget.editScreen,
-                    onChanged: storeCreationValidation.changeCity,
-                  ),
-                ],
+              EditText(
+                hintText: 'City.',
+                borderType: BorderType.middle,
+                saved: storeCreationValidation.storeAddress.city,
+                enabled: (widget.store.address == null) || widget.editScreen,
+                onChanged: storeCreationValidation.changeCity,
               ),
-              RichEditText(children: [
-                EditText(
-                  hintText: 'Postal Code.',
-                  borderType: BorderType.bottom,
-                  saved: storeCreationValidation.storeAddress.postalCode,
-                  enabled: (widget.store.address == null) || widget.editScreen,
-                  onChanged: storeCreationValidation.changePostalCode,
-                ),
-              ]),
+              const EditTextSpacer(),
+              EditText(
+                hintText: 'Postal Code.',
+                borderType: BorderType.bottom,
+                saved: storeCreationValidation.storeAddress.postalCode,
+                enabled: (widget.store.address == null) || widget.editScreen,
+                onChanged: storeCreationValidation.changePostalCode,
+              ),
+
               SectionDivider(
                   leadIcon: ProximityIcons.policy,
                   title: 'Store Policy.',
@@ -615,6 +624,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                             policy: widget.store.policy ??
                                                 _user!.policy,
                                           )));
+
                               storeCreationValidation.setPolicy(policyResult);
 
                               // final Address _result = await
@@ -641,19 +651,11 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: huge_200,
+              ),
 
               /// Image Picker
-              SectionDivider(
-                  leadIcon: ProximityIcons.picture,
-                  title: 'Store Image.',
-                  color: redSwatch.shade500),
-              ImagePickerWidget(
-                  images: storeCreationValidation.storeImages,
-                  maxImages: 1,
-                  onImageAdded: storeCreationValidation.addStoreImage,
-                  onImageRemoved: storeCreationValidation.removeStoreImage),
-
-              const SizedBox(height: huge_100)
             ]),
             BottomActionsBar(buttons: [
               PrimaryButton(

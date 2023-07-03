@@ -36,17 +36,17 @@ class OTPScreen extends StatelessWidget {
                           ? Text('We sent you an email!',
                               style: Theme.of(context).textTheme.subtitle1,
                               textAlign: TextAlign.center)
-                          : Text('We sent you an sms !',
+                          : Text('We sent you sms !',
                               style: Theme.of(context).textTheme.subtitle1,
                               textAlign: TextAlign.center),
                       email != null
                           ? Text(
-                              'Enter OTP code sent to your email address' +
+                              'Enter OTP code sent to your email address ' +
                                   email,
                               style: Theme.of(context).textTheme.bodyText2,
                               textAlign: TextAlign.center)
                           : Text(
-                              'Enter OTP code sent to your phone number' +
+                              'Enter OTP code sent to your phone number ' +
                                   phone,
                               style: Theme.of(context).textTheme.bodyText2,
                               textAlign: TextAlign.center),

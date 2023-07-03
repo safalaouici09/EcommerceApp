@@ -13,6 +13,7 @@ class StoreCreationValidation with ChangeNotifier {
   ValidationItem _storeDescription = ValidationItem(null, null);
   ValidationItem _storeCategory = ValidationItem(null, null);
   final List<String> _selectedDays = [];
+  ValidationItem _storeRegistrationNumber = ValidationItem(null, null);
 
   int _timeRangeKey = 0;
   String? _errorMessage;
@@ -91,6 +92,8 @@ class StoreCreationValidation with ChangeNotifier {
   ValidationItem get storeCategory => _storeCategory;
 
   ValidationItem get storeDescription => _storeDescription;
+  ValidationItem get storeRegistrationNumber => _storeRegistrationNumber;
+
   bool? get globalPolicy => _globalPolicy;
   bool? get customPolicy => _customPolicy;
   List<String> get selectedDays => _selectedDays;
@@ -124,6 +127,7 @@ class StoreCreationValidation with ChangeNotifier {
   bool get isValid {
     if (_storeName.value != null &&
         _storeDescription.value != null &&
+        _storeRegistrationNumber != null &&
         // (_selfPickup || _delivery) &&
         // _shopCategory.value != null &&
         _storeAddress.isAddressValid) {
@@ -190,6 +194,22 @@ class StoreCreationValidation with ChangeNotifier {
     } else {
       _storeDescription =
           ValidationItem(null, "Description must be at least 20 characters");
+    }
+    Future.delayed(largeAnimationDuration, () {
+      notifyListeners();
+    });
+  }
+
+  void changeStoreRegistrationNumber(String value) {
+    if (value.length > 9) {
+      _storeRegistrationNumber = ValidationItem(value, null);
+      notifyListeners();
+    } else if (value.isEmpty) {
+      _storeRegistrationNumber = ValidationItem(null, null);
+      notifyListeners();
+    } else {
+      _storeRegistrationNumber =
+          ValidationItem(null, "Please provide a valid registration number");
     }
     Future.delayed(largeAnimationDuration, () {
       notifyListeners();

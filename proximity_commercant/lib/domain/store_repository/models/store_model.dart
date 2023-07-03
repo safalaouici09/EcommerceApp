@@ -16,6 +16,7 @@ class Store {
   WorkingTime? workingTime;
   bool? isActive;
   DateTime? creationDate;
+  String? registrationNumber;
 
   // bool? isVerified;
 
@@ -27,6 +28,7 @@ class Store {
       {this.id,
       this.name,
       this.description,
+      this.registrationNumber,
       this.rating,
       this.phoneNumber,
       this.ownerPhoneNumber,

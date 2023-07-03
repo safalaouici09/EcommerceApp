@@ -91,28 +91,24 @@ class ProductCreationScreen extends StatelessWidget {
                     }),
               ),
               const EditTextSpacer(),
-              RichEditText(children: [
-                EditText(
-                  hintText: 'Name.',
-                  borderType: BorderType.middle,
-                  saved: productCreationValidation.name.value,
-                  errorText: productCreationValidation.name.error,
-                  enabled: (product.name == null) || editScreen,
-                  onChanged: productCreationValidation.changeName,
-                ),
-              ]),
+              EditText(
+                hintText: 'Name.',
+                borderType: BorderType.middle,
+                saved: productCreationValidation.name.value,
+                errorText: productCreationValidation.name.error,
+                enabled: (product.name == null) || editScreen,
+                onChanged: productCreationValidation.changeName,
+              ),
               const EditTextSpacer(),
-              RichEditText(children: [
-                EditText(
-                  hintText: 'Product Description.',
-                  borderType: BorderType.bottom,
-                  saved: productCreationValidation.description.value,
-                  errorText: productCreationValidation.description.error,
-                  maxLines: 5,
-                  enabled: (product.description == null) || editScreen,
-                  onChanged: productCreationValidation.changeDescription,
-                )
-              ]),
+              EditText(
+                hintText: 'Product Description.',
+                borderType: BorderType.bottom,
+                saved: productCreationValidation.description.value,
+                errorText: productCreationValidation.description.error,
+                maxLines: 5,
+                enabled: (product.description == null) || editScreen,
+                onChanged: productCreationValidation.changeDescription,
+              ),
 
               /// Image Picker
               SectionDivider(
@@ -145,37 +141,30 @@ class ProductCreationScreen extends StatelessWidget {
                             leadIcon: ProximityIcons.cart,
                             title: 'Your Offer.',
                             color: redSwatch.shade500),
-                        RichEditText(children: [
-                          EditText(
-                              hintText: 'Price in €.',
-                              keyboardType: TextInputType.number,
-                              errorText: productCreationValidation.price!.error,
-                              borderType: BorderType.top,
-                              saved: productCreationValidation.price!.value,
-                              enabled: (product.price == null) || editScreen,
-                              onChanged: productCreationValidation.changePrice),
-                        ]),
+                        EditText(
+                            hintText: 'Price in €.',
+                            keyboardType: TextInputType.number,
+                            errorText: productCreationValidation.price!.error,
+                            borderType: BorderType.top,
+                            saved: productCreationValidation.price!.value,
+                            enabled: (product.price == null) || editScreen,
+                            onChanged: productCreationValidation.changePrice),
                         const EditTextSpacer(),
-                        RichEditText(
-                          children: [
-                            EditText(
-                                hintText: 'Quantity.',
-                                keyboardType: TextInputType.number,
-                                borderType: BorderType.bottom,
-                                errorText:
-                                    productCreationValidation.quantity!.error,
-                                saved: productCreationValidation.quantity!.value
-                                            .toString() !=
-                                        "null"
-                                    ? productCreationValidation.quantity!.value
-                                        .toString()
-                                    : "",
-                                enabled:
-                                    (product.quantity == null) || editScreen,
-                                onChanged:
-                                    productCreationValidation.changeQuantity),
-                          ],
-                        ),
+                        EditText(
+                            hintText: 'Quantity.',
+                            keyboardType: TextInputType.number,
+                            borderType: BorderType.bottom,
+                            errorText:
+                                productCreationValidation.quantity!.error,
+                            saved: productCreationValidation.quantity!.value
+                                        .toString() !=
+                                    "null"
+                                ? productCreationValidation.quantity!.value
+                                    .toString()
+                                : "",
+                            enabled: (product.quantity == null) || editScreen,
+                            onChanged:
+                                productCreationValidation.changeQuantity),
                       ],
                     ),
                   Padding(

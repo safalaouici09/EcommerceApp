@@ -4,9 +4,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/l10n/l10n.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/onBoard.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/view.dart';
+import 'package:proximity_commercant/ui/pages/onBoarding_page/OnBoardingScreen.dart';
 import 'package:proximity_commercant/ui/pages/pages.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -32,6 +34,8 @@ class _ProximityCommercantAppState extends State<ProximityCommercantApp> {
   Widget build(BuildContext context) {
     /// User Settings
     final userSettings = Provider.of<UserSettings>(context);
+    var credentialsBox = Boxes.getCredentials();
+    bool isFirstTime = credentialsBox.get('first_time', defaultValue: true);
 
     /// Changing the StatusBar and NavigationBar in Andorid
     bool themeIsDark = userSettings.theme == 'dark';
@@ -56,7 +60,7 @@ class _ProximityCommercantAppState extends State<ProximityCommercantApp> {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        home: const OnBoard()
+        home: isFirstTime ? OnBoardingScreen() : OnBoard()
         //for testing
         //home: const SignupScreen()
         );
