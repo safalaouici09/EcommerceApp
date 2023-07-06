@@ -179,40 +179,99 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
               ])),
       Align(
           alignment: Alignment.bottomCenter,
-          child: BottomActionsBar(buttons: [
-            PrimaryButton(
-                title: 'Validate.',
-                onPressed: selectedAddress != null
-                    ? () {
-                        if (widget.navigation == null) {
-                          Navigator.pop(context, selectedAddress);
-                        } else {
-                          print(selectedAddress);
-                          var addresse = {
-                            "lat": selectedAddress!.lat,
-                            "lng": selectedAddress!.lng,
-                            "streetName": selectedAddress!.streetName,
-                            "city": selectedAddress!.city,
-                            "postalCode": selectedAddress!.postalCode,
-                            "countryCode": selectedAddress!.countryCode,
-                            "countryName": selectedAddress!.countryName,
-                            "fullAddress": selectedAddress!.fullAddress,
-                            "locality": selectedAddress!.locality,
-                            "region": selectedAddress!.region
-                          };
-                          print(addresse);
-                          print(json.encode(addresse));
-                          var credentialsBox = Boxes.getCredentials();
-                          credentialsBox.put('address', json.encode(addresse));
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (context) => MainScreen(),
-                              ),
-                              (Route<dynamic> route) => false);
-                        }
-                      }
-                    : null)
-          ]))
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(normal_100),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      padding: EdgeInsets.all(5),
+                      child: IconButton(
+                        onPressed: () async {
+                          Position? position = await getUserLocation();
+                          LatLng latLng =
+                              LatLng(position!.latitude, position!.longitude);
+                          selectedAddress = await getLocationAddress(latLng);
+
+                          GoogleMapController controller =
+                              await _controller.future;
+                          controller.animateCamera(
+                              CameraUpdate.newLatLngZoom(latLng, 12.0));
+
+                          // Update the marker position
+                          const MarkerId markerId = MarkerId('4544');
+                          final Marker marker = Marker(
+                            markerId: markerId,
+                            position: latLng,
+                          );
+                          setState(() {
+                            markers.clear();
+                            markers[markerId] = marker;
+                            selectedLocation = latLng;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.pin_drop_outlined,
+                          color: blueSwatch.shade500,
+                        ),
+                      ),
+                      /*IconButton(
+                        onPressed: () async {
+                          Position? position = await getUserLocation();
+                          LatLng latLng =
+                              LatLng(position!.latitude, position!.longitude);
+                          selectedAddress = await getLocationAddress(latLng);
+                        },
+                        icon: Icon(
+                          Icons.pin_drop_outlined,
+                          color: blueSwatch.shade500,
+                        ),
+                      ),*/
+                    ),
+                  ),
+                ],
+              ),
+              BottomActionsBar(buttons: [
+                PrimaryButton(
+                    title: 'Validate.',
+                    onPressed: selectedAddress != null
+                        ? () {
+                            if (widget.navigation == null) {
+                              Navigator.pop(context, selectedAddress);
+                            } else {
+                              AddressItem addressItem = AddressItem(
+                                  lat: selectedAddress!.lat,
+                                  lng: selectedAddress!.lng,
+                                  streetName: selectedAddress!.streetName,
+                                  city: selectedAddress!.city,
+                                  postalCode: selectedAddress!.postalCode,
+                                  countryCode: selectedAddress!.countryCode,
+                                  countryName: selectedAddress!.countryName,
+                                  fullAddress: selectedAddress!.fullAddress,
+                                  locality: selectedAddress!.locality,
+                                  region: selectedAddress!.region);
+
+                              //print(json.encode(addresse));
+                              var credentialsBox = Boxes.getCredentials();
+                              credentialsBox.put('address', addressItem);
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => MainScreen(),
+                                  ),
+                                  (Route<dynamic> route) => false);
+                            }
+                          }
+                        : null)
+              ]),
+            ],
+          ))
     ]));
   }
 }

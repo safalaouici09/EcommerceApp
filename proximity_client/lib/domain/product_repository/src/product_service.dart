@@ -87,11 +87,11 @@ class ProductService with ChangeNotifier {
     notifyListeners();
     var credentialsBox = Boxes.getCredentials();
     credentialsBox.put('first_time', false);
-    dynamic _adresse = credentialsBox.get('address');
+    AddressItem _adresse = credentialsBox.get('address');
     var latitude = 0.0;
     var langitude = 0.0;
     var radius = 0;
-    print({"address": _adresse});
+    /* print({"address": _adresse});
     if (_adresse != null) {
       _adresse = json.decode(_adresse);
       if (_adresse["lat"] != null) {
@@ -99,6 +99,15 @@ class ProductService with ChangeNotifier {
       }
       if (_adresse["lng"] != null) {
         langitude = _adresse["lng"];
+      }
+    }*/
+    if (_adresse != null) {
+      // _adresse = json.decode(_adresse);
+      if (_adresse.lat != null) {
+        latitude = _adresse.lat!;
+      }
+      if (_adresse.lng != null) {
+        langitude = _adresse.lng!;
       }
     }
 

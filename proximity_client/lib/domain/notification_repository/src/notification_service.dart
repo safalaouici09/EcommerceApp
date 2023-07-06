@@ -31,15 +31,15 @@ class NotificationService with ChangeNotifier {
 
     /// open hive boxP
     var credentialsBox = Boxes.getCredentials();
-    String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
+    String? _id = credentialsBox.get('id');
+    String? _token = credentialsBox.get('token');
 
     /// dataForm is already a parameter
 
     /// post the dataForm via dio call
     try {
       Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer " + _token;
+      dio.options.headers["token"] = "Bearer " + _token.toString();
       var res = await dio.get(BASE_API_URL + '/notification/$_id');
       _loadingNotifications = false;
       notifyListeners();
