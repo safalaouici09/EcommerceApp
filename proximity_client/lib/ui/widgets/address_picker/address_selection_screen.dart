@@ -4,12 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:proximity/config/themes/google_map_theme.dart';
 import 'package:location/location.dart';
-import 'package:geocoding/geocoding.dart' as geocoder;
+import 'package:geocoding/geocoding.dart';
+//import 'package:geocoding/geocoding.dart' as geocoder;
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/ui/pages/main_pages/view/main_screen.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
 import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
 
 class AddressSelectionScreen extends StatefulWidget {
   const AddressSelectionScreen(
@@ -47,40 +49,35 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
   }
 
   /// This method is used to localise the client app
-  Future<LocationData?> getUserLocation() async {
-    Location location = Location();
-    String error;
-    try {
-      return await location.getLocation();
-    } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        error = 'please grant permission';
-        print(error);
-      }
-      if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
-        error = 'permission denied- please enable it from app settings';
-        print(error);
-      }
+  Future<Position?> getUserLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      // Handle denied permission
       return null;
     }
+    if (permission == LocationPermission.deniedForever) {
+      // Handle permanently denied permission
+      return null;
+    }
+    return await Geolocator.getCurrentPosition();
   }
 
   /// This method is retrieve the address of a given location (lat, long)
-  Future<Address> getLocationAddress(LatLng latLng) async {
-    var addresses = await geocoder.placemarkFromCoordinates(
-        latLng.latitude, latLng.longitude);
-    var address = addresses.first;
+  Future<Address> getLocationAddress(LatLng position) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark placemark = placemarks.first;
     return Address(
-      lat: latLng.latitude,
-      lng: latLng.longitude,
-      countryName: address.country,
-      countryCode: address.isoCountryCode,
-      locality: address.subAdministrativeArea,
-      region: address.administrativeArea,
-      city: address.locality,
-      fullAddress: address.street,
-      streetName: address.street,
-      postalCode: address.postalCode,
+      lat: position.latitude,
+      lng: position.longitude,
+      countryName: placemark.country,
+      countryCode: placemark.isoCountryCode,
+      locality: placemark.subAdministrativeArea,
+      region: placemark.administrativeArea,
+      city: placemark.locality,
+      fullAddress: placemark.street,
+      streetName: placemark.street,
+      postalCode: placemark.postalCode,
     );
   }
 
@@ -112,18 +109,22 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
     } else {
       selectedLocation = franceLocation;
       initialCameraLocation = selectedLocation;
-      getUserLocation().then((LocationData? locationData) => setState(() {
+      getUserLocation().then((Position? position) {
+        if (position != null) {
+          setState(() {
             initialCameraLocation =
-                LatLng(locationData!.latitude!, locationData.longitude!);
+                LatLng(position.latitude, position.longitude);
             selectedLocation = initialCameraLocation!;
             initialZoom = 12.0;
-          }));
+          });
+        }
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    getUserLocation();
+    //getUserLocation();
     return Scaffold(
         body: Stack(children: [
       Expanded(
@@ -144,6 +145,7 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                 final Marker marker =
                     Marker(markerId: markerId, position: latLng);
                 selectedLocation = latLng;
+
                 getLocationAddress(latLng).then((address) {
                   setState(() {
                     selectedAddress = address;

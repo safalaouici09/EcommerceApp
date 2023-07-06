@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 /// Constant values
+const double tiny_25 = 1.0;
 const double tiny_50 = 2.0; // divider value
 
 const double small_50 = 4.0;
@@ -71,6 +72,14 @@ Map<String, String> hoursMap = {
   '11': '11 hours',
   '12': '12 hours',
   '13': '13 hours',
+};
+//product varaints ptions
+Map<String, String> optionsMap = {
+  '1': 'Size',
+  '2': 'Color',
+  '3': 'Material',
+  '4': 'Style',
+  '5': 'Other',
 };
 //days
 

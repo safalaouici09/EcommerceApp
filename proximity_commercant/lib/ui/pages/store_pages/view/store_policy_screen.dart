@@ -149,7 +149,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
             const InfoMessage(
                 message:
                     'Select the type of Deliveries your store support, and set a delivery tax value in case you deliver your orders.'),
-            ListTogglePolicy(
+            ListToggle(
                 leadIcon: Icons.local_shipping_rounded,
                 color: policyCreationValidation.delivery!
                     ? blueSwatch.shade500
@@ -157,7 +157,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 title: 'Delivery',
                 value: policyCreationValidation.delivery!,
                 onToggle: policyCreationValidation.toggleDelivery),
-            ListTogglePolicy(
+            ListToggle(
                 leadIcon: ProximityIcons.self_pickup_duotone_1,
                 color: policyCreationValidation.selfPickup!
                     ? blueSwatch.shade500
@@ -216,15 +216,15 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
                 children: [
-                  ListTogglePolicy(
+                  ListToggle(
                       title: 'Real-time notifications',
                       value: policyCreationValidation.notifRealTime!,
                       onToggle: policyCreationValidation.toggleNotifRealTime),
-                  ListTogglePolicy(
+                  ListToggle(
                       title: 'Hourly notificationss',
                       value: policyCreationValidation.notifHourly!,
                       onToggle: policyCreationValidation.toggleNotifHourly),
-                  ListTogglePolicy(
+                  ListToggle(
                       title: 'Batch notifications ',
                       value: policyCreationValidation.notifBatch!,
                       onToggle: policyCreationValidation.toggleNotifBatch),
@@ -291,20 +291,20 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
                 children: [
-                  ListTogglePolicy(
+                  ListToggle(
                       title: 'In-platform notifications',
                       value: policyCreationValidation.notifInPlateforme!,
                       onToggle:
                           policyCreationValidation.toggleNotifInPlateforme),
-                  ListTogglePolicy(
+                  ListToggle(
                       title: 'Pop pup notifications ',
                       value: policyCreationValidation.notifPopUp!,
                       onToggle: policyCreationValidation.toggleNotifPopup),
-                  ListTogglePolicy(
+                  ListToggle(
                       title: 'Email notifications',
                       value: policyCreationValidation.notifEmail!,
                       onToggle: policyCreationValidation.toggleNotifEmail),
-                  ListTogglePolicy(
+                  ListToggle(
                       title: 'SMS notifications',
                       value: policyCreationValidation.notifSms!,
                       onToggle: policyCreationValidation.toggleNotifSms),
@@ -341,7 +341,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
                 children: [
-                  ListTogglePolicy(
+                  ListToggle(
                       title: 'Allow Returns',
                       value: policyCreationValidation.returnAccept!,
                       onToggle: policyCreationValidation.toggleReturnAccept),
@@ -398,18 +398,18 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                             const EdgeInsets.all(normal_100).copyWith(right: 0),
                         child: Column(
                           children: [
-                            ListTogglePolicy(
+                            ListToggle(
                                 title: 'Shipping Fees.',
                                 value:
                                     policyCreationValidation.returnShippingFee!,
                                 onToggle: policyCreationValidation
                                     .toggleReturnShippingFee),
-                            ListTogglePolicy(
+                            ListToggle(
                                 title: 'Full Refund',
                                 value: policyCreationValidation.returnTotalFee!,
                                 onToggle: policyCreationValidation
                                     .toggleReturnTotalFee),
-                            ListTogglePolicy(
+                            ListToggle(
                                 title: 'Partial Refund',
                                 value:
                                     policyCreationValidation.returnPartialFee!,

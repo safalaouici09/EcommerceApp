@@ -107,47 +107,41 @@ class _ProductVariantCreationScreenState
             leadIcon: ProximityIcons.cart,
             title: 'Variant Offer.',
             color: redSwatch.shade400),
-        RichEditText(children: [
-          EditText(
-              hintText: 'Variant Price in €.',
-              borderType: BorderType.middle,
-              keyboardType: TextInputType.number,
-              errorText: _price.error,
-              onChanged: (value) {
-                setState(() {
-                  changePrice(value);
-                  if (_price.value != null) {
-                    _variant.price = double.tryParse(value);
-                  }
-
-                  /*changePrice(value);
+        EditText(
+            hintText: 'Variant Price in €.',
+            borderType: BorderType.middle,
+            keyboardType: TextInputType.number,
+            errorText: _price.error,
+            onChanged: (value) {
+              setState(() {
+                changePrice(value);
                 if (_price.value != null) {
-                  
-                  setState(() {
-                    _variant.price = double.tryParse(value);
-                  });
-                }*/
+                  _variant.price = double.tryParse(value);
+                }
+
+                /*changePrice(value);
+              if (_price.value != null) {
+                
+                setState(() {
+                  _variant.price = double.tryParse(value);
                 });
-              })
-        ]),
+              }*/
+              });
+            }),
         const EditTextSpacer(),
-        RichEditText(
-          children: [
-            EditText(
-                hintText: 'Variant Quantity.',
-                borderType: BorderType.middle,
-                keyboardType: TextInputType.number,
-                errorText: _quantity.error,
-                onChanged: (value) {
-                  changeQuantity(value);
-                  if (_quantity != null) {
-                    setState(() {
-                      _variant.quantity = int.tryParse(value);
-                    });
-                  }
-                }),
-          ],
-        ),
+        EditText(
+            hintText: 'Variant Quantity.',
+            borderType: BorderType.middle,
+            keyboardType: TextInputType.number,
+            errorText: _quantity.error,
+            onChanged: (value) {
+              changeQuantity(value);
+              if (_quantity != null) {
+                setState(() {
+                  _variant.quantity = int.tryParse(value);
+                });
+              }
+            }),
         SectionDivider(
             leadIcon: ProximityIcons.picture,
             title: 'Variant Image.',

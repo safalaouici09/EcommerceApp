@@ -13,7 +13,7 @@ class HomeTabScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ProductService>(builder: (_, productService, __) {
       return ListView(children: [
-        // const HomeTabBar(),
+        const HomeTabBar(),
         const SearchBar(),
 
         /// Ad Section

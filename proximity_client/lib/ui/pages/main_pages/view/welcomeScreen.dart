@@ -61,7 +61,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                             currentAddress: Address(),
                                             navigation: true,
                                           )));
-                              print(_result);
+                              print("""/////""" + _result);
                               print(AddressItem.fromAdress(_result));
                               print(
                                   json.encode(AddressItem.fromAdress(_result)));

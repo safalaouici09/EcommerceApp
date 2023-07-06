@@ -261,6 +261,7 @@ class EditText extends StatefulWidget {
     this.suffixIcon,
     this.suffixOnPressed,
     required this.hintText,
+    this.label,
     this.errorText,
     this.keyboardType,
     this.maxLines = 1,
@@ -274,6 +275,7 @@ class EditText extends StatefulWidget {
   final TextEditingController? controller;
   final bool enabled;
   final String hintText;
+  final String? label;
   final String? saved;
   final String? errorText;
   final ValueChanged<String>? onChanged;
@@ -323,7 +325,7 @@ class _EditTextState extends State<EditText> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: normal_100),
+      padding: const EdgeInsets.symmetric(horizontal: normal_200),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -346,6 +348,7 @@ class _EditTextState extends State<EditText> {
             onChanged: widget.onChanged,
 
             decoration: InputDecoration(
+                hintText: widget.label,
                 filled: true,
                 fillColor: widget.enabled
                     ? Theme.of(context).cardColor

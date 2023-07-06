@@ -7,12 +7,14 @@ class CharacteristicFormsController extends ChangeNotifier {
   //late String _tempValue;
   ValidationItem _tempValue = ValidationItem(null, null);
   ValidationItem _tempOption = ValidationItem(null, null);
+  bool _customOption = false;
 
   ValidationItem get tempValue => _tempValue;
 
   ValidationItem get tempOption => _tempOption;
   bool? _optionValid = false;
   bool? get optionValid => _optionValid;
+  bool? get customOption => _customOption;
 
   bool get isValid {
     bool _isValid = true;
@@ -31,10 +33,23 @@ class CharacteristicFormsController extends ChangeNotifier {
   }
 
   void addOption() {
-    if (_tempOption.value != '') {
-      characteristics.addEntries([MapEntry(_tempOption.value!, <String>{})]);
+    if (_tempOption.value == null) {
+      _tempOption =
+          ValidationItem(null, "You can not provide an empty option.");
     }
+    if (_tempOption.value == 'Autre') {
+      _tempOption = ValidationItem(null, "You should specify an option.");
+    } else {
+      if (_tempOption.value != '') {
+        characteristics.addEntries([MapEntry(_tempOption.value!, <String>{})]);
+      }
+    }
+
     notifyListeners();
+  }
+
+  void resetCustom() {
+    _customOption = false;
   }
 
   void removeOption(String value) {
@@ -46,6 +61,16 @@ class CharacteristicFormsController extends ChangeNotifier {
     _tempOption = value;
     notifyListeners();
   }*/
+  void changePredifinedOption(String value, int index) {
+    _tempOption = ValidationItem(value, null);
+
+    if (_tempOption.value == 'Other') {
+      _customOption = true;
+    }
+
+    notifyListeners();
+  }
+
   void changeOption(String value) {
     if (value == '') {
       _tempOption = ValidationItem(null, null);
@@ -82,7 +107,7 @@ class CharacteristicFormsController extends ChangeNotifier {
   }*/
   void changeValue(String value) {
     if (value == '') {
-      _tempValue = ValidationItem(null, "Value cannot be empty.");
+      _tempValue = ValidationItem(null, null);
       notifyListeners();
     } else {
       bool _valueValid = RegExp(r'^[A-Za-z0-9]+$').hasMatch(value);

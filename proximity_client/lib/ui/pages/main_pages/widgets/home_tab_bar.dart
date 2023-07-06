@@ -2,76 +2,152 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
+import 'package:proximity_client/ui/widgets/address_picker/address_selection_screen.dart';
 
 import '../view/notifications_screen.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
-class HomeTabBar extends StatelessWidget {
+class HomeTabBar extends StatefulWidget {
   const HomeTabBar({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<UserService>(builder: (_, userService, __) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Padding(
-              padding: const EdgeInsets.all(normal_100),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    (userService.user! != null)
-                        ? Text(
-                            '${userService.user!.address!.city}, ${userService.user!.address!.countryName}',
-                            style: Theme.of(context).textTheme.bodyText2)
-                        : ShimmerFx(
-                            child: Container(
-                                color: Theme.of(context).cardColor,
-                                child: Text('Montpellier, France',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2))),
-                    const SizedBox(width: small_50),
-                    Icon(Icons.pin_drop_rounded,
-                        color: Theme.of(context).primaryColor, size: normal_100)
-                  ])),
-          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            const SizedBox(width: normal_100),
-            Expanded(
-                child: (userService.user! != null)
-                    ? RichText(
-                        text: TextSpan(children: [
-                        TextSpan(
-                            text: 'Welcome\n',
-                            style: Theme.of(context).textTheme.subtitle2),
-                        TextSpan(
-                            text: '${userService.user!.userName}.',
-                            style: Theme.of(context).textTheme.subtitle1)
-                      ]))
-                    : ShimmerFx(
-                        child: Container(
-                            color: Theme.of(context).cardColor,
-                            child: RichText(
-                                text: TextSpan(children: [
-                              TextSpan(
-                                  text: 'Welcome\n',
-                                  style: Theme.of(context).textTheme.subtitle2),
-                              TextSpan(
-                                  text: 'Frédéric.',
-                                  style: Theme.of(context).textTheme.subtitle1)
-                            ]))))),
-            SmallIconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const NotificationsScreen()));
-                },
-                icon: const Icon(ProximityIcons.notifications)),
-            const SizedBox(width: normal_100)
-          ]),
-        ],
-      );
+  State<HomeTabBar> createState() => _HomeTabBarState();
+}
+
+class _HomeTabBarState extends State<HomeTabBar> {
+  String? _currentAddress;
+  Position? _currentPosition;
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        /* _currentAddress = '${place.street}' +
+            ', ${place.subLocality},' +
+            '${place.subAdministrativeArea}' +
+            ', ${place.postalCode}';*/
+        _currentAddress = '${place.street}, ${place.locality}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
     });
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      _getAddressFromLatLng(_currentPosition!);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  void initState() {
+    super.initState();
+
+    _getCurrentPosition();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Padding(
+            padding: const EdgeInsets.all(normal_100),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /* Icon(Icons.pin_drop_outlined,
+                      color: Theme.of(context)
+                          .primaryColor), //hoverColor, size: normal_100),
+                  */
+                  GestureDetector(
+                    onTap: () async {
+                      _currentAddress = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddressSelectionScreen(
+                                    currentAddress: Address(),
+                                    navigation: true,
+                                  )));
+                    },
+                    /*  print("""/////""" + _result);
+                              print(AddressItem.fromAdress(_result));,*/
+                    child: Row(
+                      children: [
+                        const SizedBox(width: small_50),
+                        _currentAddress != null
+                            ? Text(_currentAddress!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(color: primaryTextLightColor))
+                            : ShimmerFx(
+                                child: Container(
+                                    color: Theme.of(context).cardColor,
+                                    child: Text('Montpellier, France',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2))),
+                        const Icon(ProximityIcons.chevron_bottom),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  SmallIconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const NotificationsScreen()));
+                      },
+                      icon: const Icon(ProximityIcons.notifications)),
+                  const SizedBox(width: normal_100)
+                ])),
+      ],
+    );
   }
 }

@@ -8,7 +8,7 @@ class NotificationsPreferencesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-            child: ListView(children: const [
+            child: ListView(children: [
       TopBar(title: 'Notifications.'),
       ListToggle(title: 'Orders', value: true),
       ListToggle(title: 'Flashdeals', value: true),

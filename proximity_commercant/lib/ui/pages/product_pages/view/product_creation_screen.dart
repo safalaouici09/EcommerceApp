@@ -68,6 +68,10 @@ class ProductCreationScreen extends StatelessWidget {
                   leadIcon: ProximityIcons.edit,
                   title: 'Product details.',
                   color: redSwatch.shade500),
+              const InfoMessage(
+                message:
+                    'Every product must belong to a single category. Categorizing products accurately for better promotion and visibility. ',
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: normal_100),
                 child: Selector<StoreService, List<Category>?>(
@@ -115,16 +119,16 @@ class ProductCreationScreen extends StatelessWidget {
                   leadIcon: ProximityIcons.picture,
                   title: 'Product Images.',
                   color: redSwatch.shade500),
-              ImagePickerWidget(
-                  images: productCreationValidation.images,
-                  maxImages: 9,
-                  onImageAdded: productCreationValidation.addProductImage,
-                  onImageRemoved: productCreationValidation.removeProductImage),
-              // const SizedBox(height: huge_100),
-
-              const InfoMessage(
-                message: 'Each Product should fit in one category, ',
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: ImagePickerWidget(
+                    images: productCreationValidation.images,
+                    maxImages: 9,
+                    onImageAdded: productCreationValidation.addProductImage,
+                    onImageRemoved:
+                        productCreationValidation.removeProductImage),
               ),
+              // const SizedBox(height: huge_100),
 
               /// Error Messages
               const SizedBox(height: small_100),
@@ -132,55 +136,94 @@ class ProductCreationScreen extends StatelessWidget {
                 productCreationValidation.name.error,
                 productCreationValidation.description.error
               ]),
-              Column(
-                children: [
-                  if (!productCreationValidation.hasVariants!)
-                    Column(
+              SectionDivider(
+                  leadIcon: ProximityIcons.cart,
+                  title: 'Your Offer.',
+                  color: redSwatch.shade500),
+              InfoMessage(
+                  message:
+                      ' Please enter the price and quantity for each product accurately. If you offer product variants, specify the base details and variations. Keep your product information up to date for a smooth selling experience.'),
+
+              if (!productCreationValidation.hasVariants!)
+                Column(
+                  children: [
+                    EditText(
+                        hintText: 'Price in €.',
+                        keyboardType: TextInputType.number,
+                        errorText: productCreationValidation.price!.error,
+                        borderType: BorderType.top,
+                        saved: productCreationValidation.price!.value,
+                        enabled: (product.price == null) || editScreen,
+                        onChanged: productCreationValidation.changePrice),
+                    const EditTextSpacer(),
+                    EditText(
+                        hintText: 'Quantity.',
+                        keyboardType: TextInputType.number,
+                        borderType: BorderType.bottom,
+                        errorText: productCreationValidation.quantity!.error,
+                        saved: productCreationValidation.quantity!.value
+                                    .toString() !=
+                                "null"
+                            ? productCreationValidation.quantity!.value
+                                .toString()
+                            : "",
+                        enabled: (product.quantity == null) || editScreen,
+                        onChanged: productCreationValidation.changeQuantity),
+                  ],
+                ),
+              Padding(
+                padding: const EdgeInsets.all(normal_150).copyWith(top: 0),
+                child: ListToggle(
+                    title: 'add variants ',
+                    value: productCreationValidation.hasVariants!,
+                    onToggle: productCreationValidation.toggleVariants),
+              ),
+              if (productCreationValidation.hasVariants!)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SectionDivider(
+                        leadIcon: ProximityIcons.product,
+                        title: 'Options.',
+                        color: redSwatch.shade500),
+                   
+                    productCreationValidation.characteristicsList.isEmpty
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: normal_125),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Wrap(
+                                spacing: small_100,
+                                runSpacing: 4.0,
+                                children: productCreationValidation
+                                    .characteristicsList
+                                    .map((value) {
+                                  return Chip(
+                                    label: Text(
+                                      value,
+                                      style: TextStyle(
+                                        color: primaryTextLightColor,
+                                        fontSize: normal_100,
+                                      ),
+                                    ),
+                                    backgroundColor:
+                                        dividerLightColor.withOpacity(0.2),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      side: BorderSide(
+                                        color: dividerLightColor,
+                                        width: 2.0,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ), Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SectionDivider(
-                            leadIcon: ProximityIcons.cart,
-                            title: 'Your Offer.',
-                            color: redSwatch.shade500),
-                        EditText(
-                            hintText: 'Price in €.',
-                            keyboardType: TextInputType.number,
-                            errorText: productCreationValidation.price!.error,
-                            borderType: BorderType.top,
-                            saved: productCreationValidation.price!.value,
-                            enabled: (product.price == null) || editScreen,
-                            onChanged: productCreationValidation.changePrice),
-                        const EditTextSpacer(),
-                        EditText(
-                            hintText: 'Quantity.',
-                            keyboardType: TextInputType.number,
-                            borderType: BorderType.bottom,
-                            errorText:
-                                productCreationValidation.quantity!.error,
-                            saved: productCreationValidation.quantity!.value
-                                        .toString() !=
-                                    "null"
-                                ? productCreationValidation.quantity!.value
-                                    .toString()
-                                : "",
-                            enabled: (product.quantity == null) || editScreen,
-                            onChanged:
-                                productCreationValidation.changeQuantity),
-                      ],
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
-                    child: ListToggle(
-                        title: 'add variants ',
-                        value: productCreationValidation.hasVariants!,
-                        onToggle: productCreationValidation.toggleVariants),
-                  ),
-                  if (productCreationValidation.hasVariants!)
-                    Column(
-                      children: [
-                        SectionDivider(
-                            leadIcon: ProximityIcons.product,
-                            title: 'Options.',
-                            color: redSwatch.shade500),
                         TertiaryButton(
                             onPressed: () async {
                               final Map<String, Set<String>>?
@@ -199,65 +242,31 @@ class ProductCreationScreen extends StatelessWidget {
                               }
                             },
                             title: 'Add options.'),
-                        productCreationValidation.characteristicsList.isEmpty
-                            ? Container()
-                            : Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: small_100),
-                                child: Wrap(
-                                  spacing: small_100,
-                                  runSpacing: 0,
-                                  children: [
-                                    Container(
-                                      height: normal_150,
-                                      child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: productCreationValidation
-                                              .characteristicsList.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return Chip(
-                                                label: Text(
-                                                    productCreationValidation
-                                                            .characteristicsList[
-                                                        index],
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText2!
-                                                        .copyWith(
-                                                            fontSize:
-                                                                normal_100)));
-                                          }),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                        productCreationValidation.characteristics.isEmpty
-                            ? Container()
-                            : Column(
-                                children: [
-                                  SectionDivider(
-                                      leadIcon: ProximityIcons.product,
-                                      title: 'Variations.',
-                                      color: redSwatch.shade500),
-                                  VariantCreator(
-                                      productVariants:
-                                          productCreationValidation.variants,
-                                      maxVariants: productCreationValidation
-                                          .variantsMaxSize,
-                                      characteristics: productCreationValidation
-                                          .characteristics,
-                                      onVariantAdded:
-                                          productCreationValidation.addVariant,
-                                      onVariantRemoved:
-                                          productCreationValidation
-                                              .removeVariant),
-                                ],
-                              ),
                       ],
-                    ),
-                ],
-              ),
+                    ),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                    productCreationValidation.characteristics.isEmpty
+                        ? Container()
+                        : Column(
+                            children: [
+                              SectionDivider(
+                                  leadIcon: ProximityIcons.product,
+                                  title: 'Variations.',
+                                  color: redSwatch.shade500),
+                              VariantCreator(
+                                  productVariants:
+                                      productCreationValidation.variants,
+                                  maxVariants:
+                                      productCreationValidation.variantsMaxSize,
+                                  characteristics:
+                                      productCreationValidation.characteristics,
+                                  onVariantAdded:
+                                      productCreationValidation.addVariant,
+                                  onVariantRemoved:
+                                      productCreationValidation.removeVariant),
+                            ],
+                          ),
+                  ],
+                ),
 
               /// You Offer (Price and Quantity) if the product have no variants
 

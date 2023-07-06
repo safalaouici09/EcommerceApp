@@ -76,7 +76,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(normal_100),
+        padding: const EdgeInsets.symmetric(horizontal: normal_100),
         child: Wrap(
             spacing: normal_100,
             runSpacing: normal_100,

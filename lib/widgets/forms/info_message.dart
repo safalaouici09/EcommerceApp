@@ -10,7 +10,8 @@ class InfoMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: normal_100, horizontal: normal_150),
+      margin: const EdgeInsets.symmetric(
+          vertical: normal_100, horizontal: normal_200),
       padding: const EdgeInsets.all(normal_100),
       decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
@@ -18,9 +19,12 @@ class InfoMessage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(ProximityIcons.info, color: Theme.of(context).textTheme.bodyText2!.color),
+          Icon(ProximityIcons.info,
+              color: Theme.of(context).textTheme.bodyText2!.color),
           const SizedBox(width: normal_100),
-          Expanded(child: Text(message, style: Theme.of(context).textTheme.bodyText2))
+          Expanded(
+              child:
+                  Text(message, style: Theme.of(context).textTheme.bodyText2))
         ],
       ),
     );
