@@ -136,7 +136,7 @@ class StoreService with ChangeNotifier {
     }
   }
 
-  Future getProximityProducts({String name = ""}) async {
+  Future searchStores({String name = ""}) async {
     /// open hive box
     ///
     ///
@@ -181,7 +181,7 @@ class StoreService with ChangeNotifier {
 
       var res = await dio.get(BASE_API_URL +
           '/search/?radius=${radius.toString()}&latitude=${latitude.toString()}&langitude=${langitude.toString()}&name=${(name)}');
-
+      print(res.statusCode.toString());
       if (res.statusCode == 200) {
         _searchResults = [];
         _searchResults.addAll(Store.storesFromJsonList(res.data));

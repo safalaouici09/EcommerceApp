@@ -60,13 +60,19 @@ class Search extends CustomSearchDelegate<Product> {
   @override
   Widget buildResults(BuildContext context) {
     final productService = Provider.of<ProductService>(context);
+    final storeService = Provider.of<StoreService>(context);
     productService.getProximityProducts(name: query);
+    storeService.searchStores(name: query);
     List<Widget> _widgetList = [];
     if (query.isNotEmpty) {
       for (int i = 0; i < productService.searchResults.length; i++) {
         _widgetList.add(
           ProductCard(product: productService.searchResults[i]),
         );
+      }
+      for (int i = 0; i < storeService.searchResults.length; i++) {
+        _widgetList
+            .add(StoreSection(idStore: storeService.searchResults[i].id!));
       }
     }
     if (_widgetList.isEmpty) {
