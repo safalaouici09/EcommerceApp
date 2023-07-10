@@ -42,9 +42,10 @@ class _SearchBarState extends State<SearchBar> {
         child: Row(
           children: [
             Expanded(
-                child: Text('Search...',
-                    style: Theme.of(context).textTheme.headline5!.copyWith(
-                        color: Theme.of(context).textTheme.bodyText2!.color))),
+              child: Text('Search...',
+                  style: Theme.of(context).textTheme.headline5!.copyWith(
+                      color: Theme.of(context).textTheme.bodyText2!.color)),
+            ),
             const SizedBox(width: normal_100),
             const Icon(ProximityIcons.search)
           ],
@@ -59,24 +60,27 @@ class Search extends CustomSearchDelegate<Product> {
   @override
   Widget buildResults(BuildContext context) {
     final productService = Provider.of<ProductService>(context);
-    if (productService.query != query) {
-      productService.getProximityProducts(name: query);
-    }
+    productService.getProximityProducts(name: query);
     List<Widget> _widgetList = [];
     if (query.isNotEmpty) {
       for (int i = 0; i < productService.searchResults.length; i++) {
-        _widgetList.add(ProductCard(product: productService.searchResults[i]));
+        _widgetList.add(
+          ProductCard(product: productService.searchResults[i]),
+        );
       }
     }
     if (_widgetList.isEmpty) {
       return const NoResults(
-          icon: ProximityIcons.no_results_illustration,
-          message: 'No results were found.');
+        icon: ProximityIcons.no_results_illustration,
+        message: 'No results were found.',
+      );
     } else {
       return MasonryGrid(
         column: 2,
         padding: const EdgeInsets.symmetric(
-            horizontal: small_100, vertical: normal_100),
+          horizontal: small_100,
+          vertical: normal_100,
+        ),
         children: _widgetList,
       );
     }
@@ -84,36 +88,35 @@ class Search extends CustomSearchDelegate<Product> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final productService = Provider.of<ProductService>(context);
     List<Widget> _widgetList = [];
-    int i = 0;
     if (query != '') {
-      // final productService = Provider.of<ProductService>(context);
-      // productService.searchProducts(query);
-      // for (Product element in productService.searchResults) {
-      //   if (element.name!.toLowerCase().contains(query.toLowerCase())) {
-      //     _widgetList.add(GestureDetector(
-      //         onTap: () {
-      //           query = element.name!;
-      //           showResults(context);
-      //         },
-      //         child: Container(
-      //             padding: const EdgeInsets.all(normal_100),
-      //             child: Text(element.name!,
-      //                 style: Theme.of(context).textTheme.bodyText1))));
-      //     _widgetList.add(Divider(
-      //         height: tiny_50,
-      //         thickness: tiny_50,
-      //         color: Theme.of(context).dividerColor));
-      //     i++;
-      //     if (i >= 7) break;
-      //   }
-      // }
+      productService.getProximityProducts(name: query);
+      if (query.isNotEmpty) {
+        for (int i = 0; i < productService.searchResults.length; i++) {
+          _widgetList
+              .add(ProductCard(product: productService.searchResults[i]));
+        }
+      }
+      if (_widgetList.isEmpty) {
+        return const NoResults(
+            icon: ProximityIcons.no_results_illustration,
+            message: 'No results were found.');
+      } else {
+        return MasonryGrid(
+          column: 2,
+          padding: const EdgeInsets.symmetric(
+              horizontal: small_100, vertical: normal_100),
+          children: _widgetList,
+        );
+      }
     }
 
     return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: _widgetList);
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: _widgetList,
+    );
   }
 }
 
@@ -252,8 +255,7 @@ class _SearchPageRoute<T> extends PageRoute<T> {
   void didComplete(T? result) {
     super.didComplete(result);
     assert(delegate._route == this);
-    delegate._route = null;
-    delegate._currentBody = null;
+    delegate._route = delegate._currentBody = null;
   }
 }
 
@@ -274,6 +276,10 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
   // This node is owned, but not hosted by, the search page. Hosting is done by
   // the text field.
   FocusNode focusNode = FocusNode();
+  bool showChoiceChips = false;
+  bool _searchProducts = false;
+  bool _searchStores = false;
+  bool _searchBoth = true;
 
   @override
   void initState() {
@@ -328,13 +334,13 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
 
   void _onQueryChanged() {
     setState(() {
-      // rebuild ourselves because query changed.
+      showChoiceChips = widget.delegate!.query.isNotEmpty;
     });
   }
 
   void _onSearchBodyChanged() {
     setState(() {
-      // rebuild ourselves because search body changed.
+      // Rebuild ourselves because the search body changed.
     });
   }
 
@@ -348,9 +354,226 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
     switch (widget.delegate!._currentBody!) {
       case _SearchBody.suggestions:
         body = KeyedSubtree(
-          key: const ValueKey<_SearchBody>(_SearchBody.suggestions),
-          child: widget.delegate!.buildSuggestions(context),
-        );
+            key: const ValueKey<_SearchBody>(_SearchBody.suggestions),
+            child: showChoiceChips
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(normal_100),
+                        child: Row(
+                          children: [
+                            Icon(Icons.list),
+                            SizedBox(
+                              width: normal_100,
+                            ),
+                            Wrap(
+                              spacing: normal_100,
+                              children: [
+                                ChoiceChip(
+                                  label: Text(
+                                    'All',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                          color: Colors.black,
+                                        ),
+                                  ),
+                                  onSelected: (_) {
+                                    setState(() {
+                                      _searchBoth = true;
+                                      _searchProducts = false;
+                                      _searchStores = false;
+                                    });
+                                  },
+                                  selected: _searchBoth,
+                                  backgroundColor:
+                                      dividerLightColor.withOpacity(0.5),
+                                  selectedColor: Colors.blue.shade500,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    side: BorderSide(
+                                      color: dividerLightColor.withOpacity(0.5),
+                                    ),
+                                  ),
+                                ),
+                                ChoiceChip(
+                                  label: Text(
+                                    'Stores',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                          color: Colors.black,
+                                        ),
+                                  ),
+                                  onSelected: (_) {
+                                    setState(() {
+                                      _searchBoth = false;
+                                      _searchProducts = false;
+                                      _searchStores = true;
+                                    });
+                                  },
+                                  selected: _searchStores,
+                                  backgroundColor:
+                                      dividerLightColor.withOpacity(0.5),
+                                  selectedColor: Colors.blue.shade500,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    side: BorderSide(
+                                      color: dividerLightColor.withOpacity(0.5),
+                                    ),
+                                  ),
+                                ),
+                                ChoiceChip(
+                                  label: Text(
+                                    'Products',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                          color: Colors.black,
+                                        ),
+                                  ),
+                                  onSelected: (_) {
+                                    setState(() {
+                                      _searchBoth = false;
+                                      _searchProducts = true;
+                                      _searchStores = false;
+                                    });
+                                  },
+                                  selected: _searchProducts,
+                                  backgroundColor:
+                                      dividerLightColor.withOpacity(0.5),
+                                  selectedColor: Colors.blue.shade500,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    side: BorderSide(
+                                      color: dividerLightColor.withOpacity(0.5),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      _searchProducts || _searchBoth
+                          ? Padding(
+                              padding: const EdgeInsets.all(normal_100),
+                              child: Column(
+                                children: [
+                                  Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Products",
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!),
+                                        const SizedBox(width: normal_100),
+                                        Expanded(
+                                            child: Container(
+                                                height: tiny_50,
+                                                decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                        colors: [
+                                                      Theme.of(context)
+                                                          .dividerColor
+                                                          .withOpacity(0.0),
+                                                      Theme.of(context)
+                                                          .dividerColor,
+                                                    ],
+                                                        begin: Alignment
+                                                            .centerRight,
+                                                        end: Alignment
+                                                            .centerLeft))))
+                                      ]),
+                                  widget.delegate!.buildSuggestions(context),
+                                  Row(
+                                    children: [
+                                      const Spacer(),
+                                      GestureDetector(
+                                          // onTap: seeMore,
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: small_100,
+                                                  right: normal_100),
+                                              child: Row(children: [
+                                                Text('See More',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            color: blueSwatch
+                                                                .shade500)),
+                                              ]))),
+                                    ],
+                                  )
+                                ],
+                              ))
+                          : Container(),
+                      _searchStores || _searchBoth
+                          ? Padding(
+                              padding: const EdgeInsets.all(normal_100),
+                              child: Column(
+                                children: [
+                                  Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text("Stores",
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!),
+                                        const SizedBox(width: normal_100),
+                                        Expanded(
+                                            child: Container(
+                                                height: tiny_50,
+                                                decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                        colors: [
+                                                      Theme.of(context)
+                                                          .dividerColor
+                                                          .withOpacity(0.0),
+                                                      Theme.of(context)
+                                                          .dividerColor,
+                                                    ],
+                                                        begin: Alignment
+                                                            .centerRight,
+                                                        end: Alignment
+                                                            .centerLeft))))
+                                      ]),
+                                  widget.delegate!.buildSuggestions(context),
+                                  Row(
+                                    children: [
+                                      const Spacer(),
+                                      GestureDetector(
+                                          // onTap: seeMore,
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: small_100,
+                                                  right: normal_100),
+                                              child: Row(children: [
+                                                Text('See More',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            color: blueSwatch
+                                                                .shade500)),
+                                              ]))),
+                                    ],
+                                  )
+                                ],
+                              ))
+                          : Container(),
+                      widget.delegate!.buildSuggestions(context),
+                    ],
+                  )
+                : Container());
         break;
       case _SearchBody.results:
         body = KeyedSubtree(
@@ -370,78 +593,87 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
       case TargetPlatform.linux:
       case TargetPlatform.windows:
         routeName = searchFieldLabel;
+        break;
     }
 
     return Semantics(
-        explicitChildNodes: true,
-        scopesRoute: true,
-        namesRoute: true,
-        label: routeName,
-        child: Scaffold(
-          body: SafeArea(
-            child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      explicitChildNodes: true,
+      scopesRoute: true,
+      namesRoute: true,
+      label: routeName,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
               Container(
-                  padding: const EdgeInsets.symmetric(horizontal: small_100)
-                      .copyWith(left: normal_100),
-                  margin: const EdgeInsets.all(normal_100),
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(smallRadius),
-                      gradient: LinearGradient(
-                        colors:
-                            (Theme.of(context).brightness == Brightness.light)
-                                ? lightSearchBarGradient
-                                : darkSearchBarGradient,
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      )),
-                  child: Center(
-                      child: TextFormField(
-                          focusNode: focusNode,
-                          controller: widget.delegate!._queryTextController,
-                          textAlignVertical: TextAlignVertical.center,
-                          onFieldSubmitted: (String _) {
-                            widget.delegate!.showResults(context);
-                          },
-                          keyboardType: TextInputType.name,
-                          style: Theme.of(context).textTheme.headline5,
-                          cursorColor: Theme.of(context).primaryColor,
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              isDense: true,
-                              suffixIcon: IconButton(
-                                  icon: (widget.delegate!.query == '')
-                                      ? Icon(ProximityIcons.search,
-                                          color:
-                                              Theme.of(context).iconTheme.color)
-                                      : Icon(ProximityIcons.remove,
-                                          color: Theme.of(context)
-                                              .iconTheme
-                                              .color),
-                                  onPressed: () {
-                                    widget.delegate!.query = '';
-                                  }),
-                              border: InputBorder.none,
-                              hintText: 'Search Product.',
-                              hintStyle: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2!
-                                          .color))))),
-              Divider(
-                  height: tiny_50,
-                  thickness: tiny_50,
-                  color: Theme.of(context).dividerColor),
+                padding: const EdgeInsets.symmetric(horizontal: small_100)
+                    .copyWith(left: normal_100),
+                margin: const EdgeInsets.all(normal_100),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(smallRadius),
+                  gradient: LinearGradient(
+                    colors: (Theme.of(context).brightness == Brightness.light)
+                        ? lightSearchBarGradient
+                        : darkSearchBarGradient,
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Center(
+                  child: TextFormField(
+                    focusNode: focusNode,
+                    controller: widget.delegate!._queryTextController,
+                    textAlignVertical: TextAlignVertical.center,
+                    onFieldSubmitted: (String _) {
+                      widget.delegate!.showResults(context);
+                    },
+                    keyboardType: TextInputType.name,
+                    style: Theme.of(context).textTheme.headline5,
+                    cursorColor: Theme.of(context).primaryColor,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                      suffixIcon: IconButton(
+                        icon: (widget.delegate!.query == '')
+                            ? Icon(
+                                ProximityIcons.search,
+                                color: Theme.of(context).iconTheme.color,
+                              )
+                            : Icon(
+                                ProximityIcons.remove,
+                                color: Theme.of(context).iconTheme.color,
+                              ),
+                        onPressed: () {
+                          widget.delegate!.query = '';
+                        },
+                      ),
+                      border: InputBorder.none,
+                      hintText: 'Search Product.',
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(
+                            color: Theme.of(context).textTheme.bodyText2!.color,
+                          ),
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
-                  child: SingleChildScrollView(
-                      physics: const ScrollPhysics(),
-                      child: AnimatedSwitcher(
-                          duration: normalAnimationDuration, child: body)))
-            ]),
+                child: SingleChildScrollView(
+                  physics: const ScrollPhysics(),
+                  child: AnimatedSwitcher(
+                    duration: normalAnimationDuration,
+                    child: body,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 
@@ -450,7 +682,6 @@ Future<T?> previewSearch<T>({
   required CustomSearchDelegate<T> delegate,
   String query = '',
 }) {
-  print(query);
   delegate.query = query;
   delegate._currentBody = _SearchBody.suggestions;
   return Navigator.of(context).push(_SearchPageRoute<T>(delegate: delegate));

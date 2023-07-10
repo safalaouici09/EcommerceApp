@@ -15,7 +15,7 @@ class PrimaryButton extends ElevatedButton {
             child: (buttonState == ButtonState.loading)
                 ? CircularProgressIndicator(
                     color: primaryTextDarkColor,
-                    backgroundColor: blueSwatch.shade900.withOpacity(0.5),
+                    backgroundColor: blueSwatch.shade500,
                     strokeWidth: tiny_50,
                   )
                 : Text(title,

@@ -14,11 +14,13 @@ class ProductService with ChangeNotifier {
   late Set<Product> _wishList;
   late List<String> _ads;
   String _query = "";
+
   //final Map<String, String>? _selectedOptions = {};
 
   // get methods
   late Map<String, String>? _selectedOptions = {};
   Map<String, String>? get selectedOptions => _selectedOptions;
+
   List<Product> get products => _products;
 
   List<Product> get searchResults => _searchResults;
@@ -52,9 +54,9 @@ class ProductService with ChangeNotifier {
   Future searchProducts(String query) async {
     /// open hive box
     var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
-    AddressItem _adresse = credentialsBox.get('address');
+    // String _id = credentialsBox.get('id');F
+    String? _token = credentialsBox.get('token');
+    AddressItem? _adresse = credentialsBox.get('address');
     print({"adreesse": _adresse});
 
     /// dataForm is already a parameter
@@ -359,11 +361,4 @@ class ProductService with ChangeNotifier {
     }
     notifyListeners();
   }
-
-// // essential methods for the UI
-// bool isOutOfStock(String id) {
-//   return (products.firstWhere((element) => element.id == id).quantity ==
-//       null) ||
-//       (products.firstWhere((element) => element.id == id).quantity == 0);
-// }
 }
