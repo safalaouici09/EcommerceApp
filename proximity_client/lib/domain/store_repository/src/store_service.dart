@@ -12,7 +12,7 @@ class StoreService with ChangeNotifier {
   late List<Store>? _stores = [];
   List<Product>? _products;
 
-  late List<Store> _searchResults;
+  late List<Store> _searchResults = [];
   String _query = "";
 
   // essential values for the UI
@@ -181,12 +181,12 @@ class StoreService with ChangeNotifier {
 
       var res = await dio.get(BASE_API_URL +
           '/search/?radius=${radius.toString()}&latitude=${latitude.toString()}&langitude=${langitude.toString()}&name=${(name)}');
-      print(res.statusCode.toString());
+      print("search" + res.statusCode.toString());
       if (res.statusCode == 200) {
         _searchResults = [];
         _searchResults.addAll(Store.storesFromJsonList(res.data));
 
-        print(_searchResults.length.toString());
+        print("search" + _searchResults.length.toString());
         notifyListeners();
       }
     } on DioError catch (e) {
