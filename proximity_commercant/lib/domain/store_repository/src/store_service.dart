@@ -150,7 +150,10 @@ class StoreService with ChangeNotifier {
 
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
+      print("resformdata");
+      print(formData.fields);
       formData.fields.add(MapEntry("sellerId", _id));
+      print(formData);
       print("res1");
       var res =
           await dio.post(BASE_API_URL + '/store/createStore', data: formData);

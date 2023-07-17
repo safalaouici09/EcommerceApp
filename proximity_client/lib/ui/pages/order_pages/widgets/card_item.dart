@@ -33,8 +33,8 @@ class CardItem extends StatelessWidget {
 
     SizedBox _productCard = SizedBox(
         height: (product.characteristics ?? []).length == 0
-            ? 145
-            : 145 + ((product.characteristics ?? []).length * 15),
+            ? 155
+            : 155 + ((product.characteristics ?? []).length * 15),
         width: shrinkWidth ? 330 : null,
         child: Container(
             padding: const EdgeInsets.all(tiny_50),

@@ -34,6 +34,8 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     User? _user = context.watch<UserService>().user;
+    final storeCreationSliderValidation =
+        Provider.of<StoreCreationSliderValidation>(context);
 
     if (_user!.policy == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -106,13 +108,16 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                   ]))
                         ])))));
       });
+    } else if (storeCreationSliderValidation.policy == null) {
+      storeCreationSliderValidation.setPolicy(_user.policy!);
     }
   }
 
   int index = 0;
-  //final storeCreation= Provider.of<StoreCreationValidation>(context);
+  //final storeCreation= Provider.of<StoreCreationSliderValidation>(context);
 
-  Widget buildOpenDayList(StoreCreationValidation storeCreationValidation) {
+  Widget buildOpenDayList(
+      StoreCreationSliderValidation storeCreationSliderValidation) {
     return Column(
       children: Day.map((day) {
         final dayName = day.toString().split('.').last;
@@ -120,20 +125,20 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           children: [
             CheckboxListTile(
               title: Text(dayName),
-              value: storeCreationValidation.selectedDays.contains(day),
+              value: storeCreationSliderValidation.selectedDays.contains(day),
               onChanged: (value) {
                 setState(() {
                   if (value!) {
-                    storeCreationValidation.addSelectedDays(day);
-                    storeCreationValidation.addDayDayWorkingHours(day);
+                    storeCreationSliderValidation.addSelectedDays(day);
+                    storeCreationSliderValidation.addDayDayWorkingHours(day);
                   } else {
-                    storeCreationValidation.removeDay(day);
-                    storeCreationValidation.removeDayWorkingHours(day);
+                    storeCreationSliderValidation.removeDay(day);
+                    storeCreationSliderValidation.removeDayWorkingHours(day);
                   }
                 });
               },
             ),
-            if (storeCreationValidation.selectedDays.contains(day))
+            if (storeCreationSliderValidation.selectedDays.contains(day))
               /* Padding(
                 padding: const EdgeInsets.symmetric(horizontal: normal_100),
                 child: ListView.builder(
@@ -147,7 +152,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                   },
                 ),
               ),*/
-              if (storeCreationValidation.selectedDays.contains(day))
+              if (storeCreationSliderValidation.selectedDays.contains(day))
                 Padding(
                   padding: const EdgeInsets.all(normal_100),
                   child: TertiaryButton(
@@ -167,10 +172,10 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
   }
 
   Widget buildOpenDaysAndWorkingTimesWidget(
-      StoreCreationValidation storeCreationValidation) {
+      StoreCreationSliderValidation storeCreationSliderValidation) {
     return Column(
       children: [
-        buildOpenDayList(storeCreationValidation),
+        buildOpenDayList(storeCreationSliderValidation),
       ],
     );
   }
@@ -190,32 +195,31 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
 
-    return ChangeNotifierProvider<StoreCreationValidation>(
-        create: (context) => StoreCreationValidation.setStore(widget.store),
-        child: Consumer2<StoreCreationValidation, StoreService>(
-            builder: (context, storeCreationValidation, storeService, child) {
-          /// first check if [index] is null or not
-          /// if it is null then it's a ShopAddingScreen, so no need to fetch data
-          /// to edit it, and no need for a loading screen
-          ///
-          /// otherwise we need to check if we already fetched the data and then
-          /// proceed with the rendering
-          ///
+    return Consumer2<StoreCreationSliderValidation, StoreService>(
+        builder: (context, storeCreationSliderValidation, storeService, child) {
+      /// first check if [index] is null or not
+      /// if it is null then it's a ShopAddingScreen, so no need to fetch data
+      /// to edit it, and no need for a loading screen
+      ///
+      /// otherwise we need to check if we already fetched the data and then
+      /// proceed with the rendering
+      ///
 
-          if (widget.index != null) {
-            didFetch = storeService.stores![widget.index!].allFetched();
+      if (widget.index != null) {
+        didFetch = storeService.stores![widget.index!].allFetched();
 
-            if (!didFetch) storeService.getStoreByIndex(widget.index!);
-          }
-          return Scaffold(
-              body: SafeArea(
-                  child: Stack(alignment: Alignment.bottomCenter, children: [
-            ListView(children: [
-              TopBar(
-                  title: widget.editScreen
-                      ? 'Edit Store.'
-                      : 'Create a new Store.'),
-              /* SectionDivider(
+        if (!didFetch) storeService.getStoreByIndex(widget.index!);
+      }
+      return
+          // Scaffold(
+          //     body: SafeArea(
+          //         child: Stack(alignment: Alignment.bottomCenter, children: [
+          Column(children: [
+        // TopBar(
+        //     title: widget.editScreen
+        //         ? 'Edit Store.'
+        //         : 'Create a new Store.'),
+        /* SectionDivider(
                   leadIcon: ProximityIcons.user,
                   title: 'Store owner.',
                   color: redSwatch.shade500),
@@ -232,403 +236,430 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                     );
                   }),*/
 
-              /// Store Details
-              SectionDivider(
-                  leadIcon: ProximityIcons.edit,
-                  title: 'Store details.',
-                  color: redSwatch.shade500),
+        /// Store Details
+        SectionDivider(
+            leadIcon: ProximityIcons.edit,
+            title: 'Store details.',
+            color: redSwatch.shade500),
 
-              EditText(
-                hintText: 'Name',
-                borderType: BorderType.top,
-                saved: storeCreationValidation.storeName.value,
-                errorText: storeCreationValidation.storeName.error,
-                enabled: (widget.store.name == null) || widget.editScreen,
-                onChanged: storeCreationValidation.changeStoreName,
-              ),
+        EditText(
+          hintText: 'Name',
+          borderType: BorderType.top,
+          saved: storeCreationSliderValidation.storeName.value,
+          errorText: storeCreationSliderValidation.storeName.error,
+          enabled: (widget.store.name == null) || widget.editScreen,
+          onChanged: storeCreationSliderValidation.changeStoreName,
+        ),
 
-              const EditTextSpacer(),
-              EditText(
-                hintText: 'Description.',
-                borderType: BorderType.bottom,
-                keyboardType: TextInputType.multiline,
-                saved: storeCreationValidation.storeDescription.value,
-                errorText: storeCreationValidation.storeDescription.error,
-                maxLines: 5,
-                enabled:
-                    (widget.store.description == null) || widget.editScreen,
-                onChanged: storeCreationValidation.changeStoreDescription,
-              ),
-              InfoMessage(
-                  message:
-                      'Please provide your commercial registration number. This is a unique identifier assigned to your business by the relevant government authority'),
-              const EditTextSpacer(),
-              EditText(
-                hintText: 'Commercial Registration Number',
-                saved: storeCreationValidation.storeRegistrationNumber.value,
-                errorText:
-                    storeCreationValidation.storeRegistrationNumber.error,
-                enabled: (widget.store.registrationNumber == null) ||
-                    widget.editScreen,
+        const EditTextSpacer(),
+        EditText(
+          hintText: 'Description.',
+          borderType: BorderType.bottom,
+          keyboardType: TextInputType.multiline,
+          saved: storeCreationSliderValidation.storeDescription.value,
+          errorText: storeCreationSliderValidation.storeDescription.error,
+          maxLines: 5,
+          enabled: (widget.store.description == null) || widget.editScreen,
+          onChanged: storeCreationSliderValidation.changeStoreDescription,
+        ),
+        const InfoMessage(
+            message:
+                'Please provide your commercial registration number. This is a unique identifier assigned to your business by the relevant government authority'),
+        const EditTextSpacer(),
+        EditText(
+          hintText: 'Commercial Registration Number',
+          saved: storeCreationSliderValidation.storeRegistrationNumber.value,
+          errorText:
+              storeCreationSliderValidation.storeRegistrationNumber.error,
+          enabled:
+              (widget.store.registrationNumber == null) || widget.editScreen,
+          onChanged:
+              storeCreationSliderValidation.changeStoreRegistrationNumber,
+        ),
+
+        SectionDivider(
+            leadIcon: ProximityIcons.picture,
+            title: 'Store Image.',
+            color: redSwatch.shade500),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: normal_125),
+          child: ImagePickerWidget(
+              images: storeCreationSliderValidation.storeImages,
+              maxImages: 1,
+              onImageAdded: storeCreationSliderValidation.addStoreImage,
+              onImageRemoved: storeCreationSliderValidation.removeStoreImage),
+        ),
+
+        /// Error Messages
+        //  const SizedBox(height: small_100),
+        const ErrorMessage(errors: [
+          // storeCreationSliderValidation.storeName.error,
+          //storeCreationSliderValidation.storeDescription.error
+        ]),
+
+        /// Policy
+
+        const SizedBox(height: normal_100),
+
+        SectionDivider(
+            leadIcon: Icons.timer_outlined,
+            title: 'Working time.',
+            color: redSwatch.shade500),
+        const InfoMessage(
+            message:
+                "By updating your working hours in the app, your clients will be informed about when you're open for pickups. Take a moment to add your working hours and keep your customers in the loop"),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: normal_100),
+            child: DropDownSelector<String>(
+                hintText: 'Select working time option.',
+                savedValue: storeCreationSliderValidation.workingTimeOption,
                 onChanged:
-                    storeCreationValidation.changeStoreRegistrationNumber,
-              ),
-
-              SectionDivider(
-                  leadIcon: ProximityIcons.picture,
-                  title: 'Store Image.',
-                  color: redSwatch.shade500),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: normal_125),
-                child: ImagePickerWidget(
-                    images: storeCreationValidation.storeImages,
-                    maxImages: 1,
-                    onImageAdded: storeCreationValidation.addStoreImage,
-                    onImageRemoved: storeCreationValidation.removeStoreImage),
-              ),
-
-              /// Error Messages
-              //  const SizedBox(height: small_100),
-              ErrorMessage(errors: [
-                // storeCreationValidation.storeName.error,
-                //storeCreationValidation.storeDescription.error
-              ]),
-
-              /// Policy
-
-              const SizedBox(height: normal_100),
-
-              SectionDivider(
-                  leadIcon: Icons.timer_outlined,
-                  title: 'Working time.',
-                  color: redSwatch.shade500),
-              const InfoMessage(
-                  message:
-                      "By updating your working hours in the app, your clients will be informed about when you're open for pickups. Take a moment to add your working hours and keep your customers in the loop"),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                  child: DropDownSelector<String>(
-                      hintText: 'Select working time option.',
-                      savedValue: storeCreationValidation.workingTimeOption,
-                      onChanged:
-                          storeCreationValidation.changeWorkingTimeOption,
-                      items: workingTimesOptions.entries
-                          .map((item) => DropdownItem<String>(
-                              value: item.key,
-                              child: Text(item.value,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleSmall!
-                                      .copyWith(fontWeight: FontWeight.w600))))
-                          .toList())
-                  // }),
-                  ),
-              storeCreationValidation.workingTimeOption == "1"
-                  ? Padding(
+                    storeCreationSliderValidation.changeWorkingTimeOption,
+                items: workingTimesOptions.entries
+                    .map((item) => DropdownItem<String>(
+                        value: item.key,
+                        child: Text(item.value,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(fontWeight: FontWeight.w600))))
+                    .toList())
+            // }),
+            ),
+        storeCreationSliderValidation.workingTimeOption == "1"
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: Column(
+                  children: [
+                    Padding(
                       padding:
                           const EdgeInsets.symmetric(horizontal: normal_100),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: normal_100),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: storeCreationValidation
-                                  .fixedWorkingHours!.length,
-                              itemBuilder: (context, index) {
-                                TimeRange workingTime = storeCreationValidation
-                                    .fixedWorkingHours![index];
-                                return getTimeRange(
-                                    storeCreationValidation,
-                                    context,
-                                    workingTime,
-                                    null,
-                                    storeCreationValidation.workingTimeOption);
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(normal_100),
-                            child: TertiaryButton(
-                              onPressed: () {
-                                setState(() {
-                                  storeCreationValidation.addFixedWorkingHours(
-                                      TimeRange(
-                                          openTime: const TimeOfDay(
-                                              hour: 9, minute: 0),
-                                          closeTime: const TimeOfDay(
-                                              hour: 0, minute: 0)));
-                                });
-                              },
-                              title: "Add working time",
-                            ),
-                          )
-                        ],
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: storeCreationSliderValidation
+                            .fixedWorkingHours!.length,
+                        itemBuilder: (context, index) {
+                          TimeRange workingTime = storeCreationSliderValidation
+                              .fixedWorkingHours![index];
+                          return getTimeRange(
+                              storeCreationSliderValidation,
+                              context,
+                              workingTime,
+                              null,
+                              storeCreationSliderValidation.workingTimeOption);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(normal_100),
+                      child: TertiaryButton(
+                        onPressed: () {
+                          setState(() {
+                            storeCreationSliderValidation.addFixedWorkingHours(
+                                TimeRange(
+                                    openTime:
+                                        const TimeOfDay(hour: 9, minute: 0),
+                                    closeTime:
+                                        const TimeOfDay(hour: 0, minute: 0)));
+                          });
+                        },
+                        title: "Add working time",
                       ),
                     )
-                  : storeCreationValidation.workingTimeOption == "2"
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: normal_100),
-                          child: Column(
-                            children: [
-                              Column(
-                                children: Day.map((day) {
-                                  final dayName =
-                                      day.toString().split('.').last;
-                                  return Column(
-                                    children: [
-                                      CheckboxListTile(
-                                        activeColor: const Color(
-                                            0xFF2196F3), // bluewatch color
-                                        checkColor: Colors
-                                            .white, // contrasting color (white)
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: normal_150),
-                                        controlAffinity:
-                                            ListTileControlAffinity.trailing,
-                                        title: Text(
-                                          dayName,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: storeCreationValidation
-                                                    .selectedDays
-                                                    .contains(day)
-                                                ? FontWeight.bold
-                                                : FontWeight.normal,
-                                            color: storeCreationValidation
-                                                    .selectedDays
-                                                    .contains(day)
-                                                ? Colors.black
-                                                : Colors.grey,
-                                          ),
-                                          /*Theme.of(context)
+                  ],
+                ),
+              )
+            : storeCreationSliderValidation.workingTimeOption == "2"
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                    child: Column(
+                      children: [
+                        Column(
+                          children: Day.map((day) {
+                            final dayName = day.toString().split('.').last;
+                            return Column(
+                              children: [
+                                CheckboxListTile(
+                                  activeColor: const Color(
+                                      0xFF2196F3), // bluewatch color
+                                  checkColor:
+                                      Colors.white, // contrasting color (white)
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: normal_150),
+                                  controlAffinity:
+                                      ListTileControlAffinity.trailing,
+                                  title: Text(
+                                    dayName,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: storeCreationSliderValidation
+                                              .selectedDays
+                                              .contains(day)
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: storeCreationSliderValidation
+                                              .selectedDays
+                                              .contains(day)
+                                          ? Colors.black
+                                          : Colors.grey,
+                                    ),
+                                    /*Theme.of(context)
                                           .textTheme
                                           .subtitle2!
                                           .copyWith(
                                             fontWeight: FontWeight.w600,
                                           ),*/
-                                        ),
-                                        value: storeCreationValidation
-                                            .selectedDays
-                                            .contains(day),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            if (value!) {
-                                              storeCreationValidation
-                                                  .addSelectedDays(day);
-                                              storeCreationValidation
-                                                  .addDayDayWorkingHours(day);
-                                              // dayWorkingTimes[day] = [];
-                                            } else {
-                                              storeCreationValidation
-                                                  .deleteSelectedDay(day);
-                                              storeCreationValidation
-                                                  .removeDayWorkingHours(day);
-                                              storeCreationValidation
-                                                  .removeDay(day);
-                                            }
-                                          });
-                                        },
-                                      ),
-                                      if (storeCreationValidation.selectedDays
-                                          .contains(day))
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: normal_100),
-                                          child: ListView.builder(
-                                            shrinkWrap: true,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemCount: storeCreationValidation
-                                                    .dayWorkingHours![day]
-                                                    ?.length ??
-                                                0,
-                                            itemBuilder: (context, index) {
-                                              TimeRange workingTime =
-                                                  storeCreationValidation
-                                                          .dayWorkingHours![
-                                                      day]![index];
-                                              return Column(
-                                                children: [
-                                                  getTimeRange(
-                                                      storeCreationValidation,
-                                                      context,
-                                                      workingTime,
-                                                      day,
-                                                      storeCreationValidation
-                                                          .workingTimeOption),
-                                                  /*  ErrorMessage(errors: [
-                                                storeCreationValidation
+                                  ),
+                                  value: storeCreationSliderValidation
+                                      .selectedDays
+                                      .contains(day),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value!) {
+                                        storeCreationSliderValidation
+                                            .addSelectedDays(day);
+                                        storeCreationSliderValidation
+                                            .addDayDayWorkingHours(day);
+                                        // dayWorkingTimes[day] = [];
+                                      } else {
+                                        storeCreationSliderValidation
+                                            .deleteSelectedDay(day);
+                                        storeCreationSliderValidation
+                                            .removeDayWorkingHours(day);
+                                        storeCreationSliderValidation
+                                            .removeDay(day);
+                                      }
+                                    });
+                                  },
+                                ),
+                                if (storeCreationSliderValidation.selectedDays
+                                    .contains(day))
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: normal_100),
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: storeCreationSliderValidation
+                                              .dayWorkingHours![day]?.length ??
+                                          0,
+                                      itemBuilder: (context, index) {
+                                        TimeRange workingTime =
+                                            storeCreationSliderValidation
+                                                .dayWorkingHours![day]![index];
+                                        return Column(
+                                          children: [
+                                            getTimeRange(
+                                                storeCreationSliderValidation,
+                                                context,
+                                                workingTime,
+                                                day,
+                                                storeCreationSliderValidation
+                                                    .workingTimeOption),
+                                            /*  ErrorMessage(errors: [
+                                                storeCreationSliderValidation
                                                     .errorMessage,
                                               ]),*/
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      if (storeCreationValidation.selectedDays
-                                          .contains(day))
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.all(normal_100),
-                                          child: TertiaryButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                storeCreationValidation
-                                                    .addDayWorkingHours(
-                                                        day,
-                                                        TimeRange(
-                                                            openTime:
-                                                                const TimeOfDay(
-                                                                    hour: 9,
-                                                                    minute: 0),
-                                                            closeTime:
-                                                                const TimeOfDay(
-                                                                    hour: 0,
-                                                                    minute:
-                                                                        0)));
-                                                /*  dayWorkingTimes[day]?.add(TimeRange(
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                if (storeCreationSliderValidation.selectedDays
+                                    .contains(day))
+                                  Padding(
+                                    padding: const EdgeInsets.all(normal_100),
+                                    child: TertiaryButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          storeCreationSliderValidation
+                                              .addDayWorkingHours(
+                                                  day,
+                                                  TimeRange(
+                                                      openTime: const TimeOfDay(
+                                                          hour: 9, minute: 0),
+                                                      closeTime:
+                                                          const TimeOfDay(
+                                                              hour: 0,
+                                                              minute: 0)));
+                                          /*  dayWorkingTimes[day]?.add(TimeRange(
                                                 openTime: null,
                                                 closeTime: null));*/
-                                              });
-                                            },
-                                            title: "Add working time",
-                                          ),
-                                        ),
-                                    ],
-                                  );
-                                }).toList(),
-                              )
-                            ],
-                          ),
+                                        });
+                                      },
+                                      title: "Add working time",
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }).toList(),
                         )
-                      : Container(),
+                      ],
+                    ),
+                  )
+                : Container(),
 
-              /// Address
-              SectionDivider(
-                  leadIcon: ProximityIcons.address,
-                  title: 'Address.',
-                  color: redSwatch.shade500),
-              const InfoMessage(
-                  message:
-                      'Select your Store Location from the Address Picker, then edit the address info for more accuracy.'),
-              Padding(
-                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
-                child: TertiaryButton(
-                    onPressed: () async {
-                      final Address _result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddressSelectionScreen(
-                                  currentAddress:
-                                      storeCreationValidation.storeAddress)));
-                      storeCreationValidation.changeAddress(_result);
-                    },
-                    title: 'Select Address.'),
-              ),
-              EditText(
-                hintText: 'Street Address Line 1.',
-                borderType: BorderType.top,
-                saved: storeCreationValidation.storeAddress.fullAddress,
-                enabled: (widget.store.address == null) || widget.editScreen,
-                onChanged: storeCreationValidation.changeFullAddress,
-              ),
-              const EditTextSpacer(),
-              EditText(
-                hintText: 'Street Address Line 2.',
-                borderType: BorderType.middle,
-                saved: storeCreationValidation.storeAddress.streetName,
-                enabled: (widget.store.address == null) || widget.editScreen,
-                onChanged: storeCreationValidation.changeStreetName,
-              ),
-              const EditTextSpacer(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                child: DropDownSelector<String>(
-                  // labelText: 'Product Category.',
-                  hintText: 'Country.',
-                  onChanged: storeCreationValidation.changeCountry,
-                  borderType: BorderType.middle,
-                  savedValue: storeCreationValidation.storeAddress.countryCode,
-                  items: countryList.entries
-                      .map((item) => DropdownItem<String>(
-                          value: item.key,
-                          child: Text(item.value,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall!
-                                  .copyWith(fontWeight: FontWeight.w600))))
-                      .toList(),
-                ),
-              ),
-              const EditTextSpacer(),
-              EditText(
-                hintText: 'Region.',
-                borderType: BorderType.middle,
-                saved: storeCreationValidation.storeAddress.region,
-                enabled: (widget.store.address == null) || widget.editScreen,
-                onChanged: storeCreationValidation.changeRegion,
-              ),
-              const EditTextSpacer(),
-              EditText(
-                hintText: 'City.',
-                borderType: BorderType.middle,
-                saved: storeCreationValidation.storeAddress.city,
-                enabled: (widget.store.address == null) || widget.editScreen,
-                onChanged: storeCreationValidation.changeCity,
-              ),
-              const EditTextSpacer(),
-              EditText(
-                hintText: 'Postal Code.',
-                borderType: BorderType.bottom,
-                saved: storeCreationValidation.storeAddress.postalCode,
-                enabled: (widget.store.address == null) || widget.editScreen,
-                onChanged: storeCreationValidation.changePostalCode,
-              ),
+        /// Address
+        SectionDivider(
+            leadIcon: ProximityIcons.address,
+            title: 'Address.',
+            color: redSwatch.shade500),
+        const InfoMessage(
+            message:
+                'Select your Store Location from the Address Picker, then edit the address info for more accuracy.'),
+        Padding(
+          padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+          child: TertiaryButton(
+              onPressed: () async {
+                final Address _result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddressSelectionScreen(
+                            currentAddress:
+                                storeCreationSliderValidation.storeAddress)));
+                setState(() {
+                  print(_result);
+                  storeCreationSliderValidation.changeAddress(_result);
+                });
+              },
+              title: 'Select Address.'),
+        ),
+        Text(storeCreationSliderValidation.storeAddress.fullAddress ?? ""),
+        EditText(
+          controller: () {
+            TextEditingController _controller = TextEditingController();
+            _controller.text =
+                storeCreationSliderValidation.storeAddress.fullAddress ?? "";
+            _controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: _controller.text.length));
+            return _controller;
+          }(),
+          hintText: 'Street Address Line 1.',
+          borderType: BorderType.top,
+          enabled: (widget.store.address == null) || widget.editScreen,
+          onChanged: storeCreationSliderValidation.changeFullAddress,
+        ),
+        const EditTextSpacer(),
+        EditText(
+          controller: () {
+            TextEditingController _controller = TextEditingController();
+            _controller.text =
+                storeCreationSliderValidation.storeAddress.streetName ?? "";
+            _controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: _controller.text.length));
+            return _controller;
+          }(),
+          hintText: 'Street Address Line 2.',
+          borderType: BorderType.middle,
+          enabled: (widget.store.address == null) || widget.editScreen,
+          onChanged: storeCreationSliderValidation.changeStreetName,
+        ),
+        const EditTextSpacer(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: normal_100),
+          child: DropDownSelector<String>(
+            // labelText: 'Product Category.',
+            hintText: 'Country.',
+            onChanged: storeCreationSliderValidation.changeCountry,
+            borderType: BorderType.middle,
+            savedValue:
+                storeCreationSliderValidation.storeAddress.countryCode ?? "",
+            items: countryList.entries
+                .map((item) => DropdownItem<String>(
+                    value: item.key,
+                    child: Text(item.value,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(fontWeight: FontWeight.w600))))
+                .toList(),
+          ),
+        ),
+        const EditTextSpacer(),
+        EditText(
+          controller: () {
+            TextEditingController _controller = TextEditingController();
+            _controller.text =
+                storeCreationSliderValidation.storeAddress.region ?? "";
+            _controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: _controller.text.length));
+            return _controller;
+          }(),
+          hintText: 'Region.',
+          borderType: BorderType.middle,
+          enabled: (widget.store.address == null) || widget.editScreen,
+          onChanged: storeCreationSliderValidation.changeRegion,
+        ),
+        const EditTextSpacer(),
+        EditText(
+          controller: () {
+            TextEditingController _controller = TextEditingController();
+            _controller.text =
+                storeCreationSliderValidation.storeAddress.city ?? "";
+            _controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: _controller.text.length));
+            return _controller;
+          }(),
+          hintText: 'City.',
+          borderType: BorderType.middle,
+          enabled: (widget.store.address == null) || widget.editScreen,
+          onChanged: storeCreationSliderValidation.changeCity,
+        ),
+        const EditTextSpacer(),
+        EditText(
+          controller: () {
+            TextEditingController _controller = TextEditingController();
+            _controller.text =
+                storeCreationSliderValidation.storeAddress.postalCode ?? "";
+            _controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: _controller.text.length));
+            return _controller;
+          }(),
+          hintText: 'Postal Code.',
+          borderType: BorderType.bottom,
+          enabled: (widget.store.address == null) || widget.editScreen,
+          onChanged: storeCreationSliderValidation.changePostalCode,
+        ),
 
-              SectionDivider(
-                  leadIcon: ProximityIcons.policy,
-                  title: 'Store Policy.',
-                  color: redSwatch.shade500),
-              const InfoMessage(
-                  message:
-                      ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
-              Padding(
-                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
-                child: Column(
-                  children: [
-                    ListToggle(
-                        title: 'keep global policy',
-                        value: storeCreationValidation.globalPolicy!,
-                        onToggle: storeCreationValidation.toggleGlobalPolicy),
-                    if (!storeCreationValidation.globalPolicy!)
-                      Padding(
-                        padding:
-                            const EdgeInsets.all(normal_100).copyWith(top: 0),
-                        child: TertiaryButton(
-                            onPressed: () async {
-                              Policy? policyResult = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => StorePolicyScreen(
-                                            global: false,
-                                            store: true,
-                                            policy: widget.store.policy ??
-                                                _user!.policy,
-                                          )));
+        SectionDivider(
+            leadIcon: ProximityIcons.policy,
+            title: 'Store Policy.',
+            color: redSwatch.shade500),
+        const InfoMessage(
+            message:
+                ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
+        Padding(
+          padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+          child: Column(
+            children: [
+              ListToggle(
+                  title: 'keep global policy',
+                  value: storeCreationSliderValidation.globalPolicy!,
+                  onToggle: storeCreationSliderValidation.toggleGlobalPolicy),
+              if (!storeCreationSliderValidation.globalPolicy!)
+                Padding(
+                  padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                  child: TertiaryButton(
+                      onPressed: () async {
+                        Policy? policyResult = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => StorePolicyScreen(
+                                      global: false,
+                                      store: true,
+                                      policy:
+                                          widget.store.policy ?? _user!.policy,
+                                    )));
 
-                              storeCreationValidation.setPolicy(policyResult);
+                        storeCreationSliderValidation.setPolicy(policyResult);
 
-                              // final Address _result = await
-                              /* widget.editScreen
+                        // final Address _result = await
+                        /* widget.editScreen
                                             ? Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -642,61 +673,60 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                             Policy? storePolicy=  StorePolicyScreen(
                                                 global: false,
                                               );*/
-                              // storeCreationValidation.changeAddress(_result);
-                            },
-                            title: 'Set Custom  Policy .'),
-                      )
-                    else
-                      Container(),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: huge_200,
-              ),
+                        // storeCreationSliderValidation.changeAddress(_result);
+                      },
+                      title: 'Set Custom  Policy .'),
+                )
+              else
+                Container(),
+            ],
+          ),
+        ),
 
-              /// Image Picker
-            ]),
-            BottomActionsBar(buttons: [
-              PrimaryButton(
-                  buttonState: storeService.formsLoading
-                      ? ButtonState.loading
-                      : (storeCreationValidation.isValid)
-                          ? ButtonState.enabled
-                          : ButtonState.disabled,
-                  onPressed: () {
-                    if (storeCreationValidation.globalPolicy!) {
-                      storeCreationValidation.setPolicy(_user!.policy!);
-                    }
-                    if (widget.editScreen) {
-                      storeService.editStore(
-                          context,
-                          widget.index!,
-                          storeCreationValidation
-                              .toFormData(storeCreationValidation.policy!),
-                          []);
-                    } else {
-                      StoreDialogs.confirmStore(context, 1);
-                      storeService.addStore(
-                          context,
-                          storeCreationValidation
-                              .toFormData(storeCreationValidation.policy!));
-                    }
-                  },
-                  title: 'Confirm.')
-            ])
-          ])));
-        }));
+        /// Image Picker
+      ]);
+      // BottomActionsBar(buttons: [
+      //   PrimaryButton(
+      //       buttonState: storeService.formsLoading
+      //           ? ButtonState.loading
+      //           : (storeCreationSliderValidation.isValid)
+      //               ? ButtonState.enabled
+      //               : ButtonState.disabled,
+      //       onPressed: () {
+      //         if (storeCreationSliderValidation.globalPolicy!) {
+      //           storeCreationSliderValidation.setPolicy(_user!.policy!);
+      //         }
+      //         if (widget.editScreen) {
+      //           storeService.editStore(
+      //               context,
+      //               widget.index!,
+      //               storeCreationSliderValidation
+      //                   .toFormData(storeCreationSliderValidation.policy!),
+      //               []);
+      //         } else {
+      //           StoreDialogs.confirmStore(context, 1);
+      //           storeService.addStore(
+      //               context,
+      //               storeCreationSliderValidation
+      //                   .toFormData(storeCreationSliderValidation.policy!));
+      //         }
+      //       },
+      //       title: 'Confirm.')
+      // ])
+      // ])
+    });
+
+    // ));
   }
 
   Padding getTimeRange(
-      StoreCreationValidation storeCreationValidation,
+      StoreCreationSliderValidation storeCreationSliderValidation,
       BuildContext context,
       TimeRange workingTime,
       String? day,
       String? option) {
-    storeCreationValidation.changeTimeRangeKey;
-    int index = storeCreationValidation.timeRangeKey;
+    storeCreationSliderValidation.changeTimeRangeKey;
+    int index = storeCreationSliderValidation.timeRangeKey;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: small_100),
@@ -707,9 +737,10 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           // Handle widget dismissal
           setState(() {
             if (option == '1') {
-              storeCreationValidation.deleteFixedWorkingHours(workingTime);
+              storeCreationSliderValidation
+                  .deleteFixedWorkingHours(workingTime);
             } else {
-              storeCreationValidation.deleteDayWorkingHours(
+              storeCreationSliderValidation.deleteDayWorkingHours(
                   day.toString(), workingTime);
             }
           });
@@ -727,8 +758,9 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           Expanded(
             child: TimeButton(
               onPressed: (() async {
-                TimeOfDay? selectedTime = await storeCreationValidation
-                    .getStartTime(context, storeCreationValidation.openTime);
+                TimeOfDay? selectedTime =
+                    await storeCreationSliderValidation.getStartTime(
+                        context, storeCreationSliderValidation.openTime);
                 setState(() {
                   workingTime.openTime = selectedTime;
                 });
@@ -761,14 +793,16 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           Expanded(
             child: TimeButton(
               onPressed: (() async {
-                TimeOfDay? selectedTime = await storeCreationValidation
-                    .getClosingTime(context, storeCreationValidation.closeTime);
+                TimeOfDay? selectedTime =
+                    await storeCreationSliderValidation.getClosingTime(
+                        context, storeCreationSliderValidation.closeTime);
                 setState(() {
                   workingTime.closeTime = selectedTime;
                   if (option == '1') {
-                    storeCreationValidation.addFixedWorkingHours(workingTime);
+                    storeCreationSliderValidation
+                        .addFixedWorkingHours(workingTime);
                   } else {
-                    storeCreationValidation.addCustomizedHours(
+                    storeCreationSliderValidation.addCustomizedHours(
                         day.toString(), workingTime);
                   }
                 });
@@ -821,10 +855,10 @@ class StoreCreationScreen extends StatelessWidget {
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
 
-    return ChangeNotifierProvider<StoreCreationValidation>(
-        create: (context) => StoreCreationValidation.setStore(store),
-        child: Consumer2<StoreCreationValidation, StoreService>(
-            builder: (context, storeCreationValidation, storeService, child) {
+    return ChangeNotifierProvider<StoreCreationSliderValidation>(
+        create: (context) => StoreCreationSliderValidation.setStore(store),
+        child: Consumer2<StoreCreationSliderValidation, StoreService>(
+            builder: (context, storeCreationSliderValidation, storeService, child) {
           /// first check if [index] is null or not
           /// if it is null then it's a ShopAddingScreen, so no need to fetch data
           /// to edit it, and no need for a loading screen
@@ -863,28 +897,28 @@ class StoreCreationScreen extends StatelessWidget {
               EditText(
                 hintText: 'Name.',
                 borderType: BorderType.middle,
-                saved: storeCreationValidation.storeName.value,
-                errorText: storeCreationValidation.storeName.error,
+                saved: storeCreationSliderValidation.storeName.value,
+                errorText: storeCreationSliderValidation.storeName.error,
                 enabled: (store.name == null) || editScreen,
-                onChanged: storeCreationValidation.changeStoreName,
+                onChanged: storeCreationSliderValidation.changeStoreName,
               ),
               const EditTextSpacer(),
               EditText(
                 hintText: 'Description.',
                 borderType: BorderType.middle,
                 keyboardType: TextInputType.multiline,
-                saved: storeCreationValidation.storeDescription.value,
-                errorText: storeCreationValidation.storeDescription.error,
+                saved: storeCreationSliderValidation.storeDescription.value,
+                errorText: storeCreationSliderValidation.storeDescription.error,
                 maxLines: 5,
                 enabled: (store.description == null) || editScreen,
-                onChanged: storeCreationValidation.changeStoreDescription,
+                onChanged: storeCreationSliderValidation.changeStoreDescription,
               ),
 
               /// Error Messages
               const SizedBox(height: small_100),
               ErrorMessage(errors: [
-                storeCreationValidation.storeName.error,
-                storeCreationValidation.storeDescription.error
+                storeCreationSliderValidation.storeName.error,
+                storeCreationSliderValidation.storeDescription.error
               ]),
 
               /// Policy
@@ -903,9 +937,9 @@ class StoreCreationScreen extends StatelessWidget {
                       padding:
                           const EdgeInsets.symmetric(horizontal: small_100),
                       child: LargeIconButton(
-                          onPressed: storeCreationValidation.toggleSelfPickup,
+                          onPressed: storeCreationSliderValidation.toggleSelfPickup,
                           selected:
-                              (storeCreationValidation.selfPickup ?? false),
+                              (storeCreationSliderValidation.selfPickup ?? false),
                           icon: DuotoneIcon(
                               primaryLayer:
                                   ProximityIcons.self_pickup_duotone_1,
@@ -919,8 +953,8 @@ class StoreCreationScreen extends StatelessWidget {
                       padding:
                           const EdgeInsets.symmetric(horizontal: small_100),
                       child: LargeIconButton(
-                          onPressed: storeCreationValidation.toggleDelivery,
-                          selected: (storeCreationValidation.delivery ?? false),
+                          onPressed: storeCreationSliderValidation.toggleDelivery,
+                          selected: (storeCreationSliderValidation.delivery ?? false),
                           icon: DuotoneIcon(
                               primaryLayer: ProximityIcons.delivery_duotone_1,
                               secondaryLayer: ProximityIcons.delivery_duotone_2,
@@ -928,42 +962,42 @@ class StoreCreationScreen extends StatelessWidget {
                           title: 'Delivery'),
                     ))
                   ])),
-              if (storeCreationValidation.selfPickup ?? false) ...[
+              if (storeCreationSliderValidation.selfPickup ?? false) ...[
                 ListToggle(
                     title: 'Free SelfPickup',
-                    value: storeCreationValidation.selfPickupFree!,
-                    onToggle: storeCreationValidation.toggleSelfPickupFree),
+                    value: storeCreationSliderValidation.selfPickupFree!,
+                    onToggle: storeCreationSliderValidation.toggleSelfPickupFree),
                 ListToggle(
                     title: 'Partial SelfPickup',
-                    value: storeCreationValidation.selfPickupPartial!,
-                    onToggle: storeCreationValidation.toggleSelfPickupPartial),
+                    value: storeCreationSliderValidation.selfPickupPartial!,
+                    onToggle: storeCreationSliderValidation.toggleSelfPickupPartial),
                 ListToggle(
                     title: 'Total SelfPickup',
-                    value: storeCreationValidation.selfPickupTotal!,
-                    onToggle: storeCreationValidation.toggleSelfPickupTotal),
-                if (!(storeCreationValidation.selfPickupFree ?? false)) ...[
+                    value: storeCreationSliderValidation.selfPickupTotal!,
+                    onToggle: storeCreationSliderValidation.toggleSelfPickupTotal),
+                if (!(storeCreationSliderValidation.selfPickupFree ?? false)) ...[
                   const SizedBox(height: normal_100),
                   EditText(
                     hintText: 'SelfPickup Price.',
                     keyboardType: TextInputType.number,
-                    saved: (storeCreationValidation.selfPickupPrice == null)
+                    saved: (storeCreationSliderValidation.selfPickupPrice == null)
                         ? ""
-                        : storeCreationValidation.selfPickupPrice.toString(),
+                        : storeCreationSliderValidation.selfPickupPrice.toString(),
                     enabled: (store.policy == null) || editScreen,
-                    onChanged: storeCreationValidation.changeSelfPickupPrice,
+                    onChanged: storeCreationSliderValidation.changeSelfPickupPrice,
                   )
                 ],
               ],
-              if (storeCreationValidation.delivery ?? false) ...[
+              if (storeCreationSliderValidation.delivery ?? false) ...[
                 const SizedBox(height: normal_100),
                 EditText(
                   hintText: 'Delivery Tax.',
                   keyboardType: TextInputType.number,
-                  saved: (storeCreationValidation.tax == null)
+                  saved: (storeCreationSliderValidation.tax == null)
                       ? ""
-                      : storeCreationValidation.tax.toString(),
+                      : storeCreationSliderValidation.tax.toString(),
                   enabled: (store.policy == null) || editScreen,
-                  onChanged: storeCreationValidation.changeTax,
+                  onChanged: storeCreationSliderValidation.changeTax,
                 )
               ],
               const SizedBox(height: normal_100),
@@ -998,25 +1032,25 @@ class StoreCreationScreen extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => AddressSelectionScreen(
                                   currentAddress:
-                                      storeCreationValidation.storeAddress)));
-                      storeCreationValidation.changeAddress(_result);
+                                      storeCreationSliderValidation.storeAddress)));
+                      storeCreationSliderValidation.changeAddress(_result);
                     },
                     title: 'Select Address.'),
               ),
               EditText(
                 hintText: 'Street Address Line 1.',
                 //  borderType: BorderType.middle,
-                saved: storeCreationValidation.storeAddress.fullAddress,
+                saved: storeCreationSliderValidation.storeAddress.fullAddress,
                 enabled: (store.address == null) || editScreen,
-                onChanged: storeCreationValidation.changeFullAddress,
+                onChanged: storeCreationSliderValidation.changeFullAddress,
               ),
               const EditTextSpacer(),
               EditText(
                 hintText: 'Street Address Line 2.',
                 borderType: BorderType.middle,
-                saved: storeCreationValidation.storeAddress.streetName,
+                saved: storeCreationSliderValidation.storeAddress.streetName,
                 enabled: (store.address == null) || editScreen,
-                onChanged: storeCreationValidation.changeStreetName,
+                onChanged: storeCreationSliderValidation.changeStreetName,
               ),
 
               DropDownSelector<String>(
@@ -1024,9 +1058,9 @@ class StoreCreationScreen extends StatelessWidget {
 
                 // labelText: 'Product Category.',
                 hintText: 'Country.',
-                onChanged: storeCreationValidation.changeCountry,
+                onChanged: storeCreationSliderValidation.changeCountry,
                 // borderType: BorderType.middle,
-                savedValue: storeCreationValidation.storeAddress.countryCode,
+                savedValue: storeCreationSliderValidation.storeAddress.countryCode,
                 items: countryList.entries
                     .map((item) => DropdownItem<String>(
                         value: item.key,
@@ -1041,26 +1075,26 @@ class StoreCreationScreen extends StatelessWidget {
               EditText(
                 hintText: 'Region.',
                 borderType: BorderType.middle,
-                saved: storeCreationValidation.storeAddress.region,
+                saved: storeCreationSliderValidation.storeAddress.region,
                 enabled: (store.address == null) || editScreen,
-                onChanged: storeCreationValidation.changeRegion,
+                onChanged: storeCreationSliderValidation.changeRegion,
               ),
               const EditTextSpacer(),
               EditText(
                 hintText: 'City.',
                 borderType: BorderType.middle,
-                saved: storeCreationValidation.storeAddress.city,
+                saved: storeCreationSliderValidation.storeAddress.city,
                 enabled: (store.address == null) || editScreen,
-                onChanged: storeCreationValidation.changeCity,
+                onChanged: storeCreationSliderValidation.changeCity,
               ),
               const EditTextSpacer(),
 
               EditText(
                 hintText: 'Postal Code.',
                 borderType: BorderType.bottom,
-                saved: storeCreationValidation.storeAddress.postalCode,
+                saved: storeCreationSliderValidation.storeAddress.postalCode,
                 enabled: (store.address == null) || editScreen,
-                onChanged: storeCreationValidation.changePostalCode,
+                onChanged: storeCreationSliderValidation.changePostalCode,
               ),
 
               /// Image Picker
@@ -1069,10 +1103,10 @@ class StoreCreationScreen extends StatelessWidget {
                   title: 'Store Image.',
                   color: redSwatch.shade500),
               ImagePickerWidget(
-                  images: storeCreationValidation.storeImages,
+                  images: storeCreationSliderValidation.storeImages,
                   maxImages: 1,
-                  onImageAdded: storeCreationValidation.addStoreImage,
-                  onImageRemoved: storeCreationValidation.removeStoreImage),
+                  onImageAdded: storeCreationSliderValidation.addStoreImage,
+                  onImageRemoved: storeCreationSliderValidation.removeStoreImage),
 
               const SizedBox(height: huge_100)
             ]),
@@ -1080,17 +1114,17 @@ class StoreCreationScreen extends StatelessWidget {
               PrimaryButton(
                   buttonState: storeService.formsLoading
                       ? ButtonState.loading
-                      : (storeCreationValidation.isValid)
+                      : (storeCreationSliderValidation.isValid)
                           ? ButtonState.enabled
                           : ButtonState.disabled,
                   onPressed: () async {
                     if (editScreen) {
                       await storeService.editStore(context, index!,
-                          storeCreationValidation.toFormData(), []);
+                          storeCreationSliderValidation.toFormData(), []);
                       
                     } else {
                       await storeService.addStore(
-                          context, storeCreationValidation.toFormData());
+                          context, storeCreationSliderValidation.toFormData());
                       if (!storeService.formsLoading) {
                     
                       }

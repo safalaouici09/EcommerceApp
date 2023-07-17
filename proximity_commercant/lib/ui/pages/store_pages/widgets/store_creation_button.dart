@@ -23,7 +23,9 @@ class StoreCreationButton extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => StoreCreationScreen(store: Store())));
+                builder: (context) =>
+                    // StoreCreationScreen(store: Store())
+                    StoreCreationSliderScreen(store: Store())));
       },
       margin: const EdgeInsets.symmetric(horizontal: normal_100),
       child: SizedBox(
