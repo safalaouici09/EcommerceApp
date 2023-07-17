@@ -660,6 +660,7 @@ import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
+import 'package:proximity_client/domain/store_repository/models/store_category.dart';
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/ui/pages/main_pages/widgets/custom_choice_chip.dart';
@@ -846,32 +847,17 @@ class SearchResults extends StatefulWidget {
 
 class _SearchResultsState extends State<SearchResults> {
   String filterOption = "";
-  static List<String> storeCategories = [
-    'Accessoires',
-    'Grocery',
-    'Clothing',
-    'Electronics',
-    'Home & Furniture',
-    'Health & Beauty',
-    'Sports & Outdoors',
-    'Books & Stationery',
-    'Toys & Games',
-    'Automotive',
-    'Jewelry',
-    'Pet Supplies',
-    'Pharmacy',
-    'Hardware',
-    'Appliances',
-    'Baby & Kids',
-    'Garden & Outdoor',
-    'Fashion Accessories',
-    'Shoes',
-    'Music & Instruments',
-    'Art & Craft',
-    'Party Supplies',
-    'Office Supplies',
-    'Fitness & Wellness',
-    'Gifts & Novelties',
+  static List<StoreCategory> storeCategories = [
+    StoreCategory(id: 1, name: 'Accessoires'),
+    StoreCategory(id: 2, name: 'Grocery'),
+    StoreCategory(id: 3, name: 'Clothing'),
+    StoreCategory(id: 4, name: 'Electronics'),
+    StoreCategory(id: 5, name: 'Home & Furniture'),
+    StoreCategory(id: 6, name: 'Health & Beauty'),
+    StoreCategory(id: 7, name: 'Sports & Outdoors'),
+    StoreCategory(id: 8, name: 'Books & Stationery'),
+    StoreCategory(id: 9, name: 'Toys & Games'),
+    StoreCategory(id: 10, name: 'Automotive'),
   ];
 
   void showPopUp(BuildContext context) {
@@ -996,113 +982,10 @@ class _SearchResultsState extends State<SearchResults> {
     );
   }
 
-  ListView getFilterStoresBottomSheetContent(BuildContext context) {
-    return ListView(children: [
-      ListTile(
-        title: Text(
-          'Categorie',
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(color: Colors.black, fontSize: normal_100),
-        ),
-        subtitle: CustomChoiceChip(
-          values: storeCategories,
-          selectedValue: filterOption,
-          onSelected: (selectedValue) {
-            //  widget._productService.filterProductByCategorie(selectedValue);
-            widget._storeService.addSearchFilter(selectedValue);
-            widget._storeService.filterStoresByCategorie();
-            Navigator.pop(context);
-          },
-          onInselected: () {
-            widget._storeService.deleteSearchFilter();
-          },
-        ),
-        onTap: () {
-          // Handle option 1 selection
-        },
-      ),
-      ListTile(
-          title: Text(
-            'Adresse',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.black, fontSize: normal_100),
-          ),
-          subtitle: TextFormField(
-            //controller: _queryTextController,
-            textAlignVertical: TextAlignVertical.center,
-            onFieldSubmitted: (String value) {
-              widget._storeService.filterStoresByAddress(value);
-            },
-            //keyboardType: TextInputType.name,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius:
-                    BorderRadius.circular(10.0), // Customize the border radius
-                borderSide: BorderSide(
-                  color: Colors.blue, // Customize the border color
-                  width: 2.0, // Customize the border width
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                borderSide: BorderSide(
-                  color: Colors.blue,
-                  width: 1.0,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                borderSide: BorderSide(
-                  color: dividerLightColor,
-                  width: 1.0,
-                ),
-              ),
-              hintText: 'Address',
-              hintStyle: TextStyle(
-                fontSize: 16.0,
-                color: Colors.grey,
-              ),
-            ),
-          ))
-    ]);
-  }
-
-  ListView getFilterProductsBottomSheetContent(BuildContext context) {
-    return ListView(
-      children: [
-        ListTile(
-          title: Text(
-            'Categorie',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.black, fontSize: normal_100),
-          ),
-          subtitle: CustomChoiceChip(
-            values: storeCategories,
-            selectedValue: widget._productService.searchFilter,
-            onSelected: (selectedValue) {
-              //  widget._productService.filterProductByCategorie(selectedValue);
-              widget._productService.addSearchFilter(selectedValue);
-              widget._productService.filterProductByCategorie();
-              Navigator.pop(context);
-            },
-            onInselected: () {
-              widget._productService.deleteSearchFilter();
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  var _selected_item;
+  var _selected_item;p
   final _items = storeCategories
-      .map((categorie) => SingleSelectItem<String>(categorie, categorie))
+      .map((categorie) =>
+          SingleSelectItem<StoreCategory>(categorie, categorie.name))
       .toList();
   @override
   Widget build(BuildContext context) {
