@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/config/backend.dart';
+import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
@@ -9,8 +10,17 @@ import 'package:proximity_client/domain/user_repository/models/address_item_mode
 class StoreService with ChangeNotifier {
   String _storeId = '';
   Store? _store;
+  TextEditingController _cityController = TextEditingController();
+
+  Address _storeAddress = Address();
+
+  Address _searchAddress = Address();
   late List<Store>? _stores = [];
   List<Product>? _products;
+  late List<Store> _filterSearchResults = [];
+  String _searchFilter = '';
+  String get searchFilter => _searchFilter;
+  List<Store> get filterSearchResults => _filterSearchResults;
 
   late List<Store> _searchResults = [];
   String _query = "";
@@ -20,10 +30,12 @@ class StoreService with ChangeNotifier {
   bool _loading = false;
 
   // getters
+  TextEditingController get cityController => _cityController;
   String get storeId => _storeId;
 
   Store? get store => _store;
-
+  Address get storeAddress => _storeAddress;
+  Address get searchAddress => _searchAddress;
   List<Product>? get products => _products;
   bool get loading => _loading;
   String get query => _query;
@@ -39,6 +51,25 @@ class StoreService with ChangeNotifier {
 
   set store(Store? store) {
     _store = store;
+    notifyListeners();
+  }
+
+  String? getSearchAddresse() {
+    if (_searchAddress.city == null) {
+      var credentialsBox = Boxes.getCredentials();
+
+      AddressItem _adresse = credentialsBox.get('address');
+      _storeAddress.city = _adresse.city;
+      _storeAddress.lat = _adresse.lat;
+      _storeAddress.lng = _adresse.lng;
+      return _storeAddress.city;
+    } else {
+      return _searchAddress.city!;
+    }
+  }
+
+  void changeSearchAddresse(Address newAddress) {
+    _searchAddress = newAddress;
     notifyListeners();
   }
 
@@ -100,6 +131,18 @@ class StoreService with ChangeNotifier {
     }
   }
 
+  void changeStoreAddress(Address newAddress) {
+    _storeAddress = newAddress;
+    notifyListeners();
+  }
+
+  void changeCity(String value) {
+    _searchAddress.city = value;
+    _cityController.text = value;
+
+    notifyListeners();
+  }
+
   Future<void> getStoreProducts() async {
     _products = null;
     _loading = true;
@@ -136,6 +179,16 @@ class StoreService with ChangeNotifier {
     }
   }
 
+  addSearchFilter(String value) {
+    _searchFilter = value;
+    notifyListeners();
+  }
+
+  deleteSearchFilter() {
+    _searchFilter = '';
+    notifyListeners();
+  }
+
   Future searchStores({String name = ""}) async {
     /// open hive box
     ///
@@ -170,10 +223,30 @@ class StoreService with ChangeNotifier {
 
     // String _id = credentialsBox.get('id');
     String? _token = credentialsBox.get('token');
+    _searchResults.add(Store(
+        id: '1',
+        name: 'Nike Store',
+        description:
+            'Shop the latest Nike athletic shoes, apparel, and accessories. Find your favorite sports gear for running, basketball, and more.',
+        address: Address(
+            streetName: '123 Main Street, Anytown, USA',
+            lat: 40.1234,
+            lng: -75.5678),
+        category: 'Sports & Outdoors'));
+    _searchResults.add(Store(
+        id: '3',
+        name: 'Bookworm Bookstore',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(
+            streetName: '789 Oak Road, Readington, Australia',
+            lat: -33.4567,
+            lng: 150.9876),
+        category: 'Accessoires'));
 
     /// dataForm is already a parameter
 
-    /// post the dataForm via dio call
+    /*  /// post the dataForm via dio call
     try {
       Dio dio = Dio();
 
@@ -185,6 +258,26 @@ class StoreService with ChangeNotifier {
       if (res.statusCode == 200) {
         _searchResults = [];
         _searchResults.addAll(Store.storesFromJsonList(res.data));
+        _searchResults.add(Store(
+            id: '1',
+            name: 'Nike Store',
+            description:
+                'Shop the latest Nike athletic shoes, apparel, and accessories. Find your favorite sports gear for running, basketball, and more.',
+            address: Address(
+                streetName: '123 Main Street, Anytown, USA',
+                lat: 40.1234,
+                lng: -75.5678),
+            category: 'Sports & Outdoors'));
+        _searchResults.add(Store(
+            id: '3',
+            name: 'Bookworm Bookstore',
+            description:
+                'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+            address: Address(
+                streetName: '789 Oak Road, Readington, Australia',
+                lat: -33.4567,
+                lng: 150.9876),
+            category: 'Accessoires'));
 
         print("search" + _searchResults.length.toString());
         notifyListeners();
@@ -198,7 +291,35 @@ class StoreService with ChangeNotifier {
         print('Error sending request!');
         print(e.message);
       }
+    }*/
+  }
+
+  void filterStoresByCategorie() {
+    _filterSearchResults = [];
+    for (Store store in _searchResults) {
+      print('cat' + store.category.toString());
+      if (store.category == searchFilter) {
+        _filterSearchResults.add(store);
+      }
     }
+    notifyListeners();
+  }
+
+  void filterStoresByAddress(String value) {
+    _searchResults.where((store) {
+      Address? address = store.address;
+      return address!.lat?.toString().contains(value) == true ||
+          address.lng?.toString().contains(value) == true ||
+          address.city?.contains(value) == true ||
+          address.fullAddress!.contains(value) == true ||
+          address.streetName?.contains(value) == true ||
+          address.postalCode?.contains(value) == true ||
+          address.countryCode?.contains(value) == true ||
+          address.countryName?.contains(value) == true ||
+          address.locality?.contains(value) == true ||
+          address.region?.contains(value) == true;
+    }).toList();
+    notifyListeners();
   }
 }
 // // essential methods for the UI

@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
@@ -10,10 +12,16 @@ import 'dart:convert';
 class ProductService with ChangeNotifier {
   late List<Product> _products = [];
   late List<Product> _searchResults;
+  late List<Product> _filterSearchResults = [];
+  String _searchFilter = '';
   late List<Product> _todayDeals;
   late Set<Product> _wishList;
   late List<String> _ads;
+
   String _query = "";
+  bool _searchBoth = true;
+  bool _searchStores = false;
+  bool _searchProduct = false;
 
   //final Map<String, String>? _selectedOptions = {};
 
@@ -24,12 +32,16 @@ class ProductService with ChangeNotifier {
   List<Product> get products => _products;
 
   List<Product> get searchResults => _searchResults;
-
+  List<Product> get filterSearchResults => _filterSearchResults;
   List<Product> get todayDeals => _todayDeals;
 
   List<Product> get wishList => _wishList.toList();
 
   String get query => _query;
+  String get searchFilter => _searchFilter;
+  bool get searchBoth => _searchBoth;
+  bool get searchProduct => _searchProduct;
+  bool get searchStores => _searchStores;
 
   List<String> get ads => _ads;
   //Map<String, String>? get selectedOptions => _selectedOptions;
@@ -37,7 +49,29 @@ class ProductService with ChangeNotifier {
   bool? _loadingProduct = false;
 
   bool? get loadingProduct => _loadingProduct;
+//Setters
+  void setSearchBoth() {
+    _searchBoth = true;
+    _searchProduct = false;
+    _searchStores = false;
+    notifyListeners();
+  }
 
+  void setSearchProducts() {
+    _searchBoth = false;
+    _searchProduct = true;
+    _searchStores = false;
+    notifyListeners();
+  }
+
+  void setSearchStores() {
+    _searchBoth = false;
+    _searchProduct = false;
+    _searchStores = true;
+    notifyListeners();
+  }
+
+//
   ProductService() {
     // _products = [];
     _searchResults = [];
@@ -115,10 +149,39 @@ class ProductService with ChangeNotifier {
 
     // String _id = credentialsBox.get('id');
     String? _token = credentialsBox.get('token');
+// a enlever
+    _searchResults = [];
+
+    //_searchResults.addAll(Product.productsFromJsonList(res.data));
+    _searchResults.add(Product(
+        id: '02331813210',
+        name: 'XIAOMI Smart-watch',
+        price: 14.99,
+        categoryName: '',
+        images: ['assets/img/products/product-1.png']));
+    _searchResults.add(Product(
+        id: '02331813210',
+        name: 'XIAOMI Smart-watch',
+        price: 14.99,
+        categoryName: 'Sports & Outdoors',
+        images: ['assets/img/products/product-2.png']));
+    _searchResults.add(Product(
+        id: '02331813210',
+        name: 'XIAOMI Smart-watch',
+        price: 14.99,
+        categoryName: 'Sports & Outdoors',
+        images: ['assets/img/products/product-3.png']));
+    _searchResults.add(Product(
+        id: '02331813210',
+        name: 'XIAOMI Smart-watch',
+        price: 14.99,
+        categoryName: 'Accessoires',
+        images: ['assets/img/products/product-1.png']));
 
     /// dataForm is already a parameter
 
     /// post the dataForm via dio call
+    /*
     try {
       Dio dio = Dio();
 
@@ -137,7 +200,32 @@ class ProductService with ChangeNotifier {
               .addAll(_products.where((element) => (element.discount != 0)));
         } else {
           _searchResults = [];
+
           _searchResults.addAll(Product.productsFromJsonList(res.data));
+          _searchResults.add(Product(
+              id: '02331813210',
+              name: 'XIAOMI Smart-watch',
+              price: 14.99,
+              categoryName: '',
+              images: ['assets/img/products/product-1.png']));
+          _searchResults.add(Product(
+              id: '02331813210',
+              name: 'XIAOMI Smart-watch',
+              price: 14.99,
+              categoryName: 'Sports & Outdoors',
+              images: ['assets/img/products/product-2.png']));
+          _searchResults.add(Product(
+              id: '02331813210',
+              name: 'XIAOMI Smart-watch',
+              price: 14.99,
+              categoryName: 'Sports & Outdoors',
+              images: ['assets/img/products/product-3.png']));
+          _searchResults.add(Product(
+              id: '02331813210',
+              name: 'XIAOMI Smart-watch',
+              price: 14.99,
+              categoryName: 'Accessoires',
+              images: ['assets/img/products/product-1.png']));
         }
 
         print(_products.length.toString());
@@ -152,7 +240,7 @@ class ProductService with ChangeNotifier {
         print('Error sending request!');
         print(e.message);
       }
-    }
+    }*/
   }
 
   Future getTodayDeals() async {
@@ -222,6 +310,17 @@ class ProductService with ChangeNotifier {
     _loadingProduct = false;
     notifyListeners();
     return null;
+  }
+
+  void filterProductByCategorie() {
+    _filterSearchResults = [];
+    for (Product product in _searchResults) {
+      print('cat' + product.categoryName.toString());
+      if (product.categoryName == searchFilter) {
+        _filterSearchResults.add(product);
+      }
+    }
+    notifyListeners();
   }
 
   Future getAds() async {
@@ -323,6 +422,16 @@ class ProductService with ChangeNotifier {
     notifyListeners();
   }
 
+  addSearchFilter(String value) {
+    _searchFilter = value;
+    notifyListeners();
+  }
+
+  deleteSearchFilter() {
+    _searchFilter = '';
+    notifyListeners();
+  }
+
   void deleteFilter(String key) {
     _selectedOptions!.remove(key);
     notifyListeners();
@@ -352,6 +461,7 @@ class ProductService with ChangeNotifier {
     } on DioError catch (e) {
       if (e.response != null) {
         /// Toast Message to print the message
+        ///
         print('${e.response!}');
       } else {
         /// Error due to setting up or sending the request

@@ -17,6 +17,7 @@ class Store {
   bool? isActive;
   DateTime? creationDate;
   WorkingTime? workingTime;
+  String? category;
 
   // List<Offer>? offers;
   // List<Flashdeal>? flashdeals;
@@ -36,7 +37,8 @@ class Store {
       this.followers,
       this.creationDate,
       this.isActive,
-      this.workingTime});
+      this.workingTime,
+      this.category});
 
   Store.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],

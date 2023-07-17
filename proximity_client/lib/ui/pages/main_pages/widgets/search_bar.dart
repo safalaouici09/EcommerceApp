@@ -71,6 +71,7 @@ class Search extends CustomSearchDelegate<Product> {
     storeService.searchStores(name: query);
     List<Widget> _widgetList = [];
     if (query.isNotEmpty) {
+      if()
       for (int i = 0; i < productService.searchResults.length; i++) {
         _widgetList.add(
           ProductCard(product: productService.searchResults[i]),
@@ -657,12 +658,18 @@ Future<T?> previewSearch<T>({
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
+import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
+import 'package:proximity_client/ui/pages/main_pages/widgets/custom_choice_chip.dart';
+import 'package:proximity_client/ui/pages/main_pages/widgets/single_select.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
 import 'package:proximity_client/ui/pages/product_pages/widgets/product_card.dart';
 import 'package:proximity_client/ui/pages/product_pages/widgets/product_modal/product_variant_characteristics.dart';
 import 'package:proximity_client/ui/pages/store_pages/widgets/store_card.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:proximity_client/ui/widgets/address_picker/address_picker.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar({Key? key}) : super(key: key);
@@ -714,9 +721,6 @@ class _SearchBarState extends State<SearchBar> {
 
 /// A custom search delegate for proper handling and custom UI
 class Search extends CustomSearchDelegate<Product> {
-  bool _searchProducts = false;
-  bool _searchStores = false;
-  bool _searchBoth = true;
   @override
   Widget buildResults(BuildContext context) {
     final productService = Provider.of<ProductService>(context);
@@ -724,23 +728,42 @@ class Search extends CustomSearchDelegate<Product> {
 
     if (productService.query != query) {
       productService.getProximityProducts(name: query);
+      productService.filterProductByCategorie();
     }
     if (storeService.query != query) {
       storeService.searchStores(name: query);
+      //  storeService.filterStoresByCategorie();
     }
+
     List<Widget> _productswidgetList = [];
     List<Widget> _storeswidgetList = [];
 
     if (query.isNotEmpty) {
-      for (int i = 0; i < productService.searchResults.length; i++) {
-        _productswidgetList
-            .add(ProductCard(product: productService.searchResults[i]));
+      if (productService.searchFilter == "") {
+        for (int i = 0; i < productService.searchResults.length; i++) {
+          _productswidgetList
+              .add(ProductCard(product: productService.searchResults[i]));
+        }
+      } else {
+        for (int i = 0; i < productService.filterSearchResults.length; i++) {
+          _productswidgetList
+              .add(ProductCard(product: productService.filterSearchResults[i]));
+        }
+      }
+      if (storeService.searchFilter == "") {
+        for (int i = 0; i < storeService.searchResults.length; i++) {
+          _storeswidgetList
+              .add(StoreCard(store: storeService.searchResults[i]));
+        }
+      } else {
+        {
+          for (int i = 0; i < storeService.searchResults.length; i++) {
+            _storeswidgetList
+                .add(StoreCard(store: storeService.filterSearchResults[i]));
+          }
+        }
       }
     }
-    for (int i = 0; i < storeService.searchResults.length; i++) {
-      _storeswidgetList.add(StoreCard(store: storeService.searchResults[i]));
-    }
-
     if (_productswidgetList.isEmpty && _storeswidgetList.isEmpty) {
       return const NoResults(
           icon: ProximityIcons.no_results_illustration,
@@ -756,11 +779,10 @@ class Search extends CustomSearchDelegate<Product> {
       }*/
     } else {
       return SearchResults(
-        searchBoth: _searchBoth,
-        searchStores: _searchStores,
-        searchProducts: _searchProducts,
         productsWidgetList: _productswidgetList,
         storesWidgetList: _storeswidgetList,
+        productService: productService,
+        storeService: storeService,
       );
     }
   }
@@ -801,23 +823,20 @@ class Search extends CustomSearchDelegate<Product> {
 }
 
 class SearchResults extends StatefulWidget {
-  SearchResults({
-    Key? key,
-    required bool searchBoth,
-    required bool searchStores,
-    required bool searchProducts,
-    required List<Widget> productsWidgetList,
-    required List<Widget> storesWidgetList,
-  })  : _searchBoth = searchBoth,
-        _searchStores = searchStores,
-        _searchProducts = searchProducts,
-        _productsWidgetList = productsWidgetList,
+  SearchResults(
+      {Key? key,
+      required List<Widget> productsWidgetList,
+      required List<Widget> storesWidgetList,
+      required ProductService productService,
+      required StoreService storeService})
+      : _productsWidgetList = productsWidgetList,
         _storeswidgetList = storesWidgetList,
+        _productService = productService,
+        _storeService = storeService,
         super(key: key);
 
-  bool _searchBoth;
-  bool _searchStores;
-  bool _searchProducts;
+  ProductService _productService;
+  StoreService _storeService;
   List<Widget> _productsWidgetList;
   List<Widget> _storeswidgetList;
 
@@ -826,8 +845,9 @@ class SearchResults extends StatefulWidget {
 }
 
 class _SearchResultsState extends State<SearchResults> {
-  List<String> filterOptions = ['Option 1', 'Option 2'];
-  List<String> storeCategories = [
+  String filterOption = "";
+  static List<String> storeCategories = [
+    'Accessoires',
     'Grocery',
     'Clothing',
     'Electronics',
@@ -853,122 +873,246 @@ class _SearchResultsState extends State<SearchResults> {
     'Fitness & Wellness',
     'Gifts & Novelties',
   ];
-  void _showFilterBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+
+  void showPopUp(BuildContext context) {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          // Build the filter options content here
-          child: Padding(
-            padding: const EdgeInsets.all(normal_100),
-            child: ListView(
-              children: [
-                // Add your filter options, categories, and zones widgets here
-                // Example: Filter options
-                ListTile(
-                  title: Text(
-                    'Categorie',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Colors.black,
-                        ),
-                  ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                    child: MasonryGrid(
-                      column: 1,
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: small_100),
-                      children: List.generate(
-                        1,
-                        (index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Display the key in a Text widget
-                              const SizedBox(height: 10), // Add some spacing
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: GroupedChoiceChip(
-                                  values: storeCategories,
-                                  selectedValue: 'Grocery',
-                                  onSelected: (selectedValue) {},
-                                  onInselected: () {
-                                    //productService.deleteFilter(key);
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+        return AlertDialog(
+          title: Text('change the city '),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: widget._storeService.cityController,
+                textAlignVertical: TextAlignVertical.center,
+                onFieldSubmitted: (String value) {
+                  widget._storeService.changeCity(value);
+                  widget._storeService.filterStoresByAddress(value);
+                  Navigator.of(context).pop();
+                },
+                //keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                        10.0), // Customize the border radius
+                    borderSide: BorderSide(
+                      color: Colors.blue, // Customize the border color
+                      width: 2.0, // Customize the border width
                     ),
                   ),
-                  onTap: () {
-                    _showSecondBottomSheet(context);
-                    // Handle option 1 selection
-                  },
-                ),
-                ListTile(
-                  title: Text('Adresse'),
-                  subtitle: EditText(
-                    hintText: 'Adresse.',
-                    prefixIcon: ProximityIcons.address,
-                    // saved: userEditValidation.emailAddress.value,
-                    //onChanged: userEditValidation.changeEmailAddress,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 1.0,
+                    ),
                   ),
-                  onTap: () {
-                    // Handle option 2 selection
-                  },
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide(
+                      color: dividerLightColor,
+                      width: 1.0,
+                    ),
+                  ),
+                  hintText: widget._storeService.getSearchAddresse()!,
+                  hintStyle: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.grey,
+                  ),
                 ),
-                // Add more filter options as needed
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(normal_100),
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            child: Container(
+                                height: tiny_50,
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        colors: [
+                                      Theme.of(context)
+                                          .dividerColor
+                                          .withOpacity(0.0),
+                                      Theme.of(context).dividerColor,
+                                    ],
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight)))),
+                        const SizedBox(width: normal_100),
+                        Text(
+                          "Or",
+                          textAlign: TextAlign.center,
+                          style:
+                              Theme.of(context).textTheme.headline5!.copyWith(),
+                        ),
+                        const SizedBox(width: normal_100),
+                        Expanded(
+                            child: Container(
+                                height: tiny_50,
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        colors: [
+                                      Theme.of(context)
+                                          .dividerColor
+                                          .withOpacity(0.0),
+                                      Theme.of(context).dividerColor,
+                                    ],
+                                        begin: Alignment.centerRight,
+                                        end: Alignment.centerLeft))))
+                      ])),
+              Padding(
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                child: TertiaryButton(
+                    onPressed: () async {
+                      final Address _result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddressSelectionScreen(
+                                  currentAddress: Address())));
+                      widget._storeService.changeSearchAddresse(_result);
+                      Navigator.pop(context);
+                      //    policyCreationValidation
+                      //           .changeDeliveryCenterdress(_result);
 
-  void _showSecondBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Second Bottom Sheet Content'),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop(); // Close the second bottom sheet
-                },
-                child: Text('Close'),
+                      //  policyCreationValidation
+                      //  .changeAddress(_result);
+                    },
+                    title: 'Choose city from map .'),
               ),
             ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
         );
       },
     );
   }
 
+  ListView getFilterStoresBottomSheetContent(BuildContext context) {
+    return ListView(children: [
+      ListTile(
+        title: Text(
+          'Categorie',
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: Colors.black, fontSize: normal_100),
+        ),
+        subtitle: CustomChoiceChip(
+          values: storeCategories,
+          selectedValue: filterOption,
+          onSelected: (selectedValue) {
+            //  widget._productService.filterProductByCategorie(selectedValue);
+            widget._storeService.addSearchFilter(selectedValue);
+            widget._storeService.filterStoresByCategorie();
+            Navigator.pop(context);
+          },
+          onInselected: () {
+            widget._storeService.deleteSearchFilter();
+          },
+        ),
+        onTap: () {
+          // Handle option 1 selection
+        },
+      ),
+      ListTile(
+          title: Text(
+            'Adresse',
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.black, fontSize: normal_100),
+          ),
+          subtitle: TextFormField(
+            //controller: _queryTextController,
+            textAlignVertical: TextAlignVertical.center,
+            onFieldSubmitted: (String value) {
+              widget._storeService.filterStoresByAddress(value);
+            },
+            //keyboardType: TextInputType.name,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius:
+                    BorderRadius.circular(10.0), // Customize the border radius
+                borderSide: BorderSide(
+                  color: Colors.blue, // Customize the border color
+                  width: 2.0, // Customize the border width
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                  width: 1.0,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: BorderSide(
+                  color: dividerLightColor,
+                  width: 1.0,
+                ),
+              ),
+              hintText: 'Address',
+              hintStyle: TextStyle(
+                fontSize: 16.0,
+                color: Colors.grey,
+              ),
+            ),
+          ))
+    ]);
+  }
+
+  ListView getFilterProductsBottomSheetContent(BuildContext context) {
+    return ListView(
+      children: [
+        ListTile(
+          title: Text(
+            'Categorie',
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.black, fontSize: normal_100),
+          ),
+          subtitle: CustomChoiceChip(
+            values: storeCategories,
+            selectedValue: widget._productService.searchFilter,
+            onSelected: (selectedValue) {
+              //  widget._productService.filterProductByCategorie(selectedValue);
+              widget._productService.addSearchFilter(selectedValue);
+              widget._productService.filterProductByCategorie();
+              Navigator.pop(context);
+            },
+            onInselected: () {
+              widget._productService.deleteSearchFilter();
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  var _selected_item;
+  final _items = storeCategories
+      .map((categorie) => SingleSelectItem<String>(categorie, categorie))
+      .toList();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(normal_100),
-          child: Row(
-            children: [
-              GestureDetector(
-                  onTap: () {
-                    _showFilterBottomSheet(context);
-                  },
-                  child: Icon(Icons.list)),
-              SizedBox(
-                width: normal_100,
-              ),
-              Wrap(
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: normal_100),
+              child: Wrap(
                 spacing: normal_100,
                 children: [
                   ChoiceChip(
@@ -980,12 +1124,10 @@ class _SearchResultsState extends State<SearchResults> {
                     ),
                     onSelected: (_) {
                       setState(() {
-                        widget._searchBoth = true;
-                        widget._searchProducts = false;
-                        widget._searchStores = false;
+                        widget._productService.setSearchBoth();
                       });
                     },
-                    selected: widget._searchBoth,
+                    selected: widget._productService.searchBoth,
                     backgroundColor: dividerLightColor.withOpacity(0.5),
                     selectedColor: Colors.blue.shade500,
                     shape: RoundedRectangleBorder(
@@ -1004,12 +1146,10 @@ class _SearchResultsState extends State<SearchResults> {
                     ),
                     onSelected: (_) {
                       setState(() {
-                        widget._searchBoth = false;
-                        widget._searchProducts = false;
-                        widget._searchStores = true;
+                        widget._productService.setSearchStores();
                       });
                     },
-                    selected: widget._searchStores,
+                    selected: widget._productService.searchStores,
                     backgroundColor: dividerLightColor.withOpacity(0.5),
                     selectedColor: Colors.blue.shade500,
                     shape: RoundedRectangleBorder(
@@ -1028,12 +1168,10 @@ class _SearchResultsState extends State<SearchResults> {
                     ),
                     onSelected: (_) {
                       setState(() {
-                        widget._searchBoth = false;
-                        widget._searchProducts = true;
-                        widget._searchStores = false;
+                        widget._productService.setSearchProducts();
                       });
                     },
-                    selected: widget._searchProducts,
+                    selected: widget._productService.searchProduct,
                     backgroundColor: dividerLightColor.withOpacity(0.5),
                     selectedColor: Colors.blue.shade500,
                     shape: RoundedRectangleBorder(
@@ -1045,14 +1183,72 @@ class _SearchResultsState extends State<SearchResults> {
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        widget._searchProducts || widget._searchBoth
+        (widget._productService.searchProduct ||
+                    widget._productService.searchBoth) &&
+                widget._productsWidgetList.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.all(normal_100),
                 child: Column(
                   children: [
+                    widget._productService.searchProduct
+                        ? SingleChildScrollView(
+                            child: Column(children: [
+                              Padding(
+                                padding: const EdgeInsets.all(normal_100)
+                                    .copyWith(top: 0),
+                                child: SingleSelectDialogField(
+                                  searchable: true,
+                                  items: _items,
+                                  selectedColor: blueSwatch.shade500,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    border: Border.all(
+                                        width: 1,
+                                        color: _selected_item == null
+                                            ? Theme.of(context).dividerColor
+                                            : blueSwatch.shade500),
+                                  ),
+                                  buttonIcon: null,
+                                  buttonText: Text(
+                                    _selected_item == null
+                                        ? 'Select Category'
+                                        : _selected_item.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                          color: _selected_item == null
+                                              ? Theme.of(context).dividerColor
+                                              : blueSwatch.shade500,
+                                        ),
+                                  ),
+                                  onConfirm: (result) {
+                                    setState(() {
+                                      _selected_item = result;
+                                      widget._productService
+                                          .addSearchFilter(result.toString());
+                                    });
+                                  },
+                                ),
+                              ),
+
+                              /*     _selectedAnimals2 == null || _selectedAnimals2.isEmpty
+                                  Container(
+                                      padding: EdgeInsets.all(10),
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "None selected",
+                                        style:
+                                            TextStyle(color: Colors.black54),
+                                      )):
+                                  Container(),*/
+                            ]),
+                          )
+                        : Container(),
                     Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -1075,7 +1271,7 @@ class _SearchResultsState extends State<SearchResults> {
                                           end: Alignment.centerLeft))))
                         ]),
                     MasonryGrid(
-                      column: 1,
+                      column: 2,
                       padding: const EdgeInsets.symmetric(
                         horizontal: small_100,
                         vertical: normal_100,
@@ -1103,11 +1299,122 @@ class _SearchResultsState extends State<SearchResults> {
                   ],
                 ))
             : Container(),
-        widget._searchStores || widget._searchBoth
+        (widget._productService.searchStores ||
+                    widget._productService.searchBoth) &&
+                widget._storeswidgetList.isNotEmpty
             ? Padding(
-                padding: const EdgeInsets.all(normal_100),
+                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Column(
                   children: [
+                    widget._productService.searchStores
+                        ? Column(
+                            children: [
+                              SingleChildScrollView(
+                                child: Column(children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(normal_100),
+                                    child: SingleSelectDialogField(
+                                      searchable: true,
+                                      items: _items,
+                                      selectedColor: blueSwatch.shade500,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                        border: Border.all(
+                                            width: 1,
+                                            color: _selected_item == null
+                                                ? Theme.of(context).dividerColor
+                                                : blueSwatch.shade500),
+                                      ),
+                                      buttonIcon: null,
+                                      buttonText: Text(
+                                        _selected_item == null
+                                            ? 'Select Category'
+                                            : _selected_item.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5!
+                                            .copyWith(
+                                              color: _selected_item == null
+                                                  ? Theme.of(context)
+                                                      .dividerColor
+                                                  : blueSwatch.shade500,
+                                            ),
+                                      ),
+                                      onConfirm: (result) {
+                                        setState(() {
+                                          _selected_item = result;
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                  /*     _selectedAnimals2 == null || _selectedAnimals2.isEmpty
+                                  Container(
+                                      padding: EdgeInsets.all(10),
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "None selected",
+                                        style:
+                                            TextStyle(color: Colors.black54),
+                                      )):
+                                  Container(),*/
+                                ]),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  showPopUp(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(normal_100),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: widget._storeService
+                                                    .searchAddress ==
+                                                null
+                                            ? Theme.of(context).dividerColor
+                                            : blueSwatch.shade500,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                            widget._storeService
+                                                .getSearchAddresse()!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(
+                                                  color: widget._storeService
+                                                              .searchAddress ==
+                                                          null
+                                                      ? Theme.of(context)
+                                                          .dividerColor
+                                                      : blueSwatch.shade500,
+                                                )),
+                                        Spacer(),
+                                        Icon(
+                                          ProximityIcons.address,
+                                          color: widget._storeService
+                                                      .searchAddress ==
+                                                  null
+                                              ? Theme.of(context).dividerColor
+                                              : blueSwatch.shade500,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
                     Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -1473,7 +1780,7 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
                                     widget.delegate!.query = '';
                                   }),
                               border: InputBorder.none,
-                              hintText: 'Search Product.',
+                              hintText: 'Search .',
                               hintStyle: Theme.of(context)
                                   .textTheme
                                   .headline5!
@@ -1482,10 +1789,6 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
                                           .textTheme
                                           .bodyText2!
                                           .color))))),
-              Divider(
-                  height: tiny_50,
-                  thickness: tiny_50,
-                  color: Theme.of(context).dividerColor),
               Expanded(
                   child: SingleChildScrollView(
                       physics: const ScrollPhysics(),

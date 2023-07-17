@@ -186,7 +186,6 @@ class ProductCreationScreen extends StatelessWidget {
                         leadIcon: ProximityIcons.product,
                         title: 'Options.',
                         color: redSwatch.shade500),
-                   
                     productCreationValidation.characteristicsList.isEmpty
                         ? Container()
                         : Padding(
@@ -221,7 +220,8 @@ class ProductCreationScreen extends StatelessWidget {
                                 }).toList(),
                               ),
                             ),
-                          ), Row(
+                          ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TertiaryButton(
@@ -243,7 +243,7 @@ class ProductCreationScreen extends StatelessWidget {
                             },
                             title: 'Add options.'),
                       ],
-                    ),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                    ),
                     productCreationValidation.characteristics.isEmpty
                         ? Container()
                         : Column(

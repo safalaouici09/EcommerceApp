@@ -45,6 +45,7 @@ class Product {
         description = parsedJson['description'],
         price = parsedJson['price'].toDouble(),
         categoryId = parsedJson['categoryId'],
+        categoryName = parsedJson['category'],
         images =
             parsedJson['images'].map((el) => BASE_IMG_URL + '/' + el).toList(),
         tags = parsedJson['tags'],
