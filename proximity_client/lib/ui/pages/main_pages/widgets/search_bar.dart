@@ -414,8 +414,7 @@ class _SearchResultsState extends State<SearchResults> {
           ],
         ),
         (widget._productService.searchProduct ||
-                    widget._productService.searchBoth) &&
-                widget._productsWidgetList.isNotEmpty
+                widget._productService.searchBoth)
             ? Padding(
                 padding: const EdgeInsets.all(normal_100),
                 child: Column(
@@ -443,7 +442,7 @@ class _SearchResultsState extends State<SearchResults> {
                                   buttonText: Text(
                                     _selected_item == null
                                         ? 'Select Category'
-                                        : _selected_item.toString(),
+                                        : _selected_item.name.toString(),
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline5!
@@ -476,59 +475,73 @@ class _SearchResultsState extends State<SearchResults> {
                             ]),
                           )
                         : Container(),
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("Products",
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headline5!),
-                          const SizedBox(width: normal_100),
-                          Expanded(
-                              child: Container(
-                                  height: tiny_50,
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: [
-                                        Theme.of(context)
-                                            .dividerColor
-                                            .withOpacity(0.0),
-                                        Theme.of(context).dividerColor,
-                                      ],
-                                          begin: Alignment.centerRight,
-                                          end: Alignment.centerLeft))))
-                        ]),
-                    MasonryGrid(
-                      column: 2,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: small_100,
-                        vertical: normal_100,
-                      ),
-                      children: widget._productsWidgetList,
-                    ),
-                    Row(
-                      children: [
-                        const Spacer(),
-                        GestureDetector(
-                            // onTap: seeMore,
-                            child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: small_100, right: normal_100),
-                                child: Row(children: [
-                                  Text('See More',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                              color: blueSwatch.shade500)),
-                                ]))),
-                      ],
-                    )
+                    widget._productsWidgetList.isNotEmpty
+                        ? Column(
+                            children: [
+                              Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text("Products",
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5!),
+                                    const SizedBox(width: normal_100),
+                                    Expanded(
+                                        child: Container(
+                                            height: tiny_50,
+                                            decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                    colors: [
+                                                  Theme.of(context)
+                                                      .dividerColor
+                                                      .withOpacity(0.0),
+                                                  Theme.of(context)
+                                                      .dividerColor,
+                                                ],
+                                                    begin:
+                                                        Alignment.centerRight,
+                                                    end:
+                                                        Alignment.centerLeft))))
+                                  ]),
+                              MasonryGrid(
+                                column: 2,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: small_100,
+                                  vertical: normal_100,
+                                ),
+                                children: widget._productsWidgetList,
+                              ),
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  GestureDetector(
+                                      // onTap: seeMore,
+                                      child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: small_100,
+                                              right: normal_100),
+                                          child: Row(children: [
+                                            Text('See More',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(
+                                                        color: blueSwatch
+                                                            .shade500)),
+                                          ]))),
+                                ],
+                              ),
+                            ],
+                          )
+                        : const NoResults(
+                            icon: ProximityIcons.no_results_illustration,
+                            message: 'No results were found.')
                   ],
                 ))
             : Container(),
         (widget._productService.searchStores ||
-                    widget._productService.searchBoth) &&
-                widget._storeswidgetList.isNotEmpty
+                widget._productService.searchBoth)
             ? Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Column(
@@ -645,61 +658,71 @@ class _SearchResultsState extends State<SearchResults> {
                             ],
                           )
                         : Container(),
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("Stores",
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headline5!),
-                          const SizedBox(width: normal_100),
-                          Expanded(
-                              child: Container(
-                                  height: tiny_50,
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: [
-                                        Theme.of(context)
-                                            .dividerColor
-                                            .withOpacity(0.0),
-                                        Theme.of(context).dividerColor,
-                                      ],
-                                          begin: Alignment.centerRight,
-                                          end: Alignment.centerLeft))))
-                        ]),
-                    MasonryGrid(
-                      column: 1,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: small_100,
-                        vertical: normal_100,
-                      ),
-                      children: widget._storeswidgetList,
-                    ),
-                    Row(
-                      children: [
-                        const Spacer(),
-                        GestureDetector(
-                            // onTap: seeMore,
-                            child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: small_100, right: normal_100),
-                                child: Row(children: [
-                                  Text('See More',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                              color: blueSwatch.shade500)),
-                                ]))),
-                      ],
-                    )
+                    widget._storeswidgetList.isNotEmpty
+                        ? Column(
+                            children: [
+                              Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text("Stores",
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5!),
+                                    const SizedBox(width: normal_100),
+                                    Expanded(
+                                        child: Container(
+                                            height: tiny_50,
+                                            decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                    colors: [
+                                                  Theme.of(context)
+                                                      .dividerColor
+                                                      .withOpacity(0.0),
+                                                  Theme.of(context)
+                                                      .dividerColor,
+                                                ],
+                                                    begin:
+                                                        Alignment.centerRight,
+                                                    end:
+                                                        Alignment.centerLeft))))
+                                  ]),
+                              MasonryGrid(
+                                column: 1,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: small_100,
+                                  vertical: normal_100,
+                                ),
+                                children: widget._storeswidgetList,
+                              ),
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  GestureDetector(
+                                      // onTap: seeMore,
+                                      child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: small_100,
+                                              right: normal_100),
+                                          child: Row(children: [
+                                            Text('See More',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(
+                                                        color: blueSwatch
+                                                            .shade500)),
+                                          ]))),
+                                ],
+                              ),
+                            ],
+                          )
+                        : NoResults(
+                            icon: ProximityIcons.no_results_illustration,
+                            message: 'No results were found.')
                   ],
                 ))
             : Container(),
-        if (widget._productsWidgetList.isEmpty &&
-            widget._storeswidgetList.isEmpty)
-          NoResults(
-              icon: ProximityIcons.no_results_illustration,
-              message: 'No results were found.')
       ],
     );
     /* MasonryGrid(
