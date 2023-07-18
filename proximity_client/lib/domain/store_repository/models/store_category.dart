@@ -4,8 +4,7 @@ class StoreCategory {
   bool? selected;
   String? dbId;
 
-  StoreCategory(
-      {this.id, required this.name,  this.selected, this.dbId});
+  StoreCategory({this.id, required this.name, this.selected, this.dbId});
 
   StoreCategory.fromJson(Map<String, dynamic> parsedJson)
       : dbId = parsedJson['_id'] ?? "",
@@ -23,3 +22,16 @@ class StoreCategory {
     return _list;
   }
 }
+
+final List<StoreCategory> storeCategories = [
+  StoreCategory(id: 1, name: 'Accessories'),
+  StoreCategory(id: 2, name: 'Grocery'),
+  StoreCategory(id: 3, name: 'Clothing'),
+  StoreCategory(id: 4, name: 'Electronics'),
+  StoreCategory(id: 5, name: 'Home & Furniture'),
+  StoreCategory(id: 6, name: 'Health & Beauty'),
+  StoreCategory(id: 7, name: 'Sports & Outdoors'),
+  StoreCategory(id: 8, name: 'Books & Stationery'),
+  StoreCategory(id: 9, name: 'Toys & Games'),
+  StoreCategory(id: 10, name: 'Automotive'),
+];
