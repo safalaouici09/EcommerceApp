@@ -1,660 +1,3 @@
-/*import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:proximity/proximity.dart';
-import 'package:proximity_client/domain/product_repository/product_repository.dart';
-import 'package:proximity_client/domain/store_repository/store_repository.dart';
-import 'package:proximity_client/ui/pages/pages.dart';
-import 'package:proximity_client/ui/pages/product_pages/widgets/product_card.dart';
-import 'package:proximity_client/ui/pages/store_pages/widgets/store_card.dart';
-
-class SearchBar extends StatefulWidget {
-  const SearchBar({Key? key}) : super(key: key);
-
-  @override
-  State<SearchBar> createState() => _SearchBarState();
-}
-
-class _SearchBarState extends State<SearchBar> {
-  Future<void> _showSearch() async {
-    await previewSearch(
-      context: context,
-      delegate: Search(),
-      query: '',
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _showSearch,
-      child: Container(
-        padding: const EdgeInsets.all(small_100).copyWith(left: normal_100),
-        margin: const EdgeInsets.symmetric(
-            horizontal: normal_100, vertical: small_100),
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(smallRadius),
-            gradient: LinearGradient(
-              colors: (Theme.of(context).brightness == Brightness.light)
-                  ? lightSearchBarGradient
-                  : darkSearchBarGradient,
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            )),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text('Search...',
-                  style: Theme.of(context).textTheme.headline5!.copyWith(
-                      color: Theme.of(context).textTheme.bodyText2!.color)),
-            ),
-            const SizedBox(width: normal_100),
-            const Icon(ProximityIcons.search)
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// A custom search delegate for proper handling and custom UI
-class Search extends CustomSearchDelegate<Product> {
-  bool showChoiceChips = false;
-  bool _searchProducts = false;
-  bool _searchStores = false;
-  bool _searchBoth = true;
-  @override
-  Widget buildResults(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {});
-    final productService = Provider.of<ProductService>(context);
-    final storeService = Provider.of<StoreService>(context);
-    productService.getProximityProducts(name: query);
-    storeService.searchStores(name: query);
-    List<Widget> _widgetList = [];
-    if (query.isNotEmpty) {
-      if()
-      for (int i = 0; i < productService.searchResults.length; i++) {
-        _widgetList.add(
-          ProductCard(product: productService.searchResults[i]),
-        );
-      }
-
-      for (int i = 0; i < storeService.searchResults.length; i++) {
-        _widgetList.add(
-          StoreCard(idStore: storeService.searchResults[i].id!),
-        );
-      }
-    }
-    if (_widgetList.isEmpty) {
-      return const NoResults(
-        icon: ProximityIcons.no_results_illustration,
-        message: 'No results were found.',
-      );                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-    } else {
-      return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(normal_100),
-            child: Row(
-              children: [
-                Icon(Icons.list),
-                SizedBox(
-                  width: normal_100,
-                ),
-                Wrap(
-                  spacing: normal_100,
-                  children: [
-                    ChoiceChip(
-                      label: Text(
-                        'All',
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                              color: Colors.black,
-                            ),
-                      ),
-                      onSelected: (_) {
-                        /* setState(() {
-                                  _searchBoth = true;
-                                  _searchProducts = false;
-                                  _searchStores = false;
-                                });*/
-                      },
-                      selected: _searchBoth,
-                      backgroundColor: dividerLightColor.withOpacity(0.5),
-                      selectedColor: Colors.blue.shade500,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: BorderSide(
-                          color: dividerLightColor.withOpacity(0.5),
-                        ),
-                      ),
-                    ),
-                    ChoiceChip(
-                      label: Text(
-                        'Stores',
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                              color: Colors.black,
-                            ),
-                      ),
-                      onSelected: (_) {
-                        /* setState(() {
-                                  _searchBoth = false;
-                                  _searchProducts = false;
-                                  _searchStores = true;
-                                });*/
-                      },
-                      selected: _searchStores,
-                      backgroundColor: dividerLightColor.withOpacity(0.5),
-                      selectedColor: Colors.blue.shade500,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: BorderSide(
-                          color: dividerLightColor.withOpacity(0.5),
-                        ),
-                      ),
-                    ),
-                    ChoiceChip(
-                      label: Text(
-                        'Products',
-                        style: Theme.of(context).textTheme.headline5!.copyWith(
-                              color: Colors.black,
-                            ),
-                      ),
-                      onSelected: (_) {
-                        /* setState(() {
-                                  _searchBoth = false;
-                                  _searchProducts = true;
-                                  _searchStores = false;
-                                });*/
-                      },
-                      selected: _searchProducts,
-                      backgroundColor: dividerLightColor.withOpacity(0.5),
-                      selectedColor: Colors.blue.shade500,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: BorderSide(
-                          color: dividerLightColor.withOpacity(0.5),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          _searchProducts || _searchBoth
-              ? Padding(
-                  padding: const EdgeInsets.all(normal_100),
-                  child: Column(
-                    children: [
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Products",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.headline5!),
-                            const SizedBox(width: normal_100),
-                            Expanded(
-                                child: Container(
-                                    height: tiny_50,
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                            colors: [
-                                          Theme.of(context)
-                                              .dividerColor
-                                              .withOpacity(0.0),
-                                          Theme.of(context).dividerColor,
-                                        ],
-                                            begin: Alignment.centerRight,
-                                            end: Alignment.centerLeft))))
-                          ]),
-                      MasonryGrid(
-                        column: 1,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: small_100,
-                          vertical: normal_100,
-                        ),
-                        children: _widgetList,
-                      ),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          GestureDetector(
-                              // onTap: seeMore,
-                              child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: small_100, right: normal_100),
-                                  child: Row(children: [
-                                    Text('See More',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                                color: blueSwatch.shade500)),
-                                  ]))),
-                        ],
-                      )
-                    ],
-                  ))
-              : Container(),
-          _searchStores || _searchBoth
-              ? Padding(
-                  padding: const EdgeInsets.all(normal_100),
-                  child: Column(
-                    children: [
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Stores",
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.headline5!),
-                            const SizedBox(width: normal_100),
-                            Expanded(
-                                child: Container(
-                                    height: tiny_50,
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                            colors: [
-                                          Theme.of(context)
-                                              .dividerColor
-                                              .withOpacity(0.0),
-                                          Theme.of(context).dividerColor,
-                                        ],
-                                            begin: Alignment.centerRight,
-                                            end: Alignment.centerLeft))))
-                          ]),
-                      MasonryGrid(
-                        column: 1,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: small_100,
-                          vertical: normal_100,
-                        ),
-                        children: _widgetList,
-                      ),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          GestureDetector(
-                              // onTap: seeMore,
-                              child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: small_100, right: normal_100),
-                                  child: Row(children: [
-                                    Text('See More',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                                color: blueSwatch.shade500)),
-                                  ]))),
-                        ],
-                      )
-                    ],
-                  ))
-              : Container(),
-        ],
-      );
-    }
-  }
-
-  /*Widget buildSuggestions(BuildContext context) {
-    final productService = Provider.of<ProductService>(context);
-    List<Widget> _widgetList = [];
-    if (query != '') {
-      productService.getProximityProducts(name: query);
-      if (query.isNotEmpty) {
-        for (int i = 0; i < productService.searchResults.length; i++) {
-          _widgetList
-              .add(ProductCard(product: productService.searchResults[i]));
-        }
-      }
-      if (_widgetList.isEmpty) {
-        return const NoResults(
-            icon: ProximityIcons.no_results_illustration,
-            message: 'No results were found.');
-      } else {
-        return MasonryGrid(
-          column: 2,
-          padding: const EdgeInsets.symmetric(
-              horizontal: small_100, vertical: normal_100),
-          children: _widgetList,
-        );
-      }
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _widgetList,
-    );
-  }*/
-}
-
-enum _SearchBody {
-  suggestions,
-  results,
-}
-
-abstract class CustomSearchDelegate<T> {
-  CustomSearchDelegate({
-    this.searchFieldLabel,
-    this.keyboardType,
-    this.textInputAction = TextInputAction.search,
-  });
-
-  //Widget buildSuggestions(BuildContext context);
-
-  Widget buildResults(BuildContext context);
-
-  ThemeData appBarTheme(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return theme.copyWith(
-      primaryColor: Colors.white,
-      primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey),
-      primaryColorBrightness: Brightness.light,
-      primaryTextTheme: theme.textTheme,
-    );
-  }
-
-  String get query => _queryTextController.text;
-
-  set query(String value) {
-    _queryTextController.text = value;
-  }
-
-  void showResults(BuildContext context) {
-    _focusNode!.unfocus();
-    _currentBody = _SearchBody.results;
-  }
-
-  void close(BuildContext context, T result) {
-    _currentBody = null;
-    _focusNode!.unfocus();
-    Navigator.of(context)
-      ..popUntil((Route<dynamic> route) => route == _route)
-      ..pop(result);
-  }
-
-  final String? searchFieldLabel;
-  final TextInputType? keyboardType;
-  final TextInputAction textInputAction;
-
-  Animation<double> get transitionAnimation => _proxyAnimation;
-
-  // The focus node to use for manipulating focus on the search page. This is
-  // managed, owned, and set by the _SearchPageRoute using this delegate.
-  FocusNode? _focusNode;
-
-  final TextEditingController _queryTextController = TextEditingController();
-
-  final ProxyAnimation _proxyAnimation =
-      ProxyAnimation(kAlwaysDismissedAnimation);
-
-  final ValueNotifier<_SearchBody?> _currentBodyNotifier =
-      ValueNotifier<_SearchBody?>(null);
-
-  _SearchBody? get _currentBody => _currentBodyNotifier.value;
-
-  set _currentBody(_SearchBody? value) {
-    _currentBodyNotifier.value = value;
-  }
-
-  _SearchPageRoute<T>? _route;
-}
-
-class _SearchPageRoute<T> extends PageRoute<T> {
-  _SearchPageRoute({required this.delegate}) {
-    assert(
-      delegate._route == null,
-    );
-    delegate._route = this;
-  }
-
-  final CustomSearchDelegate<T> delegate;
-
-  @override
-  Color? get barrierColor => null;
-
-  @override
-  String? get barrierLabel => null;
-
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 300);
-
-  @override
-  bool get maintainState => false;
-
-  @override
-  Widget buildTransitions(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    return FadeTransition(
-      opacity: animation,
-      child: child,
-    );
-  }
-
-  @override
-  Animation<double> createAnimation() {
-    final Animation<double> animation = super.createAnimation();
-    delegate._proxyAnimation.parent = animation;
-    return animation;
-  }
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return _SearchPage<T>(
-      delegate: delegate,
-      animation: animation,
-    );
-  }
-
-  @override
-  void didComplete(T? result) {
-    super.didComplete(result);
-    assert(delegate._route == this);
-    delegate._route = delegate._currentBody = null;
-  }
-}
-
-class _SearchPage<T> extends StatefulWidget {
-  const _SearchPage({
-    this.delegate,
-    this.animation,
-  });
-
-  final CustomSearchDelegate<T>? delegate;
-  final Animation<double>? animation;
-
-  @override
-  State<StatefulWidget> createState() => _SearchPageState<T>();
-}
-
-class _SearchPageState<T> extends State<_SearchPage<T>> {
-  // This node is owned, but not hosted by, the search page. Hosting is done by
-  // the text field.
-  FocusNode focusNode = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-    widget.delegate!._queryTextController.addListener(_onQueryChanged);
-    widget.animation!.addStatusListener(_onAnimationStatusChanged);
-    widget.delegate!._currentBodyNotifier.addListener(_onSearchBodyChanged);
-
-    widget.delegate!._focusNode = focusNode;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    widget.delegate!._queryTextController.removeListener(_onQueryChanged);
-    widget.animation!.removeStatusListener(_onAnimationStatusChanged);
-    widget.delegate!._currentBodyNotifier.removeListener(_onSearchBodyChanged);
-    widget.delegate!._focusNode = null;
-    focusNode.dispose();
-  }
-
-  void _onAnimationStatusChanged(AnimationStatus status) {
-    if (status != AnimationStatus.completed) {
-      return;
-    }
-    widget.animation!.removeStatusListener(_onAnimationStatusChanged);
-    if (widget.delegate!._currentBody == _SearchBody.suggestions) {
-      focusNode.requestFocus();
-    }
-  }
-
-  @override
-  void didUpdateWidget(_SearchPage<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.delegate != oldWidget.delegate) {
-      oldWidget.delegate!._queryTextController.removeListener(_onQueryChanged);
-      widget.delegate!._queryTextController.addListener(_onQueryChanged);
-      oldWidget.delegate!._currentBodyNotifier
-          .removeListener(_onSearchBodyChanged);
-      widget.delegate!._currentBodyNotifier.addListener(_onSearchBodyChanged);
-      oldWidget.delegate!._focusNode = null;
-      widget.delegate!._focusNode = focusNode;
-    }
-  }
-
-  void _onQueryChanged() {
-    /*setState(() {
-      showChoiceChips = widget.delegate!.query.isNotEmpty;
-    });*/
-  }
-
-  void _onSearchBodyChanged() {
-    setState(() {
-      // Rebuild ourselves because the search body changed.
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    assert(debugCheckHasMaterialLocalizations(context));
-    final ThemeData theme = widget.delegate!.appBarTheme(context);
-    final String searchFieldLabel = widget.delegate!.searchFieldLabel ??
-        MaterialLocalizations.of(context).searchFieldLabel;
-    Widget body;
-
-    body = KeyedSubtree(
-      key: const ValueKey<_SearchBody>(_SearchBody.results),
-      child: widget.delegate!.buildResults(context),
-    );
-
-    String routeName;
-    switch (theme.platform) {
-      case TargetPlatform.iOS:
-      case TargetPlatform.macOS:
-        routeName = '';
-        break;
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        routeName = searchFieldLabel;
-        break;
-    }
-
-    return Semantics(
-      explicitChildNodes: true,
-      scopesRoute: true,
-      namesRoute: true,
-      label: routeName,
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: small_100)
-                    .copyWith(left: normal_100),
-                margin: const EdgeInsets.all(normal_100),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(smallRadius),
-                  gradient: LinearGradient(
-                    colors: (Theme.of(context).brightness == Brightness.light)
-                        ? lightSearchBarGradient
-                        : darkSearchBarGradient,
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                ),
-                child: Center(
-                  child: TextFormField(
-                    focusNode: focusNode,
-                    controller: widget.delegate!._queryTextController,
-                    textAlignVertical: TextAlignVertical.center,
-                    onFieldSubmitted: (String _) {
-                      widget.delegate!.showResults(context);
-                    },
-                    keyboardType: TextInputType.name,
-                    style: Theme.of(context).textTheme.headline5,
-                    cursorColor: Theme.of(context).primaryColor,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      isDense: true,
-                      suffixIcon: IconButton(
-                        icon: (widget.delegate!.query == '')
-                            ? Icon(
-                                ProximityIcons.search,
-                                color: Theme.of(context).iconTheme.color,
-                              )
-                            : Icon(
-                                ProximityIcons.remove,
-                                color: Theme.of(context).iconTheme.color,
-                              ),
-                        onPressed: () {
-                          widget.delegate!.query = '';
-                        },
-                      ),
-                      border: InputBorder.none,
-                      hintText: 'Search Product.',
-                      hintStyle: Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(
-                            color: Theme.of(context).textTheme.bodyText2!.color,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const ScrollPhysics(),
-                  child: AnimatedSwitcher(
-                    duration: normalAnimationDuration,
-                    child: body,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Future<T?> previewSearch<T>({
-  required BuildContext context,
-  required CustomSearchDelegate<T> delegate,
-  String query = '',
-}) {
-  delegate.query = query;
-  delegate._currentBody = _SearchBody.results;
-  return Navigator.of(context).push(_SearchPageRoute<T>(delegate: delegate));
-}
-*/
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
@@ -733,7 +76,7 @@ class Search extends CustomSearchDelegate<Product> {
     }
     if (storeService.query != query) {
       storeService.searchStores(name: query);
-      //  storeService.filterStoresByCategorie();
+      storeService.filterStoresByCategorie();
     }
 
     List<Widget> _productswidgetList = [];
@@ -751,21 +94,22 @@ class Search extends CustomSearchDelegate<Product> {
               .add(ProductCard(product: productService.filterSearchResults[i]));
         }
       }
-      if (storeService.searchFilter == "") {
+      print('storeService.searchFilter.toString()' +
+          storeService.searchFilter.toString());
+      if (storeService.searchFilter == null &&
+          storeService.searchAddress.city == null) {
         for (int i = 0; i < storeService.searchResults.length; i++) {
           _storeswidgetList
               .add(StoreCard(store: storeService.searchResults[i]));
         }
       } else {
-        {
-          for (int i = 0; i < storeService.searchResults.length; i++) {
-            _storeswidgetList
-                .add(StoreCard(store: storeService.filterSearchResults[i]));
-          }
+        for (int i = 0; i < storeService.filterSearchResults.length; i++) {
+          _storeswidgetList
+              .add(StoreCard(store: storeService.filterSearchResults[i]));
         }
       }
     }
-    if (_productswidgetList.isEmpty && _storeswidgetList.isEmpty) {
+    /*  if (_productswidgetList.isEmpty && _storeswidgetList.isEmpty) {
       return const NoResults(
           icon: ProximityIcons.no_results_illustration,
           message: 'No results were found.');
@@ -778,14 +122,14 @@ class Search extends CustomSearchDelegate<Product> {
             icon: ProximityIcons.no_results_illustration,
             message: 'No products were found.');
       }*/
-    } else {
-      return SearchResults(
-        productsWidgetList: _productswidgetList,
-        storesWidgetList: _storeswidgetList,
-        productService: productService,
-        storeService: storeService,
-      );
-    }
+    } else {*/
+    return SearchResults(
+      productsWidgetList: _productswidgetList,
+      storesWidgetList: _storeswidgetList,
+      productService: productService,
+      storeService: storeService,
+    );
+    // }
   }
 
   @override
@@ -874,7 +218,7 @@ class _SearchResultsState extends State<SearchResults> {
                 textAlignVertical: TextAlignVertical.center,
                 onFieldSubmitted: (String value) {
                   widget._storeService.changeCity(value);
-                  widget._storeService.filterStoresByAddress(value);
+                  //widget._storeService.filterStoresByAdresse();
                   Navigator.of(context).pop();
                 },
                 //keyboardType: TextInputType.name,
@@ -982,7 +326,7 @@ class _SearchResultsState extends State<SearchResults> {
     );
   }
 
-  var _selected_item;p
+  var _selected_item;
   final _items = storeCategories
       .map((categorie) =>
           SingleSelectItem<StoreCategory>(categorie, categorie.name))
@@ -1213,7 +557,7 @@ class _SearchResultsState extends State<SearchResults> {
                                       buttonText: Text(
                                         _selected_item == null
                                             ? 'Select Category'
-                                            : _selected_item.toString(),
+                                            : _selected_item.name.toString(),
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline5!
@@ -1227,6 +571,9 @@ class _SearchResultsState extends State<SearchResults> {
                                       onConfirm: (result) {
                                         setState(() {
                                           _selected_item = result;
+                                          widget._storeService
+                                              .addSearchCategorie(
+                                                  _selected_item.id);
                                         });
                                       },
                                     ),
@@ -1348,6 +695,11 @@ class _SearchResultsState extends State<SearchResults> {
                   ],
                 ))
             : Container(),
+        if (widget._productsWidgetList.isEmpty &&
+            widget._storeswidgetList.isEmpty)
+          NoResults(
+              icon: ProximityIcons.no_results_illustration,
+              message: 'No results were found.')
       ],
     );
     /* MasonryGrid(

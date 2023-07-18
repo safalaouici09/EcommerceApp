@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:proximity/config/backend.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_client/domain/store_repository/models/store_category.dart';
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
@@ -18,8 +19,8 @@ class StoreService with ChangeNotifier {
   late List<Store>? _stores = [];
   List<Product>? _products;
   late List<Store> _filterSearchResults = [];
-  String _searchFilter = '';
-  String get searchFilter => _searchFilter;
+  int? _searchFilter;
+  int? get searchFilter => _searchFilter;
   List<Store> get filterSearchResults => _filterSearchResults;
 
   late List<Store> _searchResults = [];
@@ -179,13 +180,13 @@ class StoreService with ChangeNotifier {
     }
   }
 
-  addSearchFilter(String value) {
+  addSearchCategorie(int value) {
     _searchFilter = value;
     notifyListeners();
   }
 
-  deleteSearchFilter() {
-    _searchFilter = '';
+  deleteSearchCategorie() {
+    _searchFilter = null;
     notifyListeners();
   }
 
@@ -193,7 +194,7 @@ class StoreService with ChangeNotifier {
     /// open hive box
     ///
     ///
-    _query = name;
+    /* _query = name;
     notifyListeners();
     var credentialsBox = Boxes.getCredentials();
     credentialsBox.put('first_time', false);
@@ -221,28 +222,46 @@ class StoreService with ChangeNotifier {
       }
     }
 
+*/
     // String _id = credentialsBox.get('id');
-    String? _token = credentialsBox.get('token');
+    //String? _token = credentialsBox.get('token');
+    print('searching for stores');
+    _searchResults = [];
     _searchResults.add(Store(
         id: '1',
         name: 'Nike Store',
         description:
             'Shop the latest Nike athletic shoes, apparel, and accessories. Find your favorite sports gear for running, basketball, and more.',
-        address: Address(
-            streetName: '123 Main Street, Anytown, USA',
-            lat: 40.1234,
-            lng: -75.5678),
-        category: 'Sports & Outdoors'));
+        address: Address(streetName: '123 Main Street, Paris, France', lat: 40.1234, lng: -75.5678),
+        categories: [StoreCategory(id: 1, name: 'Sports & Outdoors')]));
     _searchResults.add(Store(
         id: '3',
-        name: 'Bookworm Bookstore',
+        name: ' produt 3 ',
         description:
             'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
-        address: Address(
-            streetName: '789 Oak Road, Readington, Australia',
-            lat: -33.4567,
-            lng: 150.9876),
-        category: 'Accessoires'));
+        address: Address(streetName: '789 Oak Road, Monpellier, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 3, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '4',
+        name: 'product 2 ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789 Oak Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 2, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '5',
+        name: 'product 8 ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789 Oak Road, Readington, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'product 8  8 ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
 
     /// dataForm is already a parameter
 
@@ -297,14 +316,40 @@ class StoreService with ChangeNotifier {
   void filterStoresByCategorie() {
     _filterSearchResults = [];
     for (Store store in _searchResults) {
-      print('cat' + store.category.toString());
-      if (store.category == searchFilter) {
-        _filterSearchResults.add(store);
+      for (StoreCategory category in store.categories!) {
+        print('cattttt ' + category.id.toString());
+        print(_searchFilter);
+        if (category.id == _searchFilter) {
+          _filterSearchResults.add(store);
+          // Found a matching category, no need to check other categories of this store
+        }
       }
     }
     notifyListeners();
   }
 
+  void filterStoresByAdresse() {
+    _filterSearchResults = [];
+    String searchCity = _searchAddress.city?.toLowerCase() ??
+        ""; // Convert the entered city to lowercase for case-insensitive matching
+
+    // Create a regex pattern for fuzzy matching based on the entered city
+    String regexPattern = ".*" + RegExp.escape(searchCity) + ".*";
+
+    RegExp regex = RegExp(regexPattern, caseSensitive: false);
+
+    for (Store store in _searchResults) {
+      String storeCity = store.address!.city?.toLowerCase() ??
+          ""; // Convert the store's city to lowercase for case-insensitive matching
+
+      // Use the regex pattern to perform a fuzzy search
+      if (regex.hasMatch(storeCity)) {
+        _filterSearchResults.add(store);
+      }
+    }
+
+    notifyListeners();
+  } /*
   void filterStoresByAddress(String value) {
     _searchResults.where((store) {
       Address? address = store.address;
@@ -321,12 +366,11 @@ class StoreService with ChangeNotifier {
     }).toList();
     notifyListeners();
   }
-}
+}*/
 // // essential methods for the UI
 // bool isOutOfStock(String id) {
 //   return (products.firstWhere((element) => element.id == id).quantity ==
 //       null) ||
 //       (products.firstWhere((element) => element.id == id).quantity == 0);
 // }
-
-
+}

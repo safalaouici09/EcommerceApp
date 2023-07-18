@@ -1,11 +1,11 @@
 class StoreCategory {
   int? id;
   String name;
-  bool selected;
+  bool? selected;
   String? dbId;
 
   StoreCategory(
-      {this.id, required this.name, required this.selected, this.dbId});
+      {this.id, required this.name,  this.selected, this.dbId});
 
   StoreCategory.fromJson(Map<String, dynamic> parsedJson)
       : dbId = parsedJson['_id'] ?? "",

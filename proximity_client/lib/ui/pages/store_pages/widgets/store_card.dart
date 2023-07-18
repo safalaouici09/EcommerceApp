@@ -100,12 +100,12 @@ class _StoreCardState extends State<StoreCard> {
                     ]),
                     Row(
                       children: [
-                        InkWell(
+                        /*InkWell(
                           onTap: () {
                             handleRaiting(widget.store!.rating, context);
                           },
-                          child: StarRating(rating: widget.store!.rating!),
-                        ),
+                          //child: StarRating(rating: widget.store!.rating!),
+                        ),*/
                         widget.store!.isNew()
                             ? Container(
                                 padding: const EdgeInsets.symmetric(
