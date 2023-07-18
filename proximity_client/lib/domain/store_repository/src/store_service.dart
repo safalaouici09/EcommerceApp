@@ -257,7 +257,98 @@ class StoreService with ChangeNotifier {
         categories: [StoreCategory(id: 8, name: 'Accessoires')]));
     _searchResults.add(Store(
         id: '6',
-        name: 'product 8  8 ',
+        name: 'productt5 ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productt58 ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productt5885 ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productt58855 ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productt588555 ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productd ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productdrs ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productdrsvg ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productdrsvg ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productdrsvgfrf ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productdrsvgfrfdsf ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '6',
+        name: 'productdrsvgfrfdsfcdfr ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '62',
+        name: 'productt ',
+        description:
+            'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
+        address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),
+        categories: [StoreCategory(id: 8, name: 'Accessoires')]));
+    _searchResults.add(Store(
+        id: '68',
+        name: 'productt ',
         description:
             'Discover a wide range of books from various genres at Bookworm Bookstore. Get lost in captivating stories and expand your knowledge.',
         address: Address(streetName: '789  Road, Nice, Australia', lat: -33.4567, lng: 150.9876),

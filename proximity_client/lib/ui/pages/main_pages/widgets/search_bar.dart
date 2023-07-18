@@ -51,7 +51,7 @@ class _SearchBarState extends State<SearchBar> {
         child: Row(
           children: [
             Expanded(
-                child: Text('Search...',
+                child: Text('Search.',
                     style: Theme.of(context).textTheme.headline5!.copyWith(
                         color: Theme.of(context).textTheme.bodyText2!.color))),
             const SizedBox(width: normal_100),
@@ -81,7 +81,7 @@ class Search extends CustomSearchDelegate<Product> {
 
     List<Widget> _productswidgetList = [];
     List<Widget> _storeswidgetList = [];
-
+    if (query.isEmpty) {}
     if (query.isNotEmpty) {
       if (productService.searchFilter == "") {
         for (int i = 0; i < productService.searchResults.length; i++) {
@@ -321,84 +321,153 @@ class _SearchResultsState extends State<SearchResults> {
       .toList();
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        buildChoiceShip(context),
-        (widget._productService.searchProduct ||
-                widget._productService.searchBoth)
-            ? Padding(
-                padding: const EdgeInsets.all(normal_100),
-                child: buildSignleChoice(
-                    context, widget._productService.searchStores))
-            : Container(),
-        widget._productsWidgetList.isNotEmpty
-            ? Column(
-                children: [
-                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    Text("Products",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline5!),
-                    const SizedBox(width: normal_100),
-                    Expanded(
-                        child: Container(
-                            height: tiny_50,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    colors: [
-                                  Theme.of(context)
-                                      .dividerColor
-                                      .withOpacity(0.0),
-                                  Theme.of(context).dividerColor,
-                                ],
-                                    begin: Alignment.centerRight,
-                                    end: Alignment.centerLeft))))
-                  ]),
-                  MasonryGrid(
-                    column: 2,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: small_100,
-                      vertical: normal_100,
+    return Column(children: [
+      buildChoiceShip(context),
+      widget._productService.searchProduct
+          ? Padding(
+              padding: const EdgeInsets.all(normal_100),
+              child: buildSignleChoice(
+                context,
+              ))
+          : Container(),
+      (widget._productService.searchProduct ||
+              widget._productService.searchBoth)
+          ? widget._productsWidgetList.isNotEmpty
+              ? Column(
+                  children: [
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Products",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headline5!),
+                          const SizedBox(width: normal_100),
+                          Expanded(
+                              child: Container(
+                                  height: tiny_50,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          colors: [
+                                        Theme.of(context)
+                                            .dividerColor
+                                            .withOpacity(0.0),
+                                        Theme.of(context).dividerColor,
+                                      ],
+                                          begin: Alignment.centerRight,
+                                          end: Alignment.centerLeft))))
+                        ]),
+                    MasonryGrid(
+                      column: 2,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: small_100,
+                        vertical: normal_100,
+                      ),
+                      children: widget._productService.searchProduct
+                          ? widget._productsWidgetList
+                          : widget._productsWidgetList.take(4).toList(),
                     ),
-                    children: widget._productService.searchProduct
-                        ? widget._productsWidgetList
-                        : widget._productsWidgetList.take(4).toList(),
-                  ),
-                  !widget._productService.searchProduct
-                      ? Row(
-                          children: [
-                            const Spacer(),
-                            GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    widget._productService.setSearchProducts();
-                                  });
-                                },
-                                child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: small_100, right: normal_100),
-                                    child: Text('See More',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                                color: blueSwatch.shade500)))),
-                          ],
-                        )
-                      : Container()
-                ],
-              )
-            : const NoResults(
-                icon: ProximityIcons.no_results_illustration,
-                message: 'No results were found.'),
-        (widget._productService.searchStores ||
-                widget._productService.searchBoth)
-            ? Padding(
-                padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
-                child: buildSignleChoice(
-                    context, widget._productService.searchStores))
-            : Container(),
-      ],
-    );
+                    !widget._productService.searchProduct
+                        ? Row(
+                            children: [
+                              const Spacer(),
+                              GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      widget._productService
+                                          .setSearchProducts();
+                                    });
+                                  },
+                                  child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: small_100, right: normal_100),
+                                      child: Text('See More',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                  color:
+                                                      blueSwatch.shade500)))),
+                            ],
+                          )
+                        : Container()
+                  ],
+                )
+              : const NoResults(
+                  icon: ProximityIcons.no_results_illustration,
+                  message: 'No results were found.')
+          : Container(),
+      widget._productService.searchStores
+          ? Padding(
+              padding: const EdgeInsets.all(normal_100),
+              child: buildSignleChoice(
+                context,
+              ))
+          : Container(),
+      (widget._productService.searchStores || widget._productService.searchBoth)
+          ? widget._storeswidgetList.isNotEmpty
+              ? Column(
+                  children: [
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Store",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headline5!),
+                          const SizedBox(width: normal_100),
+                          Expanded(
+                              child: Container(
+                                  height: tiny_50,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          colors: [
+                                        Theme.of(context)
+                                            .dividerColor
+                                            .withOpacity(0.0),
+                                        Theme.of(context).dividerColor,
+                                      ],
+                                          begin: Alignment.centerRight,
+                                          end: Alignment.centerLeft))))
+                        ]),
+                    MasonryGrid(
+                      column: 1,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: small_100,
+                        vertical: normal_100,
+                      ),
+                      children: widget._productService.searchStores
+                          ? widget._storeswidgetList
+                          : widget._storeswidgetList.take(4).toList(),
+                    ),
+                    !widget._productService.searchStores
+                        ? Row(
+                            children: [
+                              const Spacer(),
+                              GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      widget._productService.setSearchStores();
+                                    });
+                                  },
+                                  child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: small_100, right: normal_100),
+                                      child: Text('See More',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                  color:
+                                                      blueSwatch.shade500)))),
+                            ],
+                          )
+                        : Container()
+                  ],
+                )
+              : const NoResults(
+                  icon: ProximityIcons.no_results_illustration,
+                  message: 'No results were found.')
+          : Container()
+    ]);
     /* MasonryGrid(
           column: 1,
           padding: const EdgeInsets.symmetric(
@@ -488,12 +557,13 @@ class _SearchResultsState extends State<SearchResults> {
     );
   }
 
-  Column buildSignleChoice(BuildContext context, bool searchStores) {
-    bool seeAllProductsSelected = false;
-    bool seeAllStoresSelected = false;
+  Column buildSignleChoice(
+    BuildContext context,
+  ) {
     return Column(
       children: [
-        widget._productService.searchProduct
+        (widget._productService.searchStores ||
+                widget._productService.searchProduct)
             ? SingleChildScrollView(
                 child: Column(children: [
                   Padding(
@@ -523,7 +593,7 @@ class _SearchResultsState extends State<SearchResults> {
                       ),
                       onConfirm: (result) {
                         setState(() {
-                          if (searchStores) {
+                          if (widget._productService.searchStores) {
                             _selected_item = result;
                             widget._storeService
                                 .addSearchCategorie(_selected_item.id);
@@ -549,6 +619,49 @@ class _SearchResultsState extends State<SearchResults> {
                                 Container(),*/
                 ]),
               )
+            : Container(),
+        widget._productService.searchStores
+            ? GestureDetector(
+                onTap: () {
+                  showPopUp(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      border: Border.all(
+                        width: 1,
+                        color: widget._storeService.searchAddress == null
+                            ? Theme.of(context).dividerColor
+                            : blueSwatch.shade500,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(widget._storeService.getSearchAddresse()!,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5!
+                                .copyWith(
+                                  color:
+                                      widget._storeService.searchAddress == null
+                                          ? Theme.of(context).dividerColor
+                                          : blueSwatch.shade500,
+                                )),
+                        Spacer(),
+                        Icon(
+                          ProximityIcons.address,
+                          color: widget._storeService.searchAddress == null
+                              ? Theme.of(context).dividerColor
+                              : blueSwatch.shade500,
+                        )
+                      ],
+                    ),
+                  ),
+                ))
             : Container(),
       ],
     );
