@@ -20,6 +20,10 @@ class Product {
   Policy? policy;
   double? reservation;
   Map<String, List<String>>? characteristics;
+  int? numberOfSales;
+  int? numberOfSearches;
+  double? averageRating;
+  DateTime? releaseDate;
 
   Product(
       {this.id,
@@ -33,7 +37,10 @@ class Product {
       this.categoryId,
       this.categoryName,
       this.characteristics,
-      // this.tags,
+      this.numberOfSales = 0,
+      this.numberOfSearches = 0,
+      this.averageRating = 0,
+      this.releaseDate,
       this.policy,
       this.storeId,
       this.sellerId,

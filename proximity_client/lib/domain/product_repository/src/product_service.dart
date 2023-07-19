@@ -14,6 +14,7 @@ class ProductService with ChangeNotifier {
   late List<Product> _searchResults;
   late List<Product> _filterSearchResults = [];
   String _searchFilter = '';
+  late List<Promotion> _todayPromotions = [];
   late List<Product> _todayDeals;
   late Set<Product> _wishList;
   late List<String> _ads;
@@ -34,7 +35,7 @@ class ProductService with ChangeNotifier {
   List<Product> get searchResults => _searchResults;
   List<Product> get filterSearchResults => _filterSearchResults;
   List<Product> get todayDeals => _todayDeals;
-
+  List<Promotion> get todayPromotions => _todayPromotions;
   List<Product> get wishList => _wishList.toList();
 
   String get query => _query;
@@ -80,8 +81,9 @@ class ProductService with ChangeNotifier {
     _ads = [];
     _products = [];
     getProximityProducts();
-    getTodayDeals();
+    getTodayPromotions();
     getAds();
+    print("prY" + _todayPromotions.length.toString());
   }
 
   /// GET methods
@@ -115,6 +117,27 @@ class ProductService with ChangeNotifier {
     }
   }
 
+/*
+  Future getTodayPromotions() async {
+     await Future.delayed(const Duration(milliseconds: 1000), () {
+        print("prY" + _todayPromotions.length.toString());
+      _todayPromotions = [];
+      _todayPromotions =
+          _products.where((element) => element.discount != 0).map((product) {
+        return Promotion(
+          product: product,
+        );
+      }).toList();
+      print("prY" + _todayPromotions.length.toString());
+      print("prY" + _todayPromotions[0].score.toString());
+      print("prY" + _todayPromotions.length.toString());
+/*
+      _todayPromotions.sort((a, b) => b.score.compareTo(a.score));
+*/
+      notifyListeners();
+    });
+  }
+*/
   Future getProximityProducts({String name = ""}) async {
     /// open hive box
     ///
@@ -150,6 +173,107 @@ class ProductService with ChangeNotifier {
     // String _id = credentialsBox.get('id');
     String? _token = credentialsBox.get('token');
 // a enlever
+    _products = [
+      Product(
+        id: '02331813210',
+        name: 'XIAOMI Smart-watch',
+        price: 14.99,
+        images: ['assets/img/products/product-1.png'],
+        discount: 0.1,
+        discountEndDate: DateTime(2023, 9, 15),
+        numberOfSales: 4,
+        numberOfSearches: 18,
+        averageRating: 2.7,
+        releaseDate: DateTime(2020, 3, 31),
+      ),
+      Product(
+        id: '85154532165',
+        name: 'Google Pixel 6',
+        price: 569.99,
+        images: ['assets/img/products/product-8.png'],
+        discount: 0.2,
+        discountEndDate: DateTime(2023, 12, 31),
+        numberOfSales: 1000,
+        numberOfSearches: 500,
+        averageRating: 4.9,
+        releaseDate: DateTime(2023, 9, 24),
+      ),
+      Product(
+        id: '75313565116',
+        name: 'Redmi Airdots',
+        price: 39.99,
+        images: ['assets/img/products/product-9.png'],
+        discount: 0.1,
+        discountEndDate: DateTime(2023, 11, 30),
+        numberOfSales: 200,
+        numberOfSearches: 150,
+        averageRating: 4.6,
+        releaseDate: DateTime(2022, 10, 1),
+      ),
+      Product(
+        id: '13453213218',
+        name: 'G-force RGB Keyboard with all the interesting features',
+        price: 73.49,
+        images: [
+          'assets/img/products/product-2.png',
+        ],
+        discount: 0.05,
+        discountEndDate: DateTime(2023, 12, 31),
+        numberOfSales: 800,
+        numberOfSearches: 250,
+        averageRating: 4.8,
+        releaseDate: DateTime(2022, 1, 15),
+      ),
+      Product(
+        id: '02331813210',
+        name: 'XIAOMI Smart-watch',
+        price: 14.99,
+        images: ['assets/img/products/product-1.png'],
+        discount: 0.15,
+        discountEndDate: DateTime(2023, 9, 15),
+        numberOfSales: 400,
+        numberOfSearches: 180,
+        averageRating: 4.7,
+        releaseDate: DateTime(2020, 3, 31),
+      ),
+      Product(
+        id: '85154532165',
+        name: 'Google Pixel 6',
+        price: 569.99,
+        images: ['assets/img/products/product-8.png'],
+        discount: 0.2,
+        discountEndDate: DateTime(2023, 12, 31),
+        numberOfSales: 1000,
+        numberOfSearches: 500,
+        averageRating: 4.9,
+        releaseDate: DateTime(2023, 9, 24),
+      ),
+      Product(
+        id: '75313565116',
+        name: 'Redmi Airdots',
+        price: 39.99,
+        //  quantity: 14,
+        images: ['assets/img/products/product-9.png'],
+        discount: 0.1,
+        discountEndDate: DateTime(2023, 11, 30),
+        numberOfSales: 200,
+        numberOfSearches: 150,
+        averageRating: 4.6,
+        releaseDate: DateTime(2022, 10, 1),
+      ),
+      Product(
+        id: '13453213218',
+        name: 'G-force RGB Keyboard with all the interesting features',
+        price: 73.49,
+        images: ['assets/img/products/product-2.png'],
+        discount: 0.05,
+        discountEndDate: DateTime(2023, 12, 31),
+        numberOfSales: 800,
+        numberOfSearches: 250,
+        averageRating: 4.8,
+        releaseDate: DateTime(2022, 1, 15),
+      ),
+    ];
     _searchResults = [];
 
     //_searchResults.addAll(Product.productsFromJsonList(res.data));
@@ -241,6 +365,27 @@ class ProductService with ChangeNotifier {
         print(e.message);
       }
     }*/
+  }
+
+  Future<void> getTodayPromotions() async {
+    await Future.delayed(const Duration(milliseconds: 1000), () {
+      _todayDeals = [];
+      _todayDeals.addAll(_products.where((element) => element.discount != 0));
+
+      // Calculate the promotion score for each product and create Promotion objects
+      _todayPromotions = _todayDeals.map((product) {
+        // Your promotion score calculation method
+        return Promotion(
+          product: product,
+        );
+      }).toList();
+      _todayPromotions.sort((a, b) => b.score.compareTo(a.score));
+      for (Promotion promotion in _todayPromotions) {
+        print('ppprrr' + promotion.score.toString());
+      }
+
+      notifyListeners();
+    });
   }
 
   Future getTodayDeals() async {

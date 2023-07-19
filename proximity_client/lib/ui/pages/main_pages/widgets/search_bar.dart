@@ -81,7 +81,34 @@ class Search extends CustomSearchDelegate<Product> {
 
     List<Widget> _productswidgetList = [];
     List<Widget> _storeswidgetList = [];
-    if (query.isEmpty) {}
+    List<String> searchedProducts = [
+      "Electronics",
+      "Clothing",
+      "Shoes",
+      "Accessories",
+      "Home Decor",
+      "Beauty",
+      "Toys",
+      "Books",
+      "Sports",
+      "Health",
+      "Fitness",
+      "Jewelry",
+      "Tech Gadgets",
+      "Kitchen Appliances",
+    ];
+    if (query.isEmpty) {
+      return Wrap(
+        spacing: 8,
+        children: searchedProducts
+            .map((search) => ChoiceChip(
+                  label: Text(search),
+                  selected: false,
+                  onSelected: (isSelected) {},
+                ))
+            .toList(),
+      );
+    }
     if (query.isNotEmpty) {
       if (productService.searchFilter == "") {
         for (int i = 0; i < productService.searchResults.length; i++) {
@@ -877,10 +904,66 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
     }
   }
 
+  bool _showChipsWrap = true;
   void _onQueryChanged() {
     setState(() {
-      // rebuild ourselves because query changed.
+      _showChipsWrap = widget.delegate!._queryTextController.text.isEmpty;
     });
+  }
+
+  Widget _buildChipsWrap() {
+    List<String> searchedProducts = [
+      "Electronics",
+      "Clothing",
+      "Shoes",
+      "Accessories",
+      "Home Decor",
+      "Beauty",
+      "Toys",
+      "Books",
+      "Sports",
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.all(normal_100),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Most Searched",
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontSize: normal_150)),
+          Wrap(
+            spacing: 8,
+            children: searchedProducts
+                .map((search) => ChoiceChip(
+                      label: Text(search),
+                      selected: false,
+                      onSelected: (selected) {
+                        // Update query text and trigger search
+                        _updateQueryAndSearch(search);
+                      },
+                    ))
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _updateQueryAndSearch(String choice) {
+    setState(() {
+      _showChipsWrap = false; // Hide chips wrap
+    });
+
+    // Update query text with the selected choice
+    widget.delegate!._queryTextController.text = choice;
+
+    // Perform the search based on the selected choice
+    // Call your search function here or trigger search as you wish
+    widget.delegate!.showResults(context);
   }
 
   void _onSearchBodyChanged() {
@@ -931,61 +1014,76 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
         child: Scaffold(
           body: SafeArea(
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: small_100)
-                      .copyWith(left: normal_100),
-                  margin: const EdgeInsets.all(normal_100),
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(smallRadius),
-                      gradient: LinearGradient(
-                        colors:
-                            (Theme.of(context).brightness == Brightness.light)
-                                ? lightSearchBarGradient
-                                : darkSearchBarGradient,
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      )),
-                  child: Center(
-                      child: TextFormField(
-                          focusNode: focusNode,
-                          controller: widget.delegate!._queryTextController,
-                          textAlignVertical: TextAlignVertical.center,
-                          onFieldSubmitted: (String _) {
-                            widget.delegate!.showResults(context);
-                          },
-                          keyboardType: TextInputType.name,
-                          style: Theme.of(context).textTheme.headline5,
-                          cursorColor: Theme.of(context).primaryColor,
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              isDense: true,
-                              suffixIcon: IconButton(
-                                  icon: (widget.delegate!.query == '')
-                                      ? Icon(ProximityIcons.search,
-                                          color:
-                                              Theme.of(context).iconTheme.color)
-                                      : Icon(ProximityIcons.remove,
-                                          color: Theme.of(context)
-                                              .iconTheme
-                                              .color),
-                                  onPressed: () {
-                                    widget.delegate!.query = '';
-                                  }),
-                              border: InputBorder.none,
-                              hintText: 'Search .',
-                              hintStyle: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2!
-                                          .color))))),
+              Row(
+                children: [
+                  SmallIconButton(
+                      onPressed: () {
+                        if (Navigator.canPop(context)) Navigator.pop(context);
+                      },
+                      icon: const Icon(ProximityIcons.chevron_left)),
+                  Expanded(
+                    child: Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: small_100)
+                                .copyWith(left: normal_100),
+                        margin: const EdgeInsets.all(normal_100),
+                        decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(smallRadius),
+                            gradient: LinearGradient(
+                              colors: (Theme.of(context).brightness ==
+                                      Brightness.light)
+                                  ? lightSearchBarGradient
+                                  : darkSearchBarGradient,
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            )),
+                        child: Center(
+                            child: TextFormField(
+                                focusNode: focusNode,
+                                controller:
+                                    widget.delegate!._queryTextController,
+                                textAlignVertical: TextAlignVertical.center,
+                                onFieldSubmitted: (String _) {
+                                  widget.delegate!.showResults(context);
+                                },
+                                keyboardType: TextInputType.name,
+                                style: Theme.of(context).textTheme.headline5,
+                                cursorColor: Theme.of(context).primaryColor,
+                                decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.zero,
+                                    isDense: true,
+                                    suffixIcon: IconButton(
+                                        icon: (widget.delegate!.query == '')
+                                            ? Icon(ProximityIcons.search,
+                                                color: Theme.of(context)
+                                                    .iconTheme
+                                                    .color)
+                                            : Icon(ProximityIcons.remove,
+                                                color: Theme.of(context)
+                                                    .iconTheme
+                                                    .color),
+                                        onPressed: () {
+                                          widget.delegate!.query = '';
+                                        }),
+                                    border: InputBorder.none,
+                                    hintText: 'Search .',
+                                    hintStyle: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2!
+                                                .color))))),
+                  ),
+                ],
+              ),
+              if (_showChipsWrap) _buildChipsWrap(),
               Expanded(
                   child: SingleChildScrollView(
                       physics: const ScrollPhysics(),
                       child: AnimatedSwitcher(
-                          duration: normalAnimationDuration, child: body)))
+                          duration: normalAnimationDuration, child: body))),
             ]),
           ),
         ));
