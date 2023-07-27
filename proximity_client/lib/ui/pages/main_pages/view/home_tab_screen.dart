@@ -35,20 +35,16 @@ class HomeTabScreen extends StatelessWidget {
               }),
           SizedBox(
               height: huge_100,
-              child: productService.todayPromotions.isEmpty
+              child: productService.promotions.isEmpty
                   ? const SmallProductCardsSkeleton()
                   : ListView(
                       scrollDirection: Axis.horizontal,
                       padding:
                           const EdgeInsets.symmetric(horizontal: normal_150),
                       children: List.generate(
-                          productService.todayPromotions
-                              .take(5)
-                              .toList()
-                              .length,
+                          productService.promotions.take(5).toList().length,
                           (i) => SmallProductCard(
-                              product:
-                                  productService.todayPromotions[i].product)))),
+                              product: productService.promotions[i].product)))),
 
           /// Products Around You
           SectionDivider(

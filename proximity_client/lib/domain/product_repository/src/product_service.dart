@@ -14,7 +14,7 @@ class ProductService with ChangeNotifier {
   late List<Product> _searchResults;
   late List<Product> _filterSearchResults = [];
   String _searchFilter = '';
-  late List<Promotion> _todayPromotions = [];
+  late List<Promotion> _promotions = [];
   late List<Product> _todayDeals;
   late Set<Product> _wishList;
   late List<String> _ads;
@@ -35,7 +35,7 @@ class ProductService with ChangeNotifier {
   List<Product> get searchResults => _searchResults;
   List<Product> get filterSearchResults => _filterSearchResults;
   List<Product> get todayDeals => _todayDeals;
-  List<Promotion> get todayPromotions => _todayPromotions;
+  List<Promotion> get promotions => _promotions;
   List<Product> get wishList => _wishList.toList();
 
   String get query => _query;
@@ -81,9 +81,8 @@ class ProductService with ChangeNotifier {
     _ads = [];
     _products = [];
     getProximityProducts();
-    getTodayPromotions();
+    getPromotions();
     getAds();
-    print("prY" + _todayPromotions.length.toString());
   }
 
   /// GET methods
@@ -305,7 +304,7 @@ class ProductService with ChangeNotifier {
     /// dataForm is already a parameter
 
     /// post the dataForm via dio call
-    /*
+
     try {
       Dio dio = Dio();
 
@@ -364,9 +363,62 @@ class ProductService with ChangeNotifier {
         print('Error sending request!');
         print(e.message);
       }
-    }*/
+    }
   }
 
+  Future getPromotions({String name = ""}) async {
+    _query = name;
+    notifyListeners();
+    var credentialsBox = Boxes.getCredentials();
+    credentialsBox.put('first_time', false);
+    AddressItem _adresse = credentialsBox.get('address');
+    var latitude = 0.0;
+    var langitude = 0.0;
+    var radius = 0;
+
+    if (_adresse != null) {
+      // _adresse = json.decode(_adresse);
+      if (_adresse.lat != null) {
+        latitude = _adresse.lat!;
+      }
+      if (_adresse.lng != null) {
+        langitude = _adresse.lng!;
+      }
+    }
+
+    // String _id = credentialsBox.get('id');
+    String? _token = credentialsBox.get('token');
+
+    /// post the dataForm via dio call
+
+    try {
+      Dio dio = Dio();
+
+      dio.options.headers["token"] = "Bearer $_token";
+
+      var res = await dio.get(BASE_API_URL +
+          '/search/product/?radius=${radius.toString()}&latitude=${latitude.toString()}&langitude=${langitude.toString()}&name=${(name)}');
+
+      if (res.statusCode == 200) {
+        _promotions = [];
+
+        _promotions.addAll(Promotion.productsFromJsonList(res.data));
+        _promotions.sort((a, b) => (a.score ?? 0).compareTo(b.score ?? 0));
+
+        notifyListeners();
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+/*
   Future<void> getTodayPromotions() async {
     await Future.delayed(const Duration(milliseconds: 1000), () {
       _todayDeals = [];
@@ -386,7 +438,7 @@ class ProductService with ChangeNotifier {
 
       notifyListeners();
     });
-  }
+  }*/
 
   Future getTodayDeals() async {
     Future.delayed(const Duration(milliseconds: 1000), () {

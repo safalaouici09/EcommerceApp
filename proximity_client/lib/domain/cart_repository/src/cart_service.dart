@@ -207,7 +207,8 @@ class CartService with ChangeNotifier {
                       discount: prod["discount"].toDouble(),
                       reservationPolicy: prod["reservationPolicy"] ?? false,
                       deliveryPolicy: prod["deliveryPolicy"] ?? false,
-                      pickupPolicy: prod["pickupPolicy"] > 0 ?? false,
+                      //pickupPolicy: prod["pickupPolicy"] > 0 ?? false,
+                      pickupPolicy: prod["pickupPolicy"] ?? false,
                       reservationP:
                           double.parse(prod["reservationP"].toString()),
                       deliveryP: double.parse(prod["deliveryP"].toString()),

@@ -1,35 +1,27 @@
-import 'product_model.dart';
+import 'dart:math';
+
+import 'package:proximity_client/domain/product_repository/models/product_model.dart';
 
 class Promotion {
   Product product;
-  double score;
+  double? score;
 
-  Promotion({required this.product})
-      : score = _calculatePromotionScore(product);
+  Promotion({
+    required this.product,
+    this.score,
+  });
 
-  // Calculate the promotion score based on the relevant attributes of the product
-  static double _calculatePromotionScore(Product product) {
-    double popularityWeight = 0.4;
-    double searchWeight = 0.3;
-    double ratingWeight = 0.2;
-    double discountWeight = 0.1;
-
-    double score = (popularityWeight * product.numberOfSales!) +
-        (searchWeight * product.numberOfSearches!) +
-        (ratingWeight * (product.averageRating ?? 0.0)) +
-        (discountWeight *
-            _calculateDiscountScore(product.discount, product.discountEndDate));
-
-    return score;
+  factory Promotion.fromJson(Map<String, dynamic> json) {
+    var rng = Random();
+    return Promotion(
+        product: Product.fromJson(json), score: rng.nextDouble() * 10);
+    // json['score']?.toDouble(), // Convert the score to double if it exis;ts
   }
-
-  static double _calculateDiscountScore(
-      double discountPercentage, DateTime? discountEndDate) {
-    if (discountEndDate == null || discountEndDate.isBefore(DateTime.now())) {
-      return 0.0;
+  static List<Promotion> productsFromJsonList(List<dynamic> parsedJson) {
+    List<Promotion> _list = [];
+    for (int i = 0; i < parsedJson.length; i++) {
+      _list.add(Promotion.fromJson(parsedJson[i]));
     }
-
-    int remainingDays = discountEndDate.difference(DateTime.now()).inDays;
-    return discountPercentage * (1 - (remainingDays / 30));
+    return _list;
   }
 }

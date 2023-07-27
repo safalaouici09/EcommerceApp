@@ -27,7 +27,7 @@ class ConfirmedTabView extends StatelessWidget {
                 itemBuilder: (_, i) => OrderTile(
                   order: ordersService.confirmedOrders![i],
                   action: () {
-                    ordersService.confirmOrder(
+                    ordersService.(
                         context, ordersService.confirmedOrders![i].id!);
                   },
                 ),

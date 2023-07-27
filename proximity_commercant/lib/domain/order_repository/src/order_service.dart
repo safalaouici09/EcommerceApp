@@ -11,15 +11,20 @@ class OrderService with ChangeNotifier {
   late bool _loading;
   late bool _loadingOrders;
   late bool _loadingReturn;
+  Map<String, double> _storeRevenueMap = {};
 
   List<Order>? get orders => _orders;
 
   bool get loading => _loading;
   bool get loadingOrders => _loadingOrders;
   bool get loadingReturn => _loadingReturn;
+  Map<String, double> get storeRevenueMap => _storeRevenueMap;
 
   OrderService() {
     _loading = false;
+    getStoreRevenu();
+    print('///////////_storeRevenueMap.entries ');
+    print(_storeRevenueMap.entries);
   }
 
   /// Pay Order
@@ -66,7 +71,43 @@ class OrderService with ChangeNotifier {
     _loading = false;
     notifyListeners();
     return false;
+  } /*/*********** */ */
+
+  void getStoreRevenu() async {
+    await getOrders("delivery", "all");
+    if (_orders != null) {
+      calculateStoreRevenue(_orders!);
+    }
+
+    await getOrders("pickup", "all");
+    if (_orders != null) {
+      calculateStoreRevenue(_orders!);
+    }
   }
+
+  Map<String, double> calculateStoreRevenue(
+    List<Order> orders,
+  ) {
+    for (Order order in orders) {
+      // Check if the order's DateTime is within the desired time frame
+
+      // If the order is from today, add its revenue to the respective store
+      double price = order.totalPrice ?? 0;
+      _storeRevenueMap[order.storeName!] =
+          (_storeRevenueMap[order.storeName] ?? 0) + price;
+
+      // You can similarly handle this week and this month scenarios using DateTime methods.
+    }
+
+    return _storeRevenueMap;
+  }
+
+  bool isSameDay(DateTime dateTime1, DateTime dateTime2) {
+    return dateTime1.year == dateTime2.year &&
+        dateTime1.month == dateTime2.month &&
+        dateTime1.day == dateTime2.day;
+  }
+  /**** */
 
   Future getOrders(String orderType, String status) async {
     print("ws lanched : $orderType [ $status ]");

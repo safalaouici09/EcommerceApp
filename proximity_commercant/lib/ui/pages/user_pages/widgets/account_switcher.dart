@@ -60,7 +60,7 @@ class AccountSwitcher extends StatelessWidget {
                         //     : DecorationImage(
                         // image: (userService.user!.profileImage!.first is File)
                         // ? FileImage(
-                        // userService.user!.profileImage!.first)
+                        // userService.user!.profileImage!.fibarst)
                         // : NetworkImage(
                         // userService.user!.profileImage!.first))
                         ))),*/

@@ -7,6 +7,7 @@ import 'package:proximity_commercant/domain/data_persistence/data_persistence.da
 import 'package:proximity_commercant/domain/notification_repository/notification_repository.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/onBoard.dart';
+import 'package:proximity_commercant/ui/pages/stat_pages/view/global_statistiques.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 import 'package:proximity_commercant/ui/pages/user_pages/user_pages.dart';
 
@@ -86,6 +87,16 @@ class SideMenu extends StatelessWidget {
                               print('pp');
                               print(userService.user?.policy!.toJson());
                             });
+                      }),
+                  ListButton(
+                      title: 'Statistics .',
+                      leadIcon: Icons.bar_chart,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    GlobalStatisticsScreen()));
                       }),
                   ListButton(
                       title: 'Settings.',
