@@ -28,7 +28,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get weSentYouCode => 'We sent you a code';
   @override
-  String get weSentYouCodeMessage => 'Enter below your code to verify your phone number.';
+  String get weSentYouCodeMessage =>
+      'Enter below your code to verify your phone number.';
   @override
   String get verificationCode => 'Verification Code';
   @override
@@ -46,28 +47,29 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get addPhoneNumber => 'Add a phone number';
   @override
-  String get addPhoneNumberCaption => 'Enter the phone number you want to associated with your iShop account down below.';
+  String get addPhoneNumberCaption =>
+      'Enter the phone number you want to associated with your iShop account down below.';
   @override
   String get address => 'Address';
   @override
   String get wilaya => 'Wilaya';
   @override
   Map<int, String> get wilayasMap => {
-    1: 'Adrar',
-    2: 'Chlef',
-    3: 'Laghouat',
-    4: 'Oum El Bouaghi',
-    5: 'Batna',
-    6: 'Bejaia',
-    7: 'Biskra',
-  };
+        1: 'Adrar',
+        2: 'Chlef',
+        3: 'Laghouat',
+        4: 'Oum El Bouaghi',
+        5: 'Batna',
+        6: 'Bejaia',
+        7: 'Biskra',
+      };
   @override
   String get gender => 'Gender';
   @override
   Map<int, String> get genders => {
-    0: 'Female',
-    1: 'Male',
-  };
+        0: 'Female',
+        1: 'Male',
+      };
   @override
   String get register => 'Register';
   @override
@@ -77,7 +79,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get termsAndConditions => 'Terms & Conditions';
   @override
-  String get byClickingNextYouAgreeToTermsAndConditions => 'By clicking Next, you agree to our terms and that you have read our Terms & Conditions.';
+  String get byClickingNextYouAgreeToTermsAndConditions =>
+      'By clicking Next, you agree to our terms and that you have read our Terms & Conditions.';
   @override
   String get createYourIshopAccount => 'Create your iShop account';
   @override
@@ -97,11 +100,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get totalPrice => 'Total Price';
   @override
-  String get productDeletionMessage => 'Product successfully deleted from Cart!';
+  String get productDeletionMessage =>
+      'Product successfully deleted from Cart!';
   @override
   String get orderDeletionMessage => 'Order successfully deleted from Cart!';
   @override
-  String get emptyCartCaption => 'Your Cart is empty, consider adding products to it.';
+  String get emptyCartCaption =>
+      'Your Cart is empty, consider adding products to it.';
 
   /// [Wishlist]
   @override
@@ -117,6 +122,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get todayDeals => "Today's Deals";
 
+  ///
+  String get welcome => "Welcome";
+
+  ///
+
   /// [Profile]
   @override
   String get profile => 'Profile';
@@ -129,7 +139,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get personalInformation => 'Personal information';
   @override
-  String get personalInformationMessage => "Provider your personal information, even though the account is for business use. These info won't be public to everyone.";
+  String get personalInformationMessage =>
+      "Provider your personal information, even though the account is for business use. These info won't be public to everyone.";
   @override
   String get about => 'About';
   @override
@@ -219,15 +230,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categories => 'Categories';
   @override
   Map<int, String> get categoriesMap => {
-    0: 'Fashion',
-    1: 'Phones',
-    2: 'Video games',
-    3: 'Beauty',
-    4: 'Automotive',
-    5: 'Sports',
-    6: 'Books',
-    7: 'Other',
-  };
+        0: 'Fashion',
+        1: 'Phones',
+        2: 'Video games',
+        3: 'Beauty',
+        4: 'Automotive',
+        5: 'Sports',
+        6: 'Books',
+        7: 'Other',
+      };
   @override
   String get yourShops => 'Your shops';
   @override
@@ -235,17 +246,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get newShop => 'New shop';
   @override
-  String get newShopMessage => 'Creating an existing shop with different addresses remains possible as long as the owner is one.';
+  String get newShopMessage =>
+      'Creating an existing shop with different addresses remains possible as long as the owner is one.';
   @override
   String get editShop => 'Edit shop';
   @override
   String get freezeShop => 'Freeze shop';
   @override
-  String get freezeShopMessage => "If you wish to temporarily close your shop, maybe take a vacation for a few days, consider freezing it ❄";
+  String get freezeShopMessage =>
+      "If you wish to temporarily close your shop, maybe take a vacation for a few days, consider freezing it ❄";
   @override
   String get deleteShop => 'Delete shop';
   @override
-  String get deleteShopMessage => 'Warning: This is potentially a destructive action.';
+  String get deleteShopMessage =>
+      'Warning: This is potentially a destructive action.';
   @override
   String get reportShop => 'Report Shop';
   @override
@@ -338,7 +352,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get hintProductBrand => 'Who manufactured this product?';
   @override
-  String get hintProductDescription => 'Write few lines describing your product to your customers...';
+  String get hintProductDescription =>
+      'Write few lines describing your product to your customers...';
   @override
   String get yourOffer => 'Your offer';
   @override

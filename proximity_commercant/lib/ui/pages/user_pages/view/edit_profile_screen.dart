@@ -82,38 +82,32 @@ class EditProfileScreen extends StatelessWidget {
                     leadIcon: ProximityIcons.user,
                     title: 'Personal Info.',
                     color: redSwatch.shade500),
-                RichEditText(children: [
-                  EditText(
-                    hintText: 'User Name.',
-                    borderType: BorderType.topLeft,
-                    saved: userEditValidation.userName.value,
-                    onChanged: userEditValidation.changeUserName,
-                  ),
-                ]),
+                EditText(
+                  hintText: 'User Name.',
+                  borderType: BorderType.topLeft,
+                  saved: userEditValidation.userName.value,
+                  onChanged: userEditValidation.changeUserName,
+                ),
                 SectionDivider(
                     leadIcon: ProximityIcons.email,
                     title: 'Email.',
                     color: redSwatch.shade500),
-                RichEditText(children: [
-                  EditText(
-                    hintText: 'Add email.',
-                    prefixIcon: ProximityIcons.email,
-                    saved: userEditValidation.emailAddress.value,
-                    onChanged: userEditValidation.changeEmailAddress,
-                  ),
-                ]),
+                EditText(
+                  hintText: 'Add email.',
+                  prefixIcon: ProximityIcons.email,
+                  saved: userEditValidation.emailAddress.value,
+                  onChanged: userEditValidation.changeEmailAddress,
+                ),
 
                 SectionDivider(
                     leadIcon: ProximityIcons.phone,
                     title: 'Phone Number.',
                     color: redSwatch.shade500),
-                RichEditText(children: [
-                  EditText(
-                    hintText: 'Add Phone Number.',
-                    saved: userEditValidation.phone.value,
-                    onChanged: userEditValidation.changePhoneNumber,
-                  ),
-                ]),
+                EditText(
+                  hintText: 'Add Phone Number.',
+                  saved: userEditValidation.phone.value,
+                  onChanged: userEditValidation.changePhoneNumber,
+                ),
 
                 /// Address
                 SectionDivider(
@@ -134,78 +128,56 @@ class EditProfileScreen extends StatelessWidget {
                       },
                       title: 'Select Address.'),
                 ),
-                RichEditText(
-                  children: [
-                    EditText(
-                      hintText: 'Street Address Line 1.',
-                      saved: userEditValidation.address.fullAddress,
-                      onChanged: userEditValidation.changeFullAddress,
-                    ),
-                  ],
+                EditText(
+                  hintText: 'Street Address Line 1.',
+                  saved: userEditValidation.address.fullAddress,
+                  onChanged: userEditValidation.changeFullAddress,
                 ),
                 const EditTextSpacer(),
-                RichEditText(
-                  children: [
-                    EditText(
-                      hintText: 'Street Address Line 2.',
-                      saved: userEditValidation.address.streetName,
-                      onChanged: userEditValidation.changeStreetName,
-                    ),
-                  ],
+                EditText(
+                  hintText: 'Street Address Line 2.',
+                  saved: userEditValidation.address.streetName,
+                  onChanged: userEditValidation.changeStreetName,
                 ),
                 const EditTextSpacer(),
-                RichEditText(
-                  children: [
-                    DropDownSelector<String>(
-                      // labelText: 'Product Category.',
-                      hintText: 'Country.',
-                      onChanged: userEditValidation.changeCountry,
-                      borderType: BorderType.middle,
-                      savedValue: userEditValidation.address.countryCode,
-                      items: countryList.entries
-                          .map((item) => DropdownItem<String>(
-                              value: item.key,
-                              child: Text(item.value,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(fontWeight: FontWeight.w600))))
-                          .toList(),
-                    ),
-                  ],
+                DropDownSelector<String>(
+                  // labelText: 'Product Category.',
+                  hintText: 'Country.',
+                  onChanged: userEditValidation.changeCountry,
+                  borderType: BorderType.middle,
+                  savedValue: userEditValidation.address.countryCode,
+                  items: countryList.entries
+                      .map((item) => DropdownItem<String>(
+                          value: item.key,
+                          child: Text(item.value,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(fontWeight: FontWeight.w600))))
+                      .toList(),
                 ),
                 const EditTextSpacer(),
-                RichEditText(
-                  children: [
-                    EditText(
-                      hintText: 'Region.',
-                      // borderType: BorderType.middle,
-                      saved: userEditValidation.address.region,
-                      onChanged: userEditValidation.changeRegion,
-                    ),
-                  ],
+                EditText(
+                  hintText: 'Region.',
+                  // borderType: BorderType.middle,
+                  saved: userEditValidation.address.region,
+                  onChanged: userEditValidation.changeRegion,
                 ),
                 const EditTextSpacer(),
-                RichEditText(
-                  children: [
-                    EditText(
-                      hintText: 'City.',
-                      // borderType: BorderType.middle,
-                      saved: userEditValidation.address.city,
-                      onChanged: userEditValidation.changeCity,
-                    ),
-                  ],
+
+                EditText(
+                  hintText: 'City.',
+                  // borderType: BorderType.middle,
+                  saved: userEditValidation.address.city,
+                  onChanged: userEditValidation.changeCity,
                 ),
+
                 const EditTextSpacer(),
-                RichEditText(
-                  children: [
-                    EditText(
-                      hintText: 'Postal Code.',
-                      // borderType: BorderType.bottom,
-                      saved: userEditValidation.address.postalCode,
-                      onChanged: userEditValidation.changePostalCode,
-                    ),
-                  ],
+                EditText(
+                  hintText: 'Postal Code.',
+                  // borderType: BorderType.bottom,
+                  saved: userEditValidation.address.postalCode,
+                  onChanged: userEditValidation.changePostalCode,
                 ),
                 const InfoMessage(
                     message:

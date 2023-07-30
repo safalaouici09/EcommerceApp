@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 
 import 'package:proximity_commercant/domain/store_repository/src/store_service.dart';
@@ -68,6 +69,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
   @override
   Widget build(BuildContext context) {
     final storeService = Provider.of<StoreService>(context);
+    final localizations = AppLocalizations.of(context);
     // storeService.getStores();
     final userService = Provider.of<UserService>(context);
     double _screenWidth = MediaQuery.of(context).size.width;
@@ -188,7 +190,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                                                         context)
                                                                     .cardColor,
                                                                 child: Text(
-                                                                    'Welcome',
+                                                                    localizations!
+                                                                        .welcome, // 'Welcome',
                                                                     style: Theme.of(
                                                                             context)
                                                                         .textTheme
@@ -213,7 +216,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                                         text:
                                                             TextSpan(children: [
                                                           TextSpan(
-                                                              text: 'Welcome\n',
+                                                              text:
+                                                                  localizations!
+                                                                      .welcome,
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme

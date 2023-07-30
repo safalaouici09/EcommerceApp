@@ -48,7 +48,7 @@ class _ProductSalesWidgetState extends State<ProductSalesWidget> {
                                   children: [
                                     Container(
                                         child: Text(
-                                            'No product was saleed this ${statiscService.period}')),
+                                            'No product was viewed this ${statiscService.period}')),
                                   ],
                                 ))
                             : builProductRevenuesBarChart(

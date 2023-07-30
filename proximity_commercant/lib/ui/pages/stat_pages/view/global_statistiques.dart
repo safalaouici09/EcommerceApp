@@ -14,6 +14,7 @@ import 'package:proximity_commercant/domain/statistic_repository/models/region_v
 import 'package:proximity_commercant/domain/statistic_repository/src/Statistic_service.dart';
 import 'package:proximity_commercant/ui/pages/stat_pages/widget/coloredCard.dart';
 import 'package:proximity_commercant/ui/pages/stat_pages/widget/convertion_rate.dart';
+import 'package:proximity_commercant/ui/pages/stat_pages/widget/product_monthly_view.dart';
 import 'package:proximity_commercant/ui/pages/stat_pages/widget/product_sale.dart';
 import 'package:proximity_commercant/ui/pages/stat_pages/widget/product_view.dart';
 import 'package:proximity_commercant/ui/pages/stat_pages/widget/region_sale.dart';
@@ -35,19 +36,53 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<StatisticService>(
-        builder: (context, statiscService, child) {
-      return Scaffold(
-        body: SafeArea(
-          child: getWidgets(statiscService, context),
-        ),
-      );
-    });
+      builder: (context, statiscService, child) {
+        return Scaffold(
+          body: SafeArea(
+            child: DefaultTabController(
+              length: 2, // Number of tabs
+              child: Column(
+                children: [
+                  const TopBar(title: 'Global Statistics'),
+                  TabBar(
+                    labelColor: Colors.black,
+                    labelStyle: Theme.of(context).textTheme.labelLarge,
+                    tabs: [
+                      Tab(
+                        icon: Icon(Icons.visibility),
+                        text: 'Views',
+                        // Set the desired text color here
+                      ),
+                      Tab(
+                        icon: Icon(Icons.shopping_cart),
+                        text: 'Sales',
+                        // Set the desired text color here
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        // Tab 1 content: Views
+                        _buildViewsTab(statiscService),
+                        // Tab 2 content: Sales
+                        _buildSalesTab(statiscService),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
-  ListView getWidgets(StatisticService statiscService, BuildContext context) {
+  // Build the content for the "Views" tab
+  Widget _buildViewsTab(StatisticService statiscService) {
     return ListView(
       children: [
-        const TopBar(title: 'Global Statistics'),
         Row(
           children: [
             Spacer(),
@@ -57,7 +92,7 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
                 width: 150,
                 child: DropDownSelector<String>(
                   // labelText: 'Product Category.',
-                  hintText: 'Max Days to Pick Up.',
+                  hintText: '',
                   onChanged: statiscService.changeStatisticPeriod,
                   borderType: BorderType.middle,
                   savedValue: statiscService.period.toString(),
@@ -91,21 +126,91 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
         ),
         const StoreViewWidget(),
         const ProductsIncome(),
+        ProductMonthlyViews(),
         RegionChart(
           totalViews: statiscService.totalViews,
           regionViews: statiscService.regionsViews!,
         ),
+      ],
+    );
+  }
+
+  // Build the content for the "Sales" tab
+  Widget _buildSalesTab(StatisticService statiscService) {
+    return ListView(
+      children: [
         const StoreSaleWidget(),
         const ProductSalesWidget(),
         RegionSalesWidget(
           totalSales: statiscService.totalSales,
           regionSales: statiscService.regionsSales!,
         ),
-
-        /*   ConversionRateWidget(
-                conversionRate:
-                    statiscService.calculateProducyConversionRates()),*/
       ],
     );
   }
+}
+
+ListView getWidgets(StatisticService statiscService, BuildContext context) {
+  return ListView(
+    children: [
+      const TopBar(title: 'Global Statistics'),
+      Row(
+        children: [
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
+            child: Container(
+              width: 150,
+              child: DropDownSelector<String>(
+                // labelText: 'Product Category.',
+                hintText: '',
+                onChanged: statiscService.changeStatisticPeriod,
+                borderType: BorderType.middle,
+                savedValue: statiscService.period.toString(),
+                items: ['week', 'day', 'month']
+                    .map((item) => DropdownItem<String>(
+                        value: item,
+                        child: Text(item,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(fontWeight: FontWeight.w600))))
+                    .toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
+      Row(
+        children: [
+          ColoredCard(
+            title: statiscService.totalViews.toString(),
+            subTitle: 'product was viewed',
+            cardColor: blueSwatch.shade100,
+          ),
+          ColoredCard(
+            title: statiscService.totalSales.toString(),
+            subTitle: 'product was sold  ',
+            cardColor: blueSwatch.shade300,
+          ),
+        ],
+      ),
+      const StoreViewWidget(),
+      const ProductsIncome(),
+      RegionChart(
+        totalViews: statiscService.totalViews,
+        regionViews: statiscService.regionsViews!,
+      ),
+      const StoreSaleWidget(),
+      const ProductSalesWidget(),
+      RegionSalesWidget(
+        totalSales: statiscService.totalSales,
+        regionSales: statiscService.regionsSales!,
+      ),
+
+      /*   ConversionRateWidget(
+                conversionRate:
+                    statiscService.calculateProducyConversionRates()),*/
+    ],
+  );
 }

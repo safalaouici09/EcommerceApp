@@ -28,7 +28,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get weSentYouCode => 'Nous vous avons envoyé un code';
   @override
-  String get weSentYouCodeMessage => 'Entrez ci-dessous votre code pour vérifier votre numéro de téléphone.';
+  String get weSentYouCodeMessage =>
+      'Entrez ci-dessous votre code pour vérifier votre numéro de téléphone.';
   @override
   String get verificationCode => 'Code de vérification';
   @override
@@ -46,28 +47,29 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get addPhoneNumber => 'Ajouter un Numéro de téléphone';
   @override
-  String get addPhoneNumberCaption => 'Entrez le numéro de téléphone que vous souhaitez associer à votre compte iShop ci-dessous.';
+  String get addPhoneNumberCaption =>
+      'Entrez le numéro de téléphone que vous souhaitez associer à votre compte iShop ci-dessous.';
   @override
   String get address => 'Adresse';
   @override
   String get wilaya => 'Wilaya';
   @override
   Map<int, String> get wilayasMap => {
-    1: 'Adrar',
-    2: 'Chlef',
-    3: 'Laghouat',
-    4: 'Oum El Bouaghi',
-    5: 'Batna',
-    6: 'Bejaia',
-    7: 'Biskra',
-  };
+        1: 'Adrar',
+        2: 'Chlef',
+        3: 'Laghouat',
+        4: 'Oum El Bouaghi',
+        5: 'Batna',
+        6: 'Bejaia',
+        7: 'Biskra',
+      };
   @override
   String get gender => 'Genre';
   @override
   Map<int, String> get genders => {
-    0: 'Femelle',
-    1: 'Mâle',
-  };
+        0: 'Femelle',
+        1: 'Mâle',
+      };
   @override
   String get register => "S'inscrire";
   @override
@@ -77,7 +79,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get termsAndConditions => 'Termes et Conditions';
   @override
-  String get byClickingNextYouAgreeToTermsAndConditions => 'En cliquant sur Suivant, vous acceptez nos conditions et que vous avez lu nos conditions générales.';
+  String get byClickingNextYouAgreeToTermsAndConditions =>
+      'En cliquant sur Suivant, vous acceptez nos conditions et que vous avez lu nos conditions générales.';
   @override
   String get createYourIshopAccount => 'Créez votre compte iShop';
   @override
@@ -97,11 +100,13 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get totalPrice => 'Total Price';
   @override
-  String get productDeletionMessage => 'Product successfully deleted from Cart!';
+  String get productDeletionMessage =>
+      'Product successfully deleted from Cart!';
   @override
   String get orderDeletionMessage => 'Order successfully deleted from Cart!';
   @override
-  String get emptyCartCaption => 'Your Cart is empty, consider adding products to it.';
+  String get emptyCartCaption =>
+      'Your Cart is empty, consider adding products to it.';
 
   /// [Wishlist]
   @override
@@ -117,6 +122,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get todayDeals => '';
 
+  String get welcome => "Bienvenue";
+
   /// [Profile]
   @override
   String get profile => 'Profil';
@@ -129,7 +136,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get personalInformation => 'Informations personnelles';
   @override
-  String get personalInformationMessage => 'Fournissez vos informations personnelles, même si le compte est à usage professionnel. Ces informations ne seront pas publiques pour tout le monde.';
+  String get personalInformationMessage =>
+      'Fournissez vos informations personnelles, même si le compte est à usage professionnel. Ces informations ne seront pas publiques pour tout le monde.';
   @override
   String get about => 'À propos';
   @override
@@ -205,6 +213,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pendingOrders => 'Commandes en attente: ';
   @override
   String get deliveryToll => 'Livraison Péage: ';
+
   /// [Shop]
   @override
   String get shop => 'Boutique';
@@ -218,15 +227,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get categories => 'Catégories';
   @override
   Map<int, String> get categoriesMap => {
-    0: 'Mode',
-    1: 'Téléphones portables',
-    2: 'Jeux vidéo',
-    3: 'Beauté',
-    4: 'Automobile',
-    5: 'Équipements sportifs',
-    6: 'Ouvrages',
-    7: 'Autre',
-  };
+        0: 'Mode',
+        1: 'Téléphones portables',
+        2: 'Jeux vidéo',
+        3: 'Beauté',
+        4: 'Automobile',
+        5: 'Équipements sportifs',
+        6: 'Ouvrages',
+        7: 'Autre',
+      };
   @override
   String get yourShops => 'Mes boutiques';
   @override
@@ -234,17 +243,20 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get newShop => 'Nouvelle Boutique';
   @override
-  String get newShopMessage => 'La création d\'une boutique existante avec des adresses différentes reste possible tant que le propriétaire reste le même.';
+  String get newShopMessage =>
+      'La création d\'une boutique existante avec des adresses différentes reste possible tant que le propriétaire reste le même.';
   @override
   String get editShop => 'Modifier boutique';
   @override
   String get freezeShop => 'Geler boutique';
   @override
-  String get freezeShopMessage => 'Si vous souhaitez fermer temporairement votre boutique, peut-être prendre des vacances pendant quelques jours, pensez à la congeler ❄.';
+  String get freezeShopMessage =>
+      'Si vous souhaitez fermer temporairement votre boutique, peut-être prendre des vacances pendant quelques jours, pensez à la congeler ❄.';
   @override
   String get deleteShop => 'Supprimer la boutique';
   @override
-  String get deleteShopMessage => "Avertissement : Il s'agit d'une action potentiellement destructrice.";
+  String get deleteShopMessage =>
+      "Avertissement : Il s'agit d'une action potentiellement destructrice.";
   @override
   String get reportShop => 'Report Shop';
   @override
@@ -323,7 +335,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get deleteProduct => 'Supprimer Produit';
   @override
-  String get deleteProductMessage => "Avertissement : Il s'agit d'une action potentiellement destructrice.";
+  String get deleteProductMessage =>
+      "Avertissement : Il s'agit d'une action potentiellement destructrice.";
 
   /// [ProductAdderScreen] and [ProductEditScreen]
   @override

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:developer';
 import 'package:dio/dio.dart';
@@ -23,6 +24,7 @@ class StatisticService with ChangeNotifier {
   List<RegionSale> _regionsSales = [];
   int _totalSales = 0;
   String _period = "week";
+  Map<String, int> _monthlyViews = {};
 
   // essential values for the UI
   late bool _loading;
@@ -37,6 +39,7 @@ class StatisticService with ChangeNotifier {
   List<StoreSale>? get storeSales => _storeSales;
   List<ProductSale>? get productSales => _productSales;
   List<RegionSale>? get regionsSales => _regionsSales;
+  Map<String, int> get monthlyViews => _monthlyViews;
   int get totalSales => _totalSales;
   int get totalViews => _totalViews;
   String get period => _period;
@@ -53,6 +56,7 @@ class StatisticService with ChangeNotifier {
     getStoresviews();
     getProductViews();
     getRegionsViews();
+    getMonthlyviews();
     getTotalSales();
     getStoresSales();
     getProductSales();
@@ -199,26 +203,6 @@ class StatisticService with ChangeNotifier {
     }
   }
 
-  // Function to calculate conversion rates for a list of ProductIncome objects
-  /*double calculateProducyConversionRates() {
-    List<double> conversionRates = [];
-
-    for (ProductIncome product in _productsIncome!) {
-      if (product.numberOfViews == 0) {
-        conversionRates.add(
-            0.0); // Avoid division by zero, you can handle this case accordingly
-      } else {
-        double conversionRate = product.numberOfSales / product.numberOfViews;
-        conversionRates.add(conversionRate);
-      }
-    }
-    if (conversionRates.isEmpty) {
-      return 0.0; // Handle the case when the list is empty
-    }
-    double sum = conversionRates.reduce((a, b) => a + b);
-    return sum / conversionRates.length;
-  }*/
-
 // Function to calculate the average of a list of double values
   double calculateAverage(List<double> values) {
     if (values.isEmpty) {
@@ -228,51 +212,6 @@ class StatisticService with ChangeNotifier {
     return sum / values.length;
   }
 
-  /*Future<void> getProductsViews() async {
-    _loading = true;
-    notifyListeners();
-
-    /// open hive box
-    var credentialsBox = Boxes.getCredentials();
-    // String _id = credentialsBox.get('id');
-    String _token = credentialsBox.get('token');
-
-    String _id = credentialsBox.get('id');
-    print("_token : " + _token);
-
-    /// dataForm is already a parameter
-
-    /// post the dataForm via dio call
-    try {
-      Dio dio = Dio();
-      dio.options.headers["token"] = "Bearer $_token";
-      //var res = await dio.get(BASE_API_URL + '/store/seller/' + _id);
-      var res = await dio.get(BASE_API_URL + '/view/product/$_id');
-      _loading = false;
-      print("stRv " + res.toString());
-      notifyListeners();
-      if (res.statusCode == 200) {
-        _productViews = [];
-        _productViews!.addAll(ProductView.productsViewFromJsonList(res.data));
-        // _storesRevenues!.addAll();
-        print("stRv" + res.toString());
-        print("stRv" + _productViews!.length.toString());
-        print(
-            "stRv */ //////////////////////////////////////////////////////////////////////////");
-  /*    notifyListeners();
-    
-    }on DioError catch (e) {
-      if (e.response != null) {
-        /// Toast Message to print the message
-        print('${e.response!}');
-      } else {
-        /// Error due to setting up or sending the request
-        print('Error sending request!');
-        print(e.message);
-      }
-    }
-  }
-*/
   Future<void> getRegionsViews() async {
     _loading = true;
     notifyListeners();
@@ -292,7 +231,8 @@ class StatisticService with ChangeNotifier {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
       //var res = await dio.get(BASE_API_URL + '/store/seller/' + _id);
-      var res = await dio.get(BASE_API_URL + '/view/region/$_id');
+      var res = await dio
+          .get(BASE_API_URL + '/view/region/$_id/?timePeriod=${_period}');
       _loading = false;
       print("stRv " + res.toString());
       notifyListeners();
@@ -306,6 +246,58 @@ class StatisticService with ChangeNotifier {
             "stRv *///////////////////////////////////////////////////////////////////////////");
         notifyListeners();
       }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
+  Future<void> getMonthlyviews() async {
+    _loading = true;
+    notifyListeners();
+
+    /// open hive box
+    var credentialsBox = Boxes.getCredentials();
+    // String _id = credentialsBox.get('id');
+    String _token = credentialsBox.get('token');
+
+    String _id = credentialsBox.get('id');
+    print("_token : " + _token);
+
+    /// dataForm is already a parameter
+
+    /// post the dataForm via dio call
+    try {
+      Dio dio = Dio();
+      dio.options.headers["token"] = "Bearer $_token";
+      //var res = await dio.get(BASE_API_URL + '/store/seller/' + _id);
+      var res = await dio.get(BASE_API_URL + '/view/monthly/$_id');
+      _loading = false;
+      print("mnt1 " + res.toString());
+      notifyListeners();
+      if (res.statusCode == 200) {
+        Map<String, dynamic> jsonData = {};
+        try {
+          Map<String, dynamic> jsonData = res.data["totalViews"];
+
+          jsonData.forEach((date, views) {
+            _monthlyViews[date] =
+                views as int; // Make sure 'views' is cast to int
+          });
+
+          print("mnt3" + _monthlyViews.entries.toString());
+        } catch (e) {
+          print("mnt" + e.toString());
+        }
+      }
+
+      notifyListeners();
     } on DioError catch (e) {
       if (e.response != null) {
         /// Toast Message to print the message
@@ -533,7 +525,8 @@ class StatisticService with ChangeNotifier {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
       //var res = await dio.get(BASE_API_URL + '/store/seller/' + _id);
-      var res = await dio.get(BASE_API_URL + '/sale/region/$_id');
+      var res = await dio
+          .get(BASE_API_URL + '/sale/region/$_id/?timePeriod=${_period}');
       _loading = false;
       print("stRv " + res.toString());
       notifyListeners();

@@ -46,28 +46,29 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get addPhoneNumber => 'إضافة رقم هاتف';
   @override
-  String get addPhoneNumberCaption => 'أدخل رقم الهاتف الذي ترغب بربطه بحساب iShop الخاص بك في الأسفل.';
+  String get addPhoneNumberCaption =>
+      'أدخل رقم الهاتف الذي ترغب بربطه بحساب iShop الخاص بك في الأسفل.';
   @override
   String get address => 'العنوان';
   @override
   String get wilaya => 'الولاية';
   @override
   Map<int, String> get wilayasMap => {
-    1: 'أدرار',
-    2: 'الشلف',
-    3: 'الأغواط',
-    4: 'أم البواقي',
-    5: 'باتنة',
-    6: 'بجاية',
-    7: 'بسكرة',
-  };
+        1: 'أدرار',
+        2: 'الشلف',
+        3: 'الأغواط',
+        4: 'أم البواقي',
+        5: 'باتنة',
+        6: 'بجاية',
+        7: 'بسكرة',
+      };
   @override
   String get gender => 'الجنس';
   @override
   Map<int, String> get genders => {
-    0: 'أنثى',
-    1: 'ذكر',
-  };
+        0: 'أنثى',
+        1: 'ذكر',
+      };
   @override
   String get register => 'حساب جديد';
   @override
@@ -77,7 +78,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get termsAndConditions => 'الشروط والأحكام';
   @override
-  String get byClickingNextYouAgreeToTermsAndConditions => 'بالظغط على التالي، فإنك توافق على شروطنا أي أنك قرأت الشروط والأحكام الخاصة بنا.';
+  String get byClickingNextYouAgreeToTermsAndConditions =>
+      'بالظغط على التالي، فإنك توافق على شروطنا أي أنك قرأت الشروط والأحكام الخاصة بنا.';
   @override
   String get createYourIshopAccount => 'قم بإنشاء حساب iShop الخاص بك';
   @override
@@ -101,7 +103,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get orderDeletionMessage => 'تم حذف الطلب بنجاح من سلة التسوق!';
   @override
-  String get emptyCartCaption => 'سَلَّة التسوق الخاصة بك فارغة ، ضع في اعتبارك إضافة منتجات إليها.';
+  String get emptyCartCaption =>
+      'سَلَّة التسوق الخاصة بك فارغة ، ضع في اعتبارك إضافة منتجات إليها.';
 
   /// [Wishlist]
   @override
@@ -110,12 +113,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emptyWishlistCaption => '💔\nقائمة رغباتك خاوية.';
 
   /// [UserHomePage]
+
   @override
   String get home => 'إكتشف';
   @override
   String get searchProduct => 'البحث عن منتج...';
   @override
   String get todayDeals => 'عروض اليوم';
+
+  /// [SellerHomePage]
+  @override
+  String get welcome => 'إكتشف';
 
   /// [Profile]
   @override
@@ -129,7 +137,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get personalInformation => 'المعلومات الشخصية';
   @override
-  String get personalInformationMessage => 'قدم معلوماتك الشخصية رغما على أنّ غرض الحساب تجاري. هاته المعلومات  لن تكون ظاهرة للجميع.';
+  String get personalInformationMessage =>
+      'قدم معلوماتك الشخصية رغما على أنّ غرض الحساب تجاري. هاته المعلومات  لن تكون ظاهرة للجميع.';
   @override
   String get about => 'حول';
   @override
@@ -219,15 +228,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get categories => 'الفئات';
   @override
   Map<int, String> get categoriesMap => {
-    0: 'ملابس',
-    1: 'هواتف محمولة',
-    2: 'ألعاب الكترونية',
-    3: 'محل تجميل',
-    4: 'سيارات',
-    5: 'معدات رياضية',
-    6: 'كتب',
-    7: 'فئة أخرى',
-  };
+        0: 'ملابس',
+        1: 'هواتف محمولة',
+        2: 'ألعاب الكترونية',
+        3: 'محل تجميل',
+        4: 'سيارات',
+        5: 'معدات رياضية',
+        6: 'كتب',
+        7: 'فئة أخرى',
+      };
   @override
   String get yourShops => 'حوانيتك';
   @override
@@ -235,17 +244,20 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get newShop => 'حانوت جديد';
   @override
-  String get newShopMessage => 'فتح حانوت موجود بعناوين مختلفة يبقى ممكنا طالماَ أنّ المالك واحد.';
+  String get newShopMessage =>
+      'فتح حانوت موجود بعناوين مختلفة يبقى ممكنا طالماَ أنّ المالك واحد.';
   @override
   String get editShop => 'تعديل الحانوت';
   @override
   String get freezeShop => 'تجميد الحانوت';
   @override
-  String get freezeShopMessage => 'إذا كنت ترغب في إغلاق حانوتك مؤقتًا، لغرض إجازة لبضعة أيام أو شيئا ما، قم بتجميده إذا ❄';
+  String get freezeShopMessage =>
+      'إذا كنت ترغب في إغلاق حانوتك مؤقتًا، لغرض إجازة لبضعة أيام أو شيئا ما، قم بتجميده إذا ❄';
   @override
   String get deleteShop => 'حذف الحانوت';
   @override
-  String get deleteShopMessage => 'تحذير: من المحتمل أن يكون هذا إجراءً مدمرًا.';
+  String get deleteShopMessage =>
+      'تحذير: من المحتمل أن يكون هذا إجراءً مدمرًا.';
   @override
   String get reportShop => 'الإبلاغ عن الحانوت';
   @override
@@ -324,7 +336,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get deleteProduct => 'حذف المنتوج';
   @override
-  String get deleteProductMessage => 'تحذير: من المحتمل أن يكون هذا إجراءً مدمرًا.';
+  String get deleteProductMessage =>
+      'تحذير: من المحتمل أن يكون هذا إجراءً مدمرًا.';
 
   /// [ProductAdderScreen] and [ProductEditScreen]
   @override
