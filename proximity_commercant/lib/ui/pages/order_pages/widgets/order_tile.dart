@@ -123,10 +123,6 @@ class OrderTile extends StatelessWidget {
                         order.pickupPerson?["name"] != null)
                     ? order.pickupPerson!["name"] ?? ""
                     : '',
-                'NIN': (order.pickupPerson != null &&
-                        order.pickupPerson?["nif"] != null)
-                    ? order.pickupPerson!["nif"] ?? ""
-                    : '',
               }),
 
             Padding(

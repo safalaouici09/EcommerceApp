@@ -8,6 +8,7 @@ import 'package:proximity_client/domain/authentication/src/signup_validation.dar
 import 'package:proximity_client/ui/pages/authentication_pages/view/login_screen.dart';
 import 'package:proximity_client/ui/pages/authentication_pages/widgets/terms_and_conditions.dart';
 import 'package:proximity_client/ui/pages/main_pages/view/main_screen.dart';
+import 'package:proximity_client/domain/authentication/src/googleSigninApi.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -170,10 +171,14 @@ class SignupScreen extends StatelessWidget {
                   child: Row(mainAxisSize: MainAxisSize.max, children: [
                     Expanded(
                         child: NormalIconButton(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MainScreen())),
+                            onPressed: () async {
+                              try {
+                                await GoogleSignInApi.logout();
+                              } catch (e) {
+                                print(e.toString());
+                              }
+                              signupValidation.signUpGoogle(context);
+                            },
                             icon: Image.asset('assets/img/google.png',
                                 width: normal_200, height: normal_200))),
                     const SizedBox(width: normal_200),

@@ -21,12 +21,10 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  bool didFetch = false;
   bool _isExpanded = false;
   String id = "";
   @override
   void initState() {
-    didFetch = false;
     id = widget.id;
     super.initState();
   }
@@ -40,23 +38,38 @@ class _ProductScreenState extends State<ProductScreen> {
     final cartService = Provider.of<CartService>(context);
     final storeService = Provider.of<StoreService>(context);
     // final productModalController = Provider.of<ProductModalController>(context);
-
+    var didFetch = false;
     return Consumer<ProductService>(builder: (context, productService, child) {
       Product product = productService.products
-          .firstWhere((element) => element.id == widget.id);
+              .firstWhere((element) => element.id == widget.id) ??
+          productService.products[0] ??
+          Product();
 
       /// Do a getShop if necessary
       if (!didFetch) {
         productService.getProduct(widget.id);
         product = productService.products
             .firstWhere((element) => element.id == widget.id);
-        setState(() {
-          didFetch = true;
-        });
+        didFetch = true;
       }
 
       return Scaffold(
           body: Stack(alignment: Alignment.bottomCenter, children: [
+        if (productService.loadingProduct == true)
+          const Expanded(child: Center(child: CircularProgressIndicator())),
+        if (productService.loadingProduct == false &&
+            didFetch == true &&
+            productService.products
+                    .firstWhere((element) => element.id == widget.id) ==
+                -1)
+          Expanded(
+              child: Center(
+                  child: InkWell(
+            onTap: () {
+              productService.getProduct(widget.id);
+            },
+            child: Icon(Icons.refresh),
+          ))),
         if (didFetch == true &&
             productService.loadingProduct == false &&
             product != -1)
@@ -186,7 +199,10 @@ class _ProductScreenState extends State<ProductScreen> {
 
             /// Store Section
 
-            StoreSection(idStore: product.storeId!),
+            StoreSection(
+              idStore: product.storeId!,
+              productPageContext: context,
+            ),
 
             /// Similar Products Section
             SectionDivider(
@@ -223,7 +239,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 onPressed: () => {
                       if (_token != null)
                         {
-                          if (storeService.store != null)
+                          if (storeService.store != null && product != null)
                             {
                               cartService.addToCart(context, product,
                                   product.variants![0], storeService.store, 1,

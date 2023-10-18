@@ -76,7 +76,7 @@ class ProductService with ChangeNotifier {
     }
   }
 
-  Future getStoreProducts() async {
+  Future getStoreProducts({String? rayonId = null}) async {
     _products = null;
     _loading = true;
     notifyListeners();
@@ -92,8 +92,13 @@ class ProductService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer $_token";
+      FormData _formData = FormData();
+      if (rayonId != null) {
+        _formData = FormData.fromMap({"rayonId": rayonId});
+      }
 
-      var res = await dio.get(BASE_API_URL + '/product/store/$idStore');
+      var res = await dio.post(BASE_API_URL + '/product/store/$idStore',
+          data: _formData);
       _loading = false;
 
       notifyListeners();

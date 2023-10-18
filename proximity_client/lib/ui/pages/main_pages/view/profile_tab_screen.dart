@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/authentication/authentication.dart';
+import 'package:proximity_client/domain/authentication/src/googleSigninApi.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_client/domain/notification_repository/notification_repository.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
@@ -101,8 +102,8 @@ class ProfileTabScreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PreferencesScreen(
-                                      user: userService.user!)));
+                                  builder: (context) =>
+                                      PreferencesSliderScreen()));
                         }),
               const ListButton(
                   title: 'Payment Methods.',
@@ -164,13 +165,15 @@ class ProfileTabScreen extends StatelessWidget {
                             title: 'Notifications.',
                             leadIcon: ProximityIcons.notifications,
                             onPressed: () {
-                              notificationService.makeItListSeend();
-                              notificationService.getNotifications(context);
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //             const NotificationsPreferencesScreen()));
+                              // notificationService.makeItListSeend();
+                              // notificationService.getNotifications(context);
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          NotificationSettingsScreen(
+                                              user: userService.user)));
                             }),
                       ])
                     ]);
@@ -191,7 +194,12 @@ class ProfileTabScreen extends StatelessWidget {
                   onPressed: null),
               ListButton(
                   title: 'Logout.',
-                  onPressed: () {
+                  onPressed: () async {
+                    try {
+                      await GoogleSignInApi.logout();
+                    } catch (e) {
+                      print(e.toString());
+                    }
                     loginValidation.logout();
                     Navigator.pushAndRemoveUntil(
                         context,

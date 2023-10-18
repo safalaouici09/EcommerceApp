@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/authentication/src/googleSigninApi.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import 'package:proximity_client/ui/pages/authentication_pages/view/otp_screen.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
@@ -165,7 +168,7 @@ class SignupValidation with ChangeNotifier {
   }
 
   /// signup methods
-  void signup(BuildContext context) async {
+  void signup(BuildContext context, {GoogleSignInAccount? user}) async {
     /// set loading to true
     _loading = true;
     notifyListeners();
@@ -187,34 +190,50 @@ class SignupValidation with ChangeNotifier {
       });
     }
 
+    String passwordUser = "";
+    if (user != null) {
+      var r = Random();
+      passwordUser =
+          String.fromCharCodes(List.generate(8, (index) => r.nextInt(33) + 89));
+    }
+
     /// prepare the dataForm
-    final Map<String, dynamic> data = _phone.value != null
-        ? _email.value != null
-            ? {
-                "username": _userName.value,
-                "email": _email.value,
-                "phone": _phone.value,
-                "password": _password.value,
-                "password_confirmation": _passwordConfirm.value,
-                "role": "user",
-                "cart": jsonEncode(cartItems)
-              }
+    final Map<String, dynamic> data = user != null
+        ? {
+            "username": user.displayName!.replaceAll(" ", ""),
+            "email": user.email,
+            "password": passwordUser,
+            "password_confirmation": passwordUser,
+            "role": "user",
+            "google": true
+          }
+        : _phone.value != null
+            ? _email.value != null
+                ? {
+                    "username": _userName.value,
+                    "email": _email.value,
+                    "phone": _phone.value,
+                    "password": _password.value,
+                    "password_confirmation": _passwordConfirm.value,
+                    "role": "user",
+                    "cart": jsonEncode(cartItems)
+                  }
+                : {
+                    "username": _userName.value,
+                    "phone": _phone.value,
+                    "password": _password.value,
+                    "password_confirmation": _passwordConfirm.value,
+                    "role": "user",
+                    "cart": jsonEncode(cartItems)
+                  }
             : {
                 "username": _userName.value,
-                "phone": _phone.value,
+                "email": _email.value,
                 "password": _password.value,
                 "password_confirmation": _passwordConfirm.value,
                 "role": "user",
                 "cart": jsonEncode(cartItems)
-              }
-        : {
-            "username": _userName.value,
-            "email": _email.value,
-            "password": _password.value,
-            "password_confirmation": _passwordConfirm.value,
-            "role": "user",
-            "cart": jsonEncode(cartItems)
-          };
+              };
 
     /// post the dataForm via dio call
     try {
@@ -295,4 +314,12 @@ class SignupValidation with ChangeNotifier {
   void googleLogin(BuildContext context) async {}
 
   void facebookLogin(BuildContext context) async {}
+
+  Future signUpGoogle(BuildContext context) async {
+    final user = await GoogleSignInApi.login();
+    print(user);
+    if (user != null && user!.email != "") {
+      signup(context, user: user);
+    }
+  }
 }

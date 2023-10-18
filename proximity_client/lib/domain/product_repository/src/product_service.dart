@@ -38,6 +38,13 @@ class ProductService with ChangeNotifier {
 
   bool? get loadingProduct => _loadingProduct;
 
+  bool? _loadingProductList = false;
+
+  bool? get loadingProductList => _loadingProductList;
+  bool? _loadingdealsList = false;
+
+  bool? get loadingdealsList => _loadingdealsList;
+
   ProductService() {
     // _products = [];
     _searchResults = [];
@@ -85,7 +92,9 @@ class ProductService with ChangeNotifier {
     /// open hive box
     ///
     ///
+    print("get products list");
     _query = name;
+    _loadingProductList = true;
     notifyListeners();
     var credentialsBox = Boxes.getCredentials();
     credentialsBox.put('first_time', false);
@@ -143,6 +152,8 @@ class ProductService with ChangeNotifier {
         print(_products.length.toString());
         notifyListeners();
       }
+      _loadingProductList = false;
+      notifyListeners();
     } on DioError catch (e) {
       if (e.response != null) {
         /// Toast Message to print the message
@@ -152,13 +163,19 @@ class ProductService with ChangeNotifier {
         print('Error sending request!');
         print(e.message);
       }
+
+      _loadingProductList = false;
+      notifyListeners();
     }
   }
 
   Future getTodayDeals() async {
+    _loadingdealsList = true;
+    notifyListeners();
     Future.delayed(const Duration(milliseconds: 1000), () {
       _todayDeals = [];
       _todayDeals.addAll(_products.where((element) => (element.discount != 0)));
+      _loadingdealsList = false;
       notifyListeners();
     });
   }

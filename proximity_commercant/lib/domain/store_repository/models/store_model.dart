@@ -17,6 +17,10 @@ class Store {
   bool? isActive;
   DateTime? creationDate;
   String? registrationNumber;
+  List<dynamic>? storeCategorieIds;
+  List<StoreCategory>? storeRayons;
+  int? templateId;
+  List<dynamic>? productCategorieIds;
 
   // bool? isVerified;
 
@@ -39,9 +43,12 @@ class Store {
       this.followers,
       this.isActive,
       this.workingTime,
-      this.creationDate
-      //  this.isVerified
-      });
+      this.creationDate,
+      //  this.isVerified,
+      this.storeCategorieIds,
+      this.storeRayons,
+      this.templateId,
+      this.productCategorieIds});
   //todo : add working times
 
   Store.fromJson(Map<String, dynamic> parsedJson)
@@ -99,6 +106,14 @@ class Store {
         workingTime = parsedJson['workingTime'] == null
             ? null
             : WorkingTime.fromJson(parsedJson['workingTime']),
+        storeRayons = parsedJson['storeRayons'] == null
+            ? null
+            : StoreCategory.storeCategoriesFromJsonList(
+                parsedJson['storeRayons'],
+                selected: true),
+        productCategorieIds = parsedJson['productCategorieIds'],
+        templateId = parsedJson['templateId'],
+        storeCategorieIds = parsedJson['storeCategorieIds'],
         categories = null;
 
   static List<Store> storesFromJsonList(List<dynamic> parsedJson) {

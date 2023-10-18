@@ -54,7 +54,7 @@ class UserService extends ChangeNotifier {
 
         /// Display Results Message
         ToastSnackbar().init(context).showToast(
-            message: "${res.statusMessage}", type: ToastSnackbarType.success);
+            message: "Updated with success}", type: ToastSnackbarType.success);
         Navigator.pop(context);
       }
     } on DioError catch (e) {

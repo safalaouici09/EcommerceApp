@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/authentication/src/googleSigninApi.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
 import 'package:proximity_client/ui/pages/main_pages/main_pages.dart';
 import 'package:proximity_client/ui/pages/authentication_pages/authentication_pages.dart';
@@ -85,7 +87,7 @@ class LoginValidation with ChangeNotifier {
   }
 
   /// login methods
-  void login(BuildContext context) async {
+  void login(BuildContext context, {GoogleSignInAccount? user}) async {
     /// set loading to true
     _loading = true;
     notifyListeners();
@@ -94,18 +96,28 @@ class LoginValidation with ChangeNotifier {
     var credentialsBox = Boxes.getCredentials();
 
     /// prepare the dataForm
-    final Map<String, dynamic> data = {
-      "email": _email.value,
-      "password": _password.value , 
-      "role" : "user"
-    };
+    Map<String, dynamic> data = {};
+
+    if (user != null) {
+      data = {
+        "email": user.email,
+        "name": user.displayName,
+        "google": true,
+        "role": "user"
+      };
+    } else {
+      data = {
+        "email": _email.value,
+        "password": _password.value,
+        "role": "user"
+      };
+    }
 
     /// post the dataForm via dio call
     try {
       var res = await Dio().post(AUTH_API_URL + '/login', data: data);
 
       if (res.statusCode == 200) {
-        
         if (res.data["success"]) {
           credentialsBox.put('token', res.data["data"]['token']);
           credentialsBox.put('id', res.data["data"]['user']['id']);
@@ -124,14 +136,16 @@ class LoginValidation with ChangeNotifier {
           final welcome = credentialsBox.get('welcome');
           //var box = await Hive.openBox('authentication');
 
-          if (welcome == null || welcome == 'false')  {
+          if (welcome == null || welcome == 'false') {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const WelcomeScreenAfterLogin()),
+                MaterialPageRoute(
+                    builder: (context) => const WelcomeScreenAfterLogin()),
                 (Route<dynamic> route) => false);
           } else {
             /// Display Results Message
             ToastSnackbar().init(context).showToast(
-                message: "${res.statusMessage}", type: ToastSnackbarType.success);
+                message: "${res.statusMessage}",
+                type: ToastSnackbarType.success);
 
             /// Go to [HomeScreen]
             Navigator.of(context).pushAndRemoveUntil(
@@ -196,8 +210,6 @@ class LoginValidation with ChangeNotifier {
       _isLogged = true;
     }
   }
-  
-  
 
   void logout() async {
     var credentialsBox = Boxes.getCredentials();
@@ -207,8 +219,15 @@ class LoginValidation with ChangeNotifier {
     notifyListeners();
   }
 
-
   void googleLogin(BuildContext context) async {}
 
   void facebookLogin(BuildContext context) async {}
+
+  Future signInGoogle(BuildContext context) async {
+    final user = await GoogleSignInApi.login();
+    print(user);
+    if (user != null && user!.email != "") {
+      login(context, user: user);
+    }
+  }
 }

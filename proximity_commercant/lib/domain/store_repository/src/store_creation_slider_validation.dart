@@ -112,6 +112,10 @@ class StoreCreationSliderValidation with ChangeNotifier {
   List<StoreCategory>? _storeCategories = [];
   List<StoreCategory>? get storeCategories => _storeCategories;
 
+  StoreCategory? _selectedStoreCategorie =
+      StoreCategory(name: "", selected: true);
+  StoreCategory? get selectedStoreCategorie => _selectedStoreCategorie;
+
   List<StoreCategory>? _storeRayons = [];
   List<StoreCategory>? get storeRayons => _storeRayons;
 
@@ -141,32 +145,73 @@ class StoreCreationSliderValidation with ChangeNotifier {
   }
 
   // Setters
+  void changeSelectedStoreCategory(StoreCategory value, int index) {
+    print("changeSelectedStoreCategory");
+    print(_selectedStoreCategorie!.name);
+    print(value.name);
+    _selectedStoreCategorie = value;
+    notifyListeners();
+  }
+
+  // Setters
   void changeStoreCategories(List<StoreCategory> value) {
     _storeCategories = value;
     notifyListeners();
   }
 
-  void changeSelectStoreCategorie(value, id) {
+  void changeSelectStoreCategorie(value, id,
+      {bool? check_deselect = false, BuildContext? context = null}) {
+    print(check_deselect);
     var index = storeCategories!.indexWhere((element) => element.id == id);
     if (index != -1) {
-      storeCategories![index].selected = value!;
-      notifyListeners();
+      if (value == true ||
+          check_deselect != true ||
+          (check_deselect == true &&
+              storeCategories![index].product_count! <= 0)) {
+        print(storeCategories![index].product_count);
+        storeCategories![index].selected = value!;
+        notifyListeners();
+      } else {
+        ToastSnackbar().init(context!).showToast(
+            message: "you must first move its products to another category",
+            type: ToastSnackbarType.error);
+      }
     }
   }
 
   void addStoreCategorie(name) {
     final newStoreCategoryId = storeCategories!.length + 1;
     final newStoreCategory = StoreCategory(
-        id: newStoreCategoryId, name: name, selected: false, dbId: null);
+        id: newStoreCategoryId,
+        name: name,
+        selected: false,
+        dbId: null,
+        product_count: 0);
     storeCategories!.add(newStoreCategory);
     notifyListeners();
   }
 
-  void changeSelectStoreRayons(value, id) {
+  void initStoreRayons(value) {
+    _storeRayons = [];
+    _storeRayons!.addAll(value);
+    notifyListeners();
+  }
+
+  void changeSelectStoreRayons(value, id,
+      {bool? check_deselect = false, BuildContext? context = null}) {
     var index = storeRayons!.indexWhere((element) => element.id == id);
     if (index != -1) {
-      storeRayons![index].selected = value!;
-      notifyListeners();
+      if (value == true ||
+          check_deselect != true ||
+          (check_deselect == true && storeRayons![index].product_count! <= 0)) {
+        print(storeRayons![index].product_count);
+        storeRayons![index].selected = value!;
+        notifyListeners();
+      } else {
+        ToastSnackbar().init(context!).showToast(
+            message: "you must first move its products to another rayon",
+            type: ToastSnackbarType.error);
+      }
     }
   }
 
@@ -187,57 +232,101 @@ class StoreCreationSliderValidation with ChangeNotifier {
   void addStoreRayon(name) {
     final newStoreRayonId = storeRayons!.length + 1;
     final newStoreRayon = StoreCategory(
-        id: newStoreRayonId, name: name, selected: false, dbId: null);
+        id: newStoreRayonId,
+        name: name,
+        selected: false,
+        dbId: null,
+        product_count: 0);
     storeRayons!.add(newStoreRayon);
     notifyListeners();
   }
 
-  void changeSelectProductCategorie(value, index) {
+  void changeSelectProductCategorie(value, index,
+      {bool? check_deselect = false, BuildContext? context = null}) {
     if (index != -1) {
-      productCategories![index].selected = value!;
-      notifyListeners();
+      if (value == true ||
+          check_deselect != true ||
+          (check_deselect == true &&
+              productCategories![index].product_count! <= 0)) {
+        print(productCategories![index].product_count);
+        productCategories![index].selected = value!;
+        notifyListeners();
+      } else {
+        ToastSnackbar().init(context!).showToast(
+            message: "you must first move its products to another category",
+            type: ToastSnackbarType.error);
+      }
     }
   }
 
-  void addProductCategorie(name) {
-    final newProductCategoryId = productCategories!.length + 1;
-    final newProductCategory = ProductCategory(
-        id: newProductCategoryId,
-        name: name,
-        selected: false,
-        subCategories: [],
-        dbId: null);
-    productCategories!.add(newProductCategory);
-    notifyListeners();
+  void addProductCategorie(name, context) {
+    if (selectedStoreCategorie != null && selectedStoreCategorie!.name != "") {
+      final newProductCategoryId = productCategories!.length + 1;
+      final newProductCategory = ProductCategory(
+          id: newProductCategoryId,
+          name: name,
+          selected: false,
+          subCategories: [],
+          dbId: null,
+          storeCategoryDBId: selectedStoreCategorie!.dbId,
+          storeCategoryId: selectedStoreCategorie!.id,
+          product_count: 0);
+      productCategories!.add(newProductCategory);
+      notifyListeners();
+    } else {
+      ToastSnackbar().init(context).showToast(
+          message: "You must select a store category firstly",
+          type: ToastSnackbarType.error);
+    }
   }
 
   void addProductSubCategorie(name, parentIndex) {
     final newProductSubCategoryId =
         productCategories![parentIndex].subCategories.length + 1;
     final newProductSubCategory = ProductSubCategory(
-        id: newProductSubCategoryId, name: name, selected: false, dbId: null);
+        id: newProductSubCategoryId,
+        name: name,
+        selected: false,
+        dbId: null,
+        product_count: 0);
     productCategories![parentIndex].subCategories.add(newProductSubCategory);
     notifyListeners();
   }
 
-  void changeSelectProductSubCategorie(value, id, parentIndex) {
+  void changeSelectProductSubCategorie(value, id, parentIndex,
+      {bool? check_deselect = false, BuildContext? context = null}) {
     var index = productCategories![parentIndex]
         .subCategories
         .indexWhere((element) => element.id == id);
     if (index != -1) {
-      productCategories![parentIndex].subCategories[index].selected = value!;
-      if (value! == true && productCategories![parentIndex].selected == false) {
-        productCategories![parentIndex].selected = true;
+      if (value == true ||
+          check_deselect != true ||
+          (check_deselect == true &&
+              productCategories![parentIndex]
+                      .subCategories[index]
+                      .product_count! <=
+                  0)) {
+        print(
+            productCategories![parentIndex].subCategories[index].product_count);
+        productCategories![parentIndex].subCategories[index].selected = value!;
+        if (value! == true &&
+            productCategories![parentIndex].selected == false) {
+          productCategories![parentIndex].selected = true;
+        }
+        if (productCategories![parentIndex]
+            .subCategories
+            .where((element) => element.selected == true)
+            .isEmpty) {
+          productCategories![parentIndex].selected = false;
+        }
+        // productCategories![parentIndex].selected =
+        //     checkIfAllSubCategoriesSelected(parentIndex);
+        notifyListeners();
+      } else {
+        ToastSnackbar().init(context!).showToast(
+            message: "you must first move its products to another category",
+            type: ToastSnackbarType.error);
       }
-      if (productCategories![parentIndex]
-          .subCategories
-          .where((element) => element.selected == true)
-          .isEmpty) {
-        productCategories![parentIndex].selected = false;
-      }
-      // productCategories![parentIndex].selected =
-      //     checkIfAllSubCategoriesSelected(parentIndex);
-      notifyListeners();
     }
   }
 
@@ -618,6 +707,175 @@ class StoreCreationSliderValidation with ChangeNotifier {
     return _formData;
   }
 
+  /// A method to convert this form validator into a Store object
+  FormData updateFormData(Policy policy) {
+    FormData _formData = FormData();
+    try {
+      // Code that might throw the exception
+      print("policy");
+      print(storeName.value);
+      WorkingTime workingTime = WorkingTime(
+          option: _workingTimeOption!,
+          fixedHours: _fixedWorkingHours,
+          customizedHours: _customizedWorkingHours);
+
+      FormData _formData = FormData.fromMap({
+        "name": storeName.value,
+        "description": storeDescription.value,
+        // "isVerified": false,
+        "location": '''{
+        "type": "Point",
+        "coordinates": [${storeAddress.lat ?? 0.0}, ${storeAddress.lng ?? 0.0}]
+      }''',
+        "address": '''{
+        "city": "${storeAddress.city ?? ""}",
+        "streetName": "${storeAddress.streetName ?? ""}",
+        "postalCode": "${storeAddress.postalCode ?? ""}",
+        "fullAdress": "${storeAddress.fullAddress ?? ""}",
+        "region": "${storeAddress.region ?? ""}",
+        "country": "${storeAddress.countryName ?? ""}",
+        "countryCode": "FR"
+      }''',
+        "policy": policy.toJson(),
+        "workingTime": workingTime.toJson(),
+        //workingTime.toJson() //getWorkingHoursJson(),
+      });
+
+      // _formData.fields.add(policytoFormData);
+      if (_storeImages.isNotEmpty) {
+        if (_storeImages.first is File) {
+          print("image added");
+          _formData.files.add(MapEntry(
+              'image', MultipartFile.fromFileSync(_storeImages.first.path)));
+        }
+      }
+
+      return _formData;
+    } catch (e, stackTrace) {
+      print('Exception: $e');
+      print('Stack Trace: $stackTrace');
+    }
+    return _formData;
+  }
+
+  /// A method to convert this form validator into a Store object
+  FormData UpdateStoreCategoriesFormData() {
+    FormData _formData = FormData();
+    try {
+      // store categories
+      List<Map<String, dynamic>> fdStoreCategories = [];
+
+      var selectedStoreCategories =
+          _storeCategories!.where((element) => element.selected).toList();
+
+      fdStoreCategories = selectedStoreCategories
+          .map((e) => {"id": e.dbId, "name": e.name})
+          .cast<Map<String, dynamic>>()
+          .toList();
+
+      FormData _formData = FormData.fromMap({
+        "storeCategories": json.encode(fdStoreCategories)
+        //workingTime.toJson() //getWorkingHoursJson(),
+      });
+
+      return _formData;
+    } catch (e, stackTrace) {
+      print('Exception: $e');
+      print('Stack Trace: $stackTrace');
+    }
+    return _formData;
+  }
+
+  /// A method to convert this form validator into a Store object
+  FormData UpdateProductCategoriesFormData() {
+    FormData _formData = FormData();
+    try {
+      // product categories
+
+      var selectedProductCategories =
+          productCategories!.where((element) => element.selected).toList();
+      selectedProductCategories = selectedProductCategories.map((e) {
+        e.subCategories =
+            e.subCategories.where((element) => element.selected).toList();
+        return e;
+      }).toList();
+      List<Map<String, dynamic>> fdProductCategories = [];
+
+      fdProductCategories = selectedProductCategories
+          .map((e) {
+            List<Map<String, dynamic>> fdProductSubCategories = [];
+            fdProductSubCategories = e.subCategories
+                .map((e) => {"id": e.dbId, "name": e.name})
+                .cast<Map<String, dynamic>>()
+                .toList();
+
+            return {
+              "id": e.dbId,
+              "name": e.name,
+              "subCategories": json.encode(fdProductSubCategories)
+            };
+          })
+          .cast<Map<String, dynamic>>()
+          .toList();
+
+      FormData _formData = FormData.fromMap({
+        "productCategories": json.encode(fdProductCategories),
+      });
+
+      return _formData;
+    } catch (e, stackTrace) {
+      print('Exception: $e');
+      print('Stack Trace: $stackTrace');
+    }
+    return _formData;
+  }
+
+  FormData UpdateStoreRayonsFormData() {
+    FormData _formData = FormData();
+    try {
+      // store rayons
+      List<Map<String, dynamic>> fdStoreRayons = [];
+
+      var selectedStoreRayons =
+          _storeRayons!.where((element) => element.selected).toList();
+
+      fdStoreRayons = selectedStoreRayons
+          .map((e) => {"name": e.name, "id": e.dbId})
+          .cast<Map<String, dynamic>>()
+          .toList();
+
+      FormData _formData = FormData.fromMap({
+        "storeRayons": json.encode(fdStoreRayons),
+      });
+
+      return _formData;
+    } catch (e, stackTrace) {
+      print('Exception: $e');
+      print('Stack Trace: $stackTrace');
+    }
+    return _formData;
+  }
+
+  FormData UpdateStoreTemplateFormData() {
+    FormData _formData = FormData();
+    try {
+      // store Template
+      List<Map<String, dynamic>> fdStoreTemplates = [];
+
+      var selectedStoreTemplate =
+          templates.where((element) => element.selected).toList();
+      var templateId =
+          selectedStoreTemplate.isNotEmpty ? selectedStoreTemplate[0].id : null;
+
+      FormData _formData = FormData.fromMap({"template": templateId});
+      return _formData;
+    } catch (e, stackTrace) {
+      print('Exception: $e');
+      print('Stack Trace: $stackTrace');
+    }
+    return _formData;
+  }
+
   Map<String, dynamic> getWorkingHoursJson() {
     List<Map<String, dynamic>> _fixedHoursListJson = [];
     Map<String, List<Map<String, dynamic>>> _customizedHoursMapJson = {};
@@ -688,6 +946,46 @@ class StoreCreationSliderValidation with ChangeNotifier {
     }
   }
 
+  Future getInitStoreCategories() async {
+    /// open hive box
+    _loadingStoreCategories = true;
+    notifyListeners();
+    var credentialsBox = Boxes.getCredentials();
+    String _token = credentialsBox.get('token');
+
+    try {
+      if (_id == null) {
+        print('store id not found ');
+      } else {
+        Dio dio = Dio();
+        dio.options.headers["token"] = "Bearer $_token";
+        var res = await dio.get(BASE_API_URL + '/storeCategory/store/' + _id!);
+        if (res.statusCode == 200) {
+          print(res.data);
+          _storeCategories = [];
+          _storeCategories!
+              .addAll(StoreCategory.storeCategoriesFromJsonList(res.data));
+          notifyListeners();
+        }
+
+        _loadingStoreCategories = false;
+        notifyListeners();
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+
+      _loadingStoreCategories = false;
+      notifyListeners();
+    }
+  }
+
   Future getProductCategories() async {
     /// open hive box
     print("start service of product categories");
@@ -720,6 +1018,100 @@ class StoreCreationSliderValidation with ChangeNotifier {
 
       _loadingProductCategories = false;
       notifyListeners();
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+
+      _loadingStoreCategories = false;
+      notifyListeners();
+    }
+  }
+
+  Future getStoreProductCategories() async {
+    /// open hive box
+    print("start service of store product categories");
+    _loadingProductCategories = true;
+    notifyListeners();
+    var credentialsBox = Boxes.getCredentials();
+    String _token = credentialsBox.get('token');
+
+    try {
+      if (_id == null) {
+        print('store id not found ');
+      } else {
+        Dio dio = Dio();
+        dio.options.headers["token"] = "Bearer $_token";
+
+        var res = await dio.post(
+            BASE_API_URL + '/category/storeCategory/store/' + _id!,
+            data: {});
+        if (res.statusCode == 200) {
+          print(res.data);
+
+          _productCategories = [];
+          _productCategories!.addAll(
+              ProductCategory.productCategoriesFromJsonList(
+                  res.data["ProductCategories"]));
+
+          _storeCategories = [];
+          _storeCategories!.addAll(StoreCategory.storeCategoriesFromJsonList(
+              res.data["StoreCategories"]));
+          notifyListeners();
+        }
+
+        _loadingProductCategories = false;
+        notifyListeners();
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+
+      _loadingStoreCategories = false;
+      notifyListeners();
+    }
+  }
+
+  Future getStoreRayons() async {
+    /// open hive box
+    print("start service of store rayons");
+    _loadingProductCategories = true;
+    notifyListeners();
+    var credentialsBox = Boxes.getCredentials();
+    String _token = credentialsBox.get('token');
+
+    try {
+      if (_id == null) {
+        print('store id not found ');
+      } else {
+        Dio dio = Dio();
+        dio.options.headers["token"] = "Bearer $_token";
+
+        var res = await dio.get(BASE_API_URL + '/store/seller/store/' + _id!);
+        if (res.statusCode == 200) {
+          print(res.data);
+
+          _storeRayons = [];
+          _storeRayons!.addAll(StoreCategory.storeCategoriesFromJsonList(
+              res.data["storeRayons"]));
+
+          notifyListeners();
+        }
+
+        _loadingProductCategories = false;
+        notifyListeners();
+      }
     } on DioError catch (e) {
       if (e.response != null) {
         /// Toast Message to print the message

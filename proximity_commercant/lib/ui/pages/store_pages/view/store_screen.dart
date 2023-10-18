@@ -69,7 +69,7 @@ class _StoreScreenState extends State<StoreScreen> {
 
       return Scaffold(
           body: ListView(children: [
-        StoreMap(address: store.address!),
+        StoreMap(address: store.address!, store: store, index: index),
 
         StoreDetails(
           name: store.name!,
@@ -87,8 +87,11 @@ class _StoreScreenState extends State<StoreScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                StoreEditScreen(index: index, store: store)));
+                            builder: (context) => StoreEditScreen(
+                                  index: index,
+                                  store: store,
+                                  editScreen: true,
+                                )));
                   })),
           const SizedBox(width: normal_100),
           Expanded(
@@ -119,11 +122,20 @@ class _StoreScreenState extends State<StoreScreen> {
             /// Scroll Tab Bar to select a Product Category
             ScrollTabBar(
               tabs: [
-                ScrollTab(name: "All Products", onPressed: () {}),
-                if (store.categories != null)
-                  ...store.categories!
-                      .map((item) =>
-                          ScrollTab(name: item.name!, onPressed: () {}))
+                ScrollTab(
+                    name: "All Products",
+                    onPressed: () {
+                      print("all");
+                      productService.getStoreProducts();
+                    }),
+                if (store.storeRayons != null)
+                  ...store.storeRayons!
+                      .map((item) => ScrollTab(
+                          name: item.name,
+                          onPressed: () {
+                            print(item.name);
+                            productService.getStoreProducts(rayonId: item.dbId);
+                          }))
                       .toList(),
               ],
             ),

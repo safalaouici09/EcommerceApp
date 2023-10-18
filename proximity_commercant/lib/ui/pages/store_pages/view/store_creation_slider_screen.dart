@@ -103,12 +103,19 @@ class _StoreCreationSliderScreenState extends State<StoreCreationSliderScreen> {
                           });
                         },
                         onStepCancel: () {
-                          _currentStep == 0
-                              ? null
-                              : setState(() {
-                                  _currentStep -= 1;
-                                  print(_currentStep);
-                                });
+                          if (_currentStep != 0) {
+                            if (_currentStep == 2) {
+                              print("i'm here");
+                              storeCreationSliderValidation
+                                  .changeSelectedStoreCategory(
+                                      StoreCategory(name: "", selected: true),
+                                      0);
+                            }
+                            setState(() {
+                              _currentStep -= 1;
+                              print(_currentStep);
+                            });
+                          }
                         },
                         controlsBuilder: (context, details) {
                           return Padding(
@@ -184,12 +191,12 @@ class _StoreCreationSliderScreenState extends State<StoreCreationSliderScreen> {
         isActive: _currentStep >= 1,
         title: const Text(""),
         content: Column(
-          children: const [
-            Text("Categories of the Store",
+          children: [
+            const Text("Categories of the Store",
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 20.0, color: Color(0xFF136DA5))),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             StoreCategorySelectionWidget()
           ],
         ));
@@ -220,12 +227,12 @@ class _StoreCreationSliderScreenState extends State<StoreCreationSliderScreen> {
         isActive: _currentStep >= 3,
         title: const Text(""),
         content: Column(
-          children: const [
-            Text("Rayons of the store",
+          children: [
+            const Text("Rayons of the store",
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 20.0, color: Color(0xFF136DA5))),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             StoreRayonSelectionWidget()
           ],
         ));

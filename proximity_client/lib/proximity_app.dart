@@ -9,8 +9,17 @@ import 'package:proximity_client/ui/pages/main_pages/view/onBoard.dart';
 import 'package:proximity_client/ui/pages/main_pages/view/welcomeScreen.dart';
 import 'package:proximity_client/ui/pages/pages.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:proximity_client/domain/store_repository/store_repository.dart';
 
 import 'domain/data_persistence/src/boxes.dart';
+
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter/services.dart' show PlatformException;
+
+final GlobalKey<NavigatorState> myWidgetKey = GlobalKey<NavigatorState>();
+
+final GlobalKey<_ProximityAppState> myWidgetKey2 =
+    GlobalKey<_ProximityAppState>();
 
 class ProximityApp extends StatefulWidget {
   const ProximityApp({Key? key}) : super(key: key);
@@ -24,6 +33,46 @@ class _ProximityAppState extends State<ProximityApp> {
   void initState() {
     super.initState();
     initPlatform();
+    initUniLinks();
+  }
+
+  Future<void> initUniLinks() async {
+    try {
+      final initialLink = await getInitialLink();
+      handleDeepLink(Uri.parse(initialLink ?? ""));
+    } on Exception catch (e) {
+      print('Error initializing uni_links: $e');
+    }
+
+    uriLinkStream.listen((Uri? uri) {
+      if (uri != null) {
+        handleDeepLink(uri);
+      }
+    });
+  }
+
+  void handleDeepLink(Uri uri) {
+    print("uri");
+    List<String> charArray = uri.path.split('/');
+    if (charArray.length > 2) {
+      switch (charArray[1]) {
+        case "product":
+          myWidgetKey.currentState!.push(MaterialPageRoute(
+              builder: (context) => ProductScreen(id: charArray[2])));
+          break;
+        case "store":
+          final storeProxy = Provider.of<StoreProxy>(context, listen: false);
+          storeProxy.idStore = charArray[2];
+          myWidgetKey.currentState!.push(
+              MaterialPageRoute(builder: (context) => const StoreScreen()));
+          break;
+        default:
+      }
+    }
+    return;
+    // Parse the uri and navigate to the appropriate screen in your app.
+    // Example: you can extract query parameters to determine the action.
+    // Navigator.push(context, MaterialPageRoute(builder: (context) => MyScreen()));
   }
 
   @override
@@ -47,9 +96,12 @@ class _ProximityAppState extends State<ProximityApp> {
         statusBarColor: Colors.transparent));
 
     return MaterialApp(
+        key: myWidgetKey2,
+        navigatorKey: myWidgetKey,
         title: 'Proximity App',
         theme: lightTheme,
         darkTheme: lightTheme,
+        debugShowCheckedModeBanner: false,
         // theme: userSettings.theme == 'dark' ? darkTheme : lightTheme,
         // darkTheme: userSettings.theme == 'light' ? lightTheme : darkTheme,
         //  locale: userSettings.locale,

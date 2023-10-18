@@ -5,8 +5,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:proximity/config/themes/google_map_theme.dart';
 import 'package:location/location.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:provider/provider.dart';
+
 //import 'package:geocoding/geocoding.dart' as geocoder;
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/product_repository/product_repository.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/ui/pages/main_pages/view/main_screen.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
@@ -125,6 +128,8 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     //getUserLocation();
+
+    final productService = Provider.of<ProductService>(context);
     return Scaffold(
         body: Stack(children: [
       Expanded(
@@ -261,6 +266,7 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                               //print(json.encode(addresse));
                               var credentialsBox = Boxes.getCredentials();
                               credentialsBox.put('address', addressItem);
+                              productService.getProximityProducts();
                               Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                     builder: (context) => MainScreen(),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
+import 'package:proximity_client/domain/notification_repository/notification_repository.dart';
 import 'package:proximity_client/domain/user_repository/models/address_item_model.dart';
 import 'package:proximity_client/domain/user_repository/user_repository.dart';
 import 'package:proximity_client/ui/widgets/address_picker/address_selection_screen.dart';
@@ -162,15 +163,44 @@ class _HomeTabBarState extends State<HomeTabBar> {
                     ),
                   ),
                   const Spacer(),
-                  SmallIconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const NotificationsScreen()));
-                      },
-                      icon: const Icon(ProximityIcons.notifications)),
+                  Consumer<NotificationService>(
+                      builder: (_, notificationService, __) {
+                    var nb_notifs = notificationService.notifications
+                        .where((element) => element.seendInList != true)
+                        .length;
+                    return Stack(children: [
+                      SmallIconButton(
+                          onPressed: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) =>
+                            //             const NotificationsScreen()));
+                            notificationService.makeItListSeend();
+                            notificationService.getNotifications(context);
+                          },
+                          icon: const Icon(ProximityIcons.notifications)),
+                      if (nb_notifs > 0)
+                        Container(
+                            padding: const EdgeInsets.all(tiny_50),
+                            margin: const EdgeInsets.only(top: 0, left: 40),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(tinyRadius),
+                                color: redSwatch.shade500),
+                            child: Text(
+                              '${nb_notifs}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption!
+                                  .copyWith(
+                                      color: primaryTextDarkColor,
+                                      fontWeight: FontWeight.w800),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ))
+                    ]);
+                  }),
                   const SizedBox(width: normal_100)
                 ])),
       ],

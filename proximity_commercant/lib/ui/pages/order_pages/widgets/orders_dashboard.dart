@@ -118,6 +118,37 @@ class OrdersDashboard extends StatelessWidget {
                           Expanded(
                               child: InkWell(
                                   onTap: () {
+                                    ordersService.getOrders(
+                                        "reesrvation", "all");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const OrdersScreen(page: 3)));
+                                  },
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        DuotoneIcon(
+                                            size: 25,
+                                            primaryLayer: ProximityIcons
+                                                .history_duotone_1,
+                                            secondaryLayer: ProximityIcons
+                                                .history_duotone_2,
+                                            color: redSwatch.shade500),
+                                        Text('Reservation',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    height: 0.9, fontSize: 7))
+                                      ]))),
+                          Expanded(
+                              child: InkWell(
+                                  onTap: () {
                                     ordersService.getOrders("return", "all");
                                     Navigator.push(
                                         context,

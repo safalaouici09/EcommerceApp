@@ -97,10 +97,6 @@ class OrderTilePage extends StatelessWidget {
                   order.pickupPerson?["name"] != null)
               ? order.pickupPerson!["name"] ?? ""
               : '',
-          'NIN':
-              (order.pickupPerson != null && order.pickupPerson?["nif"] != null)
-                  ? order.pickupPerson!["nif"] ?? ""
-                  : '',
         }),
       Padding(
         padding: const EdgeInsets.all(small_100),

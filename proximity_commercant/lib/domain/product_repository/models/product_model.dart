@@ -13,7 +13,10 @@ class Product {
   DateTime? discountEndDate;
   List<dynamic>? images;
   List<ProductVariant>? variants;
+  String? storeCategoryId;
   String? categoryId;
+  String? subCategoryId;
+  String? rayonId;
   String? categoryName;
   List<dynamic>? tags;
   String? storeId;
@@ -31,7 +34,10 @@ class Product {
       this.discountEndDate,
       this.images,
       this.variants,
+      this.storeCategoryId,
       this.categoryId,
+      this.subCategoryId,
+      this.rayonId,
       this.categoryName,
       this.policy,
       this.storeId,
@@ -44,7 +50,10 @@ class Product {
         description = parsedJson['description'],
         price = parsedJson['price'].toDouble(),
         quantity = parsedJson['quantity'],
+        storeCategoryId = parsedJson['storeCategoryId'],
         categoryId = parsedJson['categoryId'],
+        subCategoryId = parsedJson['subCategoryId'],
+        rayonId = parsedJson['rayonId'],
         images =
             parsedJson['images'].map((el) => BASE_IMG_URL + '/' + el).toList(),
         tags = parsedJson['tags'],

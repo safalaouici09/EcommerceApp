@@ -152,6 +152,41 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     Expanded(
                         child: InkWell(
                       onTap: () {
+                        ordersService.getOrders("reservation", "all");
+                        setState(() {
+                          _index = 3;
+                        });
+                      },
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_index == 3) ...[
+                              DuotoneIcon(
+                                primaryLayer: ProximityIcons.history_duotone_1,
+                                secondaryLayer:
+                                    ProximityIcons.history_duotone_2,
+                                color: redSwatch.shade500,
+                              ),
+                              Text('Reservation',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(height: 0.9, fontSize: 7)),
+                              const SizedBox(height: tiny_50),
+                              Container(
+                                  height: tiny_50,
+                                  width: normal_150,
+                                  decoration: BoxDecoration(
+                                      color: redSwatch.shade500,
+                                      borderRadius:
+                                          const BorderRadius.all(tinyRadius)))
+                            ] else
+                              const Icon(ProximityIcons.history),
+                          ]),
+                    )),
+                    Expanded(
+                        child: InkWell(
+                      onTap: () {
                         ordersService.getOrders("return", "all");
                         setState(() {
                           _index = 5;
@@ -313,6 +348,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
             return const SelfPickupTabView();
           case 1:
             return const DeliveryTabView();
+          case 3:
+            return const ReservationTabView();
           case 2:
             return const RejectedTabView();
           case 5:

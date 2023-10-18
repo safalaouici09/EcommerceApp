@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/ui/pages/product_pages/product_pages.dart';
 import 'home_tab_screen.dart';
 import 'map_tab_screen.dart';
 import 'cart_tab_screen.dart';
@@ -222,30 +223,30 @@ class _MainScreenState extends State<MainScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Stack(children: [
-                                        if (nb_notifs > 0)
-                                          Container(
-                                              padding:
-                                                  const EdgeInsets.all(tiny_50),
-                                              margin: const EdgeInsets.only(
-                                                  top: 2, left: 25),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          tinyRadius),
-                                                  color: redSwatch.shade500),
-                                              child: Text(
-                                                '${nb_notifs}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .copyWith(
-                                                        color:
-                                                            primaryTextDarkColor,
-                                                        fontWeight:
-                                                            FontWeight.w800),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              )),
+                                        // if (nb_notifs > 0)
+                                        //   Container(
+                                        //       padding:
+                                        //           const EdgeInsets.all(tiny_50),
+                                        //       margin: const EdgeInsets.only(
+                                        //           top: 2, left: 25),
+                                        //       decoration: BoxDecoration(
+                                        //           borderRadius:
+                                        //               const BorderRadius.all(
+                                        //                   tinyRadius),
+                                        //           color: redSwatch.shade500),
+                                        //       child: Text(
+                                        //         '${nb_notifs}',
+                                        //         style: Theme.of(context)
+                                        //             .textTheme
+                                        //             .caption!
+                                        //             .copyWith(
+                                        //                 color:
+                                        //                     primaryTextDarkColor,
+                                        //                 fontWeight:
+                                        //                     FontWeight.w800),
+                                        //         maxLines: 1,
+                                        //         overflow: TextOverflow.ellipsis,
+                                        //       )),
                                         if (_index == 3)
                                           Column(
                                             children: [
@@ -376,6 +377,12 @@ class _MainScreenState extends State<MainScreen> {
       case "Cancel":
         notification_icon = ProximityIcons.rejected_duotone_1;
         break;
+      case "product":
+        notification_image = notification!["product_image"] ?? "";
+        break;
+      case "offer":
+        notification_image = notification!["product_image"] ?? "";
+        break;
       default:
     }
 
@@ -413,8 +420,13 @@ class _MainScreenState extends State<MainScreen> {
                                                     normalRadius),
                                             child: FittedBox(
                                                 fit: BoxFit.cover,
-                                                child: Image.asset(
-                                                    notification_image)))),
+                                                child: ["offer", "product"]
+                                                        .contains(notification![
+                                                            "sub_type"])
+                                                    ? Image.network(
+                                                        notification_image)
+                                                    : Image.asset(
+                                                        notification_image)))),
                                   ])),
                       ]),
                       Padding(
@@ -456,8 +468,8 @@ class _MainScreenState extends State<MainScreen> {
                                     onPressed: () async {
                                       notificationService.makeItSeend(
                                           notification!["notification_id"]);
+                                      Navigator.of(context).pop();
                                       if (notification!["type"] == 'order') {
-                                        Navigator.of(context).pop();
                                         await notificationService.getOrder(
                                             notification!["id"], parentContext,
                                             refundOrder:
@@ -466,6 +478,15 @@ class _MainScreenState extends State<MainScreen> {
                                             returnOrder:
                                                 notification!["sub_type"] ==
                                                     "Return");
+                                      } else if (notification!["type"] ==
+                                          'offer') {
+                                        Navigator.push(
+                                            parentContext,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProductScreen(
+                                                        id: notification![
+                                                            "id"])));
                                       }
                                     })),
                           ]))

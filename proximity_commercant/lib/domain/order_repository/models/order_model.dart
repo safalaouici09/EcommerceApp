@@ -80,7 +80,6 @@ class Order {
         pickupPerson = parsedJson['pickupPerson'] != null
             ? {
                 "name": parsedJson['pickupPerson']["name"],
-                "nif": parsedJson['pickupPerson']["nif"]
               }
             : null,
         totalPrice = parsedJson['paymentInfos']['totalAmount'].toDouble(),

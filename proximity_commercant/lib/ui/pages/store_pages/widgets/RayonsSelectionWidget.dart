@@ -7,8 +7,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 
 class StoreRayonSelectionWidget extends StatefulWidget {
-  const StoreRayonSelectionWidget({Key? key}) : super(key: key);
-
+  StoreRayonSelectionWidget({Key? key, this.check_deselect}) : super(key: key);
+  bool? check_deselect;
   @override
   _StoreRayonSelectionWidgetState createState() =>
       _StoreRayonSelectionWidgetState();
@@ -44,7 +44,8 @@ class _StoreRayonSelectionWidgetState extends State<StoreRayonSelectionWidget> {
               onChanged: (value) {
                 setState(() {
                   storeCreationSliderValidation.changeSelectStoreRayons(
-                      value, storeRayon.id);
+                      value, storeRayon.id,
+                      check_deselect: widget.check_deselect, context: context);
                 });
               },
             );

@@ -22,6 +22,7 @@ class ProductCreationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     /// a boolean to help fetch data ONLY if necessary
     bool didFetch = true;
+    bool fetchCats = false;
     bool showImagePicker = false;
     User? _user = context.watch<UserService>().user;
 
@@ -39,6 +40,10 @@ class ProductCreationScreen extends StatelessWidget {
           if (index != null) {
             didFetch = productService.products![index!].allFetched();
             if (!didFetch) productService.getProductByIndex(index!);
+          }
+          if (!fetchCats) {
+            productCreationValidation.getStoreCatsRayons();
+            fetchCats = true;
           }
           return Scaffold(
               body: SafeArea(
@@ -68,31 +73,133 @@ class ProductCreationScreen extends StatelessWidget {
                   leadIcon: ProximityIcons.edit,
                   title: 'Product details.',
                   color: redSwatch.shade500),
+
               const InfoMessage(
                 message:
                     'Every product must belong to a single category. Categorizing products accurately for better promotion and visibility. ',
               ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: normal_100),
+              //   child: Selector<StoreService, List<Category>?>(
+              //       selector: (_, storeService) =>
+              //           storeService.getStoreById(product.storeId!).categories,
+              //       builder: (context, categories, child) {
+              //         return DropDownSelector<String>(
+              //             hintText: 'Select a Category.',
+              //             savedValue: productCreationValidation.category.value,
+              //             onChanged: productCreationValidation.changeCategory,
+              //             items: categories!
+              //                 .map((item) => DropdownItem<String>(
+              //                     value: item.id!,
+              //                     child: Text("${item.name}",
+              //                         style: Theme.of(context)
+              //                             .textTheme
+              //                             .subtitle2!
+              //                             .copyWith(
+              //                                 fontWeight: FontWeight.w600))))
+              //                 .toList());
+              //       }),
+              // ),
+
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: normal_100),
+              //   child: Selector<StoreService, List<Category>?>(
+              //       selector: (_, storeService) =>
+              //           storeService.getStoreById(product.storeId!).categories,
+              //       builder: (context, categories, child) {
+              //         return DropDownSelector<String>(
+              //             hintText: 'Select a Category.',
+              //             savedValue: productCreationValidation.category.value,
+              //             onChanged: productCreationValidation.changeCategory,
+              //             items: categories!
+              //                 .map((item) => DropdownItem<String>(
+              //                     value: item.id!,
+              //                     child: Text("${item.name}",
+              //                         style: Theme.of(context)
+              //                             .textTheme
+              //                             .subtitle2!
+              //                             .copyWith(
+              //                                 fontWeight: FontWeight.w600))))
+              //                 .toList());
+              //       }),
+              // ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                child: Selector<StoreService, List<Category>?>(
-                    selector: (_, storeService) =>
-                        storeService.getStoreById(product.storeId!).categories,
-                    builder: (context, categories, child) {
-                      return DropDownSelector<String>(
+                child: Row(children: [
+                  Expanded(
+                      child: DropDownSelector<ProductCategory>(
                           hintText: 'Select a Category.',
-                          savedValue: productCreationValidation.category.value,
-                          onChanged: productCreationValidation.changeCategory,
-                          items: categories!
-                              .map((item) => DropdownItem<String>(
-                                  value: item.id!,
+                          savedValue:
+                              productCreationValidation.selectedCategorie,
+                          onChanged:
+                              productCreationValidation.changeSelectedCategorie,
+                          items: productCreationValidation.productCategories!
+                              .where((element) => element.selected)
+                              .toList()
+                              .map((item) => DropdownItem<ProductCategory>(
+                                  value: item,
                                   child: Text("${item.name}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle2!
                                           .copyWith(
                                               fontWeight: FontWeight.w600))))
-                              .toList());
-                    }),
+                              .toList()))
+                ]),
+              ),
+              const EditTextSpacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: Row(children: [
+                  Expanded(
+                      child: DropDownSelector<ProductSubCategory>(
+                          hintText: 'Select a SubCategory.',
+                          savedValue:
+                              productCreationValidation.selectedSubCategorie,
+                          onChanged: productCreationValidation
+                              .changeSelectedSubCategorie,
+                          items: productCreationValidation
+                              .selectedCategorie.subCategories!
+                              .where((element) => element.selected)
+                              .toList()
+                              .map((item) => DropdownItem<ProductSubCategory>(
+                                  value: item,
+                                  child: Text("${item.name}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w600))))
+                              .toList()))
+                ]),
+              ),
+              const EditTextSpacer(),
+
+              const InfoMessage(
+                message: 'Every product must belong to a single rayon.  ',
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: Row(children: [
+                  Expanded(
+                      child: DropDownSelector<StoreCategory>(
+                          hintText: 'Select a Rayon.',
+                          savedValue: productCreationValidation.selectedRayon!,
+                          onChanged:
+                              productCreationValidation.changeSelectedRayon,
+                          items: productCreationValidation.storeRayons!
+                              .where((element) => element.selected)
+                              .toList()
+                              .map((item) => DropdownItem<StoreCategory>(
+                                  value: item,
+                                  child: Text("${item.name}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w600))))
+                              .toList()))
+                ]),
               ),
               const EditTextSpacer(),
               EditText(
@@ -186,7 +293,6 @@ class ProductCreationScreen extends StatelessWidget {
                         leadIcon: ProximityIcons.product,
                         title: 'Options.',
                         color: redSwatch.shade500),
-                   
                     productCreationValidation.characteristicsList.isEmpty
                         ? Container()
                         : Padding(
@@ -221,7 +327,8 @@ class ProductCreationScreen extends StatelessWidget {
                                 }).toList(),
                               ),
                             ),
-                          ), Row(
+                          ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TertiaryButton(
@@ -243,7 +350,7 @@ class ProductCreationScreen extends StatelessWidget {
                             },
                             title: 'Add options.'),
                       ],
-                    ),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                    ),
                     productCreationValidation.characteristics.isEmpty
                         ? Container()
                         : Column(

@@ -117,12 +117,19 @@ class BillItem extends StatelessWidget {
                             "",
                   }),
                 ),
-              if (pickupBill && orderSliderValidation.pickupName != null)
+              if (pickupBill &&
+                  orderSliderValidation.pickupPersons!
+                      .where((element) => element.selected)
+                      .isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                   child: OrderDetails(details: {
-                    'Name': orderSliderValidation.pickupName ?? "",
-                    'NIN': orderSliderValidation.pickupNif ?? "",
+                    'Name': orderSliderValidation.pickupPersons!
+                            .where((element) => element.selected)
+                            .toList()
+                            .first
+                            .name ??
+                        "",
                   }),
                 ),
               SizedBox(height: 16.0),

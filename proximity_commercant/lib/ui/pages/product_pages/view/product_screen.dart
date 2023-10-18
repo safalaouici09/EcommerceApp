@@ -165,13 +165,9 @@ class ProductScreen extends StatelessWidget {
                       if (product.offer_id == null) {
                         await productService.createOffer(
                             context, productService.toFormData(), id);
-                        await productService.editProductDiscount(
-                            context, index, productService.discountAmount);
                       } else {
                         await productService.archiveOffer(
                             context, product.offer_id!, id);
-                        await productService.editProductDiscount(
-                            context, index, 0);
                       }
 
                       Navigator.pop(context);

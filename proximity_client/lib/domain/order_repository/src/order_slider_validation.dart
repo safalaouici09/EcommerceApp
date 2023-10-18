@@ -7,6 +7,9 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/store_repository/models/models.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
+import 'package:proximity_client/domain/order_repository/models/pickup_person_model.dart';
+import 'package:proximity_client/domain/order_repository/models/address_order_model.dart';
+import 'package:proximity_client/domain/order_repository/models/infosContact_model.dart';
 
 class OrderSliderValidation with ChangeNotifier {
   ShippingMethod? _shippingMethod;
@@ -62,6 +65,18 @@ class OrderSliderValidation with ChangeNotifier {
   String? get pickupName => _pickupName;
   String? get pickupNif => _pickupNif;
 
+  List<PickupPerson>? _pickupPersons = [];
+  List<PickupPerson>? get pickupPersons => _pickupPersons;
+
+  List<AddressOrder>? _deliveryAddresses = [];
+  List<AddressOrder>? get deliveryAddresses => _deliveryAddresses;
+
+  List<InfosContact>? _infosContact = [];
+  List<InfosContact>? get infosContact => _infosContact;
+
+  bool _expendedInfo = false;
+  bool get expendedInfo => _expendedInfo;
+
   OrderSliderValidation.initProducts(
       List<ProductCart> new_products,
       String? newCartId,
@@ -69,7 +84,9 @@ class OrderSliderValidation with ChangeNotifier {
       Address? newStoreAddress,
       double? newMaxDeliveryFixe,
       double? newMaxDeliveryKm,
-      String? newOrderId) {
+      String? newOrderId,
+      List<PickupPerson>? newPickupPersons,
+      List<InfosContact>? newCards) {
     _products.addAll(new_products);
     _cartId = newCartId;
     _storeId = newStoreId;
@@ -80,8 +97,168 @@ class OrderSliderValidation with ChangeNotifier {
     if (newMaxDeliveryFixe != 0.0) {
       _totalDelivery = newMaxDeliveryFixe;
     }
+    initPickupPersons((newPickupPersons?.toList() ?? []));
+    initInfoContacts(newCards);
     notifyListeners();
     if (products.isNotEmpty) print(_products[0].characteristics);
+    print("done with init");
+  }
+
+  void initPickupPersons(value) {
+    print("initPickupPersons");
+    print(value);
+    _pickupPersons = [];
+    if (value != null) {
+      _pickupPersons!.addAll(value);
+    }
+    notifyListeners();
+  }
+
+  void initDeliveryAddresses(value) {
+    _deliveryAddresses = [];
+    _deliveryAddresses!.addAll(value);
+    notifyListeners();
+  }
+
+  void initInfoContacts(value) {
+    _infosContact = [];
+    if (value != null) {
+      _infosContact!.addAll(value);
+    }
+    notifyListeners();
+  }
+
+  void changeSelectPickupPerson(value, id) {
+    var index = pickupPersons!.indexWhere((element) => element.id == id);
+    if (index != -1) {
+      if (value == true) {
+        _pickupPersons = _pickupPersons!
+            .map((e) {
+              if (e.id == id) {
+                e.selected = value;
+                return e;
+              } else if (value) {
+                e.selected = false;
+                return e;
+              }
+            })
+            .cast<PickupPerson>()
+            .toList();
+        notifyListeners();
+      }
+    }
+  }
+
+  void changeSelectDeliveryAddress(value, id) {
+    print(_storeAdresse);
+    var index = deliveryAddresses!.indexWhere((element) => element.id == id);
+    if (index != -1) {
+      if (value == true) {
+        _deliveryAddresses = _deliveryAddresses!
+            .map((e) {
+              if (e.id == id) {
+                e.selected = value;
+                try {
+                  _deliveryAdresse = e.address;
+                  if (_storeAdresse != null) {
+                    _distance = distanceBetween(
+                        _storeAdresse!.lat ?? 0.0,
+                        _storeAdresse!.lng ?? 0.0,
+                        e.address!.lat ?? 0.0,
+                        e.address!.lng ?? 0.0);
+
+                    print(_distance);
+                  }
+                  if (_maxDeliveryFixe == 0.0 &&
+                      _maxDeliveryKm != 0.0 &&
+                      _distance != 0.0) {
+                    _totalDelivery = (_maxDeliveryKm ?? 1) * (_distance ?? 1);
+
+                    print(_totalDelivery);
+                  }
+                } catch (e) {
+                  print(e);
+                }
+                return e;
+              } else if (value) {
+                e.selected = false;
+                return e;
+              }
+            })
+            .cast<AddressOrder>()
+            .toList();
+        notifyListeners();
+      }
+    }
+  }
+
+  void changeSelectInfosContact(value, id) {
+    var index = infosContact!.indexWhere((element) => element.id == id);
+    if (index != -1) {
+      if (value == true) {
+        _infosContact = _infosContact!
+            .map((e) {
+              if (e.id == id) {
+                e.selected = value;
+                return e;
+              } else if (value) {
+                e.selected = false;
+                return e;
+              }
+            })
+            .cast<InfosContact>()
+            .toList();
+        notifyListeners();
+      }
+    }
+  }
+
+  void deletePickupPerson(id) {
+    _pickupPersons =
+        _pickupPersons!.where((element) => element.id != id).toList();
+    notifyListeners();
+  }
+
+  void deleteDeliveryAddresse(id) {
+    _deliveryAddresses =
+        _deliveryAddresses!.where((element) => element.id != id).toList();
+    notifyListeners();
+  }
+
+  void deleteInfosContact(id) {
+    _infosContact =
+        _infosContact!.where((element) => element.id != id).toList();
+    notifyListeners();
+  }
+
+  void addPickupPerson(name) {
+    final newPickupPersonId = pickupPersons!.length + 1;
+    final newPickupPerson = PickupPerson(
+        id: newPickupPersonId, name: name, selected: false, dbId: null);
+    pickupPersons!.add(newPickupPerson);
+    notifyListeners();
+  }
+
+  void addDeliveryAddresses(Address value) {
+    if (_deliveryAddresses == null) {
+      _deliveryAddresses = [];
+    }
+    final newDeliveryAddressId = (_deliveryAddresses ?? []).length + 1;
+    final newDeliveryAddress = AddressOrder(
+        id: newDeliveryAddressId, address: value, selected: false, dbId: null);
+    _deliveryAddresses!.add(newDeliveryAddress);
+    notifyListeners();
+  }
+
+  void addInfosContact(Map<String, String> value) {
+    if (_infosContact == null) {
+      _infosContact = [];
+    }
+    final newInfosContactId = (_infosContact ?? []).length + 1;
+    final newInfosContact = InfosContact(
+        id: newInfosContactId, infos: value, selected: false, dbId: null);
+    _infosContact!.add(newInfosContact);
+    notifyListeners();
   }
 
   void changeDeliveryAddress(Address value) {
@@ -112,6 +289,11 @@ class OrderSliderValidation with ChangeNotifier {
       }
     }
 
+    notifyListeners();
+  }
+
+  void expendInfos(bool value) {
+    _expendedInfo = value;
     notifyListeners();
   }
 
@@ -158,6 +340,40 @@ class OrderSliderValidation with ChangeNotifier {
   void changepickupNif(String value) {
     _pickupNif = value;
     notifyListeners();
+  }
+
+  void addInfosContactTrigger() {
+    if (_name != null &&
+        _name != "" &&
+        _phone != null &&
+        _phone != "" &&
+        _city != null &&
+        _city != "" &&
+        _street != null &&
+        _street != "" &&
+        _street2 != null &&
+        _street2 != "" &&
+        _postalCode != null &&
+        _postalCode != "") {
+      Map<String, String> infos = {
+        "name": _name ?? "",
+        "phone": _phone ?? "",
+        "city": _city ?? "",
+        "street": _street ?? "",
+        "street2": _street2 ?? "",
+        "postalCode": _postalCode ?? "",
+      };
+
+      addInfosContact(infos);
+      _name = "";
+      _phone = "";
+      _city = "";
+      _street = "";
+      _street2 = "";
+      _postalCode = "";
+      _expendedInfo = false;
+      notifyListeners();
+    }
   }
 
   // Setters
@@ -283,16 +499,19 @@ class OrderSliderValidation with ChangeNotifier {
     var credentialsBox = Boxes.getCredentials();
     String _id = credentialsBox.get('id');
 
+    Map<String, dynamic> selectedCard =
+        infosContact!.where((element) => element.selected).first.infos;
+
     Map<String, dynamic> card = {
       "cardNumber": null,
       "ccv": null,
       "expdate": null,
-      "name": _name ?? "",
-      "phone": _phone ?? "",
-      "address_city": _city ?? "",
-      "address_line1": _street ?? "",
-      "address_line2": _street2 ?? "",
-      "postalCode": _postalCode ?? ""
+      "name": selectedCard["name"] ?? "",
+      "phone": selectedCard["phone"] ?? "",
+      "address_city": selectedCard["city"] ?? "",
+      "address_line1": selectedCard["street"] ?? "",
+      "address_line2": selectedCard["street2"] ?? "",
+      "postalCode": selectedCard["postalCode"] ?? ""
     };
 
     List<dynamic> orders = [];
@@ -307,9 +526,10 @@ class OrderSliderValidation with ChangeNotifier {
         "paymentMethodeId": 1,
         "card": card,
       };
+      String pickupPersonName =
+          pickupPersons!.where((element) => element.selected).first.name;
       Map<String, dynamic> pickupPerson = {
-        "name": _pickupName ?? "",
-        "nif": _pickupNif ?? ""
+        "name": pickupPersonName,
       };
       List<Map<String, dynamic>> itemsPickUpOrder = [];
 
@@ -402,8 +622,210 @@ class OrderSliderValidation with ChangeNotifier {
 
     print(orders);
 
-    FormData _formData =
-        FormData.fromMap({"orders": json.encode(orders), "orderId": _orderId});
+    List<Map<String, dynamic>> cards = infosContact!
+        .map((element) => {
+              "cardNumber": null,
+              "ccv": null,
+              "expdate": null,
+              "name": element.infos["name"] ?? "",
+              "phone": element.infos["phone"] ?? "",
+              "address_city": element.infos["city"] ?? "",
+              "address_line1": element.infos["street"] ?? "",
+              "address_line2": element.infos["street2"] ?? "",
+              "postalCode": element.infos["postalCode"] ?? ""
+            })
+        .toList();
+    FormData _formData = FormData.fromMap({
+      "orders": json.encode(orders),
+      "orderId": _orderId,
+      "persons":
+          json.encode(pickupPersons!.map((e) => {"name": e.name}).toList()),
+      // "addresses": json.encode(deliveryAddresses),
+      "cards": json.encode(cards)
+    });
+
+    return _formData;
+  }
+
+  FormData toFormDataCard() {
+    var credentialsBox = Boxes.getCredentials();
+    String _id = credentialsBox.get('id');
+
+    Map<String, dynamic> card = {
+      "cardNumber": _cardNumber ?? "",
+      "ccv": _cvc ?? "",
+      "expdate": _expdate ?? "",
+      "phone": _phone ?? "",
+      "name": _name ?? "",
+      "address_city": _city ?? "",
+      "address_line1": _street ?? "",
+      "address_line2": _street2 ?? "",
+      "postalCode": _postalCode ?? ""
+    };
+
+    List<dynamic> orders = [];
+
+    List<ProductCart> currentPickupItems = getPickupItems();
+    List<ProductCart> currentDeliveryItems = getDeliveryItems();
+    List<ProductCart> currentReservationItems = getReservationItems();
+
+    if (currentPickupItems.isNotEmpty) {
+      Map<String, dynamic> pickUpPaymentInfos = {
+        "deliveryAmount": 0.0,
+        "reservationAmount": 0.0,
+        "totalAmount": getPickupItemsTotal(),
+        "paymentMethodeId": 1,
+        "card": card,
+      };
+      Map<String, dynamic> pickupPerson = {
+        "name": _pickupName ?? "",
+        "nif": _pickupNif ?? ""
+      };
+      List<Map<String, dynamic>> itemsPickUpOrder = [];
+
+      currentPickupItems.forEach((element) {
+        itemsPickUpOrder.add({
+          "productId": element.productId ?? "",
+          "variantId": element.variantId ?? "",
+          "name": element.name ?? "",
+          "image": element.image ?? "",
+          "price": element.price ?? "",
+          "discount": element.discount ?? 0.0,
+          "quantity": element.quantity ?? 0.0,
+          "policy": null,
+        });
+      });
+
+      Map<String, dynamic> pickupOrder = {
+        "clientId": _id,
+        "storeId": _storeId,
+        "cartId": _cartId,
+        "pickupPerson": pickupPerson,
+        "deliveryAddresse": null,
+        "deliveryLocation": null,
+        "distance": null,
+        "paymentInfos": pickUpPaymentInfos,
+        "items": itemsPickUpOrder,
+        "reservation": false,
+        "pickUp": true,
+        "delivery": false,
+        "timeLimit": null,
+      };
+
+      orders.add(pickupOrder);
+    }
+
+    if (currentDeliveryItems.isNotEmpty) {
+      Map<String, dynamic> deliveryPaymentInfos = {
+        "deliveryAmount": _totalDelivery,
+        "reservationAmount": 0.0,
+        "totalAmount": getDeliveryItemsTotal(),
+        "paymentMethodeId": 1,
+        "card": card,
+      };
+
+      Map<String, dynamic> shippingAddress = {
+        "city": deliveryAdresse?.city ?? "",
+        "streetName": deliveryAdresse?.streetName ?? "",
+        "postalCode": deliveryAdresse?.postalCode ?? "",
+        "fullAdress": deliveryAdresse?.fullAddress ?? "",
+        "region": deliveryAdresse?.region ?? "",
+        "country": deliveryAdresse?.countryName ?? "",
+        "countryCode": "FR"
+      };
+
+      Map<String, dynamic> ShippingLocation = {
+        "coordinates": [
+          deliveryAdresse?.lat ?? 0.0,
+          deliveryAdresse?.lng ?? 0.0
+        ],
+      };
+      List<Map<String, dynamic>> itemsDeliveryOrder = [];
+
+      currentDeliveryItems.forEach((element) {
+        itemsDeliveryOrder.add({
+          "productId": element.productId ?? "",
+          "variantId": element.variantId ?? "",
+          "name": element.name ?? "",
+          "image": element.image ?? "",
+          "price": element.price ?? "",
+          "discount": element.discount ?? 0.0,
+          "quantity": element.quantity ?? 0.0,
+          "policy": null,
+        });
+      });
+
+      Map<String, dynamic> deliveryOrder = {
+        "clientId": _id,
+        "storeId": _storeId,
+        "cartId": _cartId,
+        "pickupPerson": null,
+        "deliveryAddresse": shippingAddress,
+        "deliveryLocation": ShippingLocation,
+        "distance": _distance,
+        "paymentInfos": deliveryPaymentInfos,
+        "items": itemsDeliveryOrder,
+        "reservation": false,
+        "pickUp": false,
+        "delivery": true,
+        "timeLimit": null,
+      };
+
+      orders.add(deliveryOrder);
+    }
+
+    if (currentReservationItems.isNotEmpty) {
+      Map<String, dynamic> reservationPaymentInfos = {
+        "deliveryAmount": 0.0,
+        "reservationAmount": getReservationItemsTotal(),
+        "totalAmount": getReservationItemsTotal(),
+        "paymentMethodeId": 1,
+        "card": card,
+      };
+
+      List<Map<String, dynamic>> itemsReservationOrder = [];
+
+      currentReservationItems.forEach((element) {
+        itemsReservationOrder.add({
+          "productId": element.productId ?? "",
+          "variantId": element.variantId ?? "",
+          "name": element.name ?? "",
+          "image": element.image ?? "",
+          "price": element.price ?? "",
+          "discount": element.discount ?? 0.0,
+          "quantity": element.quantity ?? 0.0,
+          "reservation": element.reservationP ?? 0.0,
+          "policy": null,
+        });
+      });
+
+      Map<String, dynamic> deliveryOrder = {
+        "clientId": _id,
+        "storeId": _storeId,
+        "cartId": _cartId,
+        "pickupPerson": null,
+        "deliveryAddresse": null,
+        "deliveryLocation": null,
+        "distance": _distance,
+        "paymentInfos": reservationPaymentInfos,
+        "items": itemsReservationOrder,
+        "reservation": true,
+        "pickUp": false,
+        "delivery": false,
+        "timeLimit": null,
+      };
+
+      orders.add(deliveryOrder);
+    }
+    print(orders);
+
+    FormData _formData = FormData.fromMap({
+      "orders": json.encode(orders),
+      "orderId": _orderId,
+      "persons": json.encode([]),
+      // "addresses": json.encode(deliveryAddresses),
+      "cards": json.encode([])
+    });
 
     return _formData;
   }

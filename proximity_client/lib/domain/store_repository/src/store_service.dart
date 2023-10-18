@@ -116,7 +116,7 @@ class StoreService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer ";
-      var res = await dio.get(BASE_API_URL + '/product/store/$_storeId');
+      var res = await dio.post(BASE_API_URL + '/product/store/$_storeId');
       _loading = false;
       notifyListeners();
       if (res.statusCode == 200) {

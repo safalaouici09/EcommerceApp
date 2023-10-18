@@ -66,16 +66,17 @@ class _OnBoardState extends State<OnBoard> {
   Future<void> initPlatform(NotificationService notificationService) async {
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult event) {
+      notificationServiceGlobal.getNotifications(null);
       print('BODY ${event.notification.body}');
       print('TITLE: ${event.notification.title}');
       print(
           "Notification received in foreground notification: \n${event.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-
       var credentialsBox = Boxes.getCredentials();
       var _id = credentialsBox.get('id');
 
       print(_id);
-      print(notification!["owner_id"]);
+      print("event.notification.additionalData 1");
+      print(event.notification.additionalData);
 
       if (_id != null &&
           _id != "" &&
@@ -95,16 +96,17 @@ class _OnBoardState extends State<OnBoard> {
 
     OneSignal.shared.setNotificationWillShowInForegroundHandler(
         (OSNotificationReceivedEvent event) {
+      notificationServiceGlobal.getNotifications(null);
+      print("event.notification.additionalData");
+      print(event.notification.additionalData);
       print('BODY ${event.notification.body}');
       print('TITLE: ${event.notification.title}');
       print(
           "Notification received in foreground notification: \n${event.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
-
       var credentialsBox = Boxes.getCredentials();
       var _id = credentialsBox.get('id');
 
       print(_id);
-      print(event.notification.additionalData!["owner_id"]);
 
       if (_id != null &&
           _id != "" &&
@@ -119,8 +121,6 @@ class _OnBoardState extends State<OnBoard> {
           notification_body = event.notification.body ?? "";
         });
       } else {
-        print("your are not the owner");
-        print("complete");
         event.complete(null);
       }
     });

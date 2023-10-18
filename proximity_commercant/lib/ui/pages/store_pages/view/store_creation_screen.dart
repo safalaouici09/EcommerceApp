@@ -529,7 +529,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
               },
               title: 'Select Address.'),
         ),
-        Text(storeCreationSliderValidation.storeAddress.fullAddress ?? ""),
+
         EditText(
           controller: () {
             TextEditingController _controller = TextEditingController();

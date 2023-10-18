@@ -8,9 +8,11 @@ import 'package:proximity_client/ui/pages/store_pages/store_pages.dart';
 import 'package:intl/intl.dart';
 
 class StoreSection extends StatefulWidget {
-  const StoreSection({Key? key, required this.idStore}) : super(key: key);
+  StoreSection({Key? key, required this.idStore, this.productPageContext})
+      : super(key: key);
 
   final String idStore;
+  BuildContext? productPageContext;
 
   @override
   State<StoreSection> createState() => _StoreSectionState();
@@ -343,7 +345,7 @@ class _StoreSectionState extends State<StoreSection> {
                     ])),
                 TertiaryButton(
                     onPressed: () => Navigator.push(
-                        context,
+                        widget.productPageContext ?? context,
                         MaterialPageRoute(
                             builder: (context) => const StoreScreen())),
                     title: 'Go to Store.')

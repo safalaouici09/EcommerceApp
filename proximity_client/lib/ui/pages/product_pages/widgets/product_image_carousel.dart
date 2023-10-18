@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
@@ -118,6 +119,25 @@ class _ProductImageCarouselState extends State<ProductImageCarousel>
                       icon: const Icon(ProximityIcons.more))
                 ])),
 
+        Consumer<WishlistService>(
+            builder: (context, wishlistService, _) => Positioned(
+                bottom: 0,
+                left: 0,
+                child: Padding(
+                    padding: const EdgeInsets.all(normal_100),
+                    child: Consumer<ProductService>(
+                        builder: (context, productService, child) {
+                      Product _product = productService.products
+                          .firstWhere((element) => element.id == widget.id);
+                      bool _value = wishlistService.contains(widget.id);
+
+                      return SmallIconButton(
+                          onPressed: () {
+                            _showSharePopup(context);
+                          },
+                          icon: Icon(Icons.share));
+                    })))),
+
         /// Like Button
         Consumer<WishlistService>(
             builder: (context, wishlistService, _) => Positioned(
@@ -169,5 +189,157 @@ class _ProductImageCarouselState extends State<ProductImageCarousel>
         parent: _animationController, curve: Curves.bounceInOut));
 
     _animationController.forward(from: 0);
+  }
+
+  final String dynamicUrl =
+      "https://www.proximity.com/product/"; // Dynamic URL to be copied
+
+  void copyToClipboard(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: dynamicUrl + widget.id));
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('URL copied to clipboard')),
+    );
+  }
+
+  void closeShareWindow(BuildContext context) {
+    // Logic to share via email
+    Navigator.pop(context);
+  }
+
+  void shareWithEmail(BuildContext context) {
+    // Logic to share via email
+    Navigator.pop(context);
+  }
+
+  void shareWithSMS(BuildContext context) {
+    // Logic to share via SMS
+    Navigator.pop(context);
+  }
+
+  void _showSharePopup(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SmallIconButton(
+                  onPressed: () {
+                    closeShareWindow(context);
+                  },
+                  icon: const Icon(ProximityIcons.chevron_left)),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Text('Share Options'),
+              )
+            ],
+          ),
+          content: Consumer<ShareService>(builder: (context, shareService, _) {
+            if (shareService.shareOption == 0) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.copy),
+                    title: Text(
+                      'Copy URL',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    onTap: () => copyToClipboard(context),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.email),
+                    title: Text(
+                      'Share with Email',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    onTap: () {
+                      shareService.changeOption(1);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.sms),
+                    title: Text(
+                      'Share with SMS',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    onTap: () {
+                      shareService.changeOption(2);
+                    },
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (shareService.shareOption == 1)
+                    EditText(
+                      controller: () {
+                        TextEditingController _controller =
+                            TextEditingController();
+                        _controller.text = shareService.email ?? "";
+                        _controller.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _controller.text.length));
+                        return _controller;
+                      }(),
+                      hintText: 'Email.',
+                      borderType: BorderType.top,
+                      onChanged: shareService.changeEmail,
+                    ),
+                  if (shareService.shareOption == 2)
+                    EditText(
+                      controller: () {
+                        TextEditingController _controller =
+                            TextEditingController();
+                        _controller.text = shareService.phone ?? "";
+                        _controller.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _controller.text.length));
+                        return _controller;
+                      }(),
+                      hintText: 'Phone.',
+                      borderType: BorderType.top,
+                      onChanged: shareService.changePhone,
+                    ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SecondaryButton(
+                          onPressed: () {
+                            shareService.changeOption(0);
+                          },
+                          title: "Back"),
+                      PrimaryButton(
+                        buttonState: ButtonState.enabled,
+                        onPressed: () {
+                          if (shareService.shareOption == 1) {
+                            shareService.shareProduct(widget.id, context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  backgroundColor: Colors.redAccent,
+                                  content: Text('Error , re-try please')),
+                            );
+                          }
+                        },
+                        title: "Send.",
+                      ),
+                    ],
+                  )
+                ],
+              );
+            }
+          }),
+        );
+      },
+    );
   }
 }

@@ -87,10 +87,7 @@ class Order {
             countryName: "France",
             postalCode: parsedJson['store']['postalCode']),
         pickupPerson = parsedJson['pickupPerson'] != null
-            ? {
-                "name": parsedJson['pickupPerson']["name"],
-                "nif": parsedJson['pickupPerson']["nif"]
-              }
+            ? {"name": parsedJson['pickupPerson']["name"]}
             : null,
         totalPrice = parsedJson['paymentInfos']['totalAmount'].toDouble(),
         currency = '€',

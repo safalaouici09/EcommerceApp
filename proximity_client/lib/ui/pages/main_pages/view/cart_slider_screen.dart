@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
+import 'package:proximity_client/domain/order_repository/models/infosContact_model.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/domain/product_repository/models/models.dart';
 import 'package:proximity_client/ui/pages/product_pages/widgets/widgets.dart';
@@ -23,6 +24,8 @@ class CartSliderScreen extends StatefulWidget {
       this.maxDeliveryFixe,
       this.maxDeliveryKm,
       this.reservation,
+      this.pickupPersons,
+      this.cards,
       this.orderId})
       : super(key: key);
   List<ProductCart> products;
@@ -33,6 +36,8 @@ class CartSliderScreen extends StatefulWidget {
   double? maxDeliveryFixe;
   double? maxDeliveryKm;
   bool? reservation;
+  List<PickupPerson>? pickupPersons;
+  List<InfosContact>? cards;
 
   @override
   State<CartSliderScreen> createState() => _CartSliderScreenState();
@@ -50,8 +55,10 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
   }
 
   Widget build(BuildContext context) {
+    print("CartSliderScreen");
     return ChangeNotifierProvider<OrderSliderValidation>(
         // create: (context) => orderSliderValidation.setStore(store),
+
         create: (context) => OrderSliderValidation.initProducts(
             widget.products,
             widget.cartId,
@@ -59,9 +66,13 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
             widget.storeAddress,
             widget.maxDeliveryFixe,
             widget.maxDeliveryKm,
-            widget.orderId),
+            widget.orderId,
+            widget.pickupPersons,
+            widget.cards),
         child: Consumer2<OrderSliderValidation, OrderService>(
             builder: (context, orderSliderValidation, orderService, child) {
+          print("widget.pickupPersons");
+          print(widget.pickupPersons);
           return Scaffold(
               appBar: AppBar(
                 title: Align(
@@ -91,13 +102,14 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                                 .getDeliveryItems()
                                 .isNotEmpty;
 
-                            bool pickupValidation =
-                                orderSliderValidation.pickupName != null &&
-                                    orderSliderValidation.pickupName != "" &&
-                                    orderSliderValidation.pickupNif != null &&
-                                    orderSliderValidation.pickupNif != "";
-                            bool deliveryValidation =
-                                orderSliderValidation.deliveryAdresse != null;
+                            bool pickupValidation = orderSliderValidation
+                                .pickupPersons!
+                                .where((element) => element.selected)
+                                .isNotEmpty;
+                            bool deliveryValidation = orderSliderValidation
+                                .deliveryAddresses!
+                                .where((element) => element.selected)
+                                .isNotEmpty;
 
                             if (!((pickup && !pickupValidation) ||
                                 (delivery && !deliveryValidation))) {
@@ -220,7 +232,8 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                     reservationBill: true,
                     deliveryBill: false,
                     pickupBill: false,
-                    payment: false),
+                    payment: false,
+                    reservation: widget.reservation ?? false),
               if (productDeliveryTotal)
                 BillItem(
                   orderSliderValidation: orderSliderValidation,
@@ -265,6 +278,10 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                     orderSliderValidation: orderSliderValidation,
                     orderService: orderService,
                     onPay: onPay)),
+            // PaymentMethodScreenCard(
+            //     orderSliderValidation: orderSliderValidation,
+            //     orderService: orderService,
+            //     onPay: onPay)),
           ],
         ));
   }

@@ -9,7 +9,8 @@ class ScrollTab {
 }
 
 class ScrollTabBar extends StatefulWidget {
-  const ScrollTabBar({Key? key, required this.tabs, this.action}) : super(key: key);
+  const ScrollTabBar({Key? key, required this.tabs, this.action})
+      : super(key: key);
 
   final List<ScrollTab> tabs;
   final List<Widget>? action;
@@ -35,7 +36,7 @@ class _ScrollTabBarState extends State<ScrollTabBar> {
             setState(() {
               _index = i;
             });
-            widget.tabs[i].onPressed;
+            widget.tabs[i].onPressed!.call();
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(

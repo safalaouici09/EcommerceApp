@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/config/config.dart';
 import 'package:proximity/domain_repository/domain_repository.dart';
+import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 import 'package:proximity_commercant/domain/product_repository/models/models.dart';
 
 import '../../store_repository/models/policy_model.dart';
@@ -12,11 +14,34 @@ class ProductCreationValidation with ChangeNotifier {
   String? _id;
   String? _storeId;
 
+  Product? _product;
+
   ValidationItem _name = ValidationItem(null, null);
   ValidationItem _description = ValidationItem(null, null);
   ValidationItem _category = ValidationItem(null, null);
   ValidationItem _price = ValidationItem(null, null);
   ValidationItem _quantity = ValidationItem("0", null);
+
+  List<StoreCategory>? _storeRayons = [];
+  List<StoreCategory>? get storeRayons => _storeRayons;
+
+  StoreCategory _selectedRayon = StoreCategory(name: "", selected: true);
+  StoreCategory get selectedRayon => _selectedRayon;
+
+  late bool _loadingProductCategories;
+  bool get loadingProductCategories => _loadingProductCategories;
+
+  List<ProductCategory>? _productCategories = [];
+  List<ProductCategory>? get productCategories => _productCategories;
+
+  ProductCategory _selectedCategorie =
+      ProductCategory(name: "", selected: true, subCategories: []);
+  ProductCategory get selectedCategorie => _selectedCategorie;
+
+  ProductSubCategory _selectedSubCategorie =
+      ProductSubCategory(name: "", selected: false);
+  ProductSubCategory get selectedSubCategorie => _selectedSubCategorie;
+
   // double? _price;
   double? _discount;
   bool? _storePolicy = true;
@@ -38,6 +63,7 @@ class ProductCreationValidation with ChangeNotifier {
   ProductCreationValidation();
 
   ProductCreationValidation.setProduct(Product product) {
+    _product = product;
     _id = product.id;
     _storeId = product.storeId;
     _name = ValidationItem(product.name, null);
@@ -392,7 +418,10 @@ class ProductCreationValidation with ChangeNotifier {
     FormData _formData = FormData.fromMap({
       "name": name.value,
       "description": description.value,
-      "categoryId": category.value,
+      "storeCategoryId": _selectedCategorie.storeCategoryDBId,
+      "categoryId": _selectedCategorie.dbId,
+      "subCategoryId": _selectedSubCategorie.dbId,
+      "rayonId": _selectedRayon.dbId,
       "price": productPrice,
       // "discount": discount,
       "variantes": variants,
@@ -427,5 +456,118 @@ class ProductCreationValidation with ChangeNotifier {
     }
     print(_formData);
     return _formData;
+  }
+
+  Future getStoreCatsRayons() async {
+    /// open hive box
+    print("start service of store rayons");
+    _loadingProductCategories = true;
+    notifyListeners();
+    var credentialsBox = Boxes.getCredentials();
+    String _token = credentialsBox.get('token');
+
+    try {
+      if (_storeId == null) {
+        print('store id not found ');
+      } else {
+        Dio dio = Dio();
+        dio.options.headers["token"] = "Bearer $_token";
+
+        var res = await dio
+            .get(BASE_API_URL + '/store/seller/store/catRayons/' + _storeId!);
+        if (res.statusCode == 200) {
+          print(res.data);
+
+          _storeRayons = [];
+          _storeRayons!.addAll(
+              StoreCategory.storeCategoriesFromJsonList(res.data["rayons"]));
+
+          notifyListeners();
+
+          _productCategories = [];
+          _productCategories!.addAll(
+              ProductCategory.productCategoriesFromJsonList(res.data["cats"]));
+
+          notifyListeners();
+
+          if (_product != null && _product!.categoryId != null) {
+            var cats = _productCategories!
+                .where((element) => element.dbId == _product!.categoryId)
+                .toList();
+            if (cats.isNotEmpty) {
+              _selectedCategorie = cats[0];
+              print(_selectedCategorie.name);
+
+              notifyListeners();
+              var subCats = cats[0]
+                  .subCategories!
+                  .where((element) => element.dbId == _product!.subCategoryId)
+                  .toList();
+              if (subCats.isNotEmpty) {
+                _selectedSubCategorie = subCats[0];
+                print(_selectedSubCategorie.name);
+
+                notifyListeners();
+              }
+            }
+          }
+
+          if (_product != null && _product!.rayonId != null) {
+            var rayons = _storeRayons!
+                .where((element) => element.dbId == _product!.rayonId)
+                .toList();
+            if (rayons.isNotEmpty) {
+              _selectedRayon = rayons[0];
+              notifyListeners();
+              print(_selectedRayon.name);
+              notifyListeners();
+            }
+          }
+
+          notifyListeners();
+        }
+
+        _loadingProductCategories = false;
+        notifyListeners();
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        /// Toast Message to print the message
+        print('${e.response!}');
+      } else {
+        /// Error due to setting up or sending the request
+        print('Error sending request!');
+        print(e.message);
+      }
+
+      _loadingProductCategories = false;
+      notifyListeners();
+    }
+  }
+
+  // Setters
+  void changeSelectedCategorie(ProductCategory value, int index) {
+    print("changeSelectedStoreCategory");
+    print(_selectedCategorie!.name);
+    print(value.name);
+    _selectedCategorie = value;
+    _selectedSubCategorie = ProductSubCategory(name: "", selected: true);
+    notifyListeners();
+  }
+
+  void changeSelectedRayon(StoreCategory value, int index) {
+    print("changeSelectedStoreCategory");
+    print(_selectedRayon!.name);
+    print(value.name);
+    _selectedRayon = value;
+    notifyListeners();
+  }
+
+  void changeSelectedSubCategorie(ProductSubCategory value, int index) {
+    print("changeSelectedStoreCategory");
+    print(_selectedSubCategorie!.name);
+    print(value.name);
+    _selectedSubCategorie = value;
+    notifyListeners();
   }
 }

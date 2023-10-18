@@ -5,6 +5,8 @@ import 'package:proximity/domain_repository/models/address_model.dart';
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:proximity/config/backend.dart';
+import 'package:proximity_client/domain/user_repository/models/models.dart';
+import 'models.dart';
 
 class User {
   String? id;
@@ -18,19 +20,22 @@ class User {
   bool? isVerified;
   bool? welcome;
   List<dynamic>? profileImage;
+  List<StoreCategory>? tags;
+  UserNotification? notification;
 
-  User({
-    this.id,
-    this.userName,
-    this.email,
-    this.phone,
-    this.birthdate,
-    this.address,
-    this.shippingAddress,
-    this.isVerified,
-    this.welcome,
-    this.profileImage,
-  });
+  User(
+      {this.id,
+      this.userName,
+      this.email,
+      this.phone,
+      this.birthdate,
+      this.address,
+      this.shippingAddress,
+      this.isVerified,
+      this.welcome,
+      this.profileImage,
+      this.tags,
+      this.notification});
 
   User.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],
@@ -69,6 +74,13 @@ class User {
             : null,
         isVerified = parsedJson['isVerified'] ?? false,
         welcome = parsedJson['welcome'] ?? false,
+        tags = parsedJson['tags'] == null
+            ? null
+            : StoreCategory.storeCategoriesFromJsonList(parsedJson['tags'],
+                selected: true),
+        notification = parsedJson['notification'] == null
+            ? null
+            : UserNotification.fromJson(parsedJson['notification']),
         profileImage = parsedJson['profileImage'] == null
             ? [null]
             : [BASE_IMG_URL + '/' + parsedJson['profileImage']];

@@ -67,6 +67,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => OrderService()),
     ChangeNotifierProvider(create: (context) => CartService()),
     ChangeNotifierProvider(create: (_) => WishlistService()),
+    ChangeNotifierProvider(create: (_) => ShareService()),
     ChangeNotifierProvider(create: (context) => UserSettings()),
     ChangeNotifierProvider(create: (_) => NotificationService()),
   ], child: const ProximityApp()));

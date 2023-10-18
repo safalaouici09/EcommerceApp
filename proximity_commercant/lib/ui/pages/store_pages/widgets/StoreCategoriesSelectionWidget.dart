@@ -7,8 +7,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
 
 class StoreCategorySelectionWidget extends StatefulWidget {
-  const StoreCategorySelectionWidget({Key? key}) : super(key: key);
+  StoreCategorySelectionWidget({Key? key, this.store, this.check_deselect})
+      : super(key: key);
 
+  Store? store;
+  bool? check_deselect;
   @override
   _StoreCategorySelectionWidgetState createState() =>
       _StoreCategorySelectionWidgetState();
@@ -37,7 +40,13 @@ class _StoreCategorySelectionWidgetState
     print(storeCreationSliderValidation.storeCategories!.isEmpty);
     if (storeCreationSliderValidation.storeCategories!.isEmpty && !fetched) {
       print("feeeetch data");
-      storeCreationSliderValidation.getStoreCategories();
+      // storeCreationSliderValidation.getInitStoreCategories();
+      if (widget.store == null) {
+        storeCreationSliderValidation.getStoreCategories();
+      } else {
+        print("im here");
+        storeCreationSliderValidation.getInitStoreCategories();
+      }
       fetched = true;
     }
 
@@ -57,7 +66,9 @@ class _StoreCategorySelectionWidgetState
                   value: storeCategory.selected,
                   onChanged: (value) {
                     storeCreationSliderValidation.changeSelectStoreCategorie(
-                        value, storeCategory.id);
+                        value, storeCategory.id,
+                        check_deselect: widget.check_deselect,
+                        context: context);
                   });
             }),
             _buildNewStoreCategoryField(storeCreationSliderValidation),

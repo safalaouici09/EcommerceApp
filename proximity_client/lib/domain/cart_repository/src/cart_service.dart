@@ -12,6 +12,8 @@ import 'package:proximity_client/ui/pages/main_pages/view/cart_slider_screen.dar
 import 'package:proximity_client/ui/pages/pages.dart';
 import 'dart:convert';
 import 'package:proximity/config/backend.dart';
+import 'package:proximity_client/domain/order_repository/models/address_order_model.dart';
+import 'package:proximity_client/domain/order_repository/models/infosContact_model.dart';
 
 class CartService with ChangeNotifier {
   // Hive box
@@ -181,6 +183,36 @@ class CartService with ChangeNotifier {
             // stop the loading animation
 
             List<ProductCart> preOrderProducts = [];
+            print(json.encode(res.data));
+            List<PickupPerson> pickupPersons = [];
+            if (res.data["pickupPersons"] != null &&
+                json.decode(res.data["pickupPersons"]) != null) {
+              pickupPersons = PickupPerson.storeCategoriesFromJsonList(
+                      json.decode(res.data["pickupPersons"]))
+                  .toList();
+            }
+
+            print("pickupPersons");
+            print(pickupPersons);
+
+            List<InfosContact> cards = [];
+            if (res.data["cards"] != null) {
+              cards = InfosContact.storeCategoriesFromJsonList(
+                  json.decode(res.data["cards"]).toList());
+            }
+
+            print("cards");
+            print(cards);
+
+            // List<AddressOrder> addressOrder = [];
+            // if (res.data["addresses"] != null) {
+            //   addressOrder = AddressOrder.storeCategoriesFromJsonList(
+            //       json.decode(res.data["addresses"]));
+            // }
+
+            // print("addressOrder");
+            // print(addressOrder);
+
             if (res.data["items"] != null) {
               var products = json.decode(res.data["items"]);
               for (var prod in products) {
@@ -205,8 +237,9 @@ class CartService with ChangeNotifier {
                       price: double.parse(prod["price"].toString()),
                       quantity: prod["quantity"],
                       discount: prod["discount"].toDouble(),
-                      reservationPolicy: prod["reservationPolicy"] ?? false,
-                      deliveryPolicy: prod["deliveryPolicy"] ?? false,
+                      reservationPolicy:
+                          prod["reservationPolicy"] != null ?? false,
+                      deliveryPolicy: true,
                       pickupPolicy: prod["pickupPolicy"] > 0 ?? false,
                       reservationP:
                           double.parse(prod["reservationP"].toString()),
@@ -234,10 +267,11 @@ class CartService with ChangeNotifier {
                 type: ToastSnackbarType.success);
 
             if (preOrderProducts.isNotEmpty) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CartSliderScreen(
+              try {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CartSliderScreen(
                             products: preOrderProducts,
                             cartId: res.data["cartId"],
                             storeId: res.data["storeId"],
@@ -264,7 +298,11 @@ class CartService with ChangeNotifier {
                             maxDeliveryKm:
                                 (res.data['maxDeliveryKm'] ?? 0).toDouble(),
                             reservation: false,
-                          )));
+                            pickupPersons: [],
+                            cards: cards)));
+              } catch (e) {
+                print(e.toString());
+              }
             }
           } else {
             ToastSnackbar().init(context).showToast(

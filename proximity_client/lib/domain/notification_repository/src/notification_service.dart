@@ -40,6 +40,7 @@ class NotificationService with ChangeNotifier {
     try {
       Dio dio = Dio();
       dio.options.headers["token"] = "Bearer " + _token.toString();
+      print('/notification/$_id');
       var res = await dio.get(BASE_API_URL + '/notification/$_id');
       _loadingNotifications = false;
       notifyListeners();

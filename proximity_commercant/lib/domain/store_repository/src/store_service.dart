@@ -60,6 +60,7 @@ class StoreService with ChangeNotifier {
         _stores = [];
         _stores!.addAll(Store.storesFromJsonList(res.data));
         notifyListeners();
+        print(_stores);
       }
     } on DioError catch (e) {
       if (e.response != null) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/proximity.dart';
 import 'package:flutter/gestures.dart';
+import 'package:proximity_client/domain/authentication/src/googleSigninApi.dart';
 import 'package:proximity_client/domain/authentication/src/login_validation.dart';
 import 'package:proximity_client/ui/pages/authentication_pages/view/password_recovery_screen.dart';
 import 'package:proximity_client/ui/pages/authentication_pages/view/signup_screen.dart';
@@ -131,11 +132,16 @@ class LoginScreen extends StatelessWidget {
                     child: Row(mainAxisSize: MainAxisSize.max, children: [
                       Expanded(
                           child: NormalIconButton(
-                              onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MainScreen())),
+                              onPressed: () async {
+                                try {
+                                  await GoogleSignInApi.logout();
+                                } catch (e) {
+                                  print(e.toString());
+                                }
+                                loginValidation.signInGoogle(context);
+                                // loginValidation.logout();
+                                // await GoogleSignInApi.logout();
+                              },
                               icon: Image.asset('assets/img/google.png',
                                   width: normal_200, height: normal_200))),
                       const SizedBox(width: normal_200),
