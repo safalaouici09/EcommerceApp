@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/ui/pages/store_pages/store_pages.dart';
 import 'package:proximity_commercant/ui/pages/product_pages/product_pages.dart';
@@ -46,17 +47,12 @@ class _StoreScreenState extends State<StoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    /*todo :  final storeService = Provider.of<StoreService>(context);
-    if (storeService.storeOffers == null) {
-      storeService.getStoreOffers(widget.id);
-    }*/
-
+    final localizations = AppLocalizations.of(context);
     return Consumer<StoreService>(builder: (context, storeService, child) {
       Store store =
           storeService.stores!.firstWhere((element) => element.id == widget.id);
       int index =
           storeService.stores!.indexWhere((element) => element.id == widget.id);
-      // storeService.getStoreOffers(store.id!);
 
       /// Do a getShop if necessary
       didFetch = store.allFetched();
@@ -82,7 +78,7 @@ class _StoreScreenState extends State<StoreScreen> {
           const SizedBox(width: normal_100),
           Expanded(
               child: SecondaryButton(
-                  title: 'Edit Shop.',
+                  title: localizations!.editShop,
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -93,7 +89,7 @@ class _StoreScreenState extends State<StoreScreen> {
           const SizedBox(width: normal_100),
           Expanded(
               child: SecondaryButton(
-                  title: 'Discounts.',
+                  title: localizations!.discount,
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -108,7 +104,7 @@ class _StoreScreenState extends State<StoreScreen> {
         /// StoreProducts
         SectionDivider(
             leadIcon: ProximityIcons.product,
-            title: 'Store Products.',
+            title: localizations.storeProducts,
             color: Theme.of(context).primaryColor),
         Consumer<ProductService>(builder: (_, productService, __) {
           // if (productService.fetchMore && reachedEnd) {
@@ -119,7 +115,7 @@ class _StoreScreenState extends State<StoreScreen> {
             /// Scroll Tab Bar to select a Product Category
             ScrollTabBar(
               tabs: [
-                ScrollTab(name: "All Products", onPressed: () {}),
+                ScrollTab(name: localizations.allProducts, onPressed: () {}),
                 if (store.categories != null)
                   ...store.categories!
                       .map((item) =>
@@ -145,7 +141,7 @@ class _StoreScreenState extends State<StoreScreen> {
         }),
         SectionDivider(
             leadIcon: Icons.discount_outlined,
-            title: 'Store Offers.',
+            title: localizations.storeOffers,
             color: Theme.of(context).primaryColor),
         Consumer<ProductService>(builder: (_, productService, __) {
           // if (productService.fetchMore && reachedEnd) {

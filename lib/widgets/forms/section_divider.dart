@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proximity/config/config.dart';
 import 'package:proximity/icons/proximity_icons.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 
 class SectionDivider extends StatelessWidget {
   const SectionDivider(
@@ -45,7 +46,7 @@ class SectionDivider extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         left: small_100, right: normal_100),
                     child: Row(children: [
-                      Text('See More',
+                      Text(AppLocalizations.of(context)!.seeAll,
                           style: Theme.of(context).textTheme.bodyText2),
                       Icon(ProximityIcons.arrow_more,
                           color: Theme.of(context).textTheme.bodyText2!.color)

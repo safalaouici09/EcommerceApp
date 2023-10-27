@@ -12,7 +12,8 @@ class TermsAndConditions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(normal_100),
+      padding: const EdgeInsets.symmetric(
+          horizontal: normal_200, vertical: normal_100),
       child: InkWell(
           onTap: onChanged,
           child: Row(children: [

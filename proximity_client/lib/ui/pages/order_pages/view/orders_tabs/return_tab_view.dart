@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
@@ -52,7 +53,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 0) ...[
-                              Text('All',
+                              Text(AppLocalizations.of(context)!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -60,7 +61,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('All',
+                              Text(AppLocalizations.of(context)!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -84,7 +85,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 1) ...[
-                              Text('Pending',
+                              Text(AppLocalizations.of(context)!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -92,7 +93,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Pending',
+                              Text(AppLocalizations.of(context)!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -116,7 +117,9 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 2) ...[
-                              Text('Waiting for return',
+                              Text(
+                                  AppLocalizations.of(context)!
+                                      .waitingForReturn,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -124,7 +127,9 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Waiting for return',
+                              Text(
+                                  AppLocalizations.of(context)!
+                                      .waitingForReturn,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -146,7 +151,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 3) ...[
-                              Text('Returned',
+                              Text(AppLocalizations.of(context)!.returned,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -154,7 +159,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Returned',
+                              Text(AppLocalizations.of(context)!.returned,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -199,9 +204,9 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                                   )))),
                                     ])),
                             const SizedBox(height: normal_100),
-                            Text("There are no Return Orders.",
+                            /*Text("There are rs.",
                                 style: Theme.of(context).textTheme.subtitle2,
-                                textAlign: TextAlign.center),
+                                textAlign: TextAlign.center),*/
                             const SizedBox(height: huge_100),
                           ],
                         ),
@@ -280,7 +285,7 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                                   )))),
                                     ])),
                             const SizedBox(height: normal_100),
-                            Text("There are no Return Orders.",
+                            Text('',
                                 style: Theme.of(context).textTheme.subtitle2,
                                 textAlign: TextAlign.center),
                             const SizedBox(height: huge_100),
@@ -346,7 +351,9 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                                   )))),
                                     ])),
                             const SizedBox(height: normal_100),
-                            Text("There are no - Waiting for return - Orders.",
+                            Text(
+                                AppLocalizations.of(context)!
+                                    .noWaitingForReturnOrders,
                                 style: Theme.of(context).textTheme.subtitle2,
                                 textAlign: TextAlign.center),
                             const SizedBox(height: huge_100),
@@ -412,7 +419,9 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                                   )))),
                                     ])),
                             const SizedBox(height: normal_100),
-                            Text("There are no Returned Orders.",
+                            Text(
+                                AppLocalizations.of(context)!
+                                    .noWaitingForReturnOrders,
                                 style: Theme.of(context).textTheme.subtitle2,
                                 textAlign: TextAlign.center),
                             const SizedBox(height: huge_100),
@@ -479,7 +488,9 @@ class _ReturnTabViewState extends State<ReturnTabView> {
                                                   )))),
                                     ])),
                             const SizedBox(height: normal_100),
-                            Text("There are no Return Orders.",
+                            Text(
+                                AppLocalizations.of(context)!
+                                    .noWaitingForReturnOrders,
                                 style: Theme.of(context).textTheme.subtitle2,
                                 textAlign: TextAlign.center),
                             const SizedBox(height: huge_100),

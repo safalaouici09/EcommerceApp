@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/models/workingTime_model.dart';
@@ -30,6 +31,7 @@ class StoreCreationScreen extends StatefulWidget {
 
 class _StoreCreationScreenState extends State<StoreCreationScreen> {
   final int _currentIndex = 0;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -62,8 +64,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                   top: normal_100,
                                   left: normal_100,
                                   right: normal_100),
-                              child: Text(
-                                  'Please set your global policy before creating a new store.To ensure consistency across all your stores, it is important to set a global policy that will apply to all your stores. This policy can include details such as shipping and return policies, terms of service, and other important information for your customers.To set your global policy, please click the "Set Policy" button below. If you are  not ready to set your policy yet, you can click "Cancel" ',
+                              child: Text("",
                                   style: Theme.of(context).textTheme.titleSmall,
                                   textAlign: TextAlign.center)),
                           Padding(
@@ -157,7 +158,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                             ?.add(TimeRange(openTime: null, closeTime: null));*/
                       });
                     },
-                    title: "Add working time",
+                    title: 'fkbjjb',
                   ),
                 ),
           ],
@@ -176,15 +177,21 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
   }
 
   //List<TimeRange> workingTimes = [];
-  Map<String, String> workingTimesOptions = {
+  /*Map<String, String> workingTimesOptions = {
     "1": "Fixed Daily Schedule",
     "2": "Customized Working Hours"
-  };
+  };*/
 
   Policy? policyResult;
   @override
   Widget build(BuildContext context) {
     final policyValidation = Provider.of<PolicyValidation>(context);
+    final localizations = AppLocalizations.of(context);
+    Map<String, String> workingTimesOptions = {
+      "1": localizations!.storeWorkingTimeFixed,
+      "2": localizations.storeWorkingTimeCustom
+    };
+
     User? _user = context.watch<UserService>().user;
 
     /// a boolean to help fetch data ONLY if necessary
@@ -213,8 +220,8 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
             ListView(children: [
               TopBar(
                   title: widget.editScreen
-                      ? 'Edit Store.'
-                      : 'Create a new Store.'),
+                      ? localizations!.createANewShop
+                      : localizations!.updateShop),
               /* SectionDivider(
                   leadIcon: ProximityIcons.user,
                   title: 'Store owner.',
@@ -235,11 +242,11 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
               /// Store Details
               SectionDivider(
                   leadIcon: ProximityIcons.edit,
-                  title: 'Store details.',
+                  title: localizations!.storeDetails,
                   color: redSwatch.shade500),
 
               EditText(
-                hintText: 'Name',
+                hintText: localizations.storeName,
                 borderType: BorderType.top,
                 saved: storeCreationValidation.storeName.value,
                 errorText: storeCreationValidation.storeName.error,
@@ -249,7 +256,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
               const EditTextSpacer(),
               EditText(
-                hintText: 'Description.',
+                hintText: localizations.description,
                 borderType: BorderType.bottom,
                 keyboardType: TextInputType.multiline,
                 saved: storeCreationValidation.storeDescription.value,
@@ -260,11 +267,10 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                 onChanged: storeCreationValidation.changeStoreDescription,
               ),
               InfoMessage(
-                  message:
-                      'Please provide your commercial registration number. This is a unique identifier assigned to your business by the relevant government authority'),
+                  message: localizations.storeCommercialRegistrationNumber),
               const EditTextSpacer(),
               EditText(
-                hintText: 'Commercial Registration Number',
+                hintText: localizations.storeCrn,
                 saved: storeCreationValidation.storeRegistrationNumber.value,
                 errorText:
                     storeCreationValidation.storeRegistrationNumber.error,
@@ -276,7 +282,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
               SectionDivider(
                   leadIcon: ProximityIcons.picture,
-                  title: 'Store Image.',
+                  title: localizations.storeImage,
                   color: redSwatch.shade500),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: normal_125),
@@ -300,15 +306,13 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
               SectionDivider(
                   leadIcon: Icons.timer_outlined,
-                  title: 'Working time.',
+                  title: localizations!.storeWorkingTime,
                   color: redSwatch.shade500),
-              const InfoMessage(
-                  message:
-                      "By updating your working hours in the app, your clients will be informed about when you're open for pickups. Take a moment to add your working hours and keep your customers in the loop"),
+              InfoMessage(message: localizations.storeGlobalPolicyDescription),
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: normal_100),
                   child: DropDownSelector<String>(
-                      hintText: 'Select working time option.',
+                      hintText: localizations.storeAddWorkingTime,
                       savedValue: storeCreationValidation.workingTimeOption,
                       onChanged:
                           storeCreationValidation.changeWorkingTimeOption,
@@ -362,7 +366,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                               hour: 0, minute: 0)));
                                 });
                               },
-                              title: "Add working time",
+                              title: localizations.storeName,
                             ),
                           )
                         ],
@@ -500,7 +504,8 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                                 closeTime: null));*/
                                               });
                                             },
-                                            title: "Add working time",
+                                            title: localizations
+                                                .storeAddWorkingTime,
                                           ),
                                         ),
                                     ],
@@ -515,11 +520,9 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
               /// Address
               SectionDivider(
                   leadIcon: ProximityIcons.address,
-                  title: 'Address.',
+                  title: localizations.storeAdress,
                   color: redSwatch.shade500),
-              const InfoMessage(
-                  message:
-                      'Select your Store Location from the Address Picker, then edit the address info for more accuracy.'),
+              InfoMessage(message: localizations.storeSelectStoreLocation),
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: TertiaryButton(
@@ -532,10 +535,10 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                       storeCreationValidation.storeAddress)));
                       storeCreationValidation.changeAddress(_result);
                     },
-                    title: 'Select Address.'),
+                    title: localizations.storeSelectAddress),
               ),
               EditText(
-                hintText: 'Street Address Line 1.',
+                hintText: localizations.storeAdressLine1,
                 borderType: BorderType.top,
                 saved: storeCreationValidation.storeAddress.fullAddress,
                 enabled: (widget.store.address == null) || widget.editScreen,
@@ -543,7 +546,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
               ),
               const EditTextSpacer(),
               EditText(
-                hintText: 'Street Address Line 2.',
+                hintText: localizations.storeAdressLine2,
                 borderType: BorderType.middle,
                 saved: storeCreationValidation.storeAddress.streetName,
                 enabled: (widget.store.address == null) || widget.editScreen,
@@ -554,7 +557,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: normal_100),
                 child: DropDownSelector<String>(
                   // labelText: 'Product Category.',
-                  hintText: 'Country.',
+                  hintText: localizations.storeAdressCountry,
                   onChanged: storeCreationValidation.changeCountry,
                   borderType: BorderType.middle,
                   savedValue: storeCreationValidation.storeAddress.countryCode,
@@ -571,7 +574,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
               ),
               const EditTextSpacer(),
               EditText(
-                hintText: 'Region.',
+                hintText: localizations.storeAdressRegion,
                 borderType: BorderType.middle,
                 saved: storeCreationValidation.storeAddress.region,
                 enabled: (widget.store.address == null) || widget.editScreen,
@@ -579,7 +582,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
               ),
               const EditTextSpacer(),
               EditText(
-                hintText: 'City.',
+                hintText: localizations.storeAdressRegion,
                 borderType: BorderType.middle,
                 saved: storeCreationValidation.storeAddress.city,
                 enabled: (widget.store.address == null) || widget.editScreen,
@@ -587,7 +590,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
               ),
               const EditTextSpacer(),
               EditText(
-                hintText: 'Postal Code.',
+                hintText: localizations.storePostalCode,
                 borderType: BorderType.bottom,
                 saved: storeCreationValidation.storeAddress.postalCode,
                 enabled: (widget.store.address == null) || widget.editScreen,
@@ -596,17 +599,15 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
               SectionDivider(
                   leadIcon: ProximityIcons.policy,
-                  title: 'Store Policy.',
+                  title: localizations!.storePolicy,
                   color: redSwatch.shade500),
-              const InfoMessage(
-                  message:
-                      ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
+              InfoMessage(message: localizations.storeGlobalPolicyDescription),
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Column(
                   children: [
                     ListToggle(
-                        title: 'keep global policy',
+                        title: localizations.storeKeepPolicy,
                         value: storeCreationValidation.globalPolicy!,
                         onToggle: storeCreationValidation.toggleGlobalPolicy),
                     if (!storeCreationValidation.globalPolicy!)
@@ -626,25 +627,8 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                           )));
 
                               storeCreationValidation.setPolicy(policyResult);
-
-                              // final Address _result = await
-                              /* widget.editScreen
-                                            ? Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        StorePolicyScreen(
-                                                          global: false,
-                                                          policy: widget
-                                                              .store.policy,
-                                                        )))
-                                            :
-                                            Policy? storePolicy=  StorePolicyScreen(
-                                                global: false,
-                                              );*/
-                              // storeCreationValidation.changeAddress(_result);
                             },
-                            title: 'Set Custom  Policy .'),
+                            title: localizations!.storeSetCustomPolicy),
                       )
                     else
                       Container(),

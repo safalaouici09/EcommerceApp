@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
@@ -51,7 +52,7 @@ class _SearchBarState extends State<SearchBar> {
         child: Row(
           children: [
             Expanded(
-                child: Text('Search.',
+                child: Text(AppLocalizations.of(context)!.search,
                     style: Theme.of(context).textTheme.headline5!.copyWith(
                         color: Theme.of(context).textTheme.bodyText2!.color))),
             const SizedBox(width: normal_100),

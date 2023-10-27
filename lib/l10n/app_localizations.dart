@@ -98,6 +98,54 @@ abstract class AppLocalizations {
     Locale('fr')
   ];
 
+  /// [AppClient ]
+  /// [HomeTabView]
+  String get todaysDeals;
+  String get productsAroundYou;
+  String get todaysDealsLowercase;
+  String get search;
+
+  ///[ProductScreen]
+  ////[PolicySection]
+  String get policyDeliveryReturns;
+  String get shipping;
+  String get estimatedDeliveryTime;
+  String get pickupReminder1;
+  String get pickupReminder2;
+  String get returnRefundWithShipping1;
+  String get returnRefundWithShipping2;
+  String get returnRefundWithShipping3;
+  String get returnRefundWithShipping4;
+  String get returnRefundWithoutShipping1;
+  String get returnRefundWithoutShipping2;
+  String get returnRefundWithoutShipping3;
+  String get returnRefundWithoutShipping4;
+  String get returnRefundOnlyShipping1;
+  String get returnRefundOnlyShipping2;
+  String get returnRefundOnlyShipping3;
+  String get returnRefund;
+
+  String get similarProducts;
+
+  ///[StoreSection]
+  String get monday;
+  String get tuesday;
+  String get wednesday;
+  String get thursday;
+  String get friday;
+  String get saturday;
+  String get sunday;
+  String get closed;
+  String get open;
+  String get noWorkingHours;
+  String get cancel;
+  String get validate;
+  String get goToStore;
+  ///// [ActionsSection]
+  ///
+  String get addToCart;
+  String get buyNow;
+
   String get ishop;
   String get ishopSlogan;
 
@@ -132,11 +180,26 @@ abstract class AppLocalizations {
   String get termsAndConditions;
   String get byClickingNextYouAgreeToTermsAndConditions;
   String get createYourIshopAccount;
-  String get validate;
-  String get cancel;
+
   String get next;
   String get gettingStarted;
   String get collapse;
+
+  ///[SideMenu ]
+
+  String get settingsText;
+  String get editProfileText;
+  String get verifyIdentityText;
+  String get editGlobalPolicyText;
+  String get statisticsText;
+  String get settingsButtonText;
+  String get appearanceText;
+  String get languageText;
+  String get notificationsText;
+  String get aboutText;
+  String get rateSmartCityText;
+  String get contactSupportText;
+  String get logoutText;
 
   /// [UserHomePage]
   String get home;
@@ -160,6 +223,57 @@ abstract class AppLocalizations {
   /// [Profile]
   String get profile;
   String get editProfile;
+  String get editProfileImage;
+  String get editProfileTitle;
+  String get personalInfoTitle;
+  String get emailTitle;
+  String get phoneNumberTitle;
+  String get addressTitle;
+  String get selectAddressButton;
+  String get streetAddressLine1Hint;
+  String get streetAddressLine2Hint;
+  String get countryHint;
+  String get regionHint;
+  String get cityHint;
+  String get postalCodeHint;
+  String get infoMessage;
+  String get updateButton;
+
+  /// [Policy]
+  String get globalPolicyTitle;
+  String get storePolicyTitle;
+  String get productPolicyTitle;
+  String get shippingTitle;
+  String get shippingPolicyTitle;
+  String get shippingPolicyInfo;
+  String get deliveryToggleTitle;
+  String get selfPickupToggleTitle;
+  String get maxDaysToPickUpHint;
+  String get ordersTitle;
+  String get notificationsTitle;
+  String get realTimeNotificationsToggleTitle;
+  String get hourlyNotificationsToggleTitle;
+  String get batchNotificationsToggleTitle;
+  String get notifyEveryHint;
+  String get batchNotificationFrequencyHint;
+  String get orderNotificationPreferencesTitle;
+  String get inPlatformNotificationsToggleTitle;
+  String get popUpNotificationsToggleTitle;
+  String get emailNotificationsToggleTitle;
+  String get smsNotificationsToggleTitle;
+  String get returnTitle;
+  String get returnPolicyTitle;
+  String get returnPolicyInfo;
+  String get allowReturnsToggleTitle;
+  String get maxDaysToReturnHint;
+  String get returnStatusHint;
+  String get returnMethodHint;
+  String get refundPolicyTitle;
+  String get shippingFeesToggleTitle;
+  String get fullRefundToggleTitle;
+  String get partialRefundToggleTitle;
+  String get partialRefundAmountHint;
+
   String get updateProfile;
   String get myUserId;
   String get personalInformation;
@@ -195,6 +309,75 @@ abstract class AppLocalizations {
   String get yourRating;
   String get total;
   String get emptyOrdersCaption;
+  @override
+  String get pending;
+  @override
+  String get selfPickup;
+  @override
+  String get delivery;
+  @override
+  String get returnOrder;
+  @override
+  String get refund;
+  @override
+  String get rejected;
+  @override
+  String get noPendingOrders;
+  @override
+  String get noRefundOrders;
+  String get all;
+  String get orderSuccess;
+  String get done;
+  String get payment;
+  String get bills;
+  String get items;
+  String get back;
+  String get reservationBill;
+  String get deliveryBill;
+  String get pickupBill;
+  String get paymentTotalBill;
+  String get shippingAddress;
+  String get pickupBy;
+  String get expirationDate;
+  String get billDetails;
+  String get reservation;
+
+  String get finishYourOrder;
+  String get contactInformation;
+  String get namePerson;
+
+  String get deliveryInfos;
+  String get setDeliveryArea;
+  String get pickupInfos;
+  String get personNIN;
+
+  String get noOnTheWayOrders;
+  String get onTheWay;
+  String get noDeliveredOrders;
+  String get noDeliveryOrders;
+
+  String get noRejectedOrders;
+
+  String get noWaitingForReturnOrders;
+  String get waitingForReturn;
+  String get noReturnedOrders;
+  String get noReturnOrders;
+  String get returned;
+
+  String get itemDeletedSuccessfully;
+
+  String get leftToPay;
+  String get deliveryPriceFixedAt;
+  String get distance;
+
+  String get inPreparation;
+  String get awaitingRecovery;
+  String get recovered;
+  String get noInPreparationOrders;
+  String get noAwaitingRecoveryOrders;
+  String get noRecoveredOrders;
+  String get noSelfPickupOrders;
+
   // that of user
   String get unpaidOrders;
   String get toBeDelivered;
@@ -226,6 +409,45 @@ abstract class AppLocalizations {
   String get aboutShop;
 
   /// [ShopAdderScreen] and [ShopEditScreen]
+  String get storeDetails;
+  String get storeName;
+  String get storeDescription;
+  String get storeCrn;
+  String get storeWorkingTime;
+  String get storeWorkingTimeFixed;
+  String get storeWorkingTimeCustom;
+  @override
+  String get storeSelectStoreLocation;
+
+  @override
+  String get storeSelectAddress;
+
+  String get storeImage;
+  String get storeTo;
+  String get storeAddWorkingTime;
+  String get storeAdress;
+  String get storeAdressLine1;
+  String get storeAdressLine2;
+  String get storeAdressCountry;
+  String get storeAdressRegion;
+  String get storeAdressCity;
+  String get storePostalCode;
+  String get storePolicy;
+  String get storeKeepPolicy;
+  String get storeSetCustomPolicy;
+  @override
+  @override
+  String get storeSelectWorkingTimeOption;
+  @override
+  String get storeCommercialRegistrationNumber;
+  @override
+  String get storeWorkingTimeDescription;
+
+  @override
+  String get storeSetGlobalPolicy;
+  @override
+  String get storeGlobalPolicyDescription;
+
   String get createANewShop;
   String get updateShop;
   String get shopOwner;
@@ -236,6 +458,15 @@ abstract class AppLocalizations {
   String get shopAddress;
   String get hintShopAddress;
   String get shopCoverImage;
+/////[Store]
+  @override
+  String get storeProducts;
+  @override
+  String get allProducts;
+  @override
+  String get storeOffers;
+  @override
+  String get newItem;
 
   /// [Product]
   // common
@@ -249,10 +480,16 @@ abstract class AppLocalizations {
   String get sells;
   String get rating;
   String get aboutProduct;
+  @override
+  String get stopPromoting;
+  @override
+  String get offerStock;
+  @override
+  String get discount;
 // that of user
   String get reviews;
   String get left;
-  String get addToCart;
+
   String get addToCartMessage;
   String get addToWishlist;
   String get addToWishlistMessage;
@@ -262,6 +499,7 @@ abstract class AppLocalizations {
   String get addProduct;
   String get newProduct;
   String get productDetails;
+
   String get editProduct;
   String get deleteProduct;
   String get deleteProductMessage;
@@ -271,12 +509,104 @@ abstract class AppLocalizations {
   String get updateProduct;
   String get hintProductShop;
   String get hintProductName;
+  @override
+  String get productVariants;
+
+  @override
+  String get moreVariants;
+
+  @override
+  String get productCreateNew;
+
+  @override
+  String get productName;
+
+  @override
+  String get productSelectCategory;
+
+  @override
+  String get productDescription;
+
+  @override
+  String get productImage;
+
+  @override
+  String get productYourOffer;
+
+  @override
+  String get productPriceIn;
+
+  @override
+  String get productQuantity;
+
+  @override
+  String get productAddVariants;
+
+  @override
+  String get productOptions;
+
+  @override
+  String get productAddOptions;
+
+  @override
+  String get productPolicy;
+
+  @override
+  String get productKeepStorePolicy;
+  @override
+  String get productCategoryInfo;
+
+  @override
+  String get productPriceQuantityInfo;
+
+  @override
+  String get productGlobalPolicyInfo;
+
+  @override
+  String get productUpdateButton;
+
+  @override
+  String get productConfirmButton;
+
   String get hintProductBrand;
   String get hintProductDescription;
   String get yourOffer;
   String get hintProductPrice;
   String get hintProductQuantity;
   String get productImages;
+  //[ add options ]
+  @override
+  String get variantsCharacteristic;
+  @override
+  String get characteristicDescription;
+  @override
+  String get addNewValue;
+  @override
+  String get addNewOption;
+
+  @override
+  String get submit;
+
+  @override
+  String get optionDialogTitle;
+  @override
+  String get optionDialogOptionName;
+  @override
+  String get customOptionName;
+  @override
+  String get optionDialogSubmit;
+  @override
+  String get deleteOptionDialogTitle;
+  @override
+  String get deleteOptionDialogCancel;
+  @override
+  String get deleteOptionDialogDelete;
+  @override
+  String get valueDialogTitle;
+  @override
+  String get valueDialogValueName;
+  @override
+  String get valueDialogSubmit;
 }
 
 class _AppLocalizationsDelegate

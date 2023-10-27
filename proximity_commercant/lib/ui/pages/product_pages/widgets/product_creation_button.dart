@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
 import 'package:proximity_commercant/ui/pages/product_pages/product_pages.dart';
@@ -9,6 +10,7 @@ class ProductCreationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Selector<ProductProxy, String?>(
         selector: (_, productProxy) => productProxy.idStore,
         builder: (context, idStore, child) {
@@ -17,8 +19,8 @@ class ProductCreationButton extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          ProductCreationScreen(product: Product(storeId: idStore))));
+                      builder: (context) => ProductCreationScreen(
+                          product: Product(storeId: idStore))));
             },
             margin: const EdgeInsets.only(
                 left: small_100, bottom: normal_100, right: small_100),
@@ -31,7 +33,7 @@ class ProductCreationButton extends StatelessWidget {
                     children: [
                       const Icon(ProximityIcons.add),
                       const SizedBox(height: small_100),
-                      Text('Create a new Product.',
+                      Text(localizations!.createNewProduct,
                           style: Theme.of(context).textTheme.bodyText1,
                           textAlign: TextAlign.center),
                       const SizedBox(height: small_100)

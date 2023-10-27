@@ -12,20 +12,20 @@ class LanguageScreen extends StatelessWidget {
     return Scaffold(
         body: SafeArea(
             child: ListView(children: [
-              const TopBar(title: 'Language'),
-              ...(() {
-                List<ListButton> _list = <ListButton>[];
-                for (var locale in locales) {
-                  _list.add(ListButton(
-                    title: languages[locale.languageCode]!,
-                    leadImage: 'assets/img/${locale.languageCode}.png',
-                    onPressed: (userSettings.locale == locale)
-                        ? null
-                        : () => userSettings.changeLocale(locale),
-                  ));
-                }
-                return _list;
-              }()),
-            ])));
+      const TopBar(title: 'Language'),
+      ...(() {
+        List<ListButton> _list = <ListButton>[];
+        for (var locale in locales) {
+          _list.add(ListButton(
+            title: languages[locale.languageCode]!,
+            leadImage: 'assets/img/${locale.languageCode}.png',
+            onPressed: (userSettings.locale == locale)
+                ? null
+                : () => userSettings.changeLocale(locale),
+          ));
+        }
+        return _list;
+      }()),
+    ])));
   }
 }

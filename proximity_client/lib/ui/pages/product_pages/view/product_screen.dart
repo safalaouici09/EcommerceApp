@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/ui/pages/authentication_pages/authentication_pages.dart';
 import 'package:proximity_client/ui/pages/product_pages/product_pages.dart';
@@ -33,6 +34,8 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     /// a boolean to help fetch data ONLY if necessary
     var credentialsBox = Boxes.getCredentials();
     String? _token = credentialsBox.get('token');
@@ -129,17 +132,15 @@ class _ProductScreenState extends State<ProductScreen> {
             // policy section
             SectionDivider(
                 leadIcon: ProximityIcons.policy,
-                title: 'policy de livraison et de retours .',
+                title: localizations!.policyDeliveryReturns,
                 color: Theme.of(context).primaryColor),
             // MasonryGrid(
             //delivery policy
             product.policy!.deliveryPolicy != null
                 ? PolicyCard(
                     leadIcon: ProximityIcons.shipping,
-                    title: "Shipping",
-                    subTitle:
-                        "Estimated delivery time is  days. Shipping fees will negociate for this product",
-                  )
+                    title: localizations.shipping,
+                    subTitle: localizations.estimatedDeliveryTime)
                 : Container(),
 
             // pickup policy
@@ -147,9 +148,10 @@ class _ProductScreenState extends State<ProductScreen> {
                     product.policy!.pickupPolicy!.timeLimit != null
                 ? PolicyCard(
                     leadIcon: ProximityIcons.self_pickup,
-                    title: "Pick UP",
-                    subTitle:
-                        "Remember to pick up your order from our store within ${product.policy!.pickupPolicy!.timeLimit} days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
+                    title: localizations.selfPickup,
+                    subTitle: localizations.pickupReminder1 +
+                        product.policy!.pickupPolicy!.timeLimit.toString() +
+                        localizations.pickupReminder2,
                   )
                 : Container(),
 
@@ -159,17 +161,27 @@ class _ProductScreenState extends State<ProductScreen> {
                         product.policy!.returnPolicy!.refund!.order != null
                     ? PolicyCard(
                         leadIcon: Icons.settings_backup_restore,
-                        title: "Return and Refund  ",
-                        subTitle:
-                            "You may return your item within${product.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${product.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees and ${product.policy!.returnPolicy!.refund!.order.fixe} % of the price  ",
+                        title: localizations.returnRefund,
+                        subTitle: localizations.returnRefundWithShipping1 +
+                            product.policy!.returnPolicy!.duration.toString() +
+                            product.policy!.returnPolicy!.refund!.order.fixe
+                                .toString() +
+                            localizations.returnRefundOnlyShipping3,
                       )
                     : product.policy!.returnPolicy!.refund!.shipping == null &&
                             product.policy!.returnPolicy!.refund!.order != null
                         ? PolicyCard(
                             leadIcon: Icons.settings_backup_restore,
-                            title: "Return and Refund  ",
-                            subTitle:
-                                "You may return your item within${product.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${product.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund ${product.policy!.returnPolicy!.refund!.order.fixe} % of the price , shipping fees are not refunded ",
+                            title: localizations.returnRefund,
+                            subTitle: localizations.returnRefundWithShipping1 +
+                                product.policy!.returnPolicy!.duration
+                                    .toString() +
+                                localizations.returnRefundWithoutShipping2 +
+                                product.policy!.returnPolicy!.productStatus! +
+                                localizations.returnRefundWithoutShipping3 +
+                                product.policy!.returnPolicy!.refund!.order.fixe
+                                    .toString() +
+                                localizations.returnRefundWithoutShipping4,
                           )
                         : product.policy!.returnPolicy!.refund!.shipping !=
                                     null &&
@@ -177,10 +189,15 @@ class _ProductScreenState extends State<ProductScreen> {
                                     null
                             ? PolicyCard(
                                 leadIcon: Icons.settings_backup_restore,
-                                title: "Return and Refund  ",
-                                subTitle:
-                                    "You may return your item within${product.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${product.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees ",
-                              )
+                                title: localizations.returnRefund,
+                                subTitle: localizations
+                                        .returnRefundOnlyShipping1 +
+                                    product.policy!.returnPolicy!.duration
+                                        .toString() +
+                                    localizations.returnRefundOnlyShipping2 +
+                                    product
+                                        .policy!.returnPolicy!.productStatus! +
+                                    localizations.returnRefundOnlyShipping3)
                             : Container()
                 : Container(),
 
@@ -191,7 +208,7 @@ class _ProductScreenState extends State<ProductScreen> {
             /// Similar Products Section
             SectionDivider(
                 leadIcon: ProximityIcons.product,
-                title: 'Similar Products.',
+                title: localizations.similarProducts,
                 color: Theme.of(context).primaryColor),
             // MasonryGrid(
             //     column: 2,
@@ -218,7 +235,7 @@ class _ProductScreenState extends State<ProductScreen> {
           BottomActionsBar(buttons: [
             PrimaryButton(
                 onPressed: () => showProductModal(context, product.id!),
-                title: 'Add to Cart.'),
+                title: localizations!.addToCart),
             SecondaryButton(
                 onPressed: () => {
                       if (_token != null)
@@ -238,7 +255,7 @@ class _ProductScreenState extends State<ProductScreen> {
                               (Route<dynamic> route) => true)
                         }
                     },
-                title: 'Buy Now.')
+                title: localizations.buyNow)
           ])
       ]));
     });
@@ -258,6 +275,7 @@ class PolicyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return ListTile(
       leading: Icon(
         leadIcon,

@@ -200,7 +200,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                                                 color: Theme.of(
                                                                         context)
                                                                     .cardColor,
-                                                                child: Text("",
+                                                                child: Text(
+                                                                    "Welcome",
                                                                     //default width name
                                                                     style: Theme.of(
                                                                             context)
@@ -216,9 +217,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                                         text:
                                                             TextSpan(children: [
                                                           TextSpan(
-                                                              text:
-                                                                  localizations!
-                                                                      .welcome,
+                                                              text: localizations!
+                                                                      .welcome +
+                                                                  '\n',
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -320,7 +321,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                       children: [
                                         SectionDivider(
                                             leadIcon: ProximityIcons.order,
-                                            title: 'Orders.',
+                                            title: localizations!.orders,
                                             color: redSwatch.shade400,
                                             seeMore: () {}),
                                         const OrdersDashboard(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/authentication/authentication.dart';
 import 'package:proximity_client/domain/data_persistence/src/boxes.dart';
@@ -19,6 +20,7 @@ class ProfileTabScreen extends StatelessWidget {
     final loginValidation = Provider.of<LoginValidation>(context);
     final userService = Provider.of<UserService>(context);
     final notificationsService = Provider.of<NotificationService>(context);
+    final localizations = AppLocalizations.of(context);
 
     if (_token != null && userService.user == null) {
       userService.getUserData();
@@ -77,11 +79,11 @@ class ProfileTabScreen extends StatelessWidget {
               const AccountSwitcher(),
               const OrdersDashboard(),
               SectionDivider(
-                  title: 'Settings.',
+                  title: localizations!.settings,
                   leadIcon: ProximityIcons.settings,
                   color: redSwatch.shade500),
               ListButton(
-                  title: 'Edit Profile.',
+                  title: localizations.editProfile,
                   leadIcon: ProximityIcons.edit,
                   onPressed: (userService.user == null)
                       ? null
@@ -93,7 +95,7 @@ class ProfileTabScreen extends StatelessWidget {
                                       const EditProfileScreen()));
                         }),
               ListButton(
-                  title: 'Preferences.',
+                  title: localizations!.appearanceText,
                   leadIcon: ProximityIcons.preferences,
                   onPressed: (userService.user == null)
                       ? null
@@ -104,8 +106,8 @@ class ProfileTabScreen extends StatelessWidget {
                                   builder: (context) => PreferencesScreen(
                                       user: userService.user!)));
                         }),
-              const ListButton(
-                  title: 'Payment Methods.',
+              ListButton(
+                  title: localizations!.payment,
                   leadIcon: ProximityIcons.credit_card,
                   onPressed: null),
               // onPressed: () {
@@ -115,7 +117,7 @@ class ProfileTabScreen extends StatelessWidget {
               //           builder: (context) => const EditPaymentMethodsScreen()));
               // }),
               ListButton(
-                  title: 'Appearance.',
+                  title: localizations!.appearanceText,
                   leadIcon: ProximityIcons.appearance,
                   onPressed: () {
                     Navigator.push(
@@ -124,7 +126,7 @@ class ProfileTabScreen extends StatelessWidget {
                             builder: (context) => const AppearanceScreen()));
                   }),
               ListButton(
-                  title: 'Language.',
+                  title: localizations.language,
                   leadIcon: ProximityIcons.language,
                   onPressed: () {
                     Navigator.push(
@@ -161,7 +163,7 @@ class ProfileTabScreen extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               )),
                         ListButton(
-                            title: 'Notifications.',
+                            title: localizations.notificationsText,
                             leadIcon: ProximityIcons.notifications,
                             onPressed: () {
                               notificationService.makeItListSeend();
@@ -178,19 +180,19 @@ class ProfileTabScreen extends StatelessWidget {
 
               const SizedBox(height: normal_100),
               SectionDivider(
-                  title: 'About.',
+                  title: localizations!.appearanceText,
                   leadIcon: ProximityIcons.info,
                   color: redSwatch.shade500),
-              const ListButton(
-                  title: 'Rate Proximity.',
+              ListButton(
+                  title: localizations.rateSmartCityText,
                   leadIcon: ProximityIcons.star,
                   onPressed: null),
-              const ListButton(
-                  title: 'Contact Support.',
+              ListButton(
+                  title: localizations.contactSupportText,
                   leadIcon: ProximityIcons.support,
                   onPressed: null),
               ListButton(
-                  title: 'Logout.',
+                  title: localizations.logoutText,
                   onPressed: () {
                     loginValidation.logout();
                     Navigator.pushAndRemoveUntil(

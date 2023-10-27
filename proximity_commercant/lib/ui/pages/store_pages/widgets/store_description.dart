@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 
 class StoreDescription extends StatelessWidget {
@@ -9,17 +10,15 @@ class StoreDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+    final localizations = AppLocalizations.of(context);
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       SectionDivider(
           leadIcon: ProximityIcons.description,
-          title: 'Store Description.',
+          title: localizations!.storeDescription,
           color: Theme.of(context).primaryColor),
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: small_100),
-          child:
-              LongText(description))
+          child: LongText(description))
     ]);
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:proximity/config/config.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/widgets/buttons/tertiary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/proximity.dart';
@@ -99,7 +100,7 @@ class _ImageProfileState extends State<ImageProfile> {
                   _pickImage(ImageSource.gallery);
                   //await userEditValidation.getBottomSheet(context);
                 },
-                title: 'Modifier la photo de profile'),
+                title: AppLocalizations.of(context)!.editProfileImage),
           ),
         ],
       );
@@ -129,7 +130,7 @@ class _ImageProfileState extends State<ImageProfile> {
 
                   //await userEditValidation.getBottomSheet(context);
                 },
-                title: 'Modifier la photo de profile'),
+                title: AppLocalizations.of(context)!.editProfileImage),
           ),
         ],
       );

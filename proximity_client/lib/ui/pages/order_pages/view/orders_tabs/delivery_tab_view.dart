@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
@@ -52,7 +53,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 0) ...[
-                              Text('All',
+                              Text(AppLocalizations.of(context)!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -60,7 +61,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('All',
+                              Text(AppLocalizations.of(context)!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -84,7 +85,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 1) ...[
-                              Text('Pending',
+                              Text(AppLocalizations.of(context)!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -92,7 +93,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Pending',
+                              Text(AppLocalizations.of(context)!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -116,7 +117,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 2) ...[
-                              Text('In preparation',
+                              Text(AppLocalizations.of(context)!.inPreparation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -124,7 +125,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('In preparation',
+                              Text(AppLocalizations.of(context)!.inPreparation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -148,7 +149,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 3) ...[
-                              Text('On the way',
+                              Text(AppLocalizations.of(context)!.onTheWay,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -156,7 +157,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('On the way',
+                              Text(AppLocalizations.of(context)!.onTheWay,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -180,7 +181,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 4) ...[
-                              Text('Delivered',
+                              Text(AppLocalizations.of(context)!.delivered,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -188,7 +189,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Delivered',
+                              Text(AppLocalizations.of(context)!.delivered,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -206,12 +207,14 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                 ? NoResults(
                     icon: ProximityIcons.delivery_duotone_1,
                     message: _index == 2
-                        ? 'There are no In Preparation Orders.'
+                        ? AppLocalizations.of(context)!.noInPreparationOrders
                         : _index == 3
-                            ? 'There are no  On the way Orders.'
+                            ? AppLocalizations.of(context)!.noOnTheWayOrders
                             : _index == 4
-                                ? 'There are no  delivered Orders.'
-                                : "There are no Delivery Orders.")
+                                ? AppLocalizations.of(context)!
+                                    .noDeliveredOrders
+                                : AppLocalizations.of(context)!
+                                    .noDeliveryOrders)
                 : ListView.builder(
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),

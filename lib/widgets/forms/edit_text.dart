@@ -325,7 +325,7 @@ class _EditTextState extends State<EditText> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: normal_200),
+      padding: const EdgeInsets.symmetric(horizontal: normal_100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

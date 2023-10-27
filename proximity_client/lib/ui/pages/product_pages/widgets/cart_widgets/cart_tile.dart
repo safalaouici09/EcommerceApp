@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
@@ -119,7 +120,7 @@ class CartTile extends StatelessWidget {
                     //     MaterialPageRoute(
                     //         builder: (context) =>  CartSliderScreen()));
                     // } ,
-                    title: 'Order')
+                    title: AppLocalizations.of(context)!.order)
               ]))
         ]));
   }

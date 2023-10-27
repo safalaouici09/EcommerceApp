@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
@@ -62,7 +63,7 @@ class _RefundTabViewState extends State<RefundTabView> {
                                                 )))),
                                   ])),
                           const SizedBox(height: normal_100),
-                          Text("There are no Refund Orders.",
+                          Text(AppLocalizations.of(context)!.noRefundOrders,
                               style: Theme.of(context).textTheme.subtitle2,
                               textAlign: TextAlign.center),
                           const SizedBox(height: huge_100),

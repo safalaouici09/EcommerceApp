@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
+import 'package:proximity/l10n/app_localizations_ar.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/authentication/authentication.dart';
 import 'package:proximity_commercant/domain/data_persistence/data_persistence.dart';
@@ -19,6 +21,7 @@ class SideMenu extends StatelessWidget {
     double _width = MediaQuery.of(context).size.width - normal_200;
     final loginValidation = Provider.of<LoginValidation>(context);
     final userService = Provider.of<UserService>(context);
+    final localizations = AppLocalizations.of(context);
     return SafeArea(
         child: Card(
             margin: EdgeInsets.zero,
@@ -35,13 +38,13 @@ class SideMenu extends StatelessWidget {
                   const AccountSwitcher(),
                   SectionDivider(
                       leadIcon: ProximityIcons.settings,
-                      title: 'Settings',
+                      title: localizations!.settings,
                       color: redSwatch.shade400),
                   Selector<UserService, bool>(
                       selector: (_, userService) => userService.valid,
                       builder: (context, valid, child) {
                         return ListButton(
-                            title: 'Edit Profile.',
+                            title: localizations!.editProfile,
                             leadIcon: ProximityIcons.edit,
                             enabled: valid,
                             onPressed: () {
@@ -57,7 +60,7 @@ class SideMenu extends StatelessWidget {
                           userService.user?.policy != null,
                       builder: (context, valid, child) {
                         return ListButton(
-                            title: 'Verify Identity.',
+                            title: localizations!.verifyIdentityText,
                             leadIcon: ProximityIcons.password,
                             enabled: valid,
                             onPressed: () {
@@ -73,7 +76,7 @@ class SideMenu extends StatelessWidget {
                           userService.user?.policy != null,
                       builder: (context, valid, child) {
                         return ListButton(
-                            title: 'Edit Global Policy.',
+                            title: localizations!.editGlobalPolicyText,
                             leadIcon: ProximityIcons.policy,
                             enabled: valid,
                             onPressed: () {
@@ -89,7 +92,7 @@ class SideMenu extends StatelessWidget {
                             });
                       }),
                   ListButton(
-                      title: 'Statistics .',
+                      title: localizations!.statisticsText,
                       leadIcon: Icons.bar_chart,
                       onPressed: () {
                         Navigator.push(
@@ -99,7 +102,7 @@ class SideMenu extends StatelessWidget {
                                     GlobalStatisticsScreen()));
                       }),
                   ListButton(
-                      title: 'Settings.',
+                      title: localizations!.settings,
                       leadIcon: ProximityIcons.preferences,
                       enabled: false,
                       onPressed: () {
@@ -109,7 +112,7 @@ class SideMenu extends StatelessWidget {
                                 builder: (context) => const SettingsScreen()));
                       }),
                   ListButton(
-                      title: 'Appearance.',
+                      title: localizations!.appearanceText,
                       leadIcon: ProximityIcons.appearance,
                       onPressed: () {
                         Navigator.push(
@@ -119,7 +122,7 @@ class SideMenu extends StatelessWidget {
                                     const AppearanceScreen()));
                       }),
                   ListButton(
-                      title: 'Language.',
+                      title: localizations!.language,
                       leadIcon: ProximityIcons.language,
                       onPressed: () {
                         Navigator.push(
@@ -157,7 +160,7 @@ class SideMenu extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   )),
                             ListButton(
-                                title: 'Notifications.',
+                                title: localizations!.notificationsText,
                                 leadIcon: ProximityIcons.notifications,
                                 onPressed: () {
                                   notificationService.makeItListSeend();
@@ -174,19 +177,19 @@ class SideMenu extends StatelessWidget {
                   const SizedBox(height: normal_100),
                   SectionDivider(
                       leadIcon: ProximityIcons.info,
-                      title: 'About.',
+                      title: localizations!.about,
                       color: redSwatch.shade400),
                   ListButton(
-                      title: 'Rate SmartCity.',
+                      title: localizations!.rateSmartCityText,
                       leadIcon: ProximityIcons.star,
                       onPressed: () {}),
                   ListButton(
-                      title: 'Contact Support.',
+                      title: localizations!.contactSupportText,
                       leadIcon: ProximityIcons.support,
                       onPressed: () {}),
                   const Divider(height: normal_200),
                   ListButton(
-                      title: 'Log out.',
+                      title: localizations!.logoutText,
                       leadIcon: Icons.logout_rounded,
                       onPressed: () {
                         loginValidation.logout(context);

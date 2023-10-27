@@ -4,6 +4,67 @@ import 'package:proximity/l10n/app_localizations.dart';
 class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
+  /// [AppClient ]
+  /// [HomeTabView]
+  String get todaysDeals => 'Offres du jour';
+  String get productsAroundYou => 'Produits à proximité';
+  String get todaysDealsLowercase => 'Offres du jour';
+  String get search => 'Recherche';
+
+  ///[ProductScreen]
+  ////[PolicySection]
+  String get policyDeliveryReturns => "Politique de livraison et de retours .";
+  String get shipping => "Expédition";
+  String get estimatedDeliveryTime =>
+      "Le délai de livraison estimé est de jours. Les frais d'expédition seront négociés pour ce produit";
+  String get pickupReminder1 =>
+      "N'oubliez pas de récupérer votre commande dans notre magasin dans un délai de ";
+  String get pickupReminder2 =>
+      "jours, sinon elle sera remise en rayon. Ne manquez pas cette occasion de l'avoir !.";
+  String get returnRefundWithShipping1 =>
+      "Vous pouvez retourner votre article dans les";
+  String get returnRefundWithShipping2 =>
+      "jours suivant la réception pour un remboursement, à condition que l'article soit";
+  String get returnRefundWithShipping3 =>
+      ". en cas d'acceptation du retour, le magasin remboursera les frais d'expédition et";
+  String get returnRefundWithShipping4 => "% du prix";
+  String get returnRefundWithoutShipping1 =>
+      "Vous pouvez retourner votre article dans les";
+  String get returnRefundWithoutShipping2 =>
+      "jours suivant la réception pour un remboursement, à condition que l'article soit";
+  String get returnRefundWithoutShipping3 =>
+      ". en cas d'acceptation du retour, le magasin remboursera";
+  String get returnRefundWithoutShipping4 =>
+      "% du prix, les frais d'expédition ne sont pas remboursés";
+  String get returnRefundOnlyShipping1 =>
+      "Vous pouvez retourner votre article dans les";
+  String get returnRefundOnlyShipping2 =>
+      "jours suivant la réception pour un remboursement, à condition que l'article soit";
+  String get returnRefundOnlyShipping3 =>
+      "en cas d'acceptation du retour, le magasin remboursera les frais d'expédition";
+  String get returnRefund => "Retour et remboursement  ";
+
+  String get similarProducts => "Produits similaires.";
+
+  /// [StoreSection]
+  String get monday => 'Lundi';
+  String get tuesday => 'Mardi';
+  String get wednesday => 'Mercredi';
+  String get thursday => 'Jeudi';
+  String get friday => 'Vendredi';
+  String get saturday => 'Samedi';
+  String get sunday => 'Dimanche';
+  String get closed => 'Fermé';
+  String get open => 'Ouvert';
+  String get noWorkingHours => 'Pas d\'heures de travail disponibles';
+  String get cancel => 'Annuler';
+
+  String get goToStore => 'Aller au magasin';
+
+  ///// [ActionsSection]
+  String get addToCart => "Add to Cart.";
+  String get buyNow => "Acheter";
+
   @override
   String get ishop => 'Ishop';
   @override
@@ -85,8 +146,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get createYourIshopAccount => 'Créez votre compte iShop';
   @override
   String get validate => 'Valider';
-  @override
-  String get cancel => 'Annuler';
+
   @override
   String get next => 'Suivant';
   @override
@@ -123,11 +183,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get todayDeals => '';
 
   String get welcome => "Bienvenue";
+  //// [ManageStores]
+  String get editStore => 'Modifier la boutique ';
+  String get freezeStore => 'Suspendre la boutique ';
+  String get deleteStore => 'Supprimer la boutique ';
 
   /// [Profile]
   @override
   String get profile => 'Profil';
   @override
+  String get editProfileTitle => 'Modifier le profil.';
+  String get editProfileImage => 'Modifier la photo de profile';
+  String get personalInfoTitle => 'Informations personnelles.';
+  String get emailTitle => 'Email.';
+  String get phoneNumberTitle => 'Numéro de téléphone.';
+  String get addressTitle => 'Adresse.';
+  String get selectAddressButton => 'Sélectionner une adresse.';
+  String get streetAddressLine1Hint => 'Adresse ligne 1.';
+  String get streetAddressLine2Hint => 'Adresse ligne 2.';
+  String get countryHint => 'Pays.';
+  String get regionHint => 'Région.';
+  String get cityHint => 'Ville.';
+  String get postalCodeHint => 'Code postal.';
+  String get infoMessage =>
+      'Votre adresse sera automatiquement utilisée comme adresse de livraison.';
+  String get updateButton => 'Mettre à jour.';
+
   String get editProfile => 'Modifier mon profil';
   @override
   String get updateProfile => 'Mettre à jour mon profil';
@@ -150,6 +231,46 @@ class AppLocalizationsFr extends AppLocalizations {
   String get freeze => 'Geler';
   @override
   String get delete => 'Supprimer';
+
+  ///[Policy]
+  String get globalPolicyTitle => 'Politique globale.';
+  String get storePolicyTitle => 'Politique du boutique ';
+  String get productPolicyTitle => 'Politique des produits';
+  String get shippingTitle => 'Livraison';
+  String get shippingPolicyTitle => 'Politique de livraison.';
+  String get shippingPolicyInfo =>
+      'Sélectionnez le type de livraisons que votre boutique  prend en charge, et définissez une taxe de livraison en cas de livraison de vos commandes.';
+  String get deliveryToggleTitle => 'Livraison';
+  String get selfPickupToggleTitle => 'Ramassage en boutique ';
+  String get maxDaysToPickUpHint => 'Nombre de jours maximum pour le retrait.';
+  String get ordersTitle => 'Commandes';
+  String get notificationsTitle => 'Notifications.';
+  String get realTimeNotificationsToggleTitle => 'Notifications en temps réel';
+  String get hourlyNotificationsToggleTitle => 'Notifications horaires';
+  String get batchNotificationsToggleTitle => 'Notifications groupées';
+  String get notifyEveryHint => 'Je souhaite être notifié chaque.';
+  String get batchNotificationFrequencyHint =>
+      'Fréquence des notifications groupées.';
+  String get orderNotificationPreferencesTitle =>
+      'Préférences de notification ';
+  String get inPlatformNotificationsToggleTitle =>
+      'Notifications dans la plateforme';
+  String get popUpNotificationsToggleTitle => 'Notifications pop-up';
+  String get emailNotificationsToggleTitle => 'Notifications par e-mail';
+  String get smsNotificationsToggleTitle => 'Notifications SMS';
+  String get returnTitle => 'Retour';
+  String get returnPolicyTitle => 'Politique de retour.';
+  String get returnPolicyInfo =>
+      'Ici, vous pouvez choisir d\'accepter les retours et définir des conditions telles que le délai, l\'état du produit et les frais de réapprovisionnement. Votre politique de retour sera visible par les clients sur les pages de vos produits, soyez clair et précis. Contactez notre équipe d\'assistance si vous avez besoin d\'aide ou si vous avez des questions.';
+  String get allowReturnsToggleTitle => 'Autoriser les retours';
+  String get maxDaysToReturnHint => 'Nombre de jours maximum pour le retour.';
+  String get returnStatusHint => 'État du retour';
+  String get returnMethodHint => 'Méthode de retour';
+  String get refundPolicyTitle => 'Politique de remboursement.';
+  String get shippingFeesToggleTitle => 'Frais d\'expédition.';
+  String get fullRefundToggleTitle => 'Remboursement complet';
+  String get partialRefundToggleTitle => 'Remboursement partiel';
+  String get partialRefundAmountHint => 'Montant du remboursement partiel.';
 
   /// [Settings]
   @override
@@ -206,6 +327,32 @@ class AppLocalizationsFr extends AppLocalizations {
   String get delivered => 'Delivered';
   @override
   String get checkout => 'Payer';
+  String get orderSuccess =>
+      'Votre commande a été passée avec succès, nous vous informerons une fois qu\'elle sera validée';
+  String get done => 'Terminé';
+  String get payment => 'Paiement';
+  String get bills => 'Factures';
+  String get items => 'Articles';
+  String get back => 'Retour';
+  String get reservationBill => 'Facture de Réservation';
+  String get deliveryBill => 'Facture de Livraison';
+  String get pickupBill => 'Facture de Retrait';
+  String get paymentTotalBill => 'Facture Totale du Paiement';
+  String get shippingAddress => 'Adresse de Livraison';
+  String get pickupBy => 'Retrait Par';
+  String get expirationDate => 'Date d\'expiration';
+  String get billDetails => 'Détails de la Facture';
+  String get reservation => 'Réservation';
+
+  String get leftToPay => 'Reste à Payer';
+  String get deliveryPriceFixedAt => 'Frais de Livraison Fixes à';
+  String get distance => 'Distance';
+
+  String get itemDeletedSuccessfully => 'Article supprimé avec succès';
+  String get finishYourOrder => 'Finalisez votre commande';
+  String get contactInformation => 'Informations de contact';
+  String get name => 'Nom';
+
   // that of seller
   @override
   String get recentOrders => 'Commandes récentes';
@@ -214,11 +361,60 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get deliveryToll => 'Livraison Péage: ';
 
+  @override
+  String get pending => 'En attente';
+  @override
+  String get selfPickup => 'Ramassage en boutique ';
+  @override
+  String get delivery => 'Livraison';
+  @override
+  String get returnOrder => 'Retour';
+  @override
+  String get refund => 'Remboursement';
+  @override
+  String get rejected => 'Rejeté';
+  @override
+  String get noPendingOrders => 'Il n\'y a aucune commande en attente.';
+  @override
+  String get noRefundOrders => 'Il n\'y a aucun remboursement de commande.';
+  String get all => 'Tout';
+
+  String get inPreparation => 'En préparation';
+  String get awaitingRecovery => 'En attente de récupération';
+  String get recovered => 'Récupérée';
+  String get noInPreparationOrders =>
+      'Il n\'y a pas de commandes en préparation.';
+  String get noAwaitingRecoveryOrders =>
+      'Il n\'y a pas de commandes en attente de récupération.';
+  String get noRecoveredOrders => 'Il n\'y a pas de commandes récupérées.';
+  String get noSelfPickupOrders =>
+      'Il n\'y a pas de commandes en ramassage en magasin.';
+
+  String get deliveryInfos => 'Informations de livraison.';
+  String get setDeliveryArea => 'Définir la zone de livraison.';
+  String get pickupInfos => 'Informations de retrait.';
+  String get personNIN => 'Numéro d\'identification national (NIN)';
+
+  String get noOnTheWayOrders =>
+      'Il n\'y a pas de commandes en cours de livraison.';
+  String get onTheWay => 'En cours de livraison';
+  String get noDeliveredOrders => 'Il n\'y a pas de commandes livrées.';
+  String get noDeliveryOrders => 'Il n\'y a pas de commandes de livraison.';
+
+  String get noRejectedOrders => 'Il n\'y a pas de commandes rejetées.';
+
+  String get noWaitingForReturnOrders =>
+      'Il n\'y a pas de commandes en attente de retour.';
+  String get waitingForReturn => 'En attente de retour';
+  String get noReturnedOrders => 'Il n\'y a pas de commandes retournées.';
+  String get noReturnOrders => 'Il n\'y a pas de commandes de retour.';
+  String get returned => 'Retourné';
+
   /// [Shop]
   @override
   String get shop => 'Boutique';
   @override
-  String get name => 'Nom';
+  String get namePerson => 'Nom';
   @override
   String get description => 'Description';
   @override
@@ -254,6 +450,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Si vous souhaitez fermer temporairement votre boutique, peut-être prendre des vacances pendant quelques jours, pensez à la congeler ❄.';
   @override
   String get deleteShop => 'Supprimer la boutique';
+
   @override
   String get deleteShopMessage =>
       "Avertissement : Il s'agit d'une action potentiellement destructrice.";
@@ -263,6 +460,69 @@ class AppLocalizationsFr extends AppLocalizations {
   String get aboutShop => 'Sur la Boutique';
 
   /// [ShopAdderScreen] and [ShopEditScreen]
+  @override
+  String get storeDetails => 'Détails du boutique ';
+  @override
+  String get storeName => 'Nom du boutique ';
+  @override
+  String get storeDescription => 'Description du boutique ';
+  @override
+  String get storeCrn => 'Registre du Commerce du boutique ';
+  @override
+  String get storeWorkingTime => 'Horaires du boutique ';
+  @override
+  String get storeWorkingTimeFixed => 'Horaires Fixes';
+  @override
+  String get storeWorkingTimeCustom => 'Horaires Personnalisés';
+  @override
+  String get storeImage => 'Image du boutique ';
+  @override
+  String get storeTo => 'à';
+  @override
+  String get storeAddWorkingTime => 'Ajouter les Horaires';
+  @override
+  String get storeAdress => 'Adresse du boutique ';
+  @override
+  String get storeAdressLine1 => 'Adresse Ligne 1';
+  @override
+  String get storeAdressLine2 => 'Adresse Ligne 2';
+  @override
+  String get storeAdressCountry => 'Pays';
+  @override
+  String get storeAdressRegion => 'Région';
+  @override
+  String get storeAdressCity => 'Ville';
+  @override
+  String get storePostalCode => 'Code Postal';
+  @override
+  String get storePolicy => 'Politique du boutique ';
+  @override
+  String get storeKeepPolicy => 'Conserver la Politique';
+  @override
+  String get storeSelectStoreLocation =>
+      'Sélectionnez l\'emplacement de votre boutique  à partir du sélecteur d\'adresse, puis modifiez les informations d\'adresse pour plus de précision.';
+  @override
+  String get storeSelectAddress => 'Sélectionnez une adresse.';
+  @override
+  String get storeSetCustomPolicy => 'Définir une Politique Personnalisée';
+  @override
+  String get storeSelectWorkingTimeOption =>
+      'Sélectionnez une option d\'horaires de travail.';
+  @override
+  String get storeCommercialRegistrationNumber =>
+      'Veuillez fournir votre numéro d\'immatriculation commerciale. Il s\'agit d\'un identifiant unique attribué à votre entreprise par l\'autorité gouvernementale compétente.';
+
+  @override
+  String get storeWorkingTimeDescription =>
+      'En mettant à jour vos heures de travail dans l\'application, vos clients seront informés quand vous serez ouvert pour les retraits. Prenez un moment pour ajouter vos horaires de travail et tenir vos clients informés.';
+
+  @override
+  String get storeSetGlobalPolicy =>
+      'Veuillez définir votre politique globale avant de créer un nouveau boutique .';
+  @override
+  String get storeGlobalPolicyDescription =>
+      'Pour assurer la cohérence entre tous vos boutique s, il est important de définir une politique globale qui s\'appliquera à tous vos boutique s. Cette politique peut inclure des détails tels que les politiques d\'expédition et de retour, les conditions de service et d\'autres informations importantes pour vos clients.\n\nPour définir votre politique globale, veuillez cliquer sur le bouton "Définir la politique" ci-dessous. Si vous n\'êtes pas prêt à définir votre politique pour le moment, vous pouvez cliquer sur "Annuler".';
+
   @override
   String get createANewShop => 'Créer une nouvelle boutique';
   @override
@@ -283,6 +543,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hintShopAddress => 'Selectionner une addresse';
   @override
   String get shopCoverImage => 'Donner une image';
+  @override
+  String get newItem => 'Nouveau';
+
+  ///[Store]
+  @override
+  String get storeProducts => 'Produits du boutique .';
+  @override
+  String get allProducts => 'Tous les produits.';
+  @override
+  String get storeOffers => 'Offres du boutique .';
 
   /// [Product]
   // common
@@ -309,8 +579,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get reviews => 'Reviews';
   @override
   String get left => 'left';
-  @override
-  String get addToCart => 'Add to Cart';
+
   @override
   String get addToCartMessage => 'Product added to Cart';
   @override
@@ -329,14 +598,82 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get newProduct => 'Nouveau produit';
   @override
-  String get productDetails => 'Details du produit';
+  String get productCreateNew => 'Créer un Nouveau Produit';
+  @override
+  String get productName => 'Nom du Produit';
+  @override
+  String get productDetails => 'Détails du Produit';
+  @override
+  String get productSelectCategory => 'Sélectionner une Catégorie';
+  @override
+  String get productDescription => 'Description du Produit';
+  @override
+  String get productImage => 'Image du Produit';
+  @override
+  String get productYourOffer => 'Votre Offre';
+  @override
+  String get productCategoryInfo =>
+      'Chaque produit doit appartenir à une seule catégorie. Catégoriser les produits avec précision pour une meilleure promotion et visibilité.';
+  @override
+  String get productPriceQuantityInfo =>
+      'Veuillez entrer le prix et la quantité de chaque produit avec précision. Si vous proposez des variantes de produits, spécifiez les détails de base et les variations. Gardez vos informations produit à jour pour une expérience de vente fluide.';
+  @override
+  String get productVariations => 'Variantes.';
+  @override
+  String get productGlobalPolicyInfo =>
+      'La politique globale garantit des transactions équitables et transparentes. Lors de la création d\'un nouveau boutique , vous pouvez conserver cette politique pour tous vos boutique s ou créer une politique personnalisée pour chaque boutique . Examinez la politique et créez des politiques personnalisées pour instaurer la confiance avec vos clients.';
+  @override
+  String get productUpdateButton => 'Mettre à jour.';
+  @override
+  String get productConfirmButton => 'Confirmer.';
+
+  @override
+  String get productPriceIn => 'Prix en';
+  @override
+  String get productQuantity => 'Quantité';
+  @override
+  String get productAddVariants => 'Ajouter des Variantes';
+  @override
+  String get productOptions => 'Options';
+  @override
+  String get productAddOptions => 'Ajouter des Options';
+  @override
+  String get productPolicy => 'Politique du Produit';
+  @override
+  String get productKeepStorePolicy => 'Conserver la Politique du boutique ';
+  @override
+  String get productSetProductPolicy => 'Définir la Politique du Produit';
+
   @override
   String get editProduct => 'Modifier Produit';
   @override
   String get deleteProduct => 'Supprimer Produit';
   @override
+  String get submit => 'Soumettre';
+  @override
+  String get stopPromoting => 'Arrêter la promotion';
+  @override
+  String get offerStock => 'Stock d\'offre';
+  @override
+  String get discount => 'Remise';
+  @override
   String get deleteProductMessage =>
       "Avertissement : Il s'agit d'une action potentiellement destructrice.";
+//[side Menu ]
+// French Translations
+  String get settingsText => 'Paramètres';
+  String get editProfileText => 'Modifier le profil.';
+  String get verifyIdentityText => 'Vérifier l\'identité.';
+  String get editGlobalPolicyText => 'Modifier la politique globale.';
+  String get statisticsText => 'Statistiques .';
+  String get settingsButtonText => 'Paramètres.';
+  String get appearanceText => 'Apparence.';
+  String get languageText => 'Langue.';
+  String get notificationsText => 'Notifications.';
+  String get aboutText => 'À propos.';
+  String get rateSmartCityText => 'Noter SmartCity.';
+  String get contactSupportText => 'Contacter le support.';
+  String get logoutText => 'Se déconnecter.';
 
   /// [ProductAdderScreen] and [ProductEditScreen]
   @override
@@ -359,4 +696,50 @@ class AppLocalizationsFr extends AppLocalizations {
   String get hintProductQuantity => 'Quantité disponible';
   @override
   String get productImages => 'Images du produit';
+  @override
+  String get shopCrn => 'Numéro de Registre du Commerce du boutique ';
+  @override
+  String get shopWorkingTime => 'Horaires du boutique ';
+  @override
+  String get shopWorkingTimeFixed => 'Horaires fixes';
+  @override
+  String get shopWorkingTimeCustom => 'Horaires personnalisés';
+
+  /// [ addOption]
+  @override
+  String get variantsCharacteristic => 'Caractéristiques des Variantes.';
+  @override
+  String get characteristicDescription =>
+      'Ici, vous définissez les caractéristiques de votre produit.\nEx: Couleur, Taille, Langue... etc';
+  @override
+  String get addNewValue => 'Ajouter une nouvelle valeur.';
+  @override
+  String get addNewOption => 'Ajouter une nouvelle option.';
+  @override
+  String get productVariants => 'Variantes du produit.';
+
+  @override
+  String get moreVariants => 'plus de variantes';
+
+  @override
+  String get optionDialogTitle => 'Ajouter une nouvelle option.';
+  @override
+  String get optionDialogOptionName => 'Nom de l\'option';
+  @override
+  String get customOptionName => 'Nom de l\'option personnalisée';
+  @override
+  String get optionDialogSubmit => 'Soumettre';
+  @override
+  String get deleteOptionDialogTitle =>
+      'Êtes-vous sûr de vouloir supprimer cette option?';
+  @override
+  String get deleteOptionDialogCancel => 'Annuler';
+  @override
+  String get deleteOptionDialogDelete => 'Supprimer';
+  @override
+  String get valueDialogTitle => 'Ajouter une nouvelle valeur.';
+  @override
+  String get valueDialogValueName => 'Nom de la valeur';
+  @override
+  String get valueDialogSubmit => 'Soumettre';
 }

@@ -1,17 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
-import 'package:proximity/widgets/forms/edit_text_spacer.dart';
+
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/domain/product_repository/models/models.dart';
-import 'package:proximity_client/ui/pages/product_pages/widgets/widgets.dart';
+
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
-import 'package:proximity_client/ui/widgets/address_picker/area_selection_screen.dart';
 
 class CartSliderScreen extends StatefulWidget {
   CartSliderScreen(
@@ -50,6 +47,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
   }
 
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return ChangeNotifierProvider<OrderSliderValidation>(
         // create: (context) => orderSliderValidation.setStore(store),
         create: (context) => OrderSliderValidation.initProducts(
@@ -67,8 +65,9 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                 title: Align(
                   alignment: Alignment.centerLeft,
                   child: TopBar(
-                      title:
-                          widget.reservation == true ? "Reservation" : "Order"),
+                      title: widget.reservation == true
+                          ? localizations!.reservation
+                          : localizations!.order),
                 ),
                 backgroundColor: Colors.white,
                 elevation: 0.0,
@@ -142,7 +141,8 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                                 if (_currentStep != 0 && _currentStep < 3)
                                   SecondaryButton(
                                       onPressed: details.onStepCancel,
-                                      title: "Back"),
+                                      title:
+                                          AppLocalizations.of(context)!.back),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -151,8 +151,8 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
                                         buttonState: ButtonState.enabled,
                                         onPressed: details.onStepContinue,
                                         title: _currentStep == 3
-                                            ? "Done"
-                                            : "Next.",
+                                            ? localizations.done
+                                            : localizations.next,
                                       ),
                                   ],
                                 ),
@@ -180,7 +180,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
     int deliveryProducts = orderSliderValidation.getDeliveryItems().length;
     return Step(
         isActive: _currentStep >= 0,
-        title: Text("Items"),
+        title: Text(AppLocalizations.of(context)!.items),
         content: Column(
           children: [
             Column(children: [
@@ -210,7 +210,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
     double productPickupTotal = orderSliderValidation.getPickupItemsTotal();
     return Step(
         isActive: _currentStep >= 1,
-        title: Text("Bills"),
+        title: Text(AppLocalizations.of(context)!.bills),
         content: Column(
           children: [
             Column(children: [
@@ -256,7 +256,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
       OrderService orderService, BuildContext context) {
     return Step(
         isActive: _currentStep >= 2,
-        title: Text("Payment"),
+        title: Text(AppLocalizations.of(context)!.payment),
         content: Column(
           children: [
             Padding(
@@ -273,7 +273,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
       OrderSliderValidation orderSliderValidation, BuildContext context) {
     return Step(
         isActive: _currentStep >= 3,
-        title: Text("Done"),
+        title: Text(AppLocalizations.of(context)!.done),
         content: Column(
           children: [
             Column(children: [
@@ -291,9 +291,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
               //   fit: BoxFit.fill,
               // ),
             ]),
-            const InfoMessage(
-                message:
-                    'Your order has been made successfully, we will inform you once it will be validated'),
+            InfoMessage(message: AppLocalizations.of(context)!.orderSuccess),
             SizedBox(height: 40),
           ],
         ));

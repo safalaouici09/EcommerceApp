@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 import 'package:proximity_commercant/ui/pages/order_pages/order_pages.dart';
@@ -10,6 +11,7 @@ class OrdersDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
+    final localizations = AppLocalizations.of(context);
     return Container(
         margin: const EdgeInsets.symmetric(horizontal: normal_150),
         decoration: BoxDecoration(
@@ -48,7 +50,7 @@ class OrdersDashboard extends StatelessWidget {
                                             secondaryLayer:
                                                 ProximityIcons.unpaid_duotone_1,
                                             color: redSwatch.shade500),
-                                        Text('Pending',
+                                        Text(localizations!.pending,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!
@@ -76,7 +78,7 @@ class OrdersDashboard extends StatelessWidget {
                                             secondaryLayer: ProximityIcons
                                                 .self_pickup_duotone_2,
                                             color: redSwatch.shade500),
-                                        Text('Self Pickup',
+                                        Text(localizations.selfPickup,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
@@ -106,7 +108,7 @@ class OrdersDashboard extends StatelessWidget {
                                             secondaryLayer: ProximityIcons
                                                 .delivery_duotone_2,
                                             color: redSwatch.shade500),
-                                        Text('Delivery',
+                                        Text(localizations.delivery,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
@@ -148,7 +150,7 @@ class OrdersDashboard extends StatelessWidget {
                                                                   "assets/img/return_icon2.png")))),
                                                 ])),
                                         SizedBox(height: 3),
-                                        Text('Return',
+                                        Text(localizations.returnOrder,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
@@ -190,7 +192,7 @@ class OrdersDashboard extends StatelessWidget {
                                                                   "assets/img/refund_icon.png")))),
                                                 ])),
                                         SizedBox(height: 3),
-                                        Text('Refund',
+                                        Text(localizations.refund,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(context)
@@ -220,7 +222,7 @@ class OrdersDashboard extends StatelessWidget {
                                             secondaryLayer: ProximityIcons
                                                 .rejected_duotone_2,
                                             color: redSwatch.shade500),
-                                        Text('Rejected',
+                                        Text(localizations.rejected,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1!

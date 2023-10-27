@@ -57,7 +57,7 @@ class SignupScreen extends StatelessWidget {
                 enabled: !signupValidation.loading,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                padding: const EdgeInsets.symmetric(horizontal: normal_200),
                 child: GestureDetector(
                   onTap: () => signupValidation.openAddEmailDialog(context),
                   child: Text("why add an email ? ",
@@ -71,14 +71,17 @@ class SignupScreen extends StatelessWidget {
               ),
               const SizedBox(height: small_100),
 
-              EditPhoneNumber(
-                hintText: "Phone number.",
-                prefixIcon: ProximityIcons.phone,
-                errorText: signupValidation.phone.error,
-                // onChanged: (value) => signupValidation.changePhone(),
-                enabled: !signupValidation.loading,
-                onChanged: ((value) => signupValidation.changePhone(value)),
-                keyboardType: TextInputType.number,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: EditPhoneNumber(
+                  hintText: "Phone number.",
+                  prefixIcon: ProximityIcons.phone,
+                  errorText: signupValidation.phone.error,
+                  // onChanged: (value) => signupValidation.changePhone(),
+                  enabled: !signupValidation.loading,
+                  onChanged: ((value) => signupValidation.changePhone(value)),
+                  keyboardType: TextInputType.number,
+                ),
               ),
               const EditTextSpacer(),
               EditText(
