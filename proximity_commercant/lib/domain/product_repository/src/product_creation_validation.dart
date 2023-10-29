@@ -368,7 +368,7 @@ class ProductCreationValidation with ChangeNotifier {
         }''';
 
     _formData +=
-        '], "price": ${double.parse(price!.value!)}, "quantity": ${_quantity != null ? _quantity!.value! : 1}},';
+        '], "price": ${double.parse(price!.value!)}, "quantity": ${_quantity.value!}},';
     if (_formData.endsWith(',')) {
       _car = _formData.characters.toList();
       _car.removeLast();

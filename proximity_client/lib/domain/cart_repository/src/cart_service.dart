@@ -298,7 +298,7 @@ class CartService with ChangeNotifier {
                             maxDeliveryKm:
                                 (res.data['maxDeliveryKm'] ?? 0).toDouble(),
                             reservation: false,
-                            pickupPersons: [],
+                            pickupPersons: pickupPersons ?? [],
                             cards: cards)));
               } catch (e) {
                 print(e.toString());
