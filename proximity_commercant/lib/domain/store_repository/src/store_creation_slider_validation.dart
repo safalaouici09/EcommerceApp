@@ -613,7 +613,7 @@ class StoreCreationSliderValidation with ChangeNotifier {
           _storeCategories!.where((element) => element.selected).toList();
 
       fdStoreCategories = selectedStoreCategories
-          .map((e) => {"id": e.dbId, "name": e.name})
+          .map((e) => {"id": e.dbId, "eid": e.id, "name": e.name})
           .cast<Map<String, dynamic>>()
           .toList();
       // product categories
@@ -631,13 +631,15 @@ class StoreCreationSliderValidation with ChangeNotifier {
           .map((e) {
             List<Map<String, dynamic>> fdProductSubCategories = [];
             fdProductSubCategories = e.subCategories
-                .map((e) => {"id": e.dbId, "name": e.name})
+                .map((es) => {"id": es.dbId, "name": es.name})
                 .cast<Map<String, dynamic>>()
                 .toList();
 
             return {
               "id": e.dbId,
               "name": e.name,
+              "storeCategoryDBId": e.storeCategoryDBId,
+              "storeCategoryId": e.storeCategoryId,
               "subCategories": json.encode(fdProductSubCategories)
             };
           })
@@ -688,6 +690,9 @@ class StoreCreationSliderValidation with ChangeNotifier {
         "template": templateId
         //workingTime.toJson() //getWorkingHoursJson(),
       });
+      print("_______________________________________________");
+      print(json.encode(fdStoreCategories));
+      print(json.encode(fdProductCategories));
 
       // _formData.fields.add(policytoFormData);
       if (_storeImages.isNotEmpty) {

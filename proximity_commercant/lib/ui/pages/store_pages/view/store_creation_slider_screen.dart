@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -84,11 +86,12 @@ class _StoreCreationSliderScreenState extends State<StoreCreationSliderScreen> {
                             return;
                           } else if (_currentStep == 4) {
                             try {
-                              StoreDialogs.confirmStore(context, 1);
                               FormData _formData =
                                   storeCreationSliderValidation.toFormData(
                                       storeCreationSliderValidation.policy!);
+                              // print(_formData.fields);
                               storeService.addStore(context, _formData);
+                              StoreDialogs.confirmStore(context, 1);
 
                               // Code that might throw the exception
                             } catch (e, stackTrace) {
