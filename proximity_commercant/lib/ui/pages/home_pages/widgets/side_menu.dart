@@ -88,6 +88,17 @@ class SideMenu extends StatelessWidget {
                             });
                       }),
                   ListButton(
+                      title: "Statistiques",
+                      // title: localizations!.statisticsText,
+                      leadIcon: Icons.bar_chart,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    GlobalStatisticsScreen()));
+                      }),
+                  ListButton(
                       title: 'Settings.',
                       leadIcon: ProximityIcons.preferences,
                       enabled: false,
