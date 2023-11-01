@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
+import 'package:proximity/l10n/app_localizations_ar.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/src/policy_creation_validation.dart';
@@ -24,8 +26,10 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return ChangeNotifierProvider<PolicyValidation>(
         create: (context) => PolicyValidation.setPolicy(widget.policy),
+
         // create: (context) => PolicyValidation(),
         child:
             Consumer3<PolicyValidation, StoreService, StoreCreationValidation>(
@@ -37,10 +41,10 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
               children: [
                 TopBar(
                     title: widget.global!
-                        ? 'Golbal Policy.'
+                        ? localizations!.globalPolicyTitle
                         : widget.store!
-                            ? 'Store Policy'
-                            : 'Product Policy'),
+                            ? localizations!.storePolicyTitle
+                            : localizations!.productPolicyTitle),
                 Expanded(
                   child: Stepper(
                     physics: const ClampingScrollPhysics(),
@@ -82,7 +86,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                               _currentStep != 0
                                   ? SecondaryButton(
                                       onPressed: details.onStepCancel,
-                                      title: "Back")
+                                      title: localizations.cancel)
                                   : Spacer(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -100,8 +104,9 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                                         ? ButtonState.enabled
                                         : ButtonState.disabled,
                                     onPressed: details.onStepContinue,
-                                    title:
-                                        _currentStep == 2 ? "Confirm" : "Next",
+                                    title: _currentStep == 2
+                                        ? localizations.submit
+                                        : localizations.next,
                                   ),
                                 ],
                               ),
@@ -129,7 +134,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         state: _currentStep > 0 ? StepState.complete : StepState.indexed,
         isActive: _currentStep >= 0,
         title: Text(
-          "Shipping",
+          AppLocalizations.of(context)!.shippingTitle,
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
@@ -142,19 +147,18 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
           children: [
             SectionDivider(
               leadIcon: Icons.local_shipping_outlined,
-              title: 'Shipping Policy.',
+              title: AppLocalizations.of(context)!.shippingPolicyTitle,
               color: redSwatch.shade500,
               noPadding: true,
             ),
-            const InfoMessage(
-                message:
-                    'Select the type of Deliveries your store support, and set a delivery tax value in case you deliver your orders.'),
+            InfoMessage(
+                message: AppLocalizations.of(context)!.shippingPolicyInfo),
             ListToggle(
                 leadIcon: Icons.local_shipping_rounded,
                 color: policyCreationValidation.delivery!
                     ? blueSwatch.shade500
                     : Theme.of(context).dividerColor,
-                title: 'Delivery',
+                title: AppLocalizations.of(context)!.delivery,
                 value: policyCreationValidation.delivery!,
                 onToggle: policyCreationValidation.toggleDelivery),
             ListToggle(
@@ -162,7 +166,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 color: policyCreationValidation.selfPickup!
                     ? blueSwatch.shade500
                     : Theme.of(context).dividerColor,
-                title: 'Self Pickup',
+                title: AppLocalizations.of(context)!.selfPickupToggleTitle,
                 value: policyCreationValidation.selfPickup!,
                 onToggle: policyCreationValidation.toggleSelfPickup),
             if (policyCreationValidation.selfPickup ??
@@ -172,7 +176,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                 padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
                 child: DropDownSelector<String>(
                   // labelText: 'Product Category.',
-                  hintText: 'Max Days to Pick Up.',
+                  hintText: AppLocalizations.of(context)!.maxDaysToPickUpHint,
                   onChanged: policyCreationValidation.changeSelfPickUpMaxDays,
                   borderType: BorderType.middle,
                   savedValue:
@@ -198,7 +202,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         state: _currentStep > 3 ? StepState.complete : StepState.indexed,
         isActive: _currentStep >= 3,
         title: Text(
-          "Orders",
+          AppLocalizations.of(context)!.orders,
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
@@ -209,7 +213,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
             const SizedBox(height: normal_100),
             SectionDivider(
                 leadIcon: Icons.notifications_none_outlined,
-                title: 'Notifications .',
+                title: AppLocalizations.of(context)!.notificationsTitle,
                 noPadding: true,
                 color: redSwatch.shade500),
             Padding(
@@ -217,15 +221,18 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
               child: Column(
                 children: [
                   ListToggle(
-                      title: 'Real-time notifications',
+                      title: AppLocalizations.of(context)!
+                          .realTimeNotificationsToggleTitle,
                       value: policyCreationValidation.notifRealTime!,
                       onToggle: policyCreationValidation.toggleNotifRealTime),
                   ListToggle(
-                      title: 'Hourly notificationss',
+                      title: AppLocalizations.of(context)!
+                          .hourlyNotificationsToggleTitle,
                       value: policyCreationValidation.notifHourly!,
                       onToggle: policyCreationValidation.toggleNotifHourly),
                   ListToggle(
-                      title: 'Batch notifications ',
+                      title: AppLocalizations.of(context)!
+                          .batchNotificationsToggleTitle,
                       value: policyCreationValidation.notifBatch!,
                       onToggle: policyCreationValidation.toggleNotifBatch),
                   policyCreationValidation.notifHourly!
@@ -233,7 +240,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           padding: const EdgeInsets.all(small_100),
                           child: DropDownSelector<String>(
                             // labelText: 'Product Category.',
-                            hintText: 'I want to be notifed every.',
+                            hintText: AppLocalizations.of(context)!
+                                .batchNotificationFrequencyHint,
                             onChanged:
                                 policyCreationValidation.changeNotifDuration,
                             borderType: BorderType.middle,
@@ -257,7 +265,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           padding: const EdgeInsets.all(small_100),
                           child: DropDownSelector<String>(
                             // labelText: 'Product Category.',
-                            hintText: 'Batch Notification Frequency.',
+                            hintText: AppLocalizations.of(context)!
+                                .batchNotificationFrequencyHint,
                             onChanged:
                                 policyCreationValidation.changeNotifDuration,
                             borderType: BorderType.middle,
@@ -281,31 +290,35 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
             ),
             SectionDivider(
                 leadIcon: Icons.notifications_active_outlined,
-                title: 'Order notification preferences.',
+                title: AppLocalizations.of(context)!
+                    .orderNotificationPreferencesTitle,
                 noPadding: true,
                 color: redSwatch.shade500),
-            const InfoMessage(
-                message:
-                    'Choose how you want to be notified of new orders. Select from email, SMS, phone call, or in-platform notifications. Pick your preferred method(s) for convenience.'),
+            InfoMessage(
+                message: AppLocalizations.of(context)!.returnPolicyInfo),
             Padding(
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
                 children: [
                   ListToggle(
-                      title: 'In-platform notifications',
+                      title: AppLocalizations.of(context)!
+                          .realTimeNotificationsToggleTitle,
                       value: policyCreationValidation.notifInPlateforme!,
                       onToggle:
                           policyCreationValidation.toggleNotifInPlateforme),
                   ListToggle(
-                      title: 'Pop pup notifications ',
+                      title: AppLocalizations.of(context)!
+                          .popUpNotificationsToggleTitle,
                       value: policyCreationValidation.notifPopUp!,
                       onToggle: policyCreationValidation.toggleNotifPopup),
                   ListToggle(
-                      title: 'Email notifications',
+                      title: AppLocalizations.of(context)!
+                          .emailNotificationsToggleTitle,
                       value: policyCreationValidation.notifEmail!,
                       onToggle: policyCreationValidation.toggleNotifEmail),
                   ListToggle(
-                      title: 'SMS notifications',
+                      title: AppLocalizations.of(context)!
+                          .smsNotificationsToggleTitle,
                       value: policyCreationValidation.notifSms!,
                       onToggle: policyCreationValidation.toggleNotifSms),
                 ],
@@ -321,7 +334,7 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
         state: _currentStep > 1 ? StepState.complete : StepState.indexed,
         isActive: _currentStep >= 1,
         title: Text(
-          "Return ",
+          AppLocalizations.of(context)!.returnTitle,
           style: Theme.of(context)
               .textTheme
               .bodyLarge!
@@ -332,17 +345,17 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
             SectionDivider(
                 leadIcon: Icons.book_outlined,
                 noPadding: true,
-                title: 'Return policy  .',
+                title: AppLocalizations.of(context)!.returnPolicyTitle,
                 color: redSwatch.shade500),
-            const InfoMessage(
-                message:
-                    'here, you can choose to accept returns and set conditions like timeframe, product condition, and restocking fees. Your return policy will be visible to customers on your product pages, so be clear and specific. Contact our support team if you need help or have any questions.'),
+            InfoMessage(
+                message: AppLocalizations.of(context)!.returnPolicyInfo),
             Padding(
               padding: const EdgeInsets.all(normal_100).copyWith(right: 0),
               child: Column(
                 children: [
                   ListToggle(
-                      title: 'Allow Returns',
+                      title:
+                          AppLocalizations.of(context)!.allowReturnsToggleTitle,
                       value: policyCreationValidation.returnAccept!,
                       onToggle: policyCreationValidation.toggleReturnAccept),
                 ],
@@ -357,41 +370,50 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                           noPadding: true,
                           title: 'Return conditions.',
                           color: redSwatch.shade500),
-                      DropDownSelector<String>(
-                        // labelText: 'Product Category.',
-                        hintText: 'Max Days to Return.',
-                        onChanged: policyCreationValidation.changeReturnMaxDays,
-                        borderType: BorderType.middle,
-                        savedValue:
-                            policyCreationValidation.returnMaxDays.toString(),
-                        items: daysMap.entries
-                            .map((item) => DropdownItem<String>(
-                                value: item.key,
-                                child: Text(item.value,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall!
-                                        .copyWith(
-                                            fontWeight: FontWeight.w600))))
-                            .toList(),
+                      Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: normal_100),
+                        child: DropDownSelector<String>(
+                          // labelText: 'Product Category.',
+                          hintText:
+                              AppLocalizations.of(context)!.maxDaysToReturnHint,
+                          onChanged:
+                              policyCreationValidation.changeReturnMaxDays,
+                          borderType: BorderType.middle,
+                          savedValue:
+                              policyCreationValidation.returnMaxDays.toString(),
+                          items: daysMap.entries
+                              .map((item) => DropdownItem<String>(
+                                  value: item.key,
+                                  child: Text(item.value,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w600))))
+                              .toList(),
+                        ),
                       ),
                       const EditTextSpacer(),
                       EditText(
-                        hintText: "Return status",
+                        hintText:
+                            AppLocalizations.of(context)!.returnStatusHint,
                         onChanged:
                             policyCreationValidation.changeReturnCondition,
                         saved: policyCreationValidation.returnCondition,
                       ),
                       const EditTextSpacer(),
                       EditText(
-                        hintText: "Return method",
+                        hintText:
+                            AppLocalizations.of(context)!.returnMethodHint,
                         onChanged: policyCreationValidation.changeReturnMethode,
                         saved: policyCreationValidation.returnMethode,
                       ),
                       SectionDivider(
                           leadIcon: Icons.cancel_outlined,
                           noPadding: true,
-                          title: 'Refund Policy.',
+                          title:
+                              AppLocalizations.of(context)!.refundPolicyTitle,
                           color: redSwatch.shade500),
                       Padding(
                         padding:
@@ -399,18 +421,21 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                         child: Column(
                           children: [
                             ListToggle(
-                                title: 'Shipping Fees.',
+                                title: AppLocalizations.of(context)!
+                                    .shippingFeesToggleTitle,
                                 value:
                                     policyCreationValidation.returnShippingFee!,
                                 onToggle: policyCreationValidation
                                     .toggleReturnShippingFee),
                             ListToggle(
-                                title: 'Full Refund',
+                                title: AppLocalizations.of(context)!
+                                    .fullRefundToggleTitle,
                                 value: policyCreationValidation.returnTotalFee!,
                                 onToggle: policyCreationValidation
                                     .toggleReturnTotalFee),
                             ListToggle(
-                                title: 'Partial Refund',
+                                title: AppLocalizations.of(context)!
+                                    .partialRefundToggleTitle,
                                 value:
                                     policyCreationValidation.returnPartialFee!,
                                 onToggle: policyCreationValidation
@@ -420,7 +445,8 @@ class _StorePolicyScreenState extends State<StorePolicyScreen> {
                               const SizedBox(height: normal_100),
                               DropDownSelector<String>(
                                 // labelText: 'Product Category.',
-                                hintText: 'Partial Refund Amount .',
+                                hintText: AppLocalizations.of(context)!
+                                    .partialRefundAmountHint,
                                 onChanged:
                                     policyCreationValidation.changeReturnPerFee,
                                 borderType: BorderType.middle,

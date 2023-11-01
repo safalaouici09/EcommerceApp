@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
+import 'package:proximity/l10n/app_localizations_ar.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/order_repository/order_repository.dart';
 import 'package:proximity_commercant/ui/pages/order_pages/order_pages.dart';
@@ -25,6 +27,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
+    final localizations = AppLocalizations.of(context);
     if (ordersService.orders == null && _index == 0) {
       ordersService.getOrders("pickup", "all");
     }
@@ -52,7 +55,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 0) ...[
-                              Text('All',
+                              Text(localizations!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -60,7 +63,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('All',
+                              Text(localizations!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -84,7 +87,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 1) ...[
-                              Text('Pending',
+                              Text(localizations!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -92,7 +95,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Pending',
+                              Text(localizations!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -116,7 +119,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 2) ...[
-                              Text('In preparation',
+                              Text(localizations.inPreparation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -124,7 +127,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('In preparation',
+                              Text(localizations.inPreparation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -148,7 +151,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 3) ...[
-                              Text('Awaiting Recovery',
+                              Text(localizations.awaitingRecovery,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -156,7 +159,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Awaiting Recovery',
+                              Text(localizations.awaitingRecovery,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -180,7 +183,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 4) ...[
-                              Text('Recovered',
+                              Text(localizations.recovered,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -188,7 +191,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Recovered',
+                              Text(localizations.recovered,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!

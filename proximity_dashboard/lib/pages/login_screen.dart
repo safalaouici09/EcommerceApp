@@ -33,29 +33,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: large_100),
 
                 /// Login Forms
-                RichEditText(
-                  children: [
-                    EditText(
-                        hintText: "Email or Phone Number.",
-                        prefixIcon: ProximityIcons.user,
-                        onChanged: (value) {},
-                        borderType: BorderType.top),
-                    EditText(
-                        hintText: "Password.",
-                        prefixIcon: ProximityIcons.password,
-                        suffixIcon: isVisible
-                            ? ProximityIcons.eye_off
-                            : ProximityIcons.eye_on,
-                        suffixOnPressed: () {
-                          setState(() {
-                            isVisible = !isVisible;
-                          });
-                        },
-                        obscureText: !isVisible,
-                        onChanged: (value) {},
-                        borderType: BorderType.bottom),
-                  ],
-                ),
+
+                EditText(
+                    hintText: "Email or Phone Number.",
+                    prefixIcon: ProximityIcons.user,
+                    onChanged: (value) {},
+                    borderType: BorderType.top),
+                EditText(
+                    hintText: "Password.",
+                    prefixIcon: ProximityIcons.password,
+                    suffixIcon: isVisible
+                        ? ProximityIcons.eye_off
+                        : ProximityIcons.eye_on,
+                    suffixOnPressed: () {
+                      setState(() {
+                        isVisible = !isVisible;
+                      });
+                    },
+                    obscureText: !isVisible,
+                    onChanged: (value) {},
+                    borderType: BorderType.bottom),
+
                 Padding(
                   padding: const EdgeInsets.only(
                       left: normal_100,

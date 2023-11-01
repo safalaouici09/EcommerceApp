@@ -1,5 +1,6 @@
 import 'package:proximity/domain_repository/models/address_model.dart';
 import 'package:proximity/proximity.dart';
+import 'package:proximity_client/domain/store_repository/models/store_category.dart';
 import 'package:proximity_client/domain/store_repository/models/workingTime_model.dart';
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
 
@@ -13,10 +14,11 @@ class Store {
   String? image;
   Address? address;
   Policy? policy;
-  List<Category>? categories;
+  List<StoreCategory>? categories;
   bool? isActive;
   DateTime? creationDate;
   WorkingTime? workingTime;
+  
 
   // List<Offer>? offers;
   // List<Flashdeal>? flashdeals;
@@ -36,7 +38,8 @@ class Store {
       this.followers,
       this.creationDate,
       this.isActive,
-      this.workingTime});
+      this.workingTime,
+      });
 
   Store.fromJson(Map<String, dynamic> parsedJson)
       : id = parsedJson['_id'],

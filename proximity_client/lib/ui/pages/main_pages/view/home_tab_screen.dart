@@ -4,6 +4,7 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/product_repository/product_repository.dart';
 import 'package:proximity_client/ui/pages/main_pages/main_pages.dart';
 import 'package:proximity_client/ui/pages/main_pages/view/notifications_screen.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity_client/ui/pages/product_pages/product_pages.dart';
 
 class HomeTabScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class HomeTabScreen extends StatelessWidget {
           /// Today's Deals
           SectionDivider(
               leadIcon: ProximityIcons.flashdeal,
-              title: "Today's Deals",
+              title: AppLocalizations.of(context)!.todayDeals,
               color: yellowSwatch.shade600,
               seeMore: () {
                 Navigator.push(
@@ -36,28 +37,21 @@ class HomeTabScreen extends StatelessWidget {
           SizedBox(
               height: huge_100,
               child: (productService.loadingdealsList == true)
+              child: productService.promotions.isEmpty
                   ? const SmallProductCardsSkeleton()
-                  : productService.todayDeals.isEmpty
-                      ? Center(
-                          child: InkWell(
-                          onTap: () {
-                            productService.getTodayDeals();
-                          },
-                          child: Icon(Icons.refresh),
-                        ))
-                      : ListView(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: normal_150),
-                          children: List.generate(
-                              productService.todayDeals.length,
-                              (i) => SmallProductCard(
-                                  product: productService.todayDeals[i])))),
+                  : ListView(
+                      scrollDirection: Axis.horizontal,
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: normal_150),
+                      children: List.generate(
+                          productService.promotions.take(5).toList().length,
+                          (i) => SmallProductCard(
+                              product: productService.promotions[i].product)))),
 
           /// Products Around You
           SectionDivider(
               leadIcon: ProximityIcons.product,
-              title: 'Products Around You',
+              title: AppLocalizations.of(context)!.productsAroundYou,
               color: greenSwatch.shade300),
           (productService.loadingProductList == true)
               ? const ProductCardsSkeleton()

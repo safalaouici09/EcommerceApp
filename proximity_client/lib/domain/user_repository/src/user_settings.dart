@@ -20,6 +20,7 @@ class UserSettings with ChangeNotifier {
   // Setters
   changeLocale(Locale locale) {
     if (!locales.contains(locale)) return;
+
     _locale = locale;
     _saveSettings();
     notifyListeners();
@@ -27,6 +28,7 @@ class UserSettings with ChangeNotifier {
 
   changeTheme(String theme) {
     _theme = theme;
+
     _saveSettings();
     notifyListeners();
   }

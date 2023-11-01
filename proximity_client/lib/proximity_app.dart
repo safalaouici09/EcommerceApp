@@ -81,10 +81,10 @@ class _ProximityAppState extends State<ProximityApp> {
     bool isFirstTime = credentialsBox.get('first_time', defaultValue: true);
 
     /// User Settings
-    // final userSettings = Provider.of<UserSettings>(context);
+    final userSettings = Provider.of<UserSettings>(context);
 
     /// Changing the StatusBar and NavigationBar in Andorid
-    // bool themeIsDark = userSettings.theme == 'dark';
+    bool themeIsDark = userSettings.theme == 'dark';
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         systemNavigationBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.light,
@@ -104,7 +104,7 @@ class _ProximityAppState extends State<ProximityApp> {
         debugShowCheckedModeBanner: false,
         // theme: userSettings.theme == 'dark' ? darkTheme : lightTheme,
         // darkTheme: userSettings.theme == 'light' ? lightTheme : darkTheme,
-        //  locale: userSettings.locale,
+        locale: userSettings.locale,
         supportedLocales: locales,
         localizationsDelegates: const [
           AppLocalizations.delegate,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
+import 'package:proximity/l10n/app_localizations_ar.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/store_repository/models/workingTime_model.dart';
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
@@ -22,6 +24,8 @@ class _StoreSectionState extends State<StoreSection> {
   bool _isExpanded = false;
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     Widget getWorkingTime(WorkingTime workingTime) {
       if (workingTime.option == '1' &&
           workingTime.fixedHours != null &&
@@ -34,13 +38,13 @@ class _StoreSectionState extends State<StoreSection> {
         }).toList();
 
         final days = [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-          'Sunday',
+          localizations!.monday,
+          localizations.tuesday,
+          localizations.wednesday,
+          localizations.thursday,
+          localizations.friday,
+          localizations.saturday,
+          localizations.sunday,
         ];
 
         final workingTimeRows = days.map((day) {
@@ -93,13 +97,13 @@ class _StoreSectionState extends State<StoreSection> {
           workingTime.customizedHours!.isNotEmpty) {
         // Customized working hours for specific days
         final days = [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-          'Sunday'
+          localizations!.monday,
+          localizations.tuesday,
+          localizations.wednesday,
+          localizations.thursday,
+          localizations.friday,
+          localizations.saturday,
+          localizations.sunday,
         ];
 
         final workingTimeRows = days.map((day) {
@@ -156,7 +160,7 @@ class _StoreSectionState extends State<StoreSection> {
         );
       }
 
-      return Text('No working hours available');
+      return Text(localizations!.noWorkingHours);
     }
 
     bool isStoreOpenNow(WorkingTime workingTime) {
@@ -247,7 +251,7 @@ class _StoreSectionState extends State<StoreSection> {
                                 Row(mainAxisSize: MainAxisSize.max, children: [
                               Expanded(
                                   child: SecondaryButton(
-                                      title: 'Cancel.',
+                                      title: localizations!.cancel,
                                       onPressed: () =>
                                           Navigator.of(context).pop())),
                               const SizedBox(
@@ -255,7 +259,7 @@ class _StoreSectionState extends State<StoreSection> {
                               ),
                               Expanded(
                                   child: SecondaryButton(
-                                      title: 'Valider.',
+                                      title: localizations.validate,
                                       onPressed: () async {
                                         Navigator.of(context).pop();
                                       })),
@@ -267,7 +271,7 @@ class _StoreSectionState extends State<StoreSection> {
       return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SectionDivider(
             leadIcon: ProximityIcons.store,
-            title: 'Store.',
+            title: localizations!.shop,
             color: Theme.of(context).primaryColor),
         if (storeService.store == null)
           const StoreSectionSkeleton()
@@ -332,7 +336,7 @@ class _StoreSectionState extends State<StoreSection> {
                                           const BorderRadius.all(normalRadius),
                                       border: Border.all(
                                           color: greenSwatch.shade200)),
-                                  child: Text("New",
+                                  child: Text(localizations.newShop,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
@@ -348,7 +352,7 @@ class _StoreSectionState extends State<StoreSection> {
                         widget.productPageContext ?? context,
                         MaterialPageRoute(
                             builder: (context) => const StoreScreen())),
-                    title: 'Go to Store.')
+                    title: localizations.goToStore)
               ])),
           const SizedBox(height: small_100),
           Card(
@@ -393,8 +397,8 @@ class _StoreSectionState extends State<StoreSection> {
                     return ListTile(
                       title: Text(
                           isStoreOpenNow(storeService.store!.workingTime!)
-                              ? 'Open'
-                              : 'Closed',
+                              ? localizations.open
+                              : localizations.closed,
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall!

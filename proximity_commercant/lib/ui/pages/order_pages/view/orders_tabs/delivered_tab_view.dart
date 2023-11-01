@@ -25,6 +25,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
+    final localizations = Provider.of(context);
     if (ordersService.orders == null && _index == 0) {
       ordersService.getOrders("delivery", "all");
     }
@@ -52,7 +53,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 0) ...[
-                              Text('All',
+                              Text(localizations.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -60,7 +61,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('All',
+                              Text(localizations.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -84,7 +85,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 1) ...[
-                              Text('Pending',
+                              Text(localizations.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -92,7 +93,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Pending',
+                              Text(localizations.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -116,7 +117,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 2) ...[
-                              Text('In preparation',
+                              Text(localizations.inPreparation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -124,7 +125,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('In preparation',
+                              Text(localizations.inPreparation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -180,7 +181,7 @@ class _DeliveryTabViewState extends State<DeliveryTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 4) ...[
-                              Text('Delivered',
+                              Text(localizations,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!

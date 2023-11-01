@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:proximity/l10n/app_localizations.dart';
+import 'package:proximity/l10n/app_localizations_ar.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/ui/pages/pages.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +27,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     final ordersService = Provider.of<OrderService>(context);
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
         body: SafeArea(
             child: Column(children: [
@@ -60,7 +63,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 secondaryLayer: ProximityIcons.unpaid_duotone_1,
                                 color: redSwatch.shade500,
                               ),
-                              Text('Pending',
+                              Text(localizations!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -96,7 +99,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     ProximityIcons.self_pickup_duotone_2,
                                 color: redSwatch.shade500,
                               ),
-                              Text('Self Pickup',
+                              Text(localizations!.selfPickup,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -131,7 +134,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     ProximityIcons.delivery_duotone_2,
                                 color: redSwatch.shade500,
                               ),
-                              Text('Delivery',
+                              Text(localizations!.delivery,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -211,7 +214,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                     child: Image.asset(
                                                         "assets/img/return_icon2.png")))),
                                       ])),
-                              Text('Return',
+                              Text(localizations!.returnOrder,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -271,7 +274,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                                     child: Image.asset(
                                                         "assets/img/refund_icon.png")))),
                                       ])),
-                              Text('Refund',
+                              Text(localizations!.refund,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -321,7 +324,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     ProximityIcons.rejected_duotone_2,
                                 color: Color(0xFFFC185A),
                               ),
-                              Text('Rejected',
+                              Text(localizations!.rejected,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!

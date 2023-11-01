@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
@@ -52,7 +53,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 0) ...[
-                              Text('All',
+                              Text(AppLocalizations.of(context)!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -60,7 +61,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('All',
+                              Text(AppLocalizations.of(context)!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -84,7 +85,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 1) ...[
-                              Text('Pickup',
+                              Text(AppLocalizations.of(context)!.selfPickup,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -92,7 +93,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Pickup',
+                              Text(AppLocalizations.of(context)!.selfPickup,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -116,7 +117,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 2) ...[
-                              Text('Delivery',
+                              Text(AppLocalizations.of(context)!.delivery,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -124,7 +125,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Delivery',
+                              Text(AppLocalizations.of(context)!.delivery,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -148,7 +149,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 3) ...[
-                              Text('Reservation',
+                              Text(AppLocalizations.of(context)!.reservation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -156,7 +157,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Reservation',
+                              Text(AppLocalizations.of(context)!.reservation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -177,7 +178,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 4) ...[
-                              Text('Return',
+                              Text(AppLocalizations.of(context)!.returnOrder,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -185,7 +186,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Return',
+                              Text(AppLocalizations.of(context)!.returnOrder,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -206,7 +207,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 5) ...[
-                              Text('Refund',
+                              Text(AppLocalizations.of(context)!.refund,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -214,7 +215,7 @@ class _RejectedTabViewState extends State<RejectedTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Refund',
+                              Text(AppLocalizations.of(context)!.refund,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -231,9 +232,9 @@ class _RejectedTabViewState extends State<RejectedTabView> {
             return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
                 : (ordersService.orders!.isEmpty)
-                    ? const NoResults(
+                    ? NoResults(
                         icon: ProximityIcons.rejected,
-                        message: 'There are no Rejected Orders.')
+                        message: AppLocalizations.of(context)!.noRejectedOrders)
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
@@ -264,9 +265,9 @@ class _RejectedTabViewState extends State<RejectedTabView> {
             return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
                 : (ordersService.orders!.isEmpty)
-                    ? const NoResults(
+                    ? NoResults(
                         icon: ProximityIcons.rejected,
-                        message: 'There are no Rejected Orders.')
+                        message: AppLocalizations.of(context)!.noRejectedOrders)
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
@@ -297,9 +298,9 @@ class _RejectedTabViewState extends State<RejectedTabView> {
             return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
                 : (ordersService.orders!.isEmpty)
-                    ? const NoResults(
+                    ? NoResults(
                         icon: ProximityIcons.rejected,
-                        message: 'There are no Rejected Orders.')
+                        message: AppLocalizations.of(context)!.noRejectedOrders)
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
@@ -330,9 +331,9 @@ class _RejectedTabViewState extends State<RejectedTabView> {
             return (ordersService.loadingOrders)
                 ? const Center(child: CircularProgressIndicator())
                 : (ordersService.orders!.isEmpty)
-                    ? const NoResults(
+                    ? NoResults(
                         icon: ProximityIcons.rejected,
-                        message: 'There are no Rejected Orders.')
+                        message: AppLocalizations.of(context)!.noRejectedOrders)
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),

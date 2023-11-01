@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 
@@ -16,6 +17,7 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final signupValidation = Provider.of<SignupValidation>(context);
+    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -48,14 +50,15 @@ class SignupScreen extends StatelessWidget {
               ),
               const SizedBox(height: small_100),
               EditText(
-                hintText: "Email.",
+                // hintText: "Email.",
+                hintText: localizations!.email,
                 prefixIcon: ProximityIcons.email,
                 errorText: signupValidation.email.error,
                 onChanged: (value) => signupValidation.changeEmail(value),
                 enabled: !signupValidation.loading,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                padding: const EdgeInsets.symmetric(horizontal: normal_200),
                 child: GestureDetector(
                   onTap: () => signupValidation.openAddEmailDialog(context),
                   child: Text("why add an email ? ",
@@ -69,14 +72,17 @@ class SignupScreen extends StatelessWidget {
               ),
               const SizedBox(height: small_100),
 
-              EditPhoneNumber(
-                hintText: "Phone number.",
-                prefixIcon: ProximityIcons.phone,
-                errorText: signupValidation.phone.error,
-                // onChanged: (value) => signupValidation.changePhone(),
-                enabled: !signupValidation.loading,
-                onChanged: ((value) => signupValidation.changePhone(value)),
-                keyboardType: TextInputType.number,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: normal_100),
+                child: EditPhoneNumber(
+                  hintText: "Phone number.",
+                  prefixIcon: ProximityIcons.phone,
+                  errorText: signupValidation.phone.error,
+                  // onChanged: (value) => signupValidation.changePhone(),
+                  enabled: !signupValidation.loading,
+                  onChanged: ((value) => signupValidation.changePhone(value)),
+                  keyboardType: TextInputType.number,
+                ),
               ),
               const EditTextSpacer(),
               EditText(

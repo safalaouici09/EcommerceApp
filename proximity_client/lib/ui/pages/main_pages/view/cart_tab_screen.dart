@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
+import 'package:proximity/l10n/app_localizations_ar.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import 'package:proximity_client/domain/data_persistence/data_persistence.dart';
@@ -13,6 +15,7 @@ class CartTabScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GlobalKey loadingKay = GlobalKey();
+    final localizations = AppLocalizations.of(context);
 
     return Consumer<CartService>(builder: (context, cartService, child) {
       if (cartService.loadingOrder) {
@@ -32,7 +35,7 @@ class CartTabScreen extends StatelessWidget {
               child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 const SizedBox(width: normal_100),
                 Expanded(
-                    child: Text('Cart.',
+                    child: Text(localizations!.cart,
                         style: Theme.of(context).textTheme.subtitle1)),
                 SmallIconButton(
                     onPressed: () {
@@ -46,7 +49,7 @@ class CartTabScreen extends StatelessWidget {
                       Icon(ProximityIcons.heart_filled,
                           color: redSwatch.shade500),
                       const SizedBox(width: small_50),
-                      Text('Wishlist. ',
+                      Text(localizations.wishlist,
                           style: Theme.of(context).textTheme.button!.copyWith(
                               fontSize: Theme.of(context)
                                   .textTheme
@@ -62,10 +65,9 @@ class CartTabScreen extends StatelessWidget {
                   builder: (context, cartBox, _) {
                     final cart = cartBox.values.toList().cast<Cart>();
                     return (cart.isEmpty)
-                        ? const NoResults(
+                        ? NoResults(
                             icon: ProximityIcons.empty_illustration,
-                            message:
-                                'Your Cart is empty, consider adding products to it.')
+                            message: localizations.emptyCartCaption)
                         : ListView.builder(
                             itemCount: cart.length,
                             itemBuilder: (context, i) => Dismissible(

@@ -9,6 +9,7 @@ import 'package:proximity_client/ui/pages/product_pages/product_pages.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
 import "package:proximity/widgets/widgets.dart";
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/icons/proximity_icons.dart';
 
 class CardItem extends StatelessWidget {
@@ -73,9 +74,10 @@ class CardItem extends StatelessWidget {
                                         orderSliderValidation
                                             .deleteProduct(product.id);
                                         ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    'Item Deleted Successfully')));
+                                            .showSnackBar(SnackBar(
+                                                content: Text(AppLocalizations
+                                                        .of(context)!
+                                                    .itemDeletedSuccessfully)));
                                       },
                                       child: Icon(ProximityIcons.rejected,
                                           color: redSwatch.shade500))
@@ -198,7 +200,7 @@ class CardItem extends StatelessWidget {
                   : _productCard,
               if (product.reservationPolicy == true && !reservation!)
                 ListToggle(
-                    title: 'Reservation',
+                    title: AppLocalizations.of(context)!.reservation,
                     value: product.reservation,
                     onToggleId: orderSliderValidation.toggleReservation,
                     toggleId: product.id,
@@ -207,7 +209,7 @@ class CardItem extends StatelessWidget {
                         '${(product.reservationP * 100).toInt()}%'),
               if (product.pickupPolicy == true && product.reservation == false)
                 ListToggle(
-                    title: 'PickUp',
+                    title: AppLocalizations.of(context)!.selfPickup,
                     value: product.pickup,
                     onToggleId: orderSliderValidation.togglePickup,
                     toggleId: product.id,
@@ -216,7 +218,7 @@ class CardItem extends StatelessWidget {
               if (product.deliveryPolicy == true &&
                   product.reservation == false)
                 ListToggle(
-                    title: 'Delivery',
+                    title: AppLocalizations.of(context)!.delivery,
                     value: product.delivery,
                     onToggleId: orderSliderValidation.toggleDelivery,
                     toggleId: product.id,
@@ -254,7 +256,7 @@ class CardItem extends StatelessWidget {
                             child: Column(
                           children: [
                             Text(
-                              'Left to pay',
+                              AppLocalizations.of(context)!.leftToPay,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline4!

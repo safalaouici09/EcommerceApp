@@ -7,10 +7,8 @@ import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/data_persistence/src/boxes.dart';
 import 'package:proximity_commercant/domain/user_repository/user_repository.dart';
 import 'package:proximity_commercant/ui/pages/authentication_pages/view/onBoard.dart';
-import 'package:proximity_commercant/ui/pages/authentication_pages/view/view.dart';
 import 'package:proximity_commercant/ui/pages/onBoarding_page/OnBoardingScreen.dart';
 import 'package:proximity_commercant/ui/pages/pages.dart';
-import 'package:proximity_commercant/ui/pages/store_pages/view/store_policy_screen.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class ProximityCommercantApp extends StatefulWidget {

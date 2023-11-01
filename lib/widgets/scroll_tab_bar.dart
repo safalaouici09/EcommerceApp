@@ -39,8 +39,7 @@ class _ScrollTabBarState extends State<ScrollTabBar> {
             widget.tabs[i].onPressed!.call();
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: small_100, horizontal: normal_100),
+            padding: const EdgeInsets.symmetric(horizontal: normal_100),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
               if (i == _index) ...[

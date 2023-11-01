@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
@@ -52,7 +53,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 0) ...[
-                              Text('All',
+                              Text(AppLocalizations.of(context)!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -60,7 +61,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('All',
+                              Text(AppLocalizations.of(context)!.all,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -84,7 +85,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 1) ...[
-                              Text('Pending',
+                              Text(AppLocalizations.of(context)!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -92,7 +93,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Pending',
+                              Text(AppLocalizations.of(context)!.pending,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -116,7 +117,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 2) ...[
-                              Text('In preparation',
+                              Text(AppLocalizations.of(context)!.inPreparation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -124,7 +125,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('In preparation',
+                              Text(AppLocalizations.of(context)!.inPreparation,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -148,7 +149,9 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 3) ...[
-                              Text('Awaiting Recovery',
+                              Text(
+                                  AppLocalizations.of(context)!
+                                      .awaitingRecovery,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -156,7 +159,9 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Awaiting Recovery',
+                              Text(
+                                  AppLocalizations.of(context)!
+                                      .awaitingRecovery,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -180,7 +185,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (_index == 4) ...[
-                              Text('Recovered',
+                              Text(AppLocalizations.of(context)!.recovered,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -188,7 +193,7 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                                           height: 0.9,
                                           color: redSwatch.shade500)),
                             ] else
-                              Text('Recovered',
+                              Text(AppLocalizations.of(context)!.recovered,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1!
@@ -206,12 +211,15 @@ class _SelfPickupTabViewState extends State<SelfPickupTabView> {
                 ? NoResults(
                     icon: ProximityIcons.self_pickup_duotone_1,
                     message: _index == 2
-                        ? 'There are no In Preparation Orders.'
+                        ? AppLocalizations.of(context)!.noInPreparationOrders
                         : _index == 3
-                            ? 'There are no Awaiting Recovery Orders.'
+                            ? AppLocalizations.of(context)!
+                                .noAwaitingRecoveryOrders
                             : _index == 4
-                                ? 'There are no Recovered Orders.'
-                                : "There are no Self Pickup Orders.")
+                                ? AppLocalizations.of(context)!
+                                    .noRecoveredOrders
+                                : AppLocalizations.of(context)!
+                                    .noSelfPickupOrders)
                 : ListView.builder(
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 
 class StoreDetails extends StatelessWidget {
@@ -60,7 +61,7 @@ class StoreDetails extends StatelessWidget {
                                     const BorderRadius.all(normalRadius),
                                 border:
                                     Border.all(color: greenSwatch.shade200)),
-                            child: Text("New",
+                            child: Text(AppLocalizations.of(context)!.newItem,
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!

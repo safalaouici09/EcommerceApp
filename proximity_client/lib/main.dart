@@ -22,6 +22,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Safa:
   await Hive.initFlutter();
+
   Hive.registerAdapter(CartItemAdapter());
   Hive.registerAdapter(CartAdapter());
   Hive.registerAdapter(WishlistItemAdapter());
@@ -36,7 +37,7 @@ void main() async {
   await Hive.openBox<bool>('first_time');
 
   /// Settings are to store user settings and preferences
-  // await Hive.openBox('settings');
+  await Hive.openBox('settings');
 
   /// Google Maps Android Hybrid Composition
   if (defaultTargetPlatform == TargetPlatform.android) {

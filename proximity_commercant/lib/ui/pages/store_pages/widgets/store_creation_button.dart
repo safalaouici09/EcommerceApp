@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
 import 'package:proximity_commercant/domain/store_repository/store_repository.dart';
@@ -37,7 +38,7 @@ class StoreCreationButton extends StatelessWidget {
               children: [
                 const Icon(ProximityIcons.add),
                 const SizedBox(height: small_100),
-                Text('Create a new Store.',
+                Text(AppLocalizations.of(context)!.createANewShop,
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center)
               ])),

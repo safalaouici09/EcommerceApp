@@ -14,12 +14,13 @@ class TodayDealsScreen extends StatelessWidget {
           body: SafeArea(
               child: ListView(children: [
         const TopBar(title: "Today's deals."),
-        if (productService.todayDeals.isEmpty)
+        if (productService.promotions.isEmpty)
           const CircularProgressIndicator()
         else
-          ...List.generate(productService.todayDeals.length, (index) {
+          ...List.generate(productService.promotions.length, (index) {
             return SmallProductCard(
-                shrinkWidth: false, product: productService.todayDeals[index]);
+                shrinkWidth: false,
+                product: productService.promotions[index].product);
           })
       ])));
     });

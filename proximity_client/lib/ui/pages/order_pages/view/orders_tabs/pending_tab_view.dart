@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
@@ -25,9 +26,9 @@ class _PendingViewState extends State<PendingView> {
           child: (ordersService.orders == null)
               ? const Center(child: CircularProgressIndicator())
               : (ordersService.orders!.isEmpty)
-                  ? const NoResults(
+                  ? NoResults(
                       icon: ProximityIcons.self_pickup_duotone_1,
-                      message: 'There are no Pending Orders.')
+                      message: AppLocalizations.of(context)!.noPendingOrders)
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const ClampingScrollPhysics(),

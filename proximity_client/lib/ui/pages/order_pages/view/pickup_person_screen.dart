@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 
@@ -31,9 +32,19 @@ class _PickupPersonScreenState extends State<PickupPersonScreen> {
       children: [
         SectionDivider(
             leadIcon: ProximityIcons.self_pickup,
-            title: 'Pickup Infos.',
+            title: AppLocalizations.of(context)!.pickupInfos,
             color: blueSwatch.shade500),
         SizedBox(height: 16),
+        EditText(
+          hintText: AppLocalizations.of(context)!.namePerson,
+          onChanged: orderSliderValidation.changepickupName,
+        ),
+        SizedBox(height: 16),
+        EditText(
+          hintText: AppLocalizations.of(context)!.personNIN,
+          keyboardType: TextInputType.number,
+          onChanged: orderSliderValidation.changepickupNif,
+        ),
         Consumer<OrderSliderValidation>(
             builder: (context, orderSliderValidation, child) {
           return Column(

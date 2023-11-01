@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/ui/pages/product_pages/product_pages.dart';
@@ -14,6 +15,7 @@ class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// a boolean to help fetch data ONLY if necessary
+    final localizations = AppLocalizations.of(context);
     bool didFetch = true;
     //todo :  final productService = Provider.of<ProductService>(context);
     // productService.getOffer(id);
@@ -58,7 +60,7 @@ class ProductScreen extends StatelessWidget {
           Padding(
               padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
               child: SecondaryButton(
-                  title: 'Edit Product.',
+                  title: localizations!.editProduct,
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -73,17 +75,18 @@ class ProductScreen extends StatelessWidget {
             const SizedBox(width: normal_100),
             Expanded(
                 child: SecondaryButton(
-                    title: 'Promote.',
+                    title: localizations.delete,
                     onPressed: () {
                       !productService.loading
-                          ? offerDialog(context, productService, product, index)
+                          ? offerDialog(context, productService, product, index,
+                                  localizations)
                               .then((val) {})
                           : CircularProgressIndicator();
                     })),
             const SizedBox(width: normal_100),
             Expanded(
                 child: SecondaryButton(
-                    title: 'Delete.',
+                    title: localizations.promote,
                     onPressed: () {
                       ProductDialogs.deleteProduct(context, id);
                     })),
@@ -97,12 +100,16 @@ class ProductScreen extends StatelessWidget {
     });
   }
 
-  Future<dynamic> offerDialog(BuildContext context,
-      ProductService productService, Product product, int index) {
+  Future<dynamic> offerDialog(
+      BuildContext context,
+      ProductService productService,
+      Product product,
+      int index,
+      AppLocalizations localizations) {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Promote this product.',
+              title: Text(localizations.promote,
                   style: Theme.of(context).textTheme.subtitle2),
               content: Container(
                 height: 200,
@@ -111,7 +118,7 @@ class ProductScreen extends StatelessWidget {
                     if (product.offer_id == null) ...[
                       DropDownSelector<String>(
                         // labelText: 'Product Category.',
-                        hintText: 'Discount .',
+                        hintText: localizations.discount,
                         onChanged: productService.changeDisountPercentage,
                         borderType: BorderType.middle,
                         savedValue:
@@ -129,7 +136,7 @@ class ProductScreen extends StatelessWidget {
                       ),
                       EditTextSpacer(),
                       EditText(
-                        hintText: 'Offer Stock. ',
+                        hintText: localizations.offerStock,
                         keyboardType: TextInputType.number,
                         saved: (productService.offerStock == null)
                             ? ""
@@ -172,8 +179,9 @@ class ProductScreen extends StatelessWidget {
 
                       Navigator.pop(context);
                     },
-                    title:
-                        product.offer_id == null ? 'submit' : 'Stop promoting'),
+                    title: product.offer_id == null
+                        ? localizations.submit
+                        : localizations.stopPromoting),
                 //      title: /*product.offer_id == null ? 'Submit' : 'archiver'),
                 // if (product.offer_id != null)
                 //   TertiaryButton(
