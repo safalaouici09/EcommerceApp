@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/order_repository/order_repository.dart';
 import 'package:proximity_client/ui/pages/order_pages/order_pages.dart';
@@ -29,7 +28,7 @@ class _ShippingAddressOrderScreenState
       children: [
         SectionDivider(
             leadIcon: ProximityIcons.delivery,
-            title: AppLocalizations.of(context)!.deliveryInfos,
+            title: 'Delivery Infos.',
             color: blueSwatch.shade500),
         SizedBox(height: 16),
         Padding(
@@ -50,10 +49,25 @@ class _ShippingAddressOrderScreenState
               child: Text("Add Delivery Area.",
                   style: TextStyle(fontSize: 20.0, color: Color(0xFF136DA5)))),
 
-                //  policyCreationValidation
-                //  .changeAddress(_result);
-              },
-              title: AppLocalizations.of(context)!.setDeliveryArea),
+          // TertiaryButton(
+          //     onPressed: () async {
+          //       try {
+          //         final Address _result = await Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //                 builder: (context) => AreaSelectionScreen(
+          //                     currentAddress: widget
+          //                         .orderSliderValidation.deliveryAdresse)));
+
+          //         widget.orderSliderValidation.addDeliveryAddresses(_result);
+          //       } catch (e) {
+          //         print(e);
+          //       }
+
+          //       //  policyCreationValidation
+          //       //  .changeAddress(_result);
+          //     },
+          //     title: 'Set Delivery Area.'),
         ),
         Consumer<OrderSliderValidation>(
             builder: (context, orderSliderValidation, child) {

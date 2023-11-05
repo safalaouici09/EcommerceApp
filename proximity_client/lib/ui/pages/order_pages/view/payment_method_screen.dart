@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:pay/pay.dart';
 import 'package:proximity_client/domain/cart_repository/cart_repository.dart';
@@ -51,7 +50,7 @@ class PaymentMethodScreen extends StatelessWidget {
         productReservationTotal + productDeliveryTotal + productPickupTotal;
     final _paymentItems = [
       PaymentItem(
-        label: AppLocalizations.of(context)!.total,
+        label: 'Total',
         amount: '$total',
         status: PaymentItemStatus.final_price,
       )
@@ -107,9 +106,175 @@ class PaymentMethodScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Material(
+        //   color: Colors.white,
+        //   borderRadius: BorderRadius.circular(4.0),
+        //   child: InkWell(
+        //     onTap: () => {
+        //                 onPay!.call(
+        //                   3
+        //                 )},
+        //     child: Container(
+        //       height: 48.0,
+        //       padding: EdgeInsets.symmetric(horizontal: 16.0),
+        //       child: Row(
+        //         children: [
+        //           Image.asset(
+        //           'assets/google-pay.png' ,
+        //           width: 24.0,
+        //           height: 24.0),
+        //           SizedBox(width: 16.0),
+        //           Expanded(
+        //             child: Text(
+        //               'Pay with Google',
+        //               style: TextStyle(
+        //                 color: Colors.black87,
+        //                 fontSize: 16.0,
+        //                 fontWeight: FontWeight.bold,
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        // SizedBox(height: 20),
+        // Material(
+        //   color: Colors.white,
+        //   borderRadius: BorderRadius.circular(4.0),
+        //   child: InkWell(
+        //     onTap: () => {
+        //                 onPay!.call(
+        //                   3
+        //                 )},
+        //     child: Container(
+        //       height: 48.0,
+        //       padding: EdgeInsets.symmetric(horizontal: 16.0),
+        //       child: Row(
+        //         children: [
+        //           Image.asset(
+        //           'assets/apple-pay.png' ,
+        //           width: 24.0,
+        //           height: 24.0),
+        //           SizedBox(width: 16.0),
+        //           Expanded(
+        //             child: Text(
+        //               'Pay with Apple',
+        //               style: TextStyle(
+        //                 color: Colors.black87,
+        //                 fontSize: 16.0,
+        //                 fontWeight: FontWeight.bold,
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        // SizedBox(height: 20),
+        // SizedBox(height: 20),
+        // GooglePayButton(
+        //     paymentConfiguration:
+        //         PaymentConfiguration.fromJsonString(defaultGooglePay),
+        //     paymentItems: _paymentItems,
+        //     type: GooglePayButtonType.pay,
+        //     margin: const EdgeInsets.only(top: 15.0),
+        //     onPaymentResult: onGooglePayResult,
+        //     loadingIndicator: const Center(
+        //       child: CircularProgressIndicator(),
+        //     ),
+        //     width: double.infinity),
+
+        // SectionDivider(
+        //     leadIcon: ProximityIcons.credit_card,
+        //     title: 'Or Pay with Card.',
+        //     color: blueSwatch.shade500),
+        // SizedBox(height: 16),
+        // EditText(
+        //   hintText: "Card Number",
+        //   keyboardType: TextInputType.number,
+        //   onChanged: orderSliderValidation.changecardNumber,
+        // ),
+        // SizedBox(height: 20),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //         flex: 2,
+        //         child: Padding(
+        //           padding: const EdgeInsets.symmetric(horizontal: normal_100),
+        //           child: Column(
+        //               crossAxisAlignment: CrossAxisAlignment.start,
+        //               mainAxisSize: MainAxisSize.min,
+        //               children: [
+        //                 TextFormField(
+        //                   controller: _controller, //<-- Add controller here
+        //                   onChanged: (value) {
+        //                     orderSliderValidation.changeexpdate(value);
+        //                   },
+        //                   keyboardType: TextInputType.number,
+        //                   style:
+        //                       Theme.of(context).textTheme.subtitle2!.copyWith(
+        //                             fontWeight: FontWeight.w600,
+        //                           ),
+        //                   decoration: InputDecoration(
+        //                       filled: true,
+        //                       fillColor: Theme.of(context).cardColor,
+        //                       enabledBorder: OutlineInputBorder(
+        //                         borderSide: BorderSide(
+        //                             color: Theme.of(context).dividerColor),
+        //                         borderRadius:
+        //                             const BorderRadius.all(smallRadius),
+        //                       ),
+        //                       focusedBorder:
+        //                           OutlineInputBorder(borderSide: BorderSide(
+        //                         color: (() {
+        //                           return Theme.of(context).primaryColor;
+        //                         })(),
+        //                       )),
+        //                       border: OutlineInputBorder(
+        //                           borderRadius:
+        //                               const BorderRadius.all(normalRadius)),
+        //                       label: Text(
+        //                         "Expiry MM/YY",
+        //                         style: Theme.of(context)
+        //                             .textTheme
+        //                             .subtitle2!
+        //                             .copyWith(
+        //                                 fontWeight: FontWeight.w600,
+        //                                 color: (() {
+        //                                   return Theme.of(context)
+        //                                       .textTheme
+        //                                       .bodyText2!
+        //                                       .color;
+        //                                 })()),
+        //                       ),
+        //                       contentPadding: null),
+        //                 ),
+        //               ]),
+        //           // EditText(
+        //           //   hintText : "Expiry MM/YY",
+        //           //   keyboardType: TextInputType.number,
+        //           //   onChanged:
+        //           //       orderSliderValidation.changeexpdate,
+        //           // ),
+        //         )),
+        //     Expanded(
+        //       flex: 1,
+        //       child: EditText(
+        //         hintText: "CVC",
+        //         keyboardType: TextInputType.number,
+        //         onChanged: orderSliderValidation.changecvc,
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        // SizedBox(height: 16),
+
         SectionDivider(
             leadIcon: ProximityIcons.user,
-            title: AppLocalizations.of(context)!.contactInformation,
+            title: 'Contact information.',
             color: blueSwatch.shade500),
 
         Consumer<OrderSliderValidation>(
@@ -141,7 +306,6 @@ class PaymentMethodScreen extends StatelessWidget {
                         'street2': infoContact.infos["street2"] ?? "",
                         'postal Code': infoContact.infos["postalCode"] ?? "",
                       }),
-                    
                     ),
                     value: infoContact.selected,
                     onChanged: (value) {
@@ -151,6 +315,7 @@ class PaymentMethodScreen extends StatelessWidget {
                   ))
                 ]);
               }),
+              // _buildNewStoreCategoryField(orderSliderValidation),
             ],
           );
         }),
@@ -161,13 +326,13 @@ class PaymentMethodScreen extends StatelessWidget {
               "Add a new infos Contact",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             ),
-              if (orderSliderValidation.expendedInfo)
             children: [
+              if (orderSliderValidation.expendedInfo)
                 Column(
                   children: [
-                    EditText(
                     SizedBox(height: 5),
-          hintText: AppLocalizations.of(context)!.namePerson,
+                    EditText(
+                      hintText: "Name",
                       controller: () {
                         TextEditingController _controller =
                             TextEditingController();
@@ -179,7 +344,6 @@ class PaymentMethodScreen extends StatelessWidget {
                       onChanged: orderSliderValidation.changename,
                     ),
                     SizedBox(height: 16),
-          hintText: AppLocalizations.of(context)!.phoneNumber,
                     EditText(
                       hintText: "Phone",
                       controller: () {
@@ -194,37 +358,105 @@ class PaymentMethodScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     EditText(
+                      hintText: "city",
+                      controller: () {
+                        TextEditingController _controller =
+                            TextEditingController();
+                        _controller.text = orderSliderValidation.city ?? "";
+                        _controller.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _controller.text.length));
+                        return _controller;
+                      }(),
+                      onChanged: orderSliderValidation.changecity,
+                    ),
+                    SizedBox(height: 16),
+                    EditText(
+                      hintText: "street",
+                      controller: () {
+                        TextEditingController _controller =
+                            TextEditingController();
+                        _controller.text = orderSliderValidation.street ?? "";
+                        _controller.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _controller.text.length));
+                        return _controller;
+                      }(),
+                      onChanged: orderSliderValidation.changestreet,
+                    ),
+                    SizedBox(height: 16),
+                    EditText(
+                      hintText: "street2",
+                      controller: () {
+                        TextEditingController _controller =
+                            TextEditingController();
+                        _controller.text = orderSliderValidation.street2 ?? "";
+                        _controller.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _controller.text.length));
+                        return _controller;
+                      }(),
+                      onChanged: orderSliderValidation.changestreet2,
+                    ),
+                    SizedBox(height: 16),
+                    EditText(
+                      hintText: "Postal code",
+                      controller: () {
+                        TextEditingController _controller =
+                            TextEditingController();
+                        _controller.text =
+                            orderSliderValidation.postalCode ?? "";
+                        _controller.selection = TextSelection.fromPosition(
+                            TextPosition(offset: _controller.text.length));
+                        return _controller;
+                      }(),
+                      onChanged: orderSliderValidation.changepostalCode,
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Add infos Contact',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      style: raisedButtonStyle2,
+                      onPressed: () async {
+                        orderSliderValidation.addInfosContactTrigger();
+                        orderSliderValidation.expendInfos(false);
+                      },
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
+            ],
+            maintainState: orderSliderValidation.expendedInfo,
+            initiallyExpanded: orderSliderValidation.expendedInfo,
+            onExpansionChanged: (expanded) {
+              orderSliderValidation.expendInfos(expanded);
+            },
+          );
+        }),
+
         SizedBox(height: 16),
-        EditText(
-          hintText: AppLocalizations.of(context)!.cityHint,
-          onChanged: orderSliderValidation.changecity,
-        ),
-        SizedBox(height: 16),
-        EditText(
-          hintText: AppLocalizations.of(context)!.streetAddressLine1Hint,
-          onChanged: orderSliderValidation.changestreet,
-        ),
-        SizedBox(height: 16),
-        EditText(
-          hintText: AppLocalizations.of(context)!.streetAddressLine2Hint,
-          onChanged: orderSliderValidation.changestreet2,
-        ),
-        SizedBox(height: 16),
-        EditText(
-          hintText: AppLocalizations.of(context)!.postalCodeHint,
-          onChanged: orderSliderValidation.changepostalCode,
-        ),
-        SizedBox(height: 16),
-        ElevatedButton(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.finishYourOrder,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+        if (orderSliderValidation.infosContact!
+            .where((element) => element.selected)
+            .isNotEmpty)
+          ElevatedButton(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Finish your order',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),

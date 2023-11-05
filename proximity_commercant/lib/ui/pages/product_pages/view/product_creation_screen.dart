@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/product_repository/product_repository.dart';
@@ -27,7 +25,6 @@ class ProductCreationScreen extends StatelessWidget {
     bool fetchCats = false;
     bool showImagePicker = false;
     User? _user = context.watch<UserService>().user;
-    final localizations = AppLocalizations.of(context);
 
     return ChangeNotifierProvider<ProductCreationValidation>(
         create: (context) => ProductCreationValidation.setProduct(product),
@@ -53,20 +50,20 @@ class ProductCreationScreen extends StatelessWidget {
                   child: Stack(alignment: Alignment.bottomCenter, children: [
             ListView(children: [
               editScreen
-                  ? TopBar(title: localizations!.updateProduct)
-                  : TopBar(title: localizations!.createNewProduct),
+                  ? const TopBar(title: 'Update  Product.')
+                  : const TopBar(title: 'Create a new Product.'),
 
               /// Store Name
               SectionDivider(
                   leadIcon: ProximityIcons.store,
-                  title: localizations!.storeName,
+                  title: 'Store.',
                   color: redSwatch.shade500),
               Selector<StoreService, String?>(
                   selector: (_, storeService) =>
                       storeService.getStoreById(product.storeId!).name,
                   builder: (context, storeName, child) {
                     return EditText(
-                        hintText: localizations!.storeName,
+                        hintText: 'Shop name.',
                         saved: storeName,
                         enabled: false);
                   }),
@@ -74,12 +71,73 @@ class ProductCreationScreen extends StatelessWidget {
               /// Product Details
               SectionDivider(
                   leadIcon: ProximityIcons.edit,
-                  title: localizations!.productDetails,
+                  title: 'Product details.',
                   color: redSwatch.shade500),
-              InfoMessage(message: localizations.productCategoryInfo),
+
+              const InfoMessage(
+                message:
+                    'Every product must belong to a single category. Categorizing products accurately for better promotion and visibility. ',
+              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: normal_100),
+              //   child: Selector<StoreService, List<Category>?>(
+              //       selector: (_, storeService) =>
+              //           storeService.getStoreById(product.storeId!).categories,
+              //       builder: (context, categories, child) {
+              //         return DropDownSelector<String>(
+              //             hintText: 'Select a Category.',
+              //             savedValue: productCreationValidation.category.value,
+              //             onChanged: productCreationValidation.changeCategory,
+              //             items: categories!
+              //                 .map((item) => DropdownItem<String>(
+              //                     value: item.id!,
+              //                     child: Text("${item.name}",
+              //                         style: Theme.of(context)
+              //                             .textTheme
+              //                             .subtitle2!
+              //                             .copyWith(
+              //                                 fontWeight: FontWeight.w600))))
+              //                 .toList());
+              //       }),
+              // ),
+
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: normal_100),
+              //   child: Selector<StoreService, List<Category>?>(
+              //       selector: (_, storeService) =>
+              //           storeService.getStoreById(product.storeId!).categories,
+              //       builder: (context, categories, child) {
+              //         return DropDownSelector<String>(
+              //             hintText: 'Select a Category.',
+              //             savedValue: productCreationValidation.category.value,
+              //             onChanged: productCreationValidation.changeCategory,
+              //             items: categories!
+              //                 .map((item) => DropdownItem<String>(
+              //                     value: item.id!,
+              //                     child: Text("${item.name}",
+              //                         style: Theme.of(context)
+              //                             .textTheme
+              //                             .subtitle2!
+              //                             .copyWith(
+              //                                 fontWeight: FontWeight.w600))))
+              //                 .toList());
+              //       }),
+              // ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: normal_100),
-                          hintText: localizations!.productSelectCategory,
+                child: Row(children: [
+                  Expanded(
+                      child: DropDownSelector<ProductCategory>(
+                          hintText: 'Select a Category.',
+                          savedValue:
+                              productCreationValidation.selectedCategorie,
+                          onChanged:
+                              productCreationValidation.changeSelectedCategorie,
+                          items: productCreationValidation.productCategories!
+                              .where((element) => element.selected)
+                              .toList()
+                              .map((item) => DropdownItem<ProductCategory>(
+                                  value: item,
                                   child: Text("${item.name}",
                                       style: Theme.of(context)
                                           .textTheme
@@ -145,7 +203,7 @@ class ProductCreationScreen extends StatelessWidget {
               ),
               const EditTextSpacer(),
               EditText(
-                hintText: localizations.productName,
+                hintText: 'Name.',
                 borderType: BorderType.middle,
                 saved: productCreationValidation.name.value,
                 errorText: productCreationValidation.name.error,
@@ -154,7 +212,7 @@ class ProductCreationScreen extends StatelessWidget {
               ),
               const EditTextSpacer(),
               EditText(
-                hintText: localizations.productDescription,
+                hintText: 'Product Description.',
                 borderType: BorderType.bottom,
                 saved: productCreationValidation.description.value,
                 errorText: productCreationValidation.description.error,
@@ -166,7 +224,7 @@ class ProductCreationScreen extends StatelessWidget {
               /// Image Picker
               SectionDivider(
                   leadIcon: ProximityIcons.picture,
-                  title: localizations.productImage,
+                  title: 'Product Images.',
                   color: redSwatch.shade500),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: normal_100),
@@ -187,14 +245,17 @@ class ProductCreationScreen extends StatelessWidget {
               ]),
               SectionDivider(
                   leadIcon: ProximityIcons.cart,
-                  title: localizations.productYourOffer,
+                  title: 'Your Offer.',
                   color: redSwatch.shade500),
-              InfoMessage(message: localizations.productPriceQuantityInfo),
+              InfoMessage(
+                  message:
+                      ' Please enter the price and quantity for each product accurately. If you offer product variants, specify the base details and variations. Keep your product information up to date for a smooth selling experience.'),
+
               if (!productCreationValidation.hasVariants!)
                 Column(
                   children: [
                     EditText(
-                        hintText: localizations.productPriceIn + ' €.',
+                        hintText: 'Price in €.',
                         keyboardType: TextInputType.number,
                         errorText: productCreationValidation.price!.error,
                         borderType: BorderType.top,
@@ -203,7 +264,7 @@ class ProductCreationScreen extends StatelessWidget {
                         onChanged: productCreationValidation.changePrice),
                     const EditTextSpacer(),
                     EditText(
-                        hintText: localizations.productQuantity,
+                        hintText: 'Quantity.',
                         keyboardType: TextInputType.number,
                         borderType: BorderType.bottom,
                         errorText: productCreationValidation.quantity!.error,
@@ -220,7 +281,7 @@ class ProductCreationScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(normal_150).copyWith(top: 0),
                 child: ListToggle(
-                    title: localizations.productAddVariants,
+                    title: 'add variants ',
                     value: productCreationValidation.hasVariants!,
                     onToggle: productCreationValidation.toggleVariants),
               ),
@@ -230,7 +291,7 @@ class ProductCreationScreen extends StatelessWidget {
                   children: [
                     SectionDivider(
                         leadIcon: ProximityIcons.product,
-                        title: localizations.productOptions,
+                        title: 'Options.',
                         color: redSwatch.shade500),
                     productCreationValidation.characteristicsList.isEmpty
                         ? Container()
@@ -287,7 +348,7 @@ class ProductCreationScreen extends StatelessWidget {
                                     .changeCharacteristics(newCharacteristics);
                               }
                             },
-                            title: localizations.productAddOptions),
+                            title: 'Add options.'),
                       ],
                     ),
                     productCreationValidation.characteristics.isEmpty
@@ -296,7 +357,7 @@ class ProductCreationScreen extends StatelessWidget {
                             children: [
                               SectionDivider(
                                   leadIcon: ProximityIcons.product,
-                                  title: localizations.productAddVariants,
+                                  title: 'Variations.',
                                   color: redSwatch.shade500),
                               VariantCreator(
                                   productVariants:
@@ -319,16 +380,18 @@ class ProductCreationScreen extends StatelessWidget {
               // Product Policy
               SectionDivider(
                   leadIcon: ProximityIcons.policy,
-                  title: localizations.productPolicy,
+                  title: 'Product Policy.',
                   color: redSwatch.shade500),
-              InfoMessage(message: localizations.productGlobalPolicyInfo),
+              const InfoMessage(
+                  message:
+                      'Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
 
               Padding(
                 padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
                 child: Column(
                   children: [
                     ListToggle(
-                        title: localizations.productKeepStorePolicy,
+                        title: 'keep store policy',
                         value: productCreationValidation.storePolicy!,
                         onToggle: productCreationValidation.toggleStorePolicy),
                     if (!productCreationValidation.storePolicy!)
@@ -349,7 +412,7 @@ class ProductCreationScreen extends StatelessWidget {
                               productCreationValidation.setPolicy(
                                   policyResult); // storeCreationValidation.changeAddress(_result);
                             },
-                            title: localizations.product),
+                            title: 'Set product  Policy .'),
                       )
                     else
                       Container(),
@@ -391,9 +454,7 @@ class ProductCreationScreen extends StatelessWidget {
                               .toFormData(productCreationValidation.policy));
                     }
                   },
-                  title: editScreen
-                      ? localizations.productUpdateButton
-                      : localizations.productConfirmButton)
+                  title: editScreen ? 'Update.' : 'Confirm.')
             ])
           ])));
         }));
