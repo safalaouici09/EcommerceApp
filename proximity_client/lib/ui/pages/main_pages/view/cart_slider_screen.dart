@@ -52,6 +52,7 @@ class _CartSliderScreenState extends State<CartSliderScreen> {
   }
 
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     print("CartSliderScreen");
     return ChangeNotifierProvider<OrderSliderValidation>(
         // create: (context) => orderSliderValidation.setStore(store),

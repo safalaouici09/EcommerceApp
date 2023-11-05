@@ -141,8 +141,9 @@ class PaymentMethodScreen extends StatelessWidget {
                         'street2': infoContact.infos["street2"] ?? "",
                         'postal Code': infoContact.infos["postalCode"] ?? "",
                       }),
-                    value: infoContact.selected,
+                    
                     ),
+                    value: infoContact.selected,
                     onChanged: (value) {
                       orderSliderValidation.changeSelectInfosContact(
                           value, infoContact.id);
