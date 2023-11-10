@@ -36,7 +36,7 @@ class HomeTabScreen extends StatelessWidget {
               }),
           SizedBox(
               height: huge_100,
-              child: (productService.loadingdealsList == true)
+              // child: (productService.loadingdealsList == true)
               child: productService.promotions.isEmpty
                   ? const SmallProductCardsSkeleton()
                   : ListView(

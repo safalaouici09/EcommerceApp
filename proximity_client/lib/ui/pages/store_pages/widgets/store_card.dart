@@ -331,10 +331,10 @@ class _StoreSearchedScreenState extends State<StoreSearchedScreen> {
                 child: Expanded(
                     child: ListView(children: [
                 StoreMap(address: widget.store!.address!),
-                StoreDetails(
+                /*  StoreDetails(
                     image: widget.store!.image!,
                     name: widget.store!.name!,
-                    rating: widget.store!.rating!),
+                    rating: widget.store!.rating!),*/
                 StoreDescription(description: widget.store!.description!),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: small_100),

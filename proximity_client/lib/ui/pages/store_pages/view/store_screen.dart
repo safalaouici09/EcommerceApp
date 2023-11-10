@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:proximity/l10n/app_localizations.dart';
-import 'package:proximity/l10n/app_localizations_ar.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity_client/domain/store_repository/models/workingTime_model.dart';
 import 'package:proximity_client/ui/pages/product_pages/product_pages.dart';
 import 'package:proximity_client/ui/pages/store_pages/store_pages.dart';
 import 'package:proximity_client/domain/store_repository/store_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 
 class StoreScreen extends StatefulWidget {
   const StoreScreen({Key? key}) : super(key: key);
@@ -40,13 +39,13 @@ class _StoreScreenState extends State<StoreScreen> {
         }).toList();
 
         final days = [
-          localizations!.monday,
-          localizations.tuesday,
-          localizations.wednesday,
-          localizations.thursday,
-          localizations.friday,
-          localizations.saturday,
-          localizations.sunday,
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
         ];
 
         final workingTimeRows = days.map((day) {
@@ -99,13 +98,13 @@ class _StoreScreenState extends State<StoreScreen> {
           workingTime.customizedHours!.isNotEmpty) {
         // Customized working hours for specific days
         final days = [
-          localizations!.monday,
-          localizations.tuesday,
-          localizations.wednesday,
-          localizations.thursday,
-          localizations.friday,
-          localizations.saturday,
-          localizations.sunday,
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday'
         ];
 
         final workingTimeRows = days.map((day) {
@@ -162,7 +161,7 @@ class _StoreScreenState extends State<StoreScreen> {
         );
       }
 
-      return Text(localizations!.noWorkingHours);
+      return Text('No working hours available');
     }
 
     /// a boolean to help fetch data ONLY if necessary
@@ -194,140 +193,170 @@ class _StoreScreenState extends State<StoreScreen> {
                       onTap: () {
                         storeService.getStore();
                       },
-                      children: [
-                        ExpansionPanel(
-                          backgroundColor: Colors.white,
-                          headerBuilder: (context, isExpanded) {
-                            return ListTile(
-                              title: Text(
-                                  isStoreOpenNow(
-                                          storeService.store!.workingTime!)
-                                      ? localizations!.open
-                                      : localizations!.closed,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall!
-                                      .copyWith(
-                                        color: isStoreOpenNow(storeService
-                                                .store!.workingTime!)
-                                            ? greenSwatch.shade900
-                                            : redSwatch.shade900,
-                                      )),
-                            );
-                          },
-                          body: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (storeService.store!.workingTime != null)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: normal_100),
-                                  child: getWorkingTime(
-                                      storeService.store!.workingTime!),
+                      child: const Icon(Icons.refresh),
+                    ))))
+                  : (storeService.store != null)
+                      ? SafeArea(
+                          child: Expanded(
+                              child: ListView(children: [
+                          StoreMap(address: storeService.store!.address!),
+                          StoreDetails(
+                              image: storeService.store!.image!,
+                              storeId: storeService.store!.id!,
+                              name: storeService.store!.name!,
+                              rating: storeService.store!.rating!),
+                          StoreDescription(
+                              description: storeService.store!.description!),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: small_100),
+                            child: ExpansionPanelList(
+                              elevation: 0,
+                              expandedHeaderPadding: EdgeInsets.zero,
+                              expansionCallback: (panelIndex, isExpanded) {
+                                setState(() {
+                                  _isExpanded = !isExpanded;
+                                });
+                              },
+                              children: [
+                                ExpansionPanel(
+                                  backgroundColor: Colors.white,
+                                  headerBuilder: (context, isExpanded) {
+                                    return ListTile(
+                                      title: Text(
+                                          isStoreOpenNow(storeService
+                                                  .store!.workingTime!)
+                                              ? 'Open'
+                                              : 'Closed',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .copyWith(
+                                                color: isStoreOpenNow(
+                                                        storeService.store!
+                                                            .workingTime!)
+                                                    ? greenSwatch.shade900
+                                                    : redSwatch.shade900,
+                                              )),
+                                    );
+                                  },
+                                  body: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (storeService.store!.workingTime !=
+                                          null)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: normal_100),
+                                          child: getWorkingTime(
+                                              storeService.store!.workingTime!),
+                                        ),
+                                    ],
+                                  ),
+                                  isExpanded: _isExpanded,
                                 ),
                               ],
                             ),
                           ),
-                          isExpanded: _isExpanded,
-                        ),
-                      ],
-                    ),
-                  ),
-                  //StoreProducts
-                  SectionDivider(
-                      leadIcon: ProximityIcons.product,
-                      title: localizations!.storeProducts,
-                      color: Theme.of(context).primaryColor),
-                  (storeService.products == null)
-                      ? const ProductCardsSkeleton()
-                      : MasonryGrid(
-                          column: 2,
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: small_100),
-                          children: List.generate(
-                              storeService.products!.length,
-                              (i) => ProductCard(
-                                  product: storeService.products![i]))),
-                  if (storeService.store?.policy != null)
-                    Column(
-                      children: [
-                        // policy section
-                        SectionDivider(
-                            leadIcon: ProximityIcons.policy,
-                            title: localizations!.policyDeliveryReturns,
-                            color: Theme.of(context).primaryColor),
-                        // MasonryGrid(
-                        //delivery policy
-                        storeService.store!.policy!.deliveryPolicy != null
-                            ? PolicyCard(
-                                leadIcon: ProximityIcons.shipping,
-                                title: localizations.shipping,
-                                subTitle: localizations.estimatedDeliveryTime)
-                            : Container(),
-
-                        // pickup policy
-                        storeService.store!.policy!.pickupPolicy != null &&
-                                storeService.store!.policy!.pickupPolicy!
-                                        .timeLimit !=
-                                    null
-                            ? PolicyCard(
-                                leadIcon: ProximityIcons.self_pickup,
-                                title: localizations.selfPickup,
-                                subTitle: localizations.pickupReminder1 +
-                                    storeService
-                                        .store!.policy!.pickupPolicy!.timeLimit
-                                        .toString() +
-                                    localizations.pickupReminder2,
-                              )
-                            : Container(),
-
-                        // Return  Policy
-                        storeService.store!.policy!.returnPolicy != null
-                            ? storeService.store!.policy!.returnPolicy!.refund!.shipping != null &&
-                                    storeService.store!.policy!.returnPolicy!.refund!.order !=
+                          //StoreProducts
+                          SectionDivider(
+                              leadIcon: ProximityIcons.product,
+                              title: 'Store Products.',
+                              color: Theme.of(context).primaryColor),
+                          (storeService.products == null)
+                              ? const ProductCardsSkeleton()
+                              : MasonryGrid(
+                                  column: 2,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: small_100),
+                                  children: List.generate(
+                                      storeService.products!.length,
+                                      (i) => ProductCard(
+                                          product: storeService.products![i]))),
+                          if (storeService.store?.policy != null)
+                            Column(
+                              children: [
+                                SectionDivider(
+                                    leadIcon: ProximityIcons.policy,
+                                    title: 'Store Policy.',
+                                    color: Theme.of(context).primaryColor),
+                                // MasonryGrid(
+                                //delivery policy
+                                storeService.store!.policy!.deliveryPolicy !=
                                         null
-                                ? PolicyCard(
-                                    leadIcon: Icons.settings_backup_restore,
-                                    title: localizations.returnRefund,
-                                    subTitle: localizations
-                                            .returnRefundWithShipping1 +
+                                    ? PolicyCard(
+                                        leadIcon: ProximityIcons.shipping,
+                                        title: "Shipping",
+                                        subTitle:
+                                            "Estimated delivery time is  days. Shipping fees are will negociate for this product",
+                                      )
+                                    : Container(),
+
+                                // pickup policy
+                                storeService.store!.policy!.pickupPolicy !=
+                                            null &&
                                         storeService.store!.policy!
-                                            .returnPolicy!.duration
-                                            .toString() +
-                                        storeService.store!.policy!
-                                            .returnPolicy!.refund!.order.fixe
-                                            .toString() +
-                                        localizations.returnRefundOnlyShipping3,
-                                  )
-                                : storeService.store!.policy!.returnPolicy!.refund!.shipping == null &&
-                                        storeService.store!.policy!
-                                                .returnPolicy!.refund!.order !=
+                                                .pickupPolicy!.timeLimit !=
                                             null
                                     ? PolicyCard(
-                                        leadIcon: Icons.settings_backup_restore,
-                                        title: localizations.returnRefund,
-                                        subTitle: localizations.returnRefundWithShipping1 +
-                                            storeService.store!.policy!
-                                                .returnPolicy!.duration
-                                                .toString() +
-                                            localizations
-                                                .returnRefundWithoutShipping2 +
-                                            storeService.store!.policy!
-                                                .returnPolicy!.productStatus! +
-                                            localizations
-                                                .returnRefundWithoutShipping3 +
-                                            storeService
-                                                .store!
-                                                .policy!
-                                                .returnPolicy!
-                                                .refund!
-                                                .order
-                                                .fixe
-                                                .toString() +
-                                            localizations
-                                                .returnRefundWithoutShipping4,
+                                        leadIcon: ProximityIcons.self_pickup,
+                                        title: "Pick UP",
+                                        subTitle:
+                                            "Remember to pick up your order from our store within ${storeService.store!.policy!.pickupPolicy!.timeLimit} days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
                                       )
-                                    : storeService.store!.policy!.returnPolicy!.refund!.shipping != null &&
+                                    : Container(),
+                                // reservation policy
+                                storeService.store!.policy!.reservationPolicy !=
+                                        null
+                                    ? storeService.store!.policy!
+                                            .reservationPolicy!.payment!.free!
+                                        ? PolicyCard(
+                                            leadIcon: Icons.book_online,
+                                            title: "Reservation",
+                                            subTitle:
+                                                "Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days",
+                                          )
+                                        : storeService
+                                                    .store!
+                                                    .policy!
+                                                    .reservationPolicy!
+                                                    .payment!
+                                                    .partial !=
+                                                null
+                                            ? PolicyCard(
+                                                leadIcon: Icons.book_online,
+                                                title: "Reservation",
+                                                subTitle:
+                                                    "A deposit of ${storeService.store!.policy!.reservationPolicy!.payment.partial!.fixe} may be required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days.",
+                                              )
+                                            : storeService
+                                                    .store!
+                                                    .policy!
+                                                    .reservationPolicy!
+                                                    .payment!
+                                                    .free!
+                                                ? storeService
+                                                        .store!
+                                                        .policy!
+                                                        .reservationPolicy!
+                                                        .payment!
+                                                        .total!
+                                                    ? PolicyCard(
+                                                        leadIcon:
+                                                            Icons.book_online,
+                                                        title: "Reservation",
+                                                        subTitle:
+                                                            "a full price payement is  required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days.",
+                                                      )
+                                                    : Container()
+                                                : Container()
+                                    : Container(),
+// Return  Policy
+                                storeService.store!.policy!.returnPolicy != null
+                                    ? storeService.store!.policy!.returnPolicy!
+                                                    .refund!.shipping !=
+                                                null &&
                                             storeService
                                                     .store!
                                                     .policy!
@@ -338,26 +367,58 @@ class _StoreScreenState extends State<StoreScreen> {
                                         ? PolicyCard(
                                             leadIcon:
                                                 Icons.settings_backup_restore,
-                                            title: localizations.returnRefund,
-                                            subTitle: localizations
-                                                    .returnRefundOnlyShipping1 +
-                                                storeService.store!.policy!
-                                                    .returnPolicy!.duration
-                                                    .toString() +
-                                                localizations
-                                                    .returnRefundOnlyShipping2 +
+                                            title: "Return and Refund  ",
+                                            subTitle:
+                                                "You may return your item within${storeService.store!.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${storeService.store!.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees and ${storeService.store!.policy!.returnPolicy!.refund!.order.fixe} % of the price  ",
+                                          )
+                                        : storeService
+                                                        .store!
+                                                        .policy!
+                                                        .returnPolicy!
+                                                        .refund!
+                                                        .shipping ==
+                                                    null &&
                                                 storeService
-                                                    .store!
-                                                    .policy!
-                                                    .returnPolicy!
-                                                    .productStatus! +
-                                                localizations
-                                                    .returnRefundOnlyShipping3)
-                                        : Container()
-                            : Container(),
-                      ],
-                    )
-                  /*(storeService.products == null)
+                                                        .store!
+                                                        .policy!
+                                                        .returnPolicy!
+                                                        .refund!
+                                                        .order !=
+                                                    null
+                                            ? PolicyCard(
+                                                leadIcon: Icons
+                                                    .settings_backup_restore,
+                                                title: "Return and Refund  ",
+                                                subTitle:
+                                                    "You may return your item within${storeService.store!.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${storeService.store!.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund ${storeService.store!.policy!.returnPolicy!.refund!.order.fixe} % of the price , shipping fees are not refunded ",
+                                              )
+                                            : storeService
+                                                            .store!
+                                                            .policy!
+                                                            .returnPolicy!
+                                                            .refund!
+                                                            .shipping !=
+                                                        null &&
+                                                    storeService
+                                                            .store!
+                                                            .policy!
+                                                            .returnPolicy!
+                                                            .refund!
+                                                            .order ==
+                                                        null
+                                                ? PolicyCard(
+                                                    leadIcon: Icons
+                                                        .settings_backup_restore,
+                                                    title:
+                                                        "Return and Refund  ",
+                                                    subTitle:
+                                                        "You may return your item within${storeService.store!.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${storeService.store!.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees ",
+                                                  )
+                                                : Container()
+                                    : Container(),
+                              ],
+                            )
+                          /*(storeService.products == null)
                       ? const ProductCardsSkeleton()
                       : MasonryGrid(
                           column: 2,
