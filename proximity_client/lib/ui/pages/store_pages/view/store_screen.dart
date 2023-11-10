@@ -161,7 +161,7 @@ class _StoreScreenState extends State<StoreScreen> {
         );
       }
 
-      return Text('No working hours available');
+      return Text(localizations!.noWorkingHours);
     }
 
     /// a boolean to help fetch data ONLY if necessary
@@ -226,8 +226,8 @@ class _StoreScreenState extends State<StoreScreen> {
                                       title: Text(
                                           isStoreOpenNow(storeService
                                                   .store!.workingTime!)
-                                              ? 'Open'
-                                              : 'Closed',
+                                              ? localizations!.open
+                                              : localizations!.closed,
                                           style: Theme.of(context)
                                               .textTheme
                                               .headlineSmall!
@@ -262,7 +262,7 @@ class _StoreScreenState extends State<StoreScreen> {
                           //StoreProducts
                           SectionDivider(
                               leadIcon: ProximityIcons.product,
-                              title: 'Store Products.',
+                              title: localizations!.storeProducts,
                               color: Theme.of(context).primaryColor),
                           (storeService.products == null)
                               ? const ProductCardsSkeleton()
@@ -279,7 +279,7 @@ class _StoreScreenState extends State<StoreScreen> {
                               children: [
                                 SectionDivider(
                                     leadIcon: ProximityIcons.policy,
-                                    title: 'Store Policy.',
+                                    title: localizations!.storePolicy,
                                     color: Theme.of(context).primaryColor),
                                 // MasonryGrid(
                                 //delivery policy
@@ -287,9 +287,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                         null
                                     ? PolicyCard(
                                         leadIcon: ProximityIcons.shipping,
-                                        title: "Shipping",
-                                        subTitle:
-                                            "Estimated delivery time is  days. Shipping fees are will negociate for this product",
+                                        title: localizations.shipping,
+                                        subTitle: localizations!.shippingPolicyInfo
+                                           // "Estimated delivery time is  days. Shipping fees are will negociate for this product",
                                       )
                                     : Container(),
 
@@ -301,9 +301,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                             null
                                     ? PolicyCard(
                                         leadIcon: ProximityIcons.self_pickup,
-                                        title: "Pick UP",
-                                        subTitle:
-                                            "Remember to pick up your order from our store within ${storeService.store!.policy!.pickupPolicy!.timeLimit} days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
+                                        title: localizations!.selfPickup,
+                                        subTitle: localizations.pickupInfos
+                                            //"Remember to pick up your order from our store within ${storeService.store!.policy!.pickupPolicy!.timeLimit} days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
                                       )
                                     : Container(),
                                 // reservation policy
@@ -313,9 +313,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                             .reservationPolicy!.payment!.free!
                                         ? PolicyCard(
                                             leadIcon: Icons.book_online,
-                                            title: "Reservation",
-                                            subTitle:
-                                                "Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days",
+                                            title: localizations.reservation,
+                                            subTitle: localizations.returnPolicyInfo
+                                                //"Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days",
                                           )
                                         : storeService
                                                     .store!
@@ -326,9 +326,9 @@ class _StoreScreenState extends State<StoreScreen> {
                                                 null
                                             ? PolicyCard(
                                                 leadIcon: Icons.book_online,
-                                                title: "Reservation",
+                                                title:localizations.returnPolicyInfo,
                                                 subTitle:
-                                                    "A deposit of ${storeService.store!.policy!.reservationPolicy!.payment.partial!.fixe} may be required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days.",
+                                                    "${storeService.store!.policy!.reservationPolicy!.payment.partial!.fixe} may be required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days.",
                                               )
                                             : storeService
                                                     .store!
@@ -367,7 +367,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                         ? PolicyCard(
                                             leadIcon:
                                                 Icons.settings_backup_restore,
-                                            title: "Return and Refund  ",
+                                            title: localizations.returnRefund,
                                             subTitle:
                                                 "You may return your item within${storeService.store!.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${storeService.store!.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees and ${storeService.store!.policy!.returnPolicy!.refund!.order.fixe} % of the price  ",
                                           )
@@ -388,7 +388,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                             ? PolicyCard(
                                                 leadIcon: Icons
                                                     .settings_backup_restore,
-                                                title: "Return and Refund  ",
+                                                title:localizations.returnRefund, 
                                                 subTitle:
                                                     "You may return your item within${storeService.store!.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${storeService.store!.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund ${storeService.store!.policy!.returnPolicy!.refund!.order.fixe} % of the price , shipping fees are not refunded ",
                                               )
