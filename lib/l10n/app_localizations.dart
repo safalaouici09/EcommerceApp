@@ -607,6 +607,24 @@ abstract class AppLocalizations {
   String get valueDialogValueName;
   @override
   String get valueDialogSubmit;
+  //stat
+  String get globalStatistics;
+  String get views;
+  String get sales;
+  String get productViewed;
+  String get productSold;
+  String get productCategory;
+  String get week;
+  String get day;
+  String get month;
+  String get geographicSales;
+  String get productSales;
+  String get storeSales;
+  String get storeViews;
+  String get totalViews;
+  String get productViews;
+  String get noProductViewed;
+  String get totalSales;
 }
 
 class _AppLocalizationsDelegate

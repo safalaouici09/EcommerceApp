@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/config/values.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/widgets/forms/section_divider.dart';
 import 'package:proximity/widgets/top_bar.dart';
 import 'package:proximity_commercant/domain/order_repository/src/order_service.dart';
@@ -21,6 +22,7 @@ class ProductSalesWidget extends StatefulWidget {
 class _ProductSalesWidgetState extends State<ProductSalesWidget> {
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Consumer<StatisticService>(
         builder: (context, statiscService, child) {
       return Padding(
@@ -35,8 +37,8 @@ class _ProductSalesWidgetState extends State<ProductSalesWidget> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Product Sales',
+                        Text(
+                          localizations!.storeSales,
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
@@ -48,7 +50,8 @@ class _ProductSalesWidgetState extends State<ProductSalesWidget> {
                                   children: [
                                     Container(
                                         child: Text(
-                                            'No product was viewed this ${statiscService.period}')),
+                                            localizations!.noProductViewed +
+                                                '${statiscService.period}')),
                                   ],
                                 ))
                             : builProductRevenuesBarChart(

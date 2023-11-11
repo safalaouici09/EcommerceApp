@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/config/values.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/widgets/forms/section_divider.dart';
 import 'package:proximity/widgets/top_bar.dart';
 import 'package:proximity_commercant/domain/order_repository/src/order_service.dart';
@@ -22,6 +23,7 @@ class StoreSaleWidget extends StatefulWidget {
 class _StoreSaleWidgetState extends State<StoreSaleWidget> {
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Consumer<StatisticService>(
         builder: (context, statiscService, child) {
       return Padding(
@@ -37,7 +39,7 @@ class _StoreSaleWidgetState extends State<StoreSaleWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Store Sales',
+                  localizations!.storeSales,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),

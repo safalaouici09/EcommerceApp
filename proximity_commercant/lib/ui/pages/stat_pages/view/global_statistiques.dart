@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/config/colors.dart';
 import 'package:proximity/config/values.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/widgets/forms/border_type.dart';
 import 'package:proximity/widgets/forms/drop_down_selector.dart';
 import 'package:proximity/widgets/forms/section_divider.dart';
@@ -35,6 +36,7 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Consumer<StatisticService>(
       builder: (context, statiscService, child) {
         return Scaffold(
@@ -43,19 +45,19 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
               length: 2, // Number of tabs
               child: Column(
                 children: [
-                  const TopBar(title: 'Global Statistics'),
+                  TopBar(title: localizations!.globalStatistics),
                   TabBar(
                     labelColor: Colors.black,
                     labelStyle: Theme.of(context).textTheme.labelLarge,
                     tabs: [
                       Tab(
                         icon: Icon(Icons.visibility),
-                        text: 'Views',
+                        text: localizations!.views,
                         // Set the desired text color here
                       ),
                       Tab(
                         icon: Icon(Icons.shopping_cart),
-                        text: 'Sales',
+                        text: localizations!.sales,
                         // Set the desired text color here
                       ),
                     ],
@@ -81,6 +83,8 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
 
   // Build the content for the "Views" tab
   Widget _buildViewsTab(StatisticService statiscService) {
+    final localizations = AppLocalizations.of(context);
+
     return ListView(
       children: [
         Row(
@@ -96,7 +100,11 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
                   onChanged: statiscService.changeStatisticPeriod,
                   borderType: BorderType.middle,
                   savedValue: statiscService.period.toString(),
-                  items: ['week', 'day', 'month']
+                  items: [
+                    localizations!.week,
+                    localizations!.day,
+                    localizations!.month
+                  ]
                       .map((item) => DropdownItem<String>(
                           value: item,
                           child: Text(item,
@@ -114,12 +122,12 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
           children: [
             ColoredCard(
               title: statiscService.totalViews.toString(),
-              subTitle: 'product was viewed',
+              subTitle: localizations!.productViewed,
               cardColor: blueSwatch.shade100,
             ),
             ColoredCard(
               title: statiscService.totalSales.toString(),
-              subTitle: 'product was sold  ',
+              subTitle: localizations!.productSold,
               cardColor: blueSwatch.shade300,
             ),
           ],
@@ -151,9 +159,10 @@ class _GlobalStatisticsScreenState extends State<GlobalStatisticsScreen> {
 }
 
 ListView getWidgets(StatisticService statiscService, BuildContext context) {
+  final localizations = AppLocalizations.of(context);
   return ListView(
     children: [
-      const TopBar(title: 'Global Statistics'),
+      TopBar(title: localizations!.globalStatistics),
       Row(
         children: [
           Spacer(),
@@ -167,7 +176,11 @@ ListView getWidgets(StatisticService statiscService, BuildContext context) {
                 onChanged: statiscService.changeStatisticPeriod,
                 borderType: BorderType.middle,
                 savedValue: statiscService.period.toString(),
-                items: ['week', 'day', 'month']
+                items: [
+                  localizations!.week,
+                  localizations.day,
+                  localizations.month
+                ]
                     .map((item) => DropdownItem<String>(
                         value: item,
                         child: Text(item,
@@ -185,12 +198,12 @@ ListView getWidgets(StatisticService statiscService, BuildContext context) {
         children: [
           ColoredCard(
             title: statiscService.totalViews.toString(),
-            subTitle: 'product was viewed',
+            subTitle: localizations!.productViewed,
             cardColor: blueSwatch.shade100,
           ),
           ColoredCard(
             title: statiscService.totalSales.toString(),
-            subTitle: 'product was sold  ',
+            subTitle: localizations!.productSold,
             cardColor: blueSwatch.shade300,
           ),
         ],

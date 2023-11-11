@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/config/config.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity_commercant/domain/statistic_repository/src/Statistic_service.dart';
 
 class ProductMonthlyViews extends StatelessWidget {
@@ -13,6 +14,7 @@ class ProductMonthlyViews extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Consumer<StatisticService>(
         builder: (context, statiscService, child) {
       return Padding(
@@ -27,8 +29,8 @@ class ProductMonthlyViews extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Product Sales',
+                        Text(
+                          localizations!.productSales,
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
@@ -40,7 +42,8 @@ class ProductMonthlyViews extends StatelessWidget {
                                   children: [
                                     Container(
                                         child: Text(
-                                            'No product was viewed this ${statiscService.period}')),
+                                            localizations!.noProductViewed +
+                                                '${statiscService.period}')),
                                   ],
                                 ))
                             : buildLineChart(statiscService.monthlyViews)

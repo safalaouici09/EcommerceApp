@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:proximity/config/values.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 
 import 'package:proximity_commercant/domain/statistic_repository/models/region_view.dart';
 
@@ -14,6 +15,7 @@ class RegionSalesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Padding(
         padding: const EdgeInsets.all(normal_100),
         child: Card(
@@ -26,8 +28,8 @@ class RegionSalesWidget extends StatelessWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Géografic Sales',
+                      Text(
+                        localizations!.geographicSales,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),

@@ -737,4 +737,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get valueDialogValueName => 'Value Name';
   @override
   String get valueDialogSubmit => 'Submit';
+  //Stat
+  String get globalStatistics => 'Global Statistics';
+  String get views => 'Views';
+  String get sales => 'Sales';
+  String get productViewed => 'product was viewed';
+  String get productSold => 'product was sold';
+  String get productCategory => 'Product Category';
+  String get week => 'week';
+  String get day => 'day';
+  String get month => 'month';
+  String get geographicSales => 'Geographic Sales';
+  String get productViewed => 'product was viewed';
+  String get productSold => 'product was sold';
+  String get productSales => 'Product Sales';
+  String get storeSales => 'Store Sales';
+  String get storeViews => 'Store Views';
+  String get totalViews => 'Total Views';
+  String get productViews => 'Product Views';
+  String get noProductViewed => 'No product was viewed this';
+  String get totalSales => 'Total Sales:';
 }

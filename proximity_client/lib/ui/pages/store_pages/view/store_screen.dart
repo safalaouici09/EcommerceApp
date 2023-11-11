@@ -277,9 +277,10 @@ class _StoreScreenState extends State<StoreScreen> {
                           if (storeService.store?.policy != null)
                             Column(
                               children: [
+                                // policy section
                                 SectionDivider(
                                     leadIcon: ProximityIcons.policy,
-                                    title: localizations!.storePolicy,
+                                    title: localizations!.policyDeliveryReturns,
                                     color: Theme.of(context).primaryColor),
                                 // MasonryGrid(
                                 //delivery policy
@@ -288,9 +289,8 @@ class _StoreScreenState extends State<StoreScreen> {
                                     ? PolicyCard(
                                         leadIcon: ProximityIcons.shipping,
                                         title: localizations.shipping,
-                                        subTitle: localizations!.shippingPolicyInfo
-                                           // "Estimated delivery time is  days. Shipping fees are will negociate for this product",
-                                      )
+                                        subTitle:
+                                            localizations.estimatedDeliveryTime)
                                     : Container(),
 
                                 // pickup policy
@@ -301,104 +301,74 @@ class _StoreScreenState extends State<StoreScreen> {
                                             null
                                     ? PolicyCard(
                                         leadIcon: ProximityIcons.self_pickup,
-                                        title: localizations!.selfPickup,
-                                        subTitle: localizations.pickupInfos
-                                            //"Remember to pick up your order from our store within ${storeService.store!.policy!.pickupPolicy!.timeLimit} days, or it will be returned to the shelves. Don't miss out on the chance to make it yours!.",
+                                        title: localizations.selfPickup,
+                                        subTitle:
+                                            localizations.pickupReminder1 +
+                                                storeService.store!.policy!
+                                                    .pickupPolicy!.timeLimit
+                                                    .toString() +
+                                                localizations.pickupReminder2,
                                       )
                                     : Container(),
-                                // reservation policy
-                                storeService.store!.policy!.reservationPolicy !=
-                                        null
-                                    ? storeService.store!.policy!
-                                            .reservationPolicy!.payment!.free!
-                                        ? PolicyCard(
-                                            leadIcon: Icons.book_online,
-                                            title: localizations.reservation,
-                                            subTitle: localizations.returnPolicyInfo
-                                                //"Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days",
-                                          )
-                                        : storeService
-                                                    .store!
-                                                    .policy!
-                                                    .reservationPolicy!
-                                                    .payment!
-                                                    .partial !=
-                                                null
-                                            ? PolicyCard(
-                                                leadIcon: Icons.book_online,
-                                                title:localizations.returnPolicyInfo,
-                                                subTitle:
-                                                    "${storeService.store!.policy!.reservationPolicy!.payment.partial!.fixe} may be required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days.",
-                                              )
-                                            : storeService
-                                                    .store!
-                                                    .policy!
-                                                    .reservationPolicy!
-                                                    .payment!
-                                                    .free!
-                                                ? storeService
-                                                        .store!
-                                                        .policy!
-                                                        .reservationPolicy!
-                                                        .payment!
-                                                        .total!
-                                                    ? PolicyCard(
-                                                        leadIcon:
-                                                            Icons.book_online,
-                                                        title: "Reservation",
-                                                        subTitle:
-                                                            "a full price payement is  required to secure your reservation.Once your reservation is confirmed, you may pick up your item from our store within ${storeService.store!.policy!.reservationPolicy!.duration} days.",
-                                                      )
-                                                    : Container()
-                                                : Container()
-                                    : Container(),
-// Return  Policy
+
+                                // Return  Policy
                                 storeService.store!.policy!.returnPolicy != null
-                                    ? storeService.store!.policy!.returnPolicy!
-                                                    .refund!.shipping !=
-                                                null &&
-                                            storeService
-                                                    .store!
-                                                    .policy!
-                                                    .returnPolicy!
-                                                    .refund!
-                                                    .order !=
+                                    ? storeService.store!.policy!.returnPolicy!.refund!.shipping != null &&
+                                            storeService.store!.policy!.returnPolicy!.refund!.order !=
                                                 null
                                         ? PolicyCard(
                                             leadIcon:
                                                 Icons.settings_backup_restore,
                                             title: localizations.returnRefund,
-                                            subTitle:
-                                                "You may return your item within${storeService.store!.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${storeService.store!.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees and ${storeService.store!.policy!.returnPolicy!.refund!.order.fixe} % of the price  ",
-                                          )
-                                        : storeService
-                                                        .store!
-                                                        .policy!
-                                                        .returnPolicy!
-                                                        .refund!
-                                                        .shipping ==
-                                                    null &&
+                                            subTitle: localizations
+                                                    .returnRefundWithShipping1 +
+                                                storeService.store!.policy!
+                                                    .returnPolicy!.duration
+                                                    .toString() +
                                                 storeService
-                                                        .store!
-                                                        .policy!
-                                                        .returnPolicy!
-                                                        .refund!
-                                                        .order !=
+                                                    .store!
+                                                    .policy!
+                                                    .returnPolicy!
+                                                    .refund!
+                                                    .order
+                                                    .fixe
+                                                    .toString() +
+                                                localizations
+                                                    .returnRefundOnlyShipping3,
+                                          )
+                                        : storeService.store!.policy!.returnPolicy!.refund!.shipping == null &&
+                                                storeService.store!.policy!.returnPolicy!.refund!.order !=
                                                     null
                                             ? PolicyCard(
                                                 leadIcon: Icons
                                                     .settings_backup_restore,
-                                                title:localizations.returnRefund, 
-                                                subTitle:
-                                                    "You may return your item within${storeService.store!.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${storeService.store!.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund ${storeService.store!.policy!.returnPolicy!.refund!.order.fixe} % of the price , shipping fees are not refunded ",
+                                                title:
+                                                    localizations.returnRefund,
+                                                subTitle: localizations.returnRefundWithShipping1 +
+                                                    storeService.store!.policy!
+                                                        .returnPolicy!.duration
+                                                        .toString() +
+                                                    localizations
+                                                        .returnRefundWithoutShipping2 +
+                                                    storeService
+                                                        .store!
+                                                        .policy!
+                                                        .returnPolicy!
+                                                        .productStatus! +
+                                                    localizations
+                                                        .returnRefundWithoutShipping3 +
+                                                    storeService
+                                                        .store!
+                                                        .policy!
+                                                        .returnPolicy!
+                                                        .refund!
+                                                        .order
+                                                        .fixe
+                                                        .toString() +
+                                                    localizations
+                                                        .returnRefundWithoutShipping4,
                                               )
-                                            : storeService
-                                                            .store!
-                                                            .policy!
-                                                            .returnPolicy!
-                                                            .refund!
-                                                            .shipping !=
-                                                        null &&
+                                            : storeService.store!.policy!.returnPolicy!.refund!.shipping != null &&
                                                     storeService
                                                             .store!
                                                             .policy!
@@ -409,11 +379,23 @@ class _StoreScreenState extends State<StoreScreen> {
                                                 ? PolicyCard(
                                                     leadIcon: Icons
                                                         .settings_backup_restore,
-                                                    title:
-                                                        "Return and Refund  ",
-                                                    subTitle:
-                                                        "You may return your item within${storeService.store!.policy!.returnPolicy!.duration} days of receipt for a refund, provided that the item is${storeService.store!.policy!.returnPolicy!.productStatus}. in case the return is accepted , the store will refund shipping fees ",
-                                                  )
+                                                    title: localizations
+                                                        .returnRefund,
+                                                    subTitle: localizations.returnRefundOnlyShipping1 +
+                                                        storeService
+                                                            .store!
+                                                            .policy!
+                                                            .returnPolicy!
+                                                            .duration
+                                                            .toString() +
+                                                        localizations
+                                                            .returnRefundOnlyShipping2 +
+                                                        storeService
+                                                            .store!
+                                                            .policy!
+                                                            .returnPolicy!
+                                                            .productStatus! +
+                                                        localizations.returnRefundOnlyShipping3)
                                                 : Container()
                                     : Container(),
                               ],

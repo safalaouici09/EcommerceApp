@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proximity/config/values.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/widgets/forms/section_divider.dart';
 import 'package:proximity/widgets/top_bar.dart';
 import 'package:proximity_commercant/domain/order_repository/src/order_service.dart';
@@ -21,6 +22,7 @@ class StoreViewWidget extends StatefulWidget {
 class _StoreViewWidgetState extends State<StoreViewWidget> {
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Consumer<StatisticService>(
         builder: (context, statiscService, child) {
       return Padding(
@@ -36,7 +38,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Store Views',
+                  localizations!.storeViews,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
@@ -108,6 +110,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget> {
   }*/
 
   Widget buildSummarySection(int views) {
+    final localizations = AppLocalizations.of(context);
     // Replace the below values with your actual total sales and viewse
     /*double totalSales =
         StoreViewData.values.reduce((sum, element) => sum + element);*/
@@ -116,7 +119,7 @@ class _StoreViewWidgetState extends State<StoreViewWidget> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Total Views : \$${views}',
+          localizations!.totalViews + '${views}',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ],

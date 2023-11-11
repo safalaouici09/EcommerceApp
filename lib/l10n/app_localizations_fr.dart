@@ -742,4 +742,23 @@ class AppLocalizationsFr extends AppLocalizations {
   String get valueDialogValueName => 'Nom de la valeur';
   @override
   String get valueDialogSubmit => 'Soumettre';
+  //Stat
+  String get globalStatistics => 'Statistiques';
+  String get views => 'Vues';
+  String get sales => 'Ventes';
+  String get productViewed => 'Le produit a été consulté';
+  String get productSold => 'Le produit a été vendu';
+  String get productCategory => 'Catégorie de produit';
+  String get week => 'semaine';
+  String get day => 'jour';
+  String get month => 'mois';
+  String get geographicSales => 'Ventes géographiques';
+
+  String get productSales => 'Ventes de produits';
+  String get storeSales => 'Ventes de magasins';
+  String get storeViews => 'Vues de magasins';
+  String get totalViews => 'Vues totales';
+  String get productViews => 'Vues de produits';
+  String get noProductViewed => 'Aucun produit n\'a été consulté';
+  String get totalSales => 'Ventes totales';
 }

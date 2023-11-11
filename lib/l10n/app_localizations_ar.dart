@@ -719,4 +719,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get valueDialogValueName => 'اسم القيمة';
   @override
   String get valueDialogSubmit => 'إرسال';
+  ////{ Stat }
+  String get globalStatistics => 'الإحصائيات العامة';
+  String get views => 'المشاهدات';
+  String get sales => 'المبيعات';
+  String get productViewed => 'تمت مشاهدة المنتج';
+  String get productSold => 'تم بيع المنتج';
+  String get productCategory => 'فئة المنتج';
+  String get week => 'أسبوع';
+  String get day => 'يوم';
+  String get month => 'شهر';
+  String get geographicSales => 'مبيعات جغرافية';
+
+  String get productSales => 'مبيعات المنتج';
+  String get storeSales => 'مبيعات المتجر';
+  String get storeViews => 'مشاهدات المتجر';
+  String get totalViews => 'إجمالي المشاهدات';
+  String get productViews => 'مشاهدات المنتج';
+  String get noProductViewed => 'لم يتم مشاهدة أي منتج';
+  String get totalSales => 'إجمالي المبيعات:';
 }

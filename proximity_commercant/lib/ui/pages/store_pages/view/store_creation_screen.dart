@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proximity/l10n/app_localizations.dart';
 import 'package:proximity/proximity.dart';
 import 'package:proximity/widgets/forms/edit_text_spacer.dart';
 import 'package:proximity_commercant/domain/store_repository/models/workingTime_model.dart';
@@ -180,16 +181,15 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
     );
   }
 
-  //List<TimeRange> workingTimes = [];
-  Map<String, String> workingTimesOptions = {
-    "1": "Fixed Daily Schedule",
-    "2": "Customized Working Hours"
-  };
-
   Policy? policyResult;
   @override
   Widget build(BuildContext context) {
     final policyValidation = Provider.of<PolicyValidation>(context);
+    final localizations = AppLocalizations.of(context);
+    Map<String, String> workingTimesOptions = {
+      "1": localizations!.storeWorkingTimeFixed,
+      "2": localizations.storeWorkingTimeCustom
+    };
     User? _user = context.watch<UserService>().user;
 
     /// a boolean to help fetch data ONLY if necessary
@@ -239,11 +239,11 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
         /// Store Details
         SectionDivider(
             leadIcon: ProximityIcons.edit,
-            title: 'Store details.',
+            title: localizations!.storeDetails,
             color: redSwatch.shade500),
 
         EditText(
-          hintText: 'Name',
+          hintText: localizations.storeName,
           borderType: BorderType.top,
           saved: storeCreationSliderValidation.storeName.value,
           errorText: storeCreationSliderValidation.storeName.error,
@@ -253,7 +253,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
         const EditTextSpacer(),
         EditText(
-          hintText: 'Description.',
+          hintText: localizations.description,
           borderType: BorderType.bottom,
           keyboardType: TextInputType.multiline,
           saved: storeCreationSliderValidation.storeDescription.value,
@@ -262,12 +262,10 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           enabled: (widget.store.description == null) || widget.editScreen,
           onChanged: storeCreationSliderValidation.changeStoreDescription,
         ),
-        const InfoMessage(
-            message:
-                'Please provide your commercial registration number. This is a unique identifier assigned to your business by the relevant government authority'),
+        InfoMessage(message: localizations.storeCommercialRegistrationNumber),
         const EditTextSpacer(),
         EditText(
-          hintText: 'Commercial Registration Number',
+          hintText: localizations.storeCrn,
           saved: storeCreationSliderValidation.storeRegistrationNumber.value,
           errorText:
               storeCreationSliderValidation.storeRegistrationNumber.error,
@@ -279,7 +277,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
         SectionDivider(
             leadIcon: ProximityIcons.picture,
-            title: 'Store Image.',
+            title: localizations.storeImage,
             color: redSwatch.shade500),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: normal_125),
@@ -303,15 +301,13 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
 
         SectionDivider(
             leadIcon: Icons.timer_outlined,
-            title: 'Working time.',
+            title: localizations!.storeWorkingTime,
             color: redSwatch.shade500),
-        const InfoMessage(
-            message:
-                "By updating your working hours in the app, your clients will be informed about when you're open for pickups. Take a moment to add your working hours and keep your customers in the loop"),
+        InfoMessage(message: localizations.storeGlobalPolicyDescription),
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: normal_100),
             child: DropDownSelector<String>(
-                hintText: 'Select working time option.',
+                hintText: localizations.storeAddWorkingTime,
                 savedValue: storeCreationSliderValidation.workingTimeOption,
                 onChanged:
                     storeCreationSliderValidation.changeWorkingTimeOption,
@@ -364,7 +360,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                         const TimeOfDay(hour: 0, minute: 0)));
                           });
                         },
-                        title: "Add working time",
+                        title: localizations.storeAddWorkingTime,
                       ),
                     )
                   ],
@@ -492,7 +488,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                                 closeTime: null));*/
                                         });
                                       },
-                                      title: "Add working time",
+                                      title: localizations.storeAddWorkingTime,
                                     ),
                                   ),
                               ],
@@ -507,11 +503,9 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
         /// Address
         SectionDivider(
             leadIcon: ProximityIcons.address,
-            title: 'Address.',
+            title: localizations.storeAdress,
             color: redSwatch.shade500),
-        const InfoMessage(
-            message:
-                'Select your Store Location from the Address Picker, then edit the address info for more accuracy.'),
+        InfoMessage(message: localizations.storeSelectStoreLocation),
         Padding(
           padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
           child: TertiaryButton(
@@ -522,40 +516,22 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                         builder: (context) => AddressSelectionScreen(
                             currentAddress:
                                 storeCreationSliderValidation.storeAddress)));
-                setState(() {
-                  print(_result);
-                  storeCreationSliderValidation.changeAddress(_result);
-                });
+                storeCreationSliderValidation.changeAddress(_result);
               },
-              title: 'Select Address.'),
+              title: localizations.storeSelectAddress),
         ),
-
         EditText(
-          controller: () {
-            TextEditingController _controller = TextEditingController();
-            _controller.text =
-                storeCreationSliderValidation.storeAddress.fullAddress ?? "";
-            _controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: _controller.text.length));
-            return _controller;
-          }(),
-          hintText: 'Street Address Line 1.',
+          hintText: localizations.storeAdressLine1,
           borderType: BorderType.top,
+          saved: storeCreationSliderValidation.storeAddress.fullAddress,
           enabled: (widget.store.address == null) || widget.editScreen,
           onChanged: storeCreationSliderValidation.changeFullAddress,
         ),
         const EditTextSpacer(),
         EditText(
-          controller: () {
-            TextEditingController _controller = TextEditingController();
-            _controller.text =
-                storeCreationSliderValidation.storeAddress.streetName ?? "";
-            _controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: _controller.text.length));
-            return _controller;
-          }(),
-          hintText: 'Street Address Line 2.',
+          hintText: localizations.storeAdressLine2,
           borderType: BorderType.middle,
+          saved: storeCreationSliderValidation.storeAddress.streetName,
           enabled: (widget.store.address == null) || widget.editScreen,
           onChanged: storeCreationSliderValidation.changeStreetName,
         ),
@@ -564,11 +540,10 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
           padding: const EdgeInsets.symmetric(horizontal: normal_100),
           child: DropDownSelector<String>(
             // labelText: 'Product Category.',
-            hintText: 'Country.',
+            hintText: localizations.storeAdressCountry,
             onChanged: storeCreationSliderValidation.changeCountry,
             borderType: BorderType.middle,
-            savedValue:
-                storeCreationSliderValidation.storeAddress.countryCode ?? "",
+            savedValue: storeCreationSliderValidation.storeAddress.countryCode,
             items: countryList.entries
                 .map((item) => DropdownItem<String>(
                     value: item.key,
@@ -582,45 +557,23 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
         ),
         const EditTextSpacer(),
         EditText(
-          controller: () {
-            TextEditingController _controller = TextEditingController();
-            _controller.text =
-                storeCreationSliderValidation.storeAddress.region ?? "";
-            _controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: _controller.text.length));
-            return _controller;
-          }(),
-          hintText: 'Region.',
+          hintText: localizations.storeAdressRegion,
           borderType: BorderType.middle,
+          saved: storeCreationSliderValidation.storeAddress.region,
           enabled: (widget.store.address == null) || widget.editScreen,
           onChanged: storeCreationSliderValidation.changeRegion,
         ),
         const EditTextSpacer(),
         EditText(
-          controller: () {
-            TextEditingController _controller = TextEditingController();
-            _controller.text =
-                storeCreationSliderValidation.storeAddress.city ?? "";
-            _controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: _controller.text.length));
-            return _controller;
-          }(),
-          hintText: 'City.',
+          hintText: localizations.storeAdressRegion,
           borderType: BorderType.middle,
+          saved: storeCreationSliderValidation.storeAddress.city,
           enabled: (widget.store.address == null) || widget.editScreen,
           onChanged: storeCreationSliderValidation.changeCity,
         ),
         const EditTextSpacer(),
         EditText(
-          controller: () {
-            TextEditingController _controller = TextEditingController();
-            _controller.text =
-                storeCreationSliderValidation.storeAddress.postalCode ?? "";
-            _controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: _controller.text.length));
-            return _controller;
-          }(),
-          hintText: 'Postal Code.',
+          hintText: localizations.storePostalCode,
           borderType: BorderType.bottom,
           enabled: (widget.store.address == null) || widget.editScreen,
           onChanged: storeCreationSliderValidation.changePostalCode,
@@ -630,15 +583,13 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
             leadIcon: ProximityIcons.policy,
             title: 'Store Policy.',
             color: redSwatch.shade500),
-        const InfoMessage(
-            message:
-                ' Keep  global policy ensures fair and transparent transactions. When creating a new store, you can keep this policy for all your stores or create a custom policy for each store. Review the policy and create custom policies to build trust with your customers'),
+        InfoMessage(message: localizations.storeGlobalPolicyDescription),
         Padding(
           padding: const EdgeInsets.all(normal_100).copyWith(top: 0),
           child: Column(
             children: [
               ListToggle(
-                  title: 'keep global policy',
+                  title: localizations!.storeSetGlobalPolicy,
                   value: storeCreationSliderValidation.globalPolicy!,
                   onToggle: storeCreationSliderValidation.toggleGlobalPolicy),
               if (!storeCreationSliderValidation.globalPolicy!)
@@ -675,7 +626,7 @@ class _StoreCreationScreenState extends State<StoreCreationScreen> {
                                               );*/
                         // storeCreationSliderValidation.changeAddress(_result);
                       },
-                      title: 'Set Custom  Policy .'),
+                      title: localizations.storeSetCustomPolicy),
                 )
               else
                 Container(),
